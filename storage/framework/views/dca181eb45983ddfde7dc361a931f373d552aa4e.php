@@ -1,6 +1,6 @@
-@extends('layouts.master')
 
-@section('content')
+
+<?php $__env->startSection('content'); ?>
   <div class="app-content content">
     <div class="content-overlay"></div>
     <div class="header-navbar-shadow"></div>
@@ -11,7 +11,7 @@
         <div class="col-12">
         <div class="breadcrumb-wrapper">
           <ol class="breadcrumb">
-          <li class="breadcrumb-item"><a href="{{ route('home') }}">Home</a></li>
+          <li class="breadcrumb-item"><a href="<?php echo e(route('home')); ?>">Home</a></li>
           <li class="breadcrumb-item active">Forms</li>
           </ol>
         </div>
@@ -20,7 +20,7 @@
       </div>
       <div class="content-header-right text-md-right col-md-3 col-12 d-md-block d-none">
       <div class="form-group breadcrumb-right">
-        <a href="{{ route('admin.form.create') }}" class="btn-icon btn btn-primary btn-round btn-sm">Create New
+        <a href="<?php echo e(route('admin.form.create')); ?>" class="btn-icon btn btn-primary btn-round btn-sm">Create New
         Form</a>
       </div>
       </div>
@@ -47,28 +47,28 @@
             </tr>
             </thead>
             <tbody>
-            @foreach ($forms as $form)
+            <?php $__currentLoopData = $forms; $__env->addLoop($__currentLoopData); foreach($__currentLoopData as $form): $__env->incrementLoopIndices(); $loop = $__env->getLastLoop(); ?>
           <tr>
-            <td>{{ $loop->iteration }}</td>
-            <td>{{ $form->name }}</td>
+            <td><?php echo e($loop->iteration); ?></td>
+            <td><?php echo e($form->name); ?></td>
             <td>
-            @if($form->status)
+            <?php if($form->status): ?>
           <span class="badge badge-success">Active</span>
-        @else
+        <?php else: ?>
           <span class="badge badge-secondary">Inactive</span>
-        @endif
+        <?php endif; ?>
             </td>
-            <td>{{ $form->language ?? 'N/A' }}</td>
-            <td>{{ $form->updated_at->format('d M Y, h:i A') }}</td>
+            <td><?php echo e($form->language ?? 'N/A'); ?></td>
+            <td><?php echo e($form->updated_at->format('d M Y, h:i A')); ?></td>
             <td>
             <div class="dropdown">
             <button class="btn btn-primary btn-sm dropdown-toggle" type="button"
-            id="actionMenu{{ $form->id }}" data-toggle="dropdown" aria-expanded="false">
+            id="actionMenu<?php echo e($form->id); ?>" data-toggle="dropdown" aria-expanded="false">
             Actions
             </button>
-            <ul class="dropdown-menu" aria-labelledby="actionMenu{{ $form->id }}">
+            <ul class="dropdown-menu" aria-labelledby="actionMenu<?php echo e($form->id); ?>">
             <li>
-              <a class="dropdown-item" href="{{ route('admin.form.edit', $form->id) }}">
+              <a class="dropdown-item" href="<?php echo e(route('admin.form.edit', $form->id)); ?>">
               <i class="fas fa-pencil-alt"></i> Update
               </a>
             </li>
@@ -76,7 +76,7 @@
             </div>
             </td>
           </tr>
-        @endforeach
+        <?php endforeach; $__env->popLoop(); $loop = $__env->getLastLoop(); ?>
             </tbody>
 
 
@@ -91,9 +91,9 @@
   </div>
 
   <div class="modal fade" id="form-modal" tabindex="-1" role="dialog" aria-hidden="true"></div>
-@endsection
+<?php $__env->stopSection(); ?>
 
-@push('scripts')
+<?php $__env->startPush('scripts'); ?>
   <script>
     $.ajaxSetup({
     headers: {
@@ -113,7 +113,7 @@
     }).then((result) => {
       if (result.isConfirmed) {
       $.ajax({
-        url: `{{ url('admin/form') }}/${id}`,
+        url: `<?php echo e(url('admin/form')); ?>/${id}`,
         type: "DELETE",
         dataType: "json",
         success: function (result) {
@@ -133,4 +133,5 @@
     $('#pagetype-table').DataTable();
     });
   </script>
-@endpush
+<?php $__env->stopPush(); ?>
+<?php echo $__env->make('layouts.master', \Illuminate\Support\Arr::except(get_defined_vars(), ['__data', '__path']))->render(); ?><?php /**PATH D:\web-mingo-project\flippingo_admin\flippingo\resources\views/admin/form/index.blade.php ENDPATH**/ ?>

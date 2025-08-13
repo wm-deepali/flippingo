@@ -1,6 +1,6 @@
-@extends('layouts.master')
 
-@section('content')
+
+<?php $__env->startSection('content'); ?>
   <style>
     #ef-widgets {
     height: 100%;
@@ -61,7 +61,7 @@
     box-shadow: 0 0 10px rgba(40, 167, 69, 0.5);
     }
 
-    @keyframes highlightPulse {
+    @keyframes  highlightPulse {
     0% {
       transform: scale(1);
     }
@@ -122,9 +122,9 @@
     overflow: hidden scroll;
     }
   </style>
-  @push('styles')
+  <?php $__env->startPush('styles'); ?>
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/prismjs@1.29.0/themes/prism-okaidia.min.css">
-  @endpush
+  <?php $__env->stopPush(); ?>
 
   <div class="app-content content">
     <div class="content-wrapper">
@@ -208,7 +208,7 @@
       <div id="ef-main" class="col-md-5 d-none">
         <div id="canvas">
         <form id="my-form">
-          @csrf
+          <?php echo csrf_field(); ?>
           <div class="form-group col-md-12" data-field-id="static-title" data-field-type="heading">
           <h1 id="canvas-title" class="mb-1">Untitled Form</h1>
           </div>
@@ -252,7 +252,7 @@
         <div class="modal-body">
           <p>What do you want to do now?</p>
           <div class="list-group">
-          <a href="{{ route('admin.form.index') }}" class="list-group-item">Back to Form Manager</a>
+          <a href="<?php echo e(route('admin.form.index')); ?>" class="list-group-item">Back to Form Manager</a>
           <a href="#" id="editFormLink" class="list-group-item">Continue Editing</a>
           </div>
         </div>
@@ -277,13 +277,13 @@
     </div>
   </div>
 
-  {{-- Field Edit Modal --}}
-  @include('admin.form.partials.field-edit-modal')
-@endsection
+  
+  <?php echo $__env->make('admin.form.partials.field-edit-modal', \Illuminate\Support\Arr::except(get_defined_vars(), ['__data', '__path']))->render(); ?>
+<?php $__env->stopSection(); ?>
 
-@push('scripts')
+<?php $__env->startPush('scripts'); ?>
 
-  @include('admin.form.partials.scripts')
+  <?php echo $__env->make('admin.form.partials.scripts', \Illuminate\Support\Arr::except(get_defined_vars(), ['__data', '__path']))->render(); ?>
 
   <script>
     $('#save-form-btn').on('click', function () {
@@ -330,7 +330,7 @@
 
     // 6️ Send AJAX request
     $.ajax({
-      url: "{{ route('admin.form.store') }}",
+      url: "<?php echo e(route('admin.form.store')); ?>",
       method: 'POST',
       data: formData,
       processData: false,
@@ -360,4 +360,5 @@
     });
 
   </script>
-@endpush
+<?php $__env->stopPush(); ?>
+<?php echo $__env->make('layouts.master', \Illuminate\Support\Arr::except(get_defined_vars(), ['__data', '__path']))->render(); ?><?php /**PATH D:\web-mingo-project\flippingo_admin\flippingo\resources\views/admin/form/create.blade.php ENDPATH**/ ?>

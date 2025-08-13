@@ -18,7 +18,7 @@ class FormController extends Controller
         $forms = Form::all(); // fetch all saved forms
         return view('admin.form.index', compact('forms'));
     }
-    
+
     /**
      * Show the form for creating a new resource.
      */
@@ -30,6 +30,7 @@ class FormController extends Controller
 
     public function store(Request $request)
     {
+        //  dd($request->all());
         // Validate incoming data
         $validated = $request->validate([
             'name' => 'required|string|max:255',
@@ -71,54 +72,67 @@ class FormController extends Controller
         ]);
     }
 
+    public function edit($id)
+    {
+        $form = Form::findOrFail($id);
+        $formData = FormData::where('form_id', $form->id)->first();
 
-    //     public function store(Request $request)
-// {
-//     // Decode the FormBuilder payload
-//     $data = $request->all();
-//     $formBuilder = $data['FormBuilder'] ?? null;
+        return view('admin.form.edit', compact('form', 'formData'));
+    }
 
-    //     if (!$formBuilder || !isset($formBuilder['html'], $formBuilder['data'])) {
-//         return response()->json(['status' => 'error', 'message' => 'Invalid form data'], 422);
-//     }
+    public function update(Request $request, $id)
+    {
+        // dd($request->all());
+        // Validate incoming data
+        $validated = $request->validate([
+            'name' => 'required|string|max:255',
+            'fields' => 'required|json',
+            'builder' => 'required|json',
+            'html' => 'nullable|string',
+            'height' => 'nullable|numeric'
+        ]);
 
-    //     // ---- 1. Parse fields from HTML (basic example, you can improve)
-//     $fields = $this->extractFieldsFromHtml($formBuilder['html']);
+        // Decode JSON fields
+        $fields = json_decode($validated['fields'], true);
+        $builder = json_decode($validated['builder'], true);
 
-    //     // ---- 2. Save form main record
-//     $form = Form::create([
-//         'name' => $formBuilder['data']['settings']['name'] ?? 'Untitled Form',
-//         'language' => app()->getLocale(),
-//         'recaptcha' => $formBuilder['data']['settings']['recaptcha'] ?? 0,
-//     ]);
+        // Find the existing form
+        $form = Form::findOrFail($id);
 
-    //     // ---- 3. Save form data record
-//     FormData::create([
-//         'form_id' => $form->id,
-//         'builder' => json_encode($formBuilder['data']),
-//         'fields' => json_encode($fields),
-//         'html' => htmlentities($formBuilder['html']),
-//         'height' => (int) ($formBuilder['data']['height'] ?? 500),
-//     ]);
+        // Update form table
+        $form->update([
+            'name' => $validated['name'],
+            'slug' => Str::slug($validated['name']),
+            'status' => $form->status, // keep existing unless you add in form
+            'language' => $form->language ?? 'en',
+        ]);
 
-    //     // ---- 4. Related tables
-//     FormUI::create([
-//         'form_id' => $form->id,
-//         'theme' => $formBuilder['data']['ui']['theme'] ?? 'default'
-//     ]);
+        // Update form_datas table
+        $formData = FormData::where('form_id', $form->id)->first();
+        if ($formData) {
+            $formData->update([
+                'builder' => $builder,
+                'fields' => $fields,
+                'html' => $validated['html'] ?? '',
+                'height' => $validated['height'] ?? null,
+            ]);
+        } else {
+            // In case no FormData exists (fallback)
+            FormData::create([
+                'form_id' => $form->id,
+                'builder' => $builder,
+                'fields' => $fields,
+                'html' => $validated['html'] ?? '',
+                'height' => $validated['height'] ?? null,
+            ]);
+        }
 
-    //     FormConfirmation::create([
-//         'form_id' => $form->id,
-//         'message' => $formBuilder['data']['confirmation']['message'] ?? 'Thank you for your submission.'
-//     ]);
-
-    //     FormEmail::create([
-//         'form_id' => $form->id,
-//         'to' => $formBuilder['data']['email']['to'] ?? '',
-//         'subject' => $formBuilder['data']['email']['subject'] ?? 'New form submission'
-//     ]);
-
-    //     return response()->json(['status' => 'success', 'form_id' => $form->id]);
-// }
+        return response()->json([
+            'success' => true,
+            'message' => 'Form updated successfully',
+            'form_id' => $form->id,
+            'edit_url' => route('admin.form.edit', $form->id),
+        ]);
+    }
 
 }
