@@ -116,8 +116,6 @@
 <?php $__env->startPush('scripts'); ?>
   <script src="https://cdn.ckeditor.com/ckeditor5/39.0.1/classic/ckeditor.js"></script>
   <script>
-    CKEDITOR.replace('detail');
-
     // Automatic slug from blog title in Edit form
     $('#title').on('input', function () {
     let slug = $(this).val()

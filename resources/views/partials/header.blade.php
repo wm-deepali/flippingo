@@ -105,6 +105,8 @@
                 href="{{ route('admin.manage-categories.index') }}"><span>Categories</span></a></li>
                 <li><a class="dropdown-item d-flex align-items-center"
                 href="{{ route('admin.form.index') }}"><span>Form Builder</span></a></li>
+                  <li><a class="dropdown-item d-flex align-items-center"
+                href="{{ route('admin.form-templates.index') }}"><span>Templates</span></a></li>
           </ul>
         </li>
       </ul>

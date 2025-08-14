@@ -159,7 +159,6 @@
 
     $(document).ready(function () {
     // Initialize CKEditor
-    CKEDITOR.replace('detail');
 
     $('#blogForm').on('submit', function (e) {
       e.preventDefault();

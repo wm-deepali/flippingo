@@ -28,7 +28,8 @@
 
     #tab-fields {
     max-height: 650px;
-    overflow: scroll;
+    overflow: hidden scroll;
+    height: 100%;
     }
 
     #canvas {
@@ -121,6 +122,10 @@
     max-height: 650px;
     overflow: hidden scroll;
     }
+
+    .card-padding {
+    padding: 1.25rem 1.25rem
+    }
   </style>
   @push('styles')
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/prismjs@1.29.0/themes/prism-okaidia.min.css">
@@ -157,11 +162,11 @@
 
         <!-- Tabs Content -->
         <div class="tab-content">
-          <div id="tab-fields" class="tab-pane fade show active p-2">
+          <div id="tab-fields" class="tab-pane fade show active card-padding">
           <!-- Fields list goes here -->
           </div>
 
-          <div id="tab-settings" class="tab-pane fade p-2">
+          <div id="tab-settings" class="tab-pane fade card-padding">
           <form id="settings-form">
             <div class="form-group">
             <label for="form-name" class="form-label"><strong>Form Name</strong></label>
@@ -181,7 +186,7 @@
             </select>
             </div>
 
-            <div class="form-check">
+            <div class="form-check mb-3">
             <input type="checkbox" class="form-check-input" id="disable-elements" name="disable_elements">
             <label class="form-check-label" for="disable-elements"><strong>Disable form
               elements</strong></label>
@@ -189,7 +194,7 @@
           </form>
           </div>
 
-          <div id="tab-code" class="tab-pane fade p-2">
+          <div id="tab-code" class="tab-pane fade card-padding">
           <div class="d-flex justify-content-between align-items-center mb-2">
             <h6 class="mb-0">Source Code preview</h6>
             <a href="#" id="copy-code-btn" class="text-decoration-none">Copy</a>
@@ -209,20 +214,27 @@
         <div id="canvas">
         <form id="my-form">
           @csrf
-          <div class="form-group col-md-12" data-field-id="static-title" data-field-type="heading">
-          <h1 id="canvas-title" class="mb-1">Untitled Form</h1>
-          </div>
-
-          <div class="form-group col-md-12" data-field-id="static-description" data-field-type="paragraph">
-          <p class="mb-0">This is my form. Please fill it out. Thanks!</p>
-          </div>
         </form>
         </div>
+
         <div class="mt-3">
-        <button id="save-form-btn" type="button" class="btn btn-success">
-          <i class="fas fa-check me-2"></i> Save Form
-        </button>
+        @if (!empty($isTemplate) && $isTemplate)
+      {{-- Template mode: Only show Save Template --}}
+      <button id="save-template-btn" type="button" class="btn btn-secondary">
+        <i class="fas fa-copy me-2"></i> Save Template
+      </button>
+      @else
+      {{-- Form mode: Only show Save Form --}}
+      <button id="save-form-btn" type="button" class="btn btn-success me-2">
+        <i class="fas fa-check me-2"></i> Save Form
+      </button>
+      <button id="save-template-btn" type="button" class="btn btn-secondary">
+        <i class="fas fa-copy me-2"></i> Save as Template
+      </button>
+      @endif
         </div>
+
+
       </div>
 
       <!-- Right Sidebar: Styles -->
@@ -281,11 +293,63 @@
   @include('admin.form.partials.field-edit-modal')
 @endsection
 
-@push('scripts')
 
+@push('scripts')
   @include('admin.form.partials.scripts')
 
   <script>
+
+    // 🔹 Inject backend's default fields into form
+
+    @if(isset($defaultForm['initForm']))
+    const defaults = @json($defaultForm['initForm']);
+    defaults.forEach(f => {
+    addFieldFromConfig(f.name, f.fields);
+    });
+    @endif
+
+    // Helper: add a new field to canvas using FIELD_CONFIGS + configData
+    function addFieldFromConfig(type, configData) {
+    const fieldId = 'field_' + Date.now() + '_' + type;
+    const fieldHtml = getFieldHtml(type, fieldId);
+    const $el = $(`<div class="form-group" data-field-id="${fieldId}" data-field-type="${type}">${fieldHtml}</div>`);
+
+    // Merge defaults from FIELD_CONFIGS with backend-provided values
+    const defaultsConfig = (window.FIELD_CONFIGS || {})[type] || {};
+    let data = {};
+
+    Object.entries(defaultsConfig).forEach(([k, v]) => {
+      if (k === 'id') return; // don't override ID with default
+      if (v.type === 'select') data[k] = getSelectedOptionValue(v.value);
+      else data[k] = v.value;
+    });
+
+    // Override with backend initForm values
+    // Override with backend initForm values
+    if (configData) {
+      Object.keys(configData).forEach(k => {
+      let val;
+
+      if (
+        configData[k] &&
+        Array.isArray(configData[k].value) // select field values come as array of options
+      ) {
+        val = getSelectedOptionValue(configData[k].value); // helper to extract selected
+      } else if (configData[k] && configData[k].value !== undefined) {
+        val = configData[k].value;
+      } else {
+        val = configData[k];
+      }
+
+      data[k] = val;
+      });
+    }
+
+    setFieldData($el, data);
+    applyConfigToField($el, type, data);
+    $('#my-form').append($el);
+    }
+
     $('#save-form-btn').on('click', function () {
     const $btn = $(this);
     const form = $('#form-form')[0] || $('<form></form>')[0]; // just in case
@@ -328,7 +392,7 @@
     $('input, select').removeClass('is-invalid');
     $('.invalid-feedback').remove();
 
-    // 6️ Send AJAX request
+    // Save Form code
     $.ajax({
       url: "{{ route('admin.form.store') }}",
       method: 'POST',
@@ -358,6 +422,80 @@
       }
     });
     });
+
+
+    // save template code
+    $('#save-template-btn').on('click', function () {
+    const $btn = $(this);
+    const form = $('#form-form')[0] || $('<form></form>')[0];
+    const formData = new FormData(form);
+
+    // 1 Get fields
+    let fields = [];
+    $('#canvas .form-group').each(function () {
+      let $field = $(this);
+      let fieldData = {
+      id: $field.data('field-id') || `field-${Date.now()}`,
+      type: $field.data('field-type') || 'unknown',
+      properties: getFieldData($field)
+      };
+      fields.push(fieldData);
+    });
+    formData.append('fields', JSON.stringify(fields));
+
+    // 2 HTML layout
+    formData.append('html', $('#canvas').html());
+
+    // 3 Builder/settings
+    let builderSettings = {
+      form_name: $('#form-name').val(),
+      form_layout: $('#form-layout').val(),
+      disable_elements: $('#disable-elements').is(':checked')
+    };
+    formData.append('builder', JSON.stringify(builderSettings));
+
+    // 4 Add height
+    formData.append('height', $('#canvas').outerHeight());
+
+    // 5 Name for templates
+    formData.append('name', $('#form-name').val());
+
+    // 6 Flag to indicate it's a template save
+    formData.append('is_template', true);
+
+    // Disable while saving
+    $btn.prop('disabled', true);
+    $('input, select').removeClass('is-invalid');
+    $('.invalid-feedback').remove();
+
+    // AJAX call for saving template
+    $.ajax({
+      url: "{{ route('admin.form-templates.store') }}",
+      method: 'POST',
+      data: formData,
+      processData: false,
+      contentType: false,
+      success: function (res) {
+      if (res.success) {
+        Swal.fire({
+        icon: 'success',
+        title: 'Template saved!',
+        text: 'Your form template has been saved successfully.',
+        confirmButtonText: 'OK'
+        }).then((result) => {
+        if (result.isConfirmed) {
+          window.location.href = "{{ route('admin.form-templates.index') }}";
+        }
+        });
+      } else {
+        $btn.prop('disabled', false);
+        showToast('Error', res.message || 'Something went wrong');
+      }
+      },
+
+    });
+    });
+
 
   </script>
 @endpush

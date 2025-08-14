@@ -28,7 +28,8 @@
 
         #tab-fields {
             max-height: 650px;
-            overflow: scroll;
+            overflow: hidden scroll;
+            height: 100%;
         }
 
         #canvas {
@@ -121,6 +122,10 @@
             max-height: 650px;
             overflow: hidden scroll;
         }
+
+        .card-padding {
+            padding: 1.25rem 1.25rem
+        }
     </style>
     @push('styles')
         <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/prismjs@1.29.0/themes/prism-okaidia.min.css">
@@ -156,11 +161,11 @@
 
                             <!-- Tabs Content -->
                             <div class="tab-content">
-                                <div id="tab-fields" class="tab-pane fade show active p-2">
+                                <div id="tab-fields" class="tab-pane fade show active card-padding">
                                     <!-- Fields list goes here -->
                                 </div>
 
-                                <div id="tab-settings" class="tab-pane fade p-2">
+                                <div id="tab-settings" class="tab-pane fade card-padding">
                                     <form id="settings-form">
                                         <div class="form-group">
                                             <label for="form-name" class="form-label"><strong>Form Name</strong></label>
@@ -189,7 +194,7 @@
                                     </form>
                                 </div>
 
-                                <div id="tab-code" class="tab-pane fade p-2">
+                                <div id="tab-code" class="tab-pane fade card-padding">
                                     <div class="d-flex justify-content-between align-items-center mb-2">
                                         <h6 class="mb-0">Source Code preview</h6>
                                         <a href="#" id="copy-code-btn" class="text-decoration-none">Copy</a>

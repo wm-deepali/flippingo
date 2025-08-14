@@ -3,35 +3,24 @@
 namespace App\Http\Controllers\Admin;
 
 use App\Http\Controllers\Controller;
-use App\Models\FormData;
 use Illuminate\Http\Request;
 use Illuminate\Support\Str;
+use App\Models\FormTemplate;
+use App\Models\FormData;
 use App\Models\Form;
 
-class FormController extends Controller
+class FormTemplateController extends Controller
 {
     /**
-     * Display a listing of the resource.
+     * List all templates
      */
     public function index()
     {
-        $forms = Form::all(); // fetch all saved forms
-        return view('admin.form.index', compact('forms'));
+        $templates = FormTemplate::latest()->get();
+        return view('admin.form_templates.index', compact('templates'));
     }
 
 
-    public function show($id)
-    {
-        $form = Form::findOrFail($id);
-        $formData = FormData::where('form_id', $form->id)->first();
-
-        return view('admin.form.show', compact('form', 'formData'));
-    }
-
-
-    /**
-     * Show the form for creating a new resource.
-     */
     public function create()
     {
         $i18n = [
@@ -58,9 +47,9 @@ class FormController extends Controller
                             'label' => 'component.type',
                             'type' => 'select',
                             'value' => [
-                                ['value' => 'h1', 'label' => 'H1', 'selected' => true],
+                                ['value' => 'h1', 'label' => 'H1', 'selected' => false],
                                 ['value' => 'h2', 'label' => 'H2', 'selected' => false],
-                                ['value' => 'h3', 'label' => 'H3', 'selected' => false],
+                                ['value' => 'h3', 'label' => 'H3', 'selected' => true],
                                 ['value' => 'h4', 'label' => 'H4', 'selected' => false],
                                 ['value' => 'h5', 'label' => 'H5', 'selected' => false],
                                 ['value' => 'h6', 'label' => 'H6', 'selected' => false],
@@ -110,115 +99,120 @@ class FormController extends Controller
             ]
         ];
 
-        return view('admin.form.create', compact('i18n', 'defaultForm'));
+        return view('admin.form.create', compact('i18n', 'defaultForm'))
+            ->with('isTemplate', true); // we can use this flag in JS to save as template
     }
 
 
+    public function createFormFromTemplate($template_id)
+    {
+        // Find the template
+        $template = FormTemplate::findOrFail($template_id);
+
+        // Create a new form based on the template's data
+        $form = Form::create([
+            'name' => $template->name . ' (Copy)',
+            'slug' => Str::slug($template->name . '-' . time()),
+            'status' => true,
+            'language' => 'en',
+        ]);
+
+        // Store the form data based on template's stored builder and fields JSON
+        FormData::create([
+            'form_id' => $form->id,
+            'fields' => $template->fields,  // already cast to array/json
+            'builder' => $template->builder, // same as above
+            'html' => $template->html ?? '',
+            'height' => $template->height ?? null,
+        ]);
+
+        // Redirect to edit the newly created form
+        return redirect()->route('admin.form.edit', $form->id)
+            ->with('success', 'New form created from template. You can now edit it.');
+    }
+
+    /**
+     * Store a new form template
+     */
     public function store(Request $request)
     {
-        //  dd($request->all());
-        // Validate incoming data
         $validated = $request->validate([
             'name' => 'required|string|max:255',
             'fields' => 'required|json',
             'builder' => 'required|json',
             'html' => 'nullable|string',
-            'height' => 'nullable|numeric'
+            'height' => 'nullable|numeric',
         ]);
 
-        // Decode JSON fields
         $fields = json_decode($validated['fields'], true);
         $builder = json_decode($validated['builder'], true);
 
-        // Create slug from name
         $slug = Str::slug($validated['name']);
 
-        // Save to `forms` table
-        $form = Form::create([
+        $template = FormTemplate::create([
             'name' => $validated['name'],
             'slug' => $slug,
-            'status' => true,
-            'language' => 'en',
-        ]);
-
-        // Save to `form_datas` table
-        FormData::create([
-            'form_id' => $form->id,
-            'builder' => $builder,
             'fields' => $fields,
+            'builder' => $builder,
             'html' => $validated['html'] ?? '',
             'height' => $validated['height'] ?? null,
         ]);
 
         return response()->json([
             'success' => true,
-            'message' => 'Form saved successfully',
-            'form_id' => $form->id,
-            'edit_url' => route('admin.form.edit', $form->id),
+            'message' => 'Template saved successfully',
+            'template_id' => $template->id,
         ]);
     }
 
+    /**
+     * Show one template for editing
+     */
     public function edit($id)
     {
-        $form = Form::findOrFail($id);
-        $formData = FormData::where('form_id', $form->id)->first();
-
-        return view('admin.form.edit', compact('form', 'formData'));
+        $template = FormTemplate::findOrFail($id);
+        return view('admin.form_templates.edit', compact('template'));
     }
 
+    /**
+     * Update a template
+     */
     public function update(Request $request, $id)
     {
-        // dd($request->all());
-        // Validate incoming data
         $validated = $request->validate([
             'name' => 'required|string|max:255',
             'fields' => 'required|json',
             'builder' => 'required|json',
             'html' => 'nullable|string',
-            'height' => 'nullable|numeric'
+            'height' => 'nullable|numeric',
         ]);
 
-        // Decode JSON fields
-        $fields = json_decode($validated['fields'], true);
-        $builder = json_decode($validated['builder'], true);
-
-        // Find the existing form
-        $form = Form::findOrFail($id);
-
-        // Update form table
-        $form->update([
+        $template = FormTemplate::findOrFail($id);
+        $template->update([
             'name' => $validated['name'],
             'slug' => Str::slug($validated['name']),
-            'status' => $form->status, // keep existing unless you add in form
-            'language' => $form->language ?? 'en',
+            'fields' => json_decode($validated['fields'], true),
+            'builder' => json_decode($validated['builder'], true),
+            'html' => $validated['html'] ?? '',
+            'height' => $validated['height'] ?? null,
         ]);
-
-        // Update form_datas table
-        $formData = FormData::where('form_id', $form->id)->first();
-        if ($formData) {
-            $formData->update([
-                'builder' => $builder,
-                'fields' => $fields,
-                'html' => $validated['html'] ?? '',
-                'height' => $validated['height'] ?? null,
-            ]);
-        } else {
-            // In case no FormData exists (fallback)
-            FormData::create([
-                'form_id' => $form->id,
-                'builder' => $builder,
-                'fields' => $fields,
-                'html' => $validated['html'] ?? '',
-                'height' => $validated['height'] ?? null,
-            ]);
-        }
 
         return response()->json([
             'success' => true,
-            'message' => 'Form updated successfully',
-            'form_id' => $form->id,
-            'edit_url' => route('admin.form.edit', $form->id),
+            'message' => 'Template updated successfully',
+            'template_id' => $template->id,
         ]);
     }
 
+    /**
+     * Delete a template
+     */
+    public function destroy($id)
+    {
+        $template = FormTemplate::findOrFail($id);
+        $template->delete();
+
+        return redirect()->route('admin.formTemplates.index')
+            ->with('success', 'Template deleted successfully.');
+    }
 }

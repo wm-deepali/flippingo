@@ -221,7 +221,7 @@
 
   <script src="https://cdn.ckeditor.com/4.16.2/standard/ckeditor.js"></script>
   <script>
-    CKEDITOR.replace('detail');
+    // CKEDITOR.replace('detail');
 
 
     function confirmDelete(url) {
@@ -275,7 +275,7 @@
     });
 
 
-    CKEDITOR.replace('edit_detail');
+    // CKEDITOR.replace('edit_detail');
 
     // Handle Edit Button
     $('.edit-page-btn').on('click', function () {

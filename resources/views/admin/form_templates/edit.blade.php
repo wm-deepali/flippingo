@@ -1,6 +1,6 @@
+@extends('layouts.master')
 
-
-<?php $__env->startSection('content'); ?>
+@section('content')
     <style>
         #ef-widgets {
             height: 100%;
@@ -13,7 +13,7 @@
             display: flex;
             justify-content: center;
             align-items: center;
-            height: 200px;s
+            height: 200px;
         }
 
         .ef-sidebar-outer {
@@ -62,7 +62,7 @@
             box-shadow: 0 0 10px rgba(40, 167, 69, 0.5);
         }
 
-        @keyframes  highlightPulse {
+        @keyframes highlightPulse {
             0% {
                 transform: scale(1);
             }
@@ -127,16 +127,16 @@
             padding: 1.25rem 1.25rem
         }
     </style>
-    <?php $__env->startPush('styles'); ?>
+    @push('styles')
         <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/prismjs@1.29.0/themes/prism-okaidia.min.css">
-    <?php $__env->stopPush(); ?>
+    @endpush
 
     <div class="app-content content">
         <div class="content-wrapper">
             <div class="content-body">
                 <div class="row" id="form-builder-wrapper">
 
-                    
+                    {{-- Loader --}}
                     <div id="ef-loading" class="ef-loading w-100">
                         <div class="spinner-border text-primary" role="status"><span
                                 class="visually-hidden">Loading...</span></div>
@@ -209,24 +209,23 @@
                         </div>
                     </div>
 
-                    
+                    {{-- Middle: Canvas --}}
                     <div id="ef-main" class="col-md-5 d-none">
                         <div id="canvas">
                             <form id="my-form">
-                                <?php echo csrf_field(); ?>
-                                <?php echo method_field('PUT'); ?>
-                                <?php echo $formData->html; ?>
-
+                                @csrf
+                                @method('PUT')
+                                {!! $template->html !!}
                             </form>
                         </div>
                         <div class="mt-3">
                             <button id="save-form-btn" type="button" class="btn btn-success">
-                                <i class="fas fa-check me-2"></i> Update Form
+                                <i class="fas fa-check me-2"></i> Update Template
                             </button>
                         </div>
                     </div>
 
-                    
+                    {{-- Right Sidebar --}}
                     <div id="ef-styles" class="col-md-3 d-none">
                         <div class="ef-sidebar-outer p-2">
                             <h5>Design</h5>
@@ -239,7 +238,7 @@
                     </div>
                 </div>
 
-                
+                {{-- Saved modal --}}
                 <div class="modal fade" id="savedModal" tabindex="-1" aria-hidden="true">
                     <div class="modal-dialog modal-lg">
                         <div class="modal-content">
@@ -250,9 +249,9 @@
                             <div class="modal-body">
                                 <p>What do you want to do?</p>
                                 <div class="list-group">
-                                    <a href="<?php echo e(route('admin.form.index')); ?>" class="list-group-item">Back to Form
+                                    <a href="{{ route('admin.form-templates.index') }}" class="list-group-item">Back to templates
                                         Manager</a>
-                                    <a href="<?php echo e(route('admin.form.edit', $form->id)); ?>" id="editFormLink"
+                                    <a href="{{ route('admin.form-templates.edit', $template->id) }}" id="editFormLink"
                                         class="list-group-item">Continue Editing</a>
                                 </div>
                             </div>
@@ -260,7 +259,7 @@
                     </div>
                 </div>
 
-                
+                {{-- Toast --}}
                 <div class="toast-container position-fixed bottom-0 end-0 p-3">
                     <div id="toast" class="toast text-bg-danger border-0">
                         <div class="d-flex">
@@ -274,18 +273,18 @@
                     </div>
                 </div>
 
-                
-                <?php echo $__env->make('admin.form.partials.field-edit-modal', \Illuminate\Support\Arr::except(get_defined_vars(), ['__data', '__path']))->render(); ?>
+                {{-- Field Edit Modal --}}
+                @include('admin.form.partials.field-edit-modal')
             </div>
         </div>
     </div>
-<?php $__env->stopSection(); ?>
+@endsection
 
-<?php $__env->startPush('scripts'); ?>
+@push('scripts')
 
-    <?php echo $__env->make('admin.form.partials.scripts', \Illuminate\Support\Arr::except(get_defined_vars(), ['__data', '__path']))->render(); ?>
+    @include('admin.form.partials.scripts')
 
-    
+    {{-- Add edit page specific init --}}
     <script>
         $(function () {
             // Hide loader and show UI
@@ -293,16 +292,16 @@
             $('#ef-widgets, #ef-main, #ef-styles').removeClass('d-none');
 
             // Pre-fill Settings panel
-            <?php if(isset($formData) && $formData->builder): ?>
-                let builderSettings = <?php echo json_encode($formData->builder, 15, 512) ?>;
-                $('#form-name').val(builderSettings.form_name || '<?php echo e($form->name); ?>');
+            @if(isset($template) && $template->builder)
+                let builderSettings = @json($template->builder);
+                $('#form-name').val(builderSettings.form_name || '{{ $template->name }}');
                 $('#form-layout').val(builderSettings.form_layout || 'Vertical').trigger('change');
                 $('#disable-elements').prop('checked', builderSettings.disable_elements || false);
-            <?php endif; ?>
+            @endif
 
                 // Rebuild from JSON fields if required
-                <?php if(isset($formData) && $formData->fields): ?>
-                    let savedFields = <?php echo json_encode($formData->fields, 15, 512) ?>;
+                @if(isset($template) && $template->fields)
+                    let savedFields = @json($template->fields);
                     $('#my-form').empty();
                     savedFields.forEach(f => {
                         let $fieldElement = $(`<div class="form-group" data-field-id="${f.id}" data-field-type="${f.type}">${getFieldHtml(f.type, f.id)}</div>`);
@@ -310,7 +309,7 @@
                         applyConfigToField($fieldElement, f.type, f.properties || {});
                         $('#my-form').append($fieldElement);
                     });
-                <?php endif; ?>
+                @endif
 
             updateCodePreview();
 
@@ -341,7 +340,7 @@
                 $btn.prop('disabled', true);
 
                 $.ajax({
-                    url: "<?php echo e(route('admin.form.update', $form->id)); ?>",
+                    url: "{{ route('admin.form-templates.update', $template->id) }}",
                     method: 'POST',
                     data: formData,
                     processData: false,
@@ -363,5 +362,4 @@
             });
         });
     </script>
-<?php $__env->stopPush(); ?>
-<?php echo $__env->make('layouts.master', \Illuminate\Support\Arr::except(get_defined_vars(), ['__data', '__path']))->render(); ?><?php /**PATH D:\web-mingo-project\flippingo_admin\flippingo\resources\views/admin/form/edit.blade.php ENDPATH**/ ?>
+@endpush

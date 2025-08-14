@@ -5,7 +5,8 @@ use App\Http\Controllers\Admin\{
     CategoryController,
     SliderController,
     FormController,
-    FormBuilderController
+    FormBuilderController,
+    FormTemplateController
 };
 
 /*
@@ -76,19 +77,20 @@ Route::group(['middleware' => 'auth'], function () {
 
         // ===== Category MANAGEMENT ROUTES ===== //
         Route::resource('manage-categories', CategoryController::class);
+
         Route::resource('form', FormController::class);
+        Route::get('/form/{id}', [FormController::class, 'show'])
+            ->name('form.show');
+
+        Route::resource('/form-templates', FormTemplateController::class);
+        Route::get('/forms/create-from-template/{template}', [FormTemplateController::class, 'createFormFromTemplate'])
+            ->name('form.create-from-template');
 
         Route::get('/ajax/builder-components', [FormBuilderController::class, 'builderComponents'])
             ->name('ajax.builder.components');
-            
+
         Route::get('/ajax/builder-phrases', [FormBuilderController::class, 'builderPhrases'])
             ->name('ajax.builder.phrases');
-
-               Route::get('/ajax/initForm', [FormBuilderController::class, 'builderComponents'])
-            ->name('ajax.initForm');
-            
-        Route::get('/ajax/createForm', [FormBuilderController::class, 'builderPhrases'])
-            ->name('ajax.createForm');
 
     });
 });

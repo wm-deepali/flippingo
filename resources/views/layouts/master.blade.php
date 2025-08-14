@@ -22,7 +22,6 @@
   <link rel="stylesheet" type="text/css" href="//cdn.datatables.net/1.11.1/css/jquery.dataTables.css">
   <script src="{{ URL::asset('admin_assets/js/tree.js') }}"></script>
   <script src="https://unpkg.com/sweetalert/dist/sweetalert.min.js"></script>
-	 <script src="https://cdn.ckeditor.com/4.22.1/standard/ckeditor.js"></script>
 
 
   <style>

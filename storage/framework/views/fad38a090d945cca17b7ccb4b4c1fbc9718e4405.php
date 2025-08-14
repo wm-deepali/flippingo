@@ -102,17 +102,17 @@
     }
     });
 
-    function ClassicEditorInit() {
-    const fields = ['details'];
-    fields.forEach(id => {
-      if (CKEDITOR.instances[id]) {
-      CKEDITOR.instances[id].destroy(true);
-      }
-      if (document.getElementById(id)) {
-      CKEDITOR.replace(id);
-      }
-    });
-    }
+    // function ClassicEditorInit() {
+    // const fields = ['detail'];
+    // fields.forEach(id => {
+    //   if (CKEDITOR.instances[id]) {
+    //   CKEDITOR.instances[id].destroy(true);
+    //   }
+    //   if (document.getElementById(id)) {
+    //   CKEDITOR.replace(id);
+    //   }
+    // });
+    // }
 
     $(document).ready(function () {
     // Add Delivery Charges

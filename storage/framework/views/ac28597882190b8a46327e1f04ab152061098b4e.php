@@ -13,7 +13,7 @@
             display: flex;
             justify-content: center;
             align-items: center;
-            height: 200px;s
+            height: 200px;
         }
 
         .ef-sidebar-outer {
@@ -215,13 +215,13 @@
                             <form id="my-form">
                                 <?php echo csrf_field(); ?>
                                 <?php echo method_field('PUT'); ?>
-                                <?php echo $formData->html; ?>
+                                <?php echo $template->html; ?>
 
                             </form>
                         </div>
                         <div class="mt-3">
                             <button id="save-form-btn" type="button" class="btn btn-success">
-                                <i class="fas fa-check me-2"></i> Update Form
+                                <i class="fas fa-check me-2"></i> Update Template
                             </button>
                         </div>
                     </div>
@@ -250,9 +250,9 @@
                             <div class="modal-body">
                                 <p>What do you want to do?</p>
                                 <div class="list-group">
-                                    <a href="<?php echo e(route('admin.form.index')); ?>" class="list-group-item">Back to Form
+                                    <a href="<?php echo e(route('admin.form-templates.index')); ?>" class="list-group-item">Back to templates
                                         Manager</a>
-                                    <a href="<?php echo e(route('admin.form.edit', $form->id)); ?>" id="editFormLink"
+                                    <a href="<?php echo e(route('admin.form-templates.edit', $template->id)); ?>" id="editFormLink"
                                         class="list-group-item">Continue Editing</a>
                                 </div>
                             </div>
@@ -293,16 +293,16 @@
             $('#ef-widgets, #ef-main, #ef-styles').removeClass('d-none');
 
             // Pre-fill Settings panel
-            <?php if(isset($formData) && $formData->builder): ?>
-                let builderSettings = <?php echo json_encode($formData->builder, 15, 512) ?>;
-                $('#form-name').val(builderSettings.form_name || '<?php echo e($form->name); ?>');
+            <?php if(isset($template) && $template->builder): ?>
+                let builderSettings = <?php echo json_encode($template->builder, 15, 512) ?>;
+                $('#form-name').val(builderSettings.form_name || '<?php echo e($template->name); ?>');
                 $('#form-layout').val(builderSettings.form_layout || 'Vertical').trigger('change');
                 $('#disable-elements').prop('checked', builderSettings.disable_elements || false);
             <?php endif; ?>
 
                 // Rebuild from JSON fields if required
-                <?php if(isset($formData) && $formData->fields): ?>
-                    let savedFields = <?php echo json_encode($formData->fields, 15, 512) ?>;
+                <?php if(isset($template) && $template->fields): ?>
+                    let savedFields = <?php echo json_encode($template->fields, 15, 512) ?>;
                     $('#my-form').empty();
                     savedFields.forEach(f => {
                         let $fieldElement = $(`<div class="form-group" data-field-id="${f.id}" data-field-type="${f.type}">${getFieldHtml(f.type, f.id)}</div>`);
@@ -341,7 +341,7 @@
                 $btn.prop('disabled', true);
 
                 $.ajax({
-                    url: "<?php echo e(route('admin.form.update', $form->id)); ?>",
+                    url: "<?php echo e(route('admin.form-templates.update', $template->id)); ?>",
                     method: 'POST',
                     data: formData,
                     processData: false,
@@ -364,4 +364,4 @@
         });
     </script>
 <?php $__env->stopPush(); ?>
-<?php echo $__env->make('layouts.master', \Illuminate\Support\Arr::except(get_defined_vars(), ['__data', '__path']))->render(); ?><?php /**PATH D:\web-mingo-project\flippingo_admin\flippingo\resources\views/admin/form/edit.blade.php ENDPATH**/ ?>
+<?php echo $__env->make('layouts.master', \Illuminate\Support\Arr::except(get_defined_vars(), ['__data', '__path']))->render(); ?><?php /**PATH D:\web-mingo-project\flippingo_admin\flippingo\resources\views/admin/form_templates/edit.blade.php ENDPATH**/ ?>

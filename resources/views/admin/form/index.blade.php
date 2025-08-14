@@ -72,7 +72,13 @@
               <i class="fas fa-pencil-alt"></i> Update
               </a>
             </li>
+            <li>
+              <a class="dropdown-item" href="{{ route('admin.form.show', $form->id) }}" target="_blank">
+              <i class="fas fa-eye"></i> View
+              </a>
+            </li>
             </ul>
+
             </div>
             </td>
           </tr>

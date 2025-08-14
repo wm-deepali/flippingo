@@ -112,12 +112,8 @@
         applyLayoutToForm(currentLayout);
     });
 
-    // function to change layout 
     function applyLayoutToForm(layout) {
         const $form = $('#my-form');
-
-        // Reset form-level classes
-        $form.removeClass('form-inline form-horizontal');
 
         $form.find('.form-group').each(function () {
             const $group = $(this);
@@ -128,7 +124,7 @@
                 return (className.match(/(^|\s)col-\S+/g) || []).join(' ');
             });
 
-            // If there’s a col-wrapper from Horizontal mode, unwrap it
+            // If there's a col-wrapper from Horizontal mode, unwrap it
             const $colWrapper = $group.find('.col-wrapper');
             if ($colWrapper.length) {
                 $colWrapper.children().unwrap();
@@ -136,9 +132,9 @@
 
             // Remove row class from group
             $group.removeClass('row');
+            $label.removeClass('visually-hidden');
 
             if (layout === 'Horizontal') {
-                // Apply Horizontal structure
                 $group.addClass('row');
                 if ($label.length) {
                     $label.addClass('col-3 col-form-label');
@@ -148,18 +144,17 @@
                 }
             }
             else if (layout === 'Vertical') {
-                // Vertical is default Bootstrap style: stacked labels and inputs
                 if ($label.length) {
-                    $label.addClass('form-label');
+                    $label.removeClass('visually-hidden').addClass('form-label');
+                }
+            }
+            else if (layout === 'Inline') {
+                // ✅ Just hide all labels visually
+                if ($label.length) {
+                    $label.addClass('visually-hidden'); // Bootstrap 5 accessible hiding
                 }
             }
         });
-
-        if (layout === 'Horizontal') {
-            $form.addClass('form-horizontal');
-        } else if (layout === 'Inline') {
-            $form.addClass('form-inline');
-        }
     }
 
 
@@ -189,31 +184,33 @@
     // Optional phrases map, fetched from backend for label translations
     let BUILDER_PHRASES = {};
 
+    // fetch component configs
     $.getJSON("{{ route('admin.ajax.builder.components') }}", function (components) {
         const $fieldsTab = $('#tab-fields');
         $fieldsTab.empty();
 
         components.forEach(function (field) {
             const iconClass = getIconForField(field.name);
-
-            const block = `
-              <div class="builder-field-item d-flex align-items-center mb-2 p-2 border rounded bg-white"
-               draggable="true"
-               data-type="${field.name}">
-              <i class="${iconClass} me-2"></i>
-              <span>${field.name}</span>
-              </div>
-              `;
-            $fieldsTab.append(block);
+            $fieldsTab.append(`
+            <div class="builder-field-item d-flex align-items-center mb-2 p-2 border rounded bg-white"
+                draggable="true"
+                data-type="${field.name}">
+                <i class="${iconClass} me-2"></i>
+                <span>${field.name}</span>
+            </div>
+        `);
         });
 
-        // Map configs by component name for modal rendering
         FIELD_CONFIGS = components.reduce((acc, comp) => {
             acc[comp.name] = comp.fields || {};
             return acc;
         }, {});
         window.FIELD_CONFIGS = FIELD_CONFIGS;
+
+        updateCodePreview();
     });
+
+
 
     // Fetch phrases from backend to translate label keys
     $.getJSON("{{ route('admin.ajax.builder.phrases') }}", function (phrases) {
@@ -249,7 +246,6 @@
         return icons[type] || 'fas fa-square';
     }
 
-    // Function to generate HTML code from the actual form content
     function generateHTMLCode() {
         const form = document.getElementById('my-form');
         if (!form) return '';
@@ -257,21 +253,49 @@
         // Clone the form to avoid modifying the original
         const formClone = form.cloneNode(true);
 
-        // Remove any data attributes and classes that are not needed in the final HTML
-        const fields = formClone.querySelectorAll('[data-field-id], [data-field-type]');
-        fields.forEach(field => {
-            field.removeAttribute('data-field-id');
-            field.removeAttribute('data-field-type');
+        // Remove internal builder data attributes, classes etc.
+        formClone.querySelectorAll('[data-field-id], [data-field-type]').forEach(el => {
+            el.removeAttribute('data-field-id');
+            el.removeAttribute('data-field-type');
+            // Remove any builder-specific classes you don't want in final output
+            el.classList.remove('highlight-copied', 'row', 'some-other-builder-class');
         });
 
-        // Convert to HTML string
-        let html = formClone.innerHTML;
+        // For each input/select/textarea, ensure properties like checked, disabled, readonly, selected are reflected as attributes
+        formClone.querySelectorAll('input, select, textarea').forEach(el => {
+            if (el.tagName.toLowerCase() === 'input') {
+                // For checkboxes and radios, sync checked state attribute
+                if (el.type === 'checkbox' || el.type === 'radio') {
+                    if (el.checked) el.setAttribute('checked', '');
+                    else el.removeAttribute('checked');
+                } else {
+                    el.setAttribute('value', el.value);
+                }
+                // Sync disabled, readonly state
+                if (el.disabled) el.setAttribute('disabled', '');
+                else el.removeAttribute('disabled');
+                if (el.readOnly) el.setAttribute('readonly', '');
+                else el.removeAttribute('readonly');
+            } else if (el.tagName.toLowerCase() === 'select') {
+                // Set selected attribute on options
+                Array.from(el.options).forEach(option => {
+                    if (option.selected) option.setAttribute('selected', '');
+                    else option.removeAttribute('selected');
+                });
+                if (el.disabled) el.setAttribute('disabled', '');
+                else el.removeAttribute('disabled');
+            } else if (el.tagName.toLowerCase() === 'textarea') {
+                // Set textarea content
+                el.textContent = el.value;
+                if (el.disabled) el.setAttribute('disabled', '');
+                else el.removeAttribute('disabled');
+                if (el.readOnly) el.setAttribute('readonly', '');
+                else el.removeAttribute('readonly');
+            }
+        });
 
-        // Clean up any extra whitespace and formatting
-        html = html.replace(/\s+/g, ' ').trim();
-
-        // Wrap in form tags
-        return `<form id="form-app">\n  ${html}\n</form>`;
+        // Return formatted HTML string of the cleaned clone outer HTML
+        return formClone.outerHTML;
     }
 
 
@@ -442,6 +466,7 @@
     function setFieldData($el, data) {
         $el.data('fieldData', data);
     }
+
     function getFieldData($el) {
         return $el.data('fieldData') || {};
     }
@@ -1025,8 +1050,6 @@
     });
 
 
-    let currentLayout = $('#form-layout').val() || 'Vertical'; // initial
-
     $('#canvas').on('drop', function (e) {
         e.preventDefault();
         $(this).removeClass('drag-over');
@@ -1057,9 +1080,10 @@
 
         setFieldData($fieldElement, defaults);
         applyConfigToField($fieldElement, fieldType, defaults);
-        console.log($fieldElement, 'here 1')
+
         // Apply current layout rules to the *new* field
         const $label = $fieldElement.find('label').first();
+        let currentLayout = $('#form-layout').val() || 'Vertical';
 
         if (currentLayout === 'Horizontal') {
             $fieldElement.addClass('row');
@@ -1080,8 +1104,13 @@
                 });
                 $label.addClass('form-label');
             }
+        } else if (currentLayout === 'Inline') {
+            // ✅ Just hide all labels visually
+            if ($label.length) {
+                $label.addClass('visually-hidden'); // Bootstrap 5 accessible hiding
+            }
         }
-        console.log($fieldElement, 'here')
+
         // Add to form
         $('#my-form').append($fieldElement);
         // ✅ Check disable state dynamically
