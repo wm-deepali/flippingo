@@ -69,7 +69,7 @@
             <ul class="dropdown-menu" aria-labelledby="actionMenu{{ $form->id }}">
             <li>
               <a class="dropdown-item" href="{{ route('admin.form.edit', $form->id) }}">
-              <i class="fas fa-pencil-alt"></i> Update
+              <i class="fas fa-pen"></i> Update
               </a>
             </li>
             <li>
@@ -77,7 +77,48 @@
               <i class="fas fa-eye"></i> View
               </a>
             </li>
-            </ul>
+            <li>
+              <a class="dropdown-item" href="{{ route('admin.form.settings', $form->id) }}">
+              <i class="fas fa-cog"></i> Settings
+              </a>
+            </li>
+            <!-- <li>
+              <a class="dropdown-item" href="{{ route('admin.form.conditionalRules', $form->id) }}">
+              <i class="fas fa-random"></i> Conditional Rules
+              </a>
+            </li>
+            <li>
+              <a class="dropdown-item" href="{{ route('admin.form.show', $form->id) }}" target="_blank">
+              <i class="fas fa-file-alt"></i> View Record
+              </a>
+            </li>
+            <li>
+              <a class="dropdown-item" href="{{ route('admin.form.copy', $form->id) }}">
+              <i class="fas fa-copy"></i> Copy
+              </a>
+            </li>
+            <li>
+              <a class="dropdown-item" href="{{ route('admin.form.publishShare', $form->id) }}">
+              <i class="fas fa-share-alt"></i> Publish & Share
+              </a>
+            </li>
+            <li>
+              <a class="dropdown-item" href="{{ route('admin.form.submissions', $form->id) }}">
+              <i class="fas fa-paper-plane"></i> Submissions
+              </a>
+            </li>
+            <li>
+              <a class="dropdown-item" href="{{ route('admin.form.addons', $form->id) }}">
+              <i class="fas fa-puzzle-piece"></i> Add-Ons
+              </a>
+            </li>
+            <li>
+              <a class="dropdown-item" href="{{ route('admin.form.submissionsReport', $form->id) }}">
+              <i class="fas fa-clock"></i> Submissions Report
+              </a>
+            </li>
+            </ul> -->
+
 
             </div>
             </td>

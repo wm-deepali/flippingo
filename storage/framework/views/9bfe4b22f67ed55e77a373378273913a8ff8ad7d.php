@@ -13,7 +13,7 @@
             display: flex;
             justify-content: center;
             align-items: center;
-            height: 200px;s
+            height: 200px;
         }
 
         .ef-sidebar-outer {

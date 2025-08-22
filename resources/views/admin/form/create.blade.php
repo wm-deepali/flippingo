@@ -32,19 +32,21 @@
     height: 100%;
     }
 
-    #canvas {
+   #canvas {
     background-color: #fff;
     color: #1d273b;
-    min-height: 650px;
+    height: 100%;
+    max-height: 650px;
+    overflow-y: auto;
     margin-bottom: 20px;
     padding: 25px;
     border: 1px solid #dadfe5;
     border-radius: 4px;
     }
 
-    #my-form {
+    /* #my-form {
     height: 100vh;
-    }
+    } */
 
     /* Modal button styling */
     .modal-footer .btn {

@@ -7,6 +7,7 @@ use App\Models\FormData;
 use Illuminate\Http\Request;
 use Illuminate\Support\Str;
 use App\Models\Form;
+use App\Http\Requests\UpdateFormSettingsRequest;
 
 class FormController extends Controller
 {
@@ -133,12 +134,16 @@ class FormController extends Controller
         // Create slug from name
         $slug = Str::slug($validated['name']);
 
+        $userId = auth()->id(); // Get authenticated user ID
+
         // Save to `forms` table
         $form = Form::create([
             'name' => $validated['name'],
             'slug' => $slug,
             'status' => true,
             'language' => 'en',
+            'created_by' => $userId,
+            'updated_by' => $userId,
         ]);
 
         // Save to `form_datas` table
@@ -220,5 +225,83 @@ class FormController extends Controller
             'edit_url' => route('admin.form.edit', $form->id),
         ]);
     }
+
+    public function settings($id)
+    {
+        $form = Form::findOrFail($id);
+        $languages = ['en' => 'English', 'hi' => 'Hindi', 'ar' => 'Arabic']; // Example
+        return view('admin.form.settings', compact('form', 'languages'));
+    }
+
+
+    public function updateSettings(UpdateFormSettingsRequest $request, $id)
+    {
+        $form = Form::findOrFail($id);
+
+        $validatedData = $request->validated();
+
+        // Nullify fields if toggles are off
+        if (!$validatedData['authorized_urls']) {
+            $validatedData['urls'] = null;
+            $validatedData['authorized_urls_error_type'] = false;
+            $validatedData['authorized_urls_error_message'] = null;
+        }
+
+        if (!$validatedData['use_password']) {
+            $validatedData['password'] = null;
+        }
+
+        // Update form
+        $form->fill($validatedData);
+        $form->save();
+
+        // Sync shared users if applicable
+        if ($validatedData['shared_with'] === 'users' && !empty($validatedData['users'])) {
+            $form->users()->sync($validatedData['users']);
+        } else {
+            $form->users()->detach();
+        }
+
+        // Return JSON response for AJAX
+        if ($request->ajax() || $request->wantsJson()) {
+            return response()->json(['message' => __('Settings updated successfully.')]);
+        }
+
+        // Redirect back for non-AJAX requests
+        return redirect()->back()->with('success', __('Settings updated successfully.'));
+    }
+
+
+
+    public function conditionalRules($id)
+    {
+        // Show conditional rules management
+    }
+
+    public function copy($id)
+    {
+        // Duplicate form logic
+    }
+
+    public function publishShare($id)
+    {
+        // Show publish & share options
+    }
+
+    public function submissions($id)
+    {
+        // List form submissions
+    }
+
+    public function addons($id)
+    {
+        // Show addons integration
+    }
+
+    public function submissionsReport($id)
+    {
+        // Generate submissions report
+    }
+
 
 }

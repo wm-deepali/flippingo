@@ -75,17 +75,43 @@ Route::group(['middleware' => 'auth'], function () {
         Route::get('/home', [HomeController::class, 'index'])
             ->name('home');
 
-        // ===== Category MANAGEMENT ROUTES ===== //
+        // ===== Category route ===== //
         Route::resource('manage-categories', CategoryController::class);
 
-        Route::resource('form', FormController::class);
-        Route::get('/form/{id}', [FormController::class, 'show'])
-            ->name('form.show');
 
+        // RESTful resource for forms (index, create, store, show, edit, update, destroy)
+        Route::resource('form', FormController::class);
+
+        // Extra routes for your dropdown actions
+        Route::get('form/{id}/settings', [FormController::class, 'settings'])
+            ->name('form.settings');
+        Route::post('form/{id}/settings', [FormController::class, 'updateSettings'])
+            ->name('form.settings.update');
+
+        Route::get('form/{id}/conditional-rules', [FormController::class, 'conditionalRules'])
+            ->name('form.conditionalRules');
+
+        Route::get('form/{id}/copy', [FormController::class, 'copy'])
+            ->name('form.copy');
+
+        Route::get('form/{id}/publish-share', [FormController::class, 'publishShare'])
+            ->name('form.publishShare');
+
+        Route::get('form/{id}/submissions', [FormController::class, 'submissions'])
+            ->name('form.submissions');
+
+        Route::get('form/{id}/addons', [FormController::class, 'addons'])
+            ->name('form.addons');
+
+        Route::get('form/{id}/submissions-report', [FormController::class, 'submissionsReport'])
+            ->name('form.submissionsReport');
+
+        // for template route
         Route::resource('/form-templates', FormTemplateController::class);
         Route::get('/forms/create-from-template/{template}', [FormTemplateController::class, 'createFormFromTemplate'])
             ->name('form.create-from-template');
 
+        // get form components and phrases
         Route::get('/ajax/builder-components', [FormBuilderController::class, 'builderComponents'])
             ->name('ajax.builder.components');
 

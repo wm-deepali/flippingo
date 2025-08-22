@@ -13,10 +13,8 @@ class SiteController extends Controller
 {
     public function index()
     {
-        $categories = Category::where('status', 'active')->get();
-        $blogs = [];
 
-        return view('front.index', compact('categories', 'blogs'));
+        return view('front.index');
     }
 
 

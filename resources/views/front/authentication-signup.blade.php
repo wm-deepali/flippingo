@@ -1,255 +1,179 @@
 @extends('layouts.new-master')
 
 @section('title')
-Flippingo -About Us
+  {{ $page->meta_title ?? 'Flippingo' }}
 @endsection
 
 @section('content')
-<style>
-    .btn-login-page {
-        display: inline-block;
-        font-weight: 400;
-        line-height: 1.5;
-        color: #212529;
-        text-align: center;
-        letter-spacing: .5px;
-        text-decoration: none;
-        vertical-align: middle;
-        cursor: pointer;
-        -webkit-user-select: none;
-        -moz-user-select: none;
-        user-select: none;
-        background-color: #d9d9d9 !important;
-        padding: .375rem .75rem;
-        font-size: 1rem;
-        border-radius: .25rem;
-        transition: color .15s ease-in-out, background-color .15s ease-in-out, border-color .15s ease-in-out, box-shadow .15s ease-in-out;
-    }
+    <!-- ================================
+    START BREADCRUMB AREA
+================================= -->
+    <section class="breadcrumb-area bread-bg" style="margin-top: 50px;">
+      <div class="overlay"></div>
+      <!-- end overlay -->
+      <div class="container">
+        <div class="breadcrumb-content text-center">
+          <h2 class="sec__title text-white mb-3">Sign Up</h2>
+          <ul class="bread-list">
+            <li><a href="{{ Route('home') }}">home</a></li>
+            <li>Sign Up</li>
+          </ul>
+        </div>
+        <!-- end breadcrumb-content -->
+      </div>
+      <!-- end container -->
+      <div class="bread-svg">
+        <svg viewBox="0 0 500 150" preserveAspectRatio="none">
+          <path
+            d="M-4.22,89.30 C280.19,26.14 324.21,125.81 511.00,41.94 L500.00,150.00 L0.00,150.00 Z"
+          ></path>
+        </svg>
+      </div>
+      <!-- end bread-svg -->
+    </section>
+    <!-- end breadcrumb-area -->
+    <!-- ================================
+    END BREADCRUMB AREA
+================================= -->
 
-    .form-control {
-        border: 2px solid #e0e0e0 !important;
-        color: black !important;
-        border-radius: .375rem !important;
-    }
-
-    .custom-select {
-        border: 2px solid #e0e0e0 !important;
-        color: black !important;
-        border-radius: .375rem !important;
-    }
-
-    .page-content {
-        min-height: calc(100vh - 100px);
-        padding-bottom: 80px; /* Prevent overlap with footer */
-    }
-</style>
-<style>
-    .custom-switch .form-check-input {
-        width: 50px;
-        height: 26px;
-        background-color: #ccc;
-        border-radius: 50px;
-        position: relative;
-        border: none;
-        transition: background-color 0.3s ease;
-        cursor: pointer;
-        outline: none;
-        box-shadow: none;
-    }
-
-    .custom-switch .form-check-input:checked {
-        background-color: #28a745 !important; /* Green when checked */
-    }
-
-    .custom-switch .form-check-input:focus {
-        box-shadow: 0 0 0 0.2rem rgba(40, 167, 69, 0.25); /* Green glow on focus */
-    }
-
-    .custom-switch .form-check-input::before {
-        content: '';
-        position: absolute;
-        top: 3px;
-        left: 3px;
-        width: 20px;
-        height: 20px;
-        background-color: white;
-        border-radius: 50%;
-        transition: transform 0.3s ease;
-    }
-
-    .custom-switch .form-check-input:checked::before {
-        transform: translateX(24px); /* Slide toggle dot */
-    }
-
-    .custom-switch .form-check-label {
-        margin-left: 10px;
-        vertical-align: middle;
-    }
-</style>
-
-
-<div class="page-wrapper" >
-    <div class="page-content">
-        <!-- Breadcrumb -->
-        <section class="py-3  d-none d-md-flex" style="border-bottom:1px solid #80808045">
-            <div class="container">
-                <div class="page-breadcrumb d-flex align-items-center">
-                    <h3 class="breadcrumb-title pe-3">Sign Up</h3>
-                    <div class="ms-auto">
-                        <nav aria-label="breadcrumb">
-                            <ol class="breadcrumb mb-0 p-0">
-                                <li class="breadcrumb-item"><a href="{{route('home')}}"><i class="bx bx-home-alt"></i> Home</a></li>
-                                <li class="breadcrumb-item active" aria-current="page">Sign Up</li>
-                            </ol>
-                        </nav>
-                    </div>
+    <!-- ================================
+    START CONTACT AREA
+================================= -->
+    <section class="contact-area padding-top-60px padding-bottom-90px">
+      <div class="container">
+        <div class="col-lg-5 mx-auto">
+          <form action="#" class="card">
+            <div class="card-body">
+              <div class="text-center">
+                <h4 class="font-size-28 font-weight-semi-bold mb-1">
+                  Create an account!
+                </h4>
+                <p class="card-text">with your social network</p>
+                <div
+                  class="d-flex flex-wrap align-items-center justify-content-between my-4"
+                >
+                  <a href="#" class="theme-btn flex-grow-1 mx-1 my-1"
+                    ><i class="fab fa-google me-2"></i>Google</a
+                  >
+                  <!-- <a href="#" class="theme-btn flex-grow-1 mx-1 my-1 bg-5"
+                    ><i class="fab fa-facebook-f me-2"></i>Facebook</a
+                  >
+                  <a href="#" class="theme-btn flex-grow-1 mx-1 my-1 bg-6"
+                    ><i class="fab fa-twitter me-2"></i>Twitter</a
+                  > -->
                 </div>
+              </div>
+              <div class="d-flex align-items-center">
+                <hr class="border-top-gray flex-grow-1" />
+                <span class="mx-1 text-uppercase">or</span>
+                <hr class="border-top-gray flex-grow-1" />
+              </div>
+              <div class="form-group">
+                <label class="label-text">First Name</label>
+                <input
+                  class="form-control form--control ps-3"
+                  type="text"
+                  name="name"
+                  placeholder="e.g. Alex"
+                />
+              </div>
+              <!-- end form-group -->
+              <div class="form-group">
+                <label class="label-text">Last Name</label>
+                <input
+                  class="form-control form--control ps-3"
+                  type="text"
+                  name="name"
+                  placeholder="e.g. Smith"
+                />
+              </div>
+              <!-- end form-group -->
+              <div class="form-group">
+                <label class="label-text">Username</label>
+                <input
+                  class="form-control form--control ps-3"
+                  type="text"
+                  name="name"
+                  placeholder="e.g. alex_smith"
+                />
+              </div>
+              <!-- end form-group -->
+              <div class="form-group">
+                <label class="label-text">Email Address</label>
+                <input
+                  class="form-control form--control ps-3"
+                  type="email"
+                  name="email"
+                  placeholder="e.g. you@example.com"
+                />
+              </div>
+              <!-- end form-group -->
+              <div class="form-group">
+                <label class="label-text">Password</label>
+                <div class="position-relative">
+                  <input
+                    class="form-control form--control ps-3 password-field"
+                    type="password"
+                    name="password"
+                    placeholder="Password"
+                  />
+                  <a
+                    href="javascript:void(0)"
+                    class="position-absolute top-0 right-0 h-100 toggle-password"
+                    title="toggle show/hide password"
+                  >
+                    <i class="far fa-eye eye-on"></i>
+                    <i class="far fa-eye-slash eye-off"></i>
+                  </a>
+                </div>
+                <p class="font-size-14 mt-1 line-height-20 font-weight-regular">
+                  Your password must be at least 6 characters long and must
+                  contain letters, numbers and special characters. Cannot
+                  contain whitespace.
+                </p>
+              </div>
+              <!-- end form-group -->
+              <div class="form-group">
+                <div class="custom-control custom-checkbox mb-2">
+                  <input
+                    type="checkbox"
+                    class="custom-control-input"
+                    id="privacyCheckbox"
+                  />
+                  <label class="custom-control-label" for="privacyCheckbox"
+                    >I Agree to Flippingo
+                    <a href="#" class="btn-link">Privacy Policy</a></label
+                  >
+                </div>
+                <div class="custom-control custom-checkbox mb-2">
+                  <input
+                    type="checkbox"
+                    class="custom-control-input"
+                    id="termsCheckbox"
+                  />
+                  <label class="custom-control-label" for="termsCheckbox"
+                    >I Agree to Flippingo
+                    <a href="#" class="btn-link">Terms of Services</a></label
+                  >
+                </div>
+              </div>
+              <!-- end form-group -->
+              <button class="theme-btn border-0" type="submit">
+                Register Account
+              </button>
+              <p class="mt-3">
+                Already have an account?
+                <a href="{{ Route('authentication-signin') }}" class="btn-link">Login</a>
+              </p>
             </div>
-        </section>
-
-        <!-- Flash Messages -->
-        @if (session('success'))
-            <h5 class="alert alert-success text-center">{{ Session::get('success') }}</h5><br>
-            <?php Session::forget('success');?>
-        @endif
-        @if (session('error'))
-            <h5 class="alert alert-danger text-center">{{ Session::get('error') }}</h5><br>
-            <?php Session::forget('error');?>
-        @endif
-
-        <!-- Sign-Up Section -->
-        <section class="py-0 py-lg-5 " style="margin-top:80px;">
-            <div class="container">
-                <div class="section-authentication-signin d-flex align-items-center justify-content-center my-5 my-lg-0 mb-5">
-                    <div class="row row-cols-1 row-cols-lg-1 row-cols-xl-2">
-                        <div class="col mx-auto">
-                            <div class="card mb-0">
-                                <div class="card-body" style="background:#ebebeb;">
-                                    <div class="border p-4 rounded">
-                                        <div class="text-center">
-                                            <h3 class="">Sign Up</h3>
-                                            <p>Already have an account? <a href="{{ route('authentication-signin') }}" style="color:blue;">Sign in here</a></p>
-                                        </div>
-                                        <div class="d-grid">
-                                            <a class="btn-login-page my-4 shadow-sm " href="{{ route('google.redirect') }}">
-                                                <span class="d-flex justify-content-center align-items-center">
-                                                    <img class="me-2" src="assets/images/icons/search.svg" width="16" alt="Image Description">
-                                                    <span>Sign Up with Google</span>
-                                                </span>
-                                            </a>
-                                        </div>
-                                        <div class=" text-center " style="margin-bottom:25px;" > <span>OR</span>
-											
-										</div>
-										<hr>
-                                        <div class="form-body">
-                                            <form class="row g-3" id="registerForm" method="post" action="{{ route('customer-register') }}" enctype="multipart/form-data">
-                                                @csrf
-                                                <div class="col-sm-6">
-                                                    <label for="inputFirstName" class="form-label">First Name</label>
-                                                    <input type="text" name="first_name" class="form-control" id="inputFirstName" placeholder="John" required>
-                                                </div>
-                                                <div class="col-sm-6">
-                                                    <label for="inputLastName" class="form-label">Last Name</label>
-                                                    <input type="text" name="last_name" class="form-control" id="inputLastName" placeholder="Doe" required>
-                                                </div>
-                                                <div class="col-12">
-                                                    <label for="inputEmailAddress" class="form-label">Email Address</label>
-                                                    <input type="email" name="email" class="form-control" id="inputEmailAddress" placeholder="example@user.com" required>
-                                                    <span id="email_feedback" style="display:none; color:red;">Email already exists</span>
-                                                </div>
-                                                <div class="col-12">
-                                                    <label for="inputMobile" class="form-label">Mobile</label>
-                                                    <input type="tel" onkeypress="return isNumber(event)" autocomplete="off" class="form-control" name="mobile" minlength="10" maxlength="10" placeholder="Mobile number" id="inputMobile" required>
-                                                </div>
-                                                <div class="col-12">
-                                                    <label for="inputChoosePassword" class="form-label">Password</label>
-                                                    <div class="input-group" id="show_hide_password">
-                                                        <input type="password" name="password" class="form-control border-end-0" id="inputChoosePassword" placeholder="Enter Password" required>
-                                                        <a href="javascript:;" class="input-group-text "><i class='bx bx-hide'></i></a>
-                                                    </div>
-                                                </div>
-                                                <div class="col-12">
-                                                    <label for="inputSelectCountry" class="form-label">Country</label>
-                                                    <select class="form-select" name="country" id="inputSelectCountry" required>
-                                                        <option>Select Country</option>
-                                                        @php $countries = countrylist(); @endphp
-                                                        @foreach($countries as $country)
-                                                            <option value="{{$country->id}}">{{$country->name}}</option>
-                                                        @endforeach
-                                                    </select>
-                                                </div>
-                                                <div class="col-12">
-                                                    <div class="form-check form-switch">
-                                                        <input class="form-check-input" type="checkbox" id="flexSwitchCheckChecked" required>
-                                                        <label class="form-check-label" for="flexSwitchCheckChecked">I read and agree to Terms & Conditions</label>
-                                                    </div>
-                                                </div>
-                                                <div class="col-12">
-                                                    <div class="d-grid">
-                                                        <button type="submit" class="btn btn-light"><i class='bx bx-user'></i> Sign up</button>
-                                                    </div>
-                                                </div>
-                                            </form>
-                                        </div> <!-- form-body -->
-                                    </div> <!-- border box -->
-                                </div> <!-- card-body -->
-                            </div> <!-- card -->
-                        </div>
-                    </div> <!-- row -->
-                </div> <!-- section-authentication-signin -->
-            </div> <!-- container -->
-        </section>
-        <!--end section-->
-    </div>
-</div>
+          </form>
+        </div>
+        <!-- end col-lg-7 -->
+      </div>
+      <!-- end container -->
+    </section>
+    <!-- end contact-area -->
+    <!-- ================================
+    END CONTACT AREA
+================================= -->
 @endsection
-
-@push('after-scripts')
-<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.6.4/jquery.min.js"></script>
-<script src="https://cdn.jsdelivr.net/npm/sweetalert2@11.11.0/dist/sweetalert2.all.min.js"></script>
-<link href="https://cdn.jsdelivr.net/npm/sweetalert2@11.11.0/dist/sweetalert2.min.css" rel="stylesheet">
-
-<script>
-    $(document).ready(function () {
-        $('#inputEmailAddress').on('input change', function () {
-            checkEmailExists();
-        });
-    });
-
-    function checkEmailExists() {
-        var email = $('#inputEmailAddress').val();
-        var emailFeedback = $('#email_feedback');
-        var emailPattern = /^[a-zA-Z0-9._-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,6}$/;
-
-        if (emailPattern.test(email)) {
-            $.ajax({
-                url: '{{ route("check-email") }}',
-                method: 'POST',
-                data: {
-                    email: email,
-                    _token: '{{ csrf_token() }}'
-                },
-                success: function (data) {
-                    if (data.exists) {
-                        emailFeedback.text('Email already exists').show();
-                        $('#inputEmailAddress').removeClass('is-valid').addClass('is-invalid');
-                    } else {
-                        emailFeedback.hide();
-                        $('#inputEmailAddress').removeClass('is-invalid').addClass('is-valid');
-                    }
-                }
-            });
-        } else {
-            emailFeedback.text('Invalid email address').show();
-            $('#inputEmailAddress').removeClass('is-valid').addClass('is-invalid');
-        }
-    }
-
-    function isNumber(evt) {
-        evt = (evt) ? evt : window.event;
-        var charCode = (evt.which) ? evt.which : evt.keyCode;
-        return !(charCode > 31 && (charCode < 48 || charCode > 57));
-    }
-</script>
-@endpush

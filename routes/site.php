@@ -98,12 +98,49 @@ Route::get('about-us', function () {
     return view('front.about-us');
 })->name('about-us');
 
+
+Route::get('add-listing', function () {
+    return view('front.add-listing');
+})->name('add-listing');
+
+Route::get('listing-list', function () {
+    return view('front.listing-list');
+})->name('listing-list');
+
+
+Route::get('listing-details', function () {
+    return view('front.listing-details');
+})->name('listing-details');
+
+Route::get('meet-our-team', function () {
+    return view('front.meet-our-team');
+})->name('meet-our-team');
+
+
 Route::get('contact-us', function () {
     return view('front.contact-us');
 })->name('contact-us');
 
+Route::get('contact', function () {
+    return view('front.contact');
+})->name('contact');
 
-Route::get('blogs', [BlogController::class, 'publicIndex'])->name('blogs');
+Route::get('blogs', function () {
+    return view('front.blogs');
+})->name('blogs');
+
+Route::get('blog-single', function () {
+    return view('front.blog-single');
+})->name('blog-single');
+
+Route::get('user-profile', function () {
+    return view('front.user-profile');
+})->name('user-profile');
+
+Route::get('recover', function () {
+    return view('front.recover');
+})->name('recover');
+
 Route::get('/blog/{slug}', [BlogController::class, 'publicShow'])->name('blogs.show');
 Route::get('/blogs/search', [BlogController::class, 'search'])->name('blogs.search');
 
@@ -117,11 +154,11 @@ Route::controller(GoogleController::class)->group(function () {
     Route::middleware(['web'])->get('customer/google/callback', 'handleGoogleCallback')->name('google.callback');
 });
 
-Route::get('authentication-signin', function () {
+Route::get('login', function () {
     return view('front.authentication-signin');
 })->name('authentication-signin');
 
-Route::get('authentication-signup', function () {
+Route::get('signup', function () {
     return view('front.authentication-signup');
 })->name('authentication-signup');
 

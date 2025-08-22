@@ -98,7 +98,7 @@
         <!--li class="nav-item"><a class="nav-link d-flex align-items-center" href="{{ route('slider.index') }}"><span>Slider</span></a></li-->
         <li class="dropdown nav-item" data-menu="dropdown">
           <a class="dropdown-toggle nav-link d-flex align-items-center" href="#" data-toggle="dropdown">
-            <span>Products Catalogue</span>
+            <span>Master</span>
           </a>
           <ul class="dropdown-menu">
             <li><a class="dropdown-item d-flex align-items-center"

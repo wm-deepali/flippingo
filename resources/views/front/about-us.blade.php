@@ -1,261 +1,646 @@
 @extends('layouts.new-master')
 
 @section('title')
-Flippingo -About Us
+  {{ $page->meta_title ?? 'About Us' }}
 @endsection
 
 @section('content')
+    <!-- ================================
+    START BREADCRUMB AREA
+================================= -->
+    <section class="breadcrumb-area bread-bg-2">
+      <div class="overlay"></div>
+      <!-- end overlay -->
+      <div class="container">
+        <div
+          class="breadcrumb-content d-flex flex-wrap align-items-center justify-content-between"
+        >
+          <h2 class="sec__title text-white my-2">
+            Dirto Connects People <br />
+            With Great Local <br />
+            Businesses
+          </h2>
+          <div class="video-play-btn">
+            <a
+              class="icon-element icon-element-lg bg-white text-black"
+              href="https://www.youtube.com/watch?v=DQMeTCtsLcU"
+              data-fancybox="preview-video"
+              title="Play Video"
+            >
+              Play
+            </a>
+          </div>
+        </div>
+        <!-- end breadcrumb-content -->
+      </div>
+      <!-- end container -->
+      <div class="bread-svg">
+        <svg viewBox="0 0 500 150" preserveAspectRatio="none">
+          <path
+            d="M-4.22,89.30 C280.19,26.14 324.21,125.81 511.00,41.94 L500.00,150.00 L0.00,150.00 Z"
+          ></path>
+        </svg>
+      </div>
+      <!-- end bread-svg -->
+    </section>
+    <!-- end breadcrumb-area -->
+    <!-- ================================
+    END BREADCRUMB AREA
+================================= -->
 
-		<!--start page wrapper -->
-		<div class="page-wrapper">
-			<div class="page-content">
-				<!--start breadcrumb-->
-				<section class="py-3 border-bottom d-none d-md-flex">
-					<div class="container">
-						<div class="page-breadcrumb d-flex align-items-center">
-							<h3 class="breadcrumb-title pe-3">About Us</h3>
-							<div class="ms-auto">
-								<nav aria-label="breadcrumb">
-									<ol class="breadcrumb mb-0 p-0">
-										<li class="breadcrumb-item"><a href="javascript:;"><i
-													class="bx bx-home-alt"></i> Home</a>
-										</li>
-										<li class="breadcrumb-item"><a href="javascript:;">Pages</a>
-										</li>
-										<li class="breadcrumb-item active" aria-current="page">About Us</li>
-									</ol>
-								</nav>
-							</div>
-						</div>
-					</div>
-				</section>
-				<!--end breadcrumb-->
-				<!--start page content-->
-				<section class="py-0 py-lg-4">
-					<div class="container">
-						<h4>A friendly highly skilled team</h4>
-						<p style="color: #fff;">Flippingo was established in 2023, led by Mike and Dan our team offers
-							fast turnaround print at very short notice; We manage the entire process efficiently from
-							start to finish helping you with all your print jobs, campaigns and events.</p>
-						<p style="color: #fff;">Flippingo is a buzzing place with a friendly and highly skilled team
-							who ensure our clients are looked after every step of the way. You will even have a
-							dedicated Account Manager to ensure the best possible customer service experience. We want
-							our clients to love working with us and to love the end results even more… see our
-							testimonials page to check out a few unsolicited words from our clients.</p>
+    <!-- ================================
+       START BLOG AREA
+================================= -->
+    <section class="blog-area padding-top-60px padding-bottom-70px">
+      <div class="container">
+        <div class="row">
+          <div class="col-lg-4 col-md-6">
+            <a href="#" class="card hover-y">
+              <div class="card-image">
+                <img
+                  src="images/img-loading.jpg"
+                  data-src="images/img1.jpg"
+                  alt="blog image"
+                  class="card-img-top lazy"
+                />
+              </div>
+              <div class="card-body">
+                <h4 class="card-title">Careers</h4>
+                <p class="card-text mt-2 text-gray">
+                  Sed ut perspiciatis unde omnis iste natus error sit voluptatem
+                  eaque ipsa quae ab illo
+                </p>
+              </div>
+              <!-- end card-body --> </a
+            ><!-- end card -->
+          </div>
+          <!-- end col-lg-4 -->
+          <div class="col-lg-4 col-md-6">
+            <a href="#" class="card hover-y">
+              <div class="card-image">
+                <img
+                  src="images/img-loading.jpg"
+                  data-src="images/img2.jpg"
+                  alt="blog image"
+                  class="card-img-top lazy"
+                />
+              </div>
+              <div class="card-body">
+                <h4 class="card-title">Newsroom</h4>
+                <p class="card-text mt-2 text-gray">
+                  Sed ut perspiciatis unde omnis iste natus error sit voluptatem
+                  eaque ipsa quae ab illo
+                </p>
+              </div>
+              <!-- end card-body --> </a
+            ><!-- end card -->
+          </div>
+          <!-- end col-lg-4 -->
+          <div class="col-lg-4 col-md-6">
+            <a href="#" class="card hover-y">
+              <div class="card-image">
+                <img
+                  src="images/img-loading.jpg"
+                  data-src="images/img3.jpg"
+                  alt="blog image"
+                  class="card-img-top lazy"
+                />
+              </div>
+              <div class="card-body">
+                <h4 class="card-title">Investor Relations</h4>
+                <p class="card-text mt-2 text-gray">
+                  Sed ut perspiciatis unde omnis iste natus error sit voluptatem
+                  eaque ipsa quae ab illo
+                </p>
+              </div>
+              <!-- end card-body --> </a
+            ><!-- end card -->
+          </div>
+          <!-- end col-lg-4 -->
+        </div>
+        <!-- end row -->
+      </div>
+      <!-- end container -->
+    </section>
+    <!-- end blog-area -->
+    <!-- ================================
+       START BLOG AREA
+================================= -->
 
-					</div>
-				</section>
+    <hr class="border-top-gray my-0" />
 
-				<section class="py-4">
-					<div class="container">
-						<h4>Why Choose Us</h4>
-						<hr>
-						<div class="row row-cols-1 row-cols-lg-3">
-							<div class="col d-flex">
-								<div class="card rounded-0 shadow-none w-100">
-									<div class="card-body">
-										<img src="{{ URL::asset('assets/images/icons/delivery.png')}}" width="60" alt="">
-										<h5 class="my-3">Our Mission</h5>
-										<p class="mb-0">Flippingo is passionately committed to providing friendly, expert
-											and outstanding value print, design and communications solutions.</p>
-									</div>
-								</div>
-							</div>
-							<div class="col d-flex">
-								<div class="card rounded-0 shadow-none w-100">
-									<div class="card-body">
-										<img src="{{ URL::asset('assets/images/icons/money-bag.png')}}" width="60" alt="">
-										<h5 class="my-3">Quality Control</h5>
-										<p class="mb-0">Providing an exceptional quality service is what makes us tick.
-											We are strict on internal quality management, colour control, secure data
-											and print finishing.</p>
-									</div>
-								</div>
-							</div>
-							<div class="col d-flex">
-								<div class="card rounded-0 shadow-none w-100">
-									<div class="card-body">
-										<img src="{{ URL::asset('assets/images/icons/support.png')}}" width="60" alt="">
-										<h5 class="my-3">Our Enviroment</h5>
-										<p class="mb-0">We have an ongoing sustainability programme and are proud to to
-											say we will only use FSC papers for all our printing jobs.</p>
-									</div>
-								</div>
-							</div>
-						</div>
-						<!--end row-->
-					</div>
-				</section>
-				<section class="py-4">
-					<div class="container">
-						<h4>What We Print</h4>
-						<hr>
-						<div class="container">
-							<p>At Flippingo we print a vast range of products. Please see below a list of the types of
-								things we print:</p>
-							<ul style="list-style: none; padding-left: 0;">
-								<li>🔴 Flyers – Digital and litho on various stocks</li>
-								<li>🔴 Posters – A3 to AO+</li>
-								<li>🔴 Leaflets – Folded types of paper finished on different stocks</li>
-								<li>🔴 Books – Hardback and SoftBack</li>
-								<li>🔴 Banners – Different sizes with eyelets</li>
-								<li>🔴 Boards – Aluminium and Foamex boards</li>
-								<li>🔴 Business Cards – Different types of lamination</li>
-								<li>🔴 Booklets – 8pp to 68pp with square backs</li>
-								<li>🔴 Postcards – A5 and A6 with gloss to the face</li>
-								<li>🔴 Roller Banners – Deluxe frames</li>
-								<li>🔴 T-shirts – Supplied in different sizes and colours</li>
-								<li>🔴 Mugs – Printed in full colour</li>
-							</ul>
-						</div>
-					</div>
-				</section>
+    <!-- ================================
+    START ABOUT AREA
+================================= -->
+    <section class="about-area section-padding">
+      <div class="container">
+        <div class="row align-items-center">
+          <div class="col-lg-6">
+            <div class="section-heading mb-4 mb-lg-0">
+              <h2 class="sec__title mb-3">
+                Welcome to the Dirto Business Directory Service and a Public
+                Company
+              </h2>
+              <p class="sec__desc mb-4">
+                Ut euismod ultricies sollicitudin. Curabitur sed dapibus nulla.
+                Nulla eget iaculis lectus. Mauris ac maximus neque. Nam in
+                mauris quis libero sodales eleifend.
+              </p>
+              <p class="sec__desc">
+                Lorem ipsum dolor sit amet, consectetur adipiscing elit.
+                Maecenas in pulvinar neque. Nulla finibus lobortis pulvinar.
+              </p>
+            </div>
+            <!-- end section-heading -->
+          </div>
+          <!-- end col-lg-6 -->
+          <div class="col-lg-6">
+            <div class="image-box row">
+              <div class="col-lg-6 mt-lg-4">
+                <img
+                  src="images/img-loading.jpg"
+                  data-src="images/img4.jpg"
+                  alt="about image"
+                  class="w-100 rounded-12 mb-4 lazy"
+                />
+                <img
+                  src="images/img-loading.jpg"
+                  data-src="images/img5.jpg"
+                  alt="about image"
+                  class="w-100 rounded-12 mb-4 lazy"
+                />
+              </div>
+              <div class="col-lg-6">
+                <img
+                  src="images/img-loading.jpg"
+                  data-src="images/img6.jpg"
+                  alt="about image"
+                  class="w-100 rounded-12 mb-4 lazy"
+                />
+                <img
+                  src="images/img-loading.jpg"
+                  data-src="images/img7.jpg"
+                  alt="about image"
+                  class="w-100 rounded-12 mb-4 lazy"
+                />
+              </div>
+            </div>
+            <!-- end image-box -->
+          </div>
+          <!-- end col-lg-6 -->
+        </div>
+        <!-- end row -->
+      </div>
+      <!-- end container -->
+    </section>
+    <!-- end about-area -->
+    <!-- ================================
+    END ABOUT AREA
+================================= -->
 
-				<section class="py-4">
-					<div class="container">
-						<h4>Our Top Brands</h4>
-						<hr>
-						<div class="row row-cols-2 row-cols-sm-2 row-cols-md-4 row-cols-xl-5">
-							<div class="col">
-								<div class="card">
-									<div class="card-body">
-										<a href="javscript:;">
-											<img src="{{ URL::asset('assets/images/brands/01.png')}}" class="img-fluid" alt="">
-										</a>
-									</div>
-								</div>
-							</div>
-							<div class="col">
-								<div class="card">
-									<div class="card-body">
-										<a href="javscript:;">
-											<img src="{{ URL::asset('assets/images/brands/02.png')}}" class="img-fluid" alt="">
-										</a>
-									</div>
-								</div>
-							</div>
-							<div class="col">
-								<div class="card">
-									<div class="card-body">
-										<a href="javscript:;">
-											<img src="{{ URL::asset('assets/images/brands/03.png')}}" class="img-fluid" alt="">
-										</a>
-									</div>
-								</div>
-							</div>
-							<div class="col">
-								<div class="card">
-									<div class="card-body">
-										<a href="javscript:;">
-											<img src="{{ URL::asset('assets/images/brands/04.png')}}" class="img-fluid" alt="">
-										</a>
-									</div>
-								</div>
-							</div>
-							<div class="col">
-								<div class="card">
-									<div class="card-body">
-										<a href="javscript:;">
-											<img src="{{ URL::asset('assets/images/brands/05.png')}}" class="img-fluid" alt="">
-										</a>
-									</div>
-								</div>
-							</div>
-							<div class="col">
-								<div class="card">
-									<div class="card-body">
-										<a href="javscript:;">
-											<img src="{{ URL::asset('assets/images/brands/06.png')}}" class="img-fluid" alt="">
-										</a>
-									</div>
-								</div>
-							</div>
-							<div class="col">
-								<div class="card">
-									<div class="card-body">
-										<a href="javscript:;">
-											<img src="{{ URL::asset('assets/images/brands/07.png')}}" class="img-fluid" alt="">
-										</a>
-									</div>
-								</div>
-							</div>
-							<div class="col">
-								<div class="card">
-									<div class="card-body">
-										<a href="javscript:;">
-											<img src="{{ URL::asset('assets/images/brands/08.png')}}" class="img-fluid" alt="">
-										</a>
-									</div>
-								</div>
-							</div>
-							<div class="col">
-								<div class="card">
-									<div class="card-body">
-										<a href="javscript:;">
-											<img src="{{ URL::asset('assets/images/brands/09.png')}}" class="img-fluid" alt="">
-										</a>
-									</div>
-								</div>
-							</div>
-							<div class="col">
-								<div class="card">
-									<div class="card-body">
-										<a href="javscript:;">
-											<img src="{{ URL::asset('assets/images/brands/10.png')}}" class="img-fluid" alt="">
-										</a>
-									</div>
-								</div>
-							</div>
-							<div class="col">
-								<div class="card">
-									<div class="card-body">
-										<a href="javscript:;">
-											<img src="{{ URL::asset('assets/images/brands/11.png')}}" class="img-fluid" alt="">
-										</a>
-									</div>
-								</div>
-							</div>
-							<div class="col">
-								<div class="card">
-									<div class="card-body">
-										<a href="javscript:;">
-											<img src="{{ URL::asset('assets/images/brands/12.png')}}" class="img-fluid" alt="">
-										</a>
-									</div>
-								</div>
-							</div>
-							<div class="col">
-								<div class="card">
-									<div class="card-body">
-										<a href="javscript:;">
-											<img src="{{ URL::asset('assets/images/brands/13.png')}}" class="img-fluid" alt="">
-										</a>
-									</div>
-								</div>
-							</div>
-							<div class="col">
-								<div class="card">
-									<div class="card-body">
-										<a href="javscript:;">
-											<img src="{{ URL::asset('assets/images/brands/14.png')}}" class="img-fluid" alt="">
-										</a>
-									</div>
-								</div>
-							</div>
-							<div class="col">
-								<div class="card">
-									<div class="card-body">
-										<a href="javscript:;">
-											<img src="{{ URL::asset('assets/images/brands/15.png')}}" class="img-fluid" alt="">
-										</a>
-									</div>
-								</div>
-							</div>
-						</div>
-					</div>
-				</section>
-				<!--end start page content-->
-			</div>
-		</div>
-		<!--end page wrapper -->
+    <!-- ================================
+    START FUN-FACT AREA
+================================= -->
+    <section
+      class="funfact-area bg-dark section--padding text-center funfact-pattern"
+    >
+      <div class="container">
+        <div class="row">
+          <div class="col-lg-3 col-md-6">
+            <div class="counter-item">
+              <div class="counter-number fun-bg1">
+                <span class="counter">1150</span>
+                <span class="count-symbol">+</span>
+              </div>
+              <!-- end counter-number -->
+              <div class="counter-content mt-4">
+                <p class="counter__title">Projects Completed</p>
+              </div>
+              <!-- end counter-content -->
+            </div>
+            <!-- end counter-item -->
+          </div>
+          <!-- end col-lg-3 -->
+          <div class="col-lg-3 col-md-6">
+            <div class="counter-item">
+              <div class="counter-number fun-bg2">
+                <span class="counter">3040</span>
+                <span class="count-symbol">+</span>
+              </div>
+              <!-- end counter-number -->
+              <div class="counter-content mt-4">
+                <p class="counter__title">Happy Clients</p>
+              </div>
+              <!-- end counter-content -->
+            </div>
+            <!-- end counter-item -->
+          </div>
+          <!-- end col-lg-3 -->
+          <div class="col-lg-3 col-md-6">
+            <div class="counter-item">
+              <div class="counter-number fun-bg3">
+                <span class="counter">2020</span>
+                <span class="count-symbol">+</span>
+              </div>
+              <!-- end counter-number -->
+              <div class="counter-content mt-4">
+                <p class="counter__title">Cup of Coffee</p>
+              </div>
+              <!-- end counter-content -->
+            </div>
+            <!-- end counter-item -->
+          </div>
+          <!-- end col-lg-3 -->
+          <div class="col-lg-3 col-md-6">
+            <div class="counter-item">
+              <div class="counter-number fun-bg4">
+                <span class="counter">350</span>
+                <span class="count-symbol">+</span>
+              </div>
+              <!-- end counter-number -->
+              <div class="counter-content mt-4">
+                <p class="counter__title">Awards Winning</p>
+              </div>
+              <!-- end counter-content -->
+            </div>
+            <!-- end counter-item -->
+          </div>
+          <!-- end col-lg-3 -->
+        </div>
+        <!-- end row -->
+      </div>
+      <!-- end container -->
+    </section>
+    <!-- end funfact-area -->
+    <!-- ================================
+    END FUN-FACT AREA
+================================= -->
+
+    <!-- ================================
+       START TESTIMONIAL AREA
+================================= -->
+    <section
+      class="testimonial-area section-padding position-relative overflow-hidden"
+    >
+      <img
+        src="images/testi-img1.jpg"
+        alt="testtmonial-image"
+        class="random-img"
+      />
+      <img
+        src="images/testi-img2.jpg"
+        alt="testtmonial-image"
+        class="random-img"
+      />
+      <img
+        src="images/testi-img3.jpg"
+        alt="testtmonial-image"
+        class="random-img"
+      />
+      <img
+        src="images/testi-img4.jpg"
+        alt="testtmonial-image"
+        class="random-img"
+      />
+      <img
+        src="images/testi-img5.jpg"
+        alt="testtmonial-image"
+        class="random-img"
+      />
+      <img
+        src="images/testi-img6.jpg"
+        alt="testtmonial-image"
+        class="random-img"
+      />
+      <div class="container">
+        <div class="text-center">
+          <h2 class="sec__title mb-3">What Our Users Said</h2>
+          <p class="sec__desc">
+            Morbi convallis bibendum urna ut viverra. Maecenas quis consequat
+            libero,<br />
+            a feugiat eros. Nunc ut lacinia tortors.
+          </p>
+        </div>
+        <div class="col-lg-8 mx-auto mt-4">
+          <div class="testimonial-carousel owl-carousel owl-theme">
+            <div class="testimonial-item py-4">
+              <div class="testi-comment d-flex">
+                <span class="fas fa-quote-left me-4 font-size-30"></span>
+                <p class="testi__desc">
+                  Excepteur sint occaecat cupidatat non proident sunt in culpa
+                  officia deserunt mollit anim laborum sint occaecat cupidatat
+                  non proident. Occaecat cupidatat non proident des culpa
+                  officia deserunt mollit.
+                </p>
+              </div>
+              <div class="testi-content text-center">
+                <img
+                  src="images/team8.jpg"
+                  class="testi__img"
+                  alt="testimonial image"
+                />
+                <h4 class="tesi__title">Richard Doe</h4>
+                <span class="testi__meta">united states</span>
+              </div>
+            </div>
+            <!-- end testimonial-item -->
+            <div class="testimonial-item py-4">
+              <div class="testi-comment d-flex">
+                <span class="fas fa-quote-left me-4 font-size-30"></span>
+                <p class="testi__desc">
+                  Excepteur sint occaecat cupidatat non proident sunt in culpa
+                  officia deserunt mollit anim laborum sint occaecat cupidatat
+                  non proident. Occaecat cupidatat non proident des culpa
+                  officia deserunt mollit.
+                </p>
+              </div>
+              <div class="testi-content text-center">
+                <img
+                  src="images/team9.jpg"
+                  class="testi__img"
+                  alt="testimonial image"
+                />
+                <h4 class="tesi__title">Alex Smith</h4>
+                <span class="testi__meta">united states</span>
+              </div>
+            </div>
+            <!-- end testimonial-item -->
+          </div>
+          <!-- end testimonial-carousel -->
+        </div>
+        <!-- end col-lg-8 -->
+      </div>
+      <!-- end container -->
+    </section>
+    <!-- end testimonial-area -->
+    <!-- ================================
+       START TESTIMONIAL AREA
+================================= -->
+
+    <!-- ================================
+    START HIW AREA
+================================= -->
+    <section class="hiw-area bg-gray section--padding">
+      <div class="container">
+        <div class="text-center">
+          <h2 class="sec__title mb-3">Why Choose Us</h2>
+          <p class="sec__desc">
+            Morbi convallis bibendum urna ut viverra. Maecenas quis consequat
+            libero, <br />
+            a feugiat eros. Nunc ut lacinia tortors.
+          </p>
+        </div>
+        <!-- end section-heading -->
+        <div class="row mt-5">
+          <div class="col-lg-4 col-md-6">
+            <div class="card hover-y text-center card-pattern">
+              <div class="card-body">
+                <div class="icon-element icon-element-lg">
+                  <span class="fal fa-headphones"></span>
+                </div>
+                <!-- end icon-element-->
+                <h4 class="card-title mt-4 mb-3">24/7 Hours Support</h4>
+                <p class="card-text">
+                  Proin dapibus nisl ornare diam varius ecos tempus. Aenean a
+                  quam luctus, finibus tellus ut, convallis eros.
+                </p>
+              </div>
+            </div>
+            <!-- end card -->
+          </div>
+          <!-- end col-lg-4 -->
+          <div class="col-lg-4 col-md-6">
+            <div class="card hover-y text-center card-pattern">
+              <div class="card-body">
+                <div class="icon-element icon-element-lg">
+                  <span class="fal fa-cogs"></span>
+                </div>
+                <!-- end icon-element-->
+                <h4 class="card-title mt-4 mb-3">Admin Panel</h4>
+                <p class="card-text">
+                  Proin dapibus nisl ornare diam varius ecos tempus. Aenean a
+                  quam luctus, finibus tellus ut, convallis eros.
+                </p>
+              </div>
+            </div>
+            <!-- end card -->
+          </div>
+          <!-- end col-lg-4 -->
+          <div class="col-lg-4 col-md-6">
+            <div class="card hover-y text-center card-pattern">
+              <div class="card-body">
+                <div class="icon-element icon-element-lg">
+                  <span class="fal fa-users"></span>
+                </div>
+                <!-- end icon-element-->
+                <h4 class="card-title mt-4 mb-3">Mobile friendly</h4>
+                <p class="card-text">
+                  Proin dapibus nisl ornare diam varius ecos tempus. Aenean a
+                  quam luctus, finibus tellus ut, convallis eros.
+                </p>
+              </div>
+            </div>
+            <!-- end card -->
+          </div>
+          <!-- end col-lg-4 -->
+        </div>
+        <!-- end row -->
+      </div>
+      <!-- end container -->
+    </section>
+    <!-- end hiw-area -->
+    <!-- ================================
+    END HIW AREA
+================================= -->
+
+    <!-- ================================
+    START TEAM AREA
+================================= -->
+    <section class="team-area section--padding">
+      <div class="container">
+        <div class="text-center">
+          <h2 class="sec__title mb-3">Our Expert Team Members</h2>
+          <p class="sec__desc">
+            Morbi convallis bibendum urna ut viverra. Maecenas quis consequat
+            libero, <br />
+            a feugiat eros. Nunc ut lacinia tortors.
+          </p>
+        </div>
+        <!-- end section-heading -->
+        <div class="row mt-5">
+          <div class="col-lg-3 col-md-6">
+            <div class="card hover-y text-center">
+              <div class="card-image">
+                <img
+                  src="images/img-loading.jpg"
+                  data-src="images/team1.jpg"
+                  alt="team image"
+                  class="card-img-top lazy"
+                />
+                <svg
+                  class="card-svg-shape"
+                  version="1.1"
+                  xmlns="http://www.w3.org/2000/svg"
+                  x="0px"
+                  y="0px"
+                  viewBox="0 0 74 7"
+                  xml:space="preserve"
+                >
+                  <path
+                    d="M57.7,5c-6.2-1.6-13.5-5-20.8-5c-7.2,0-14.4,3.3-20.5,4.8C11.2,6.1,5.3,6.7,0,7v0h72.4 C67.4,6.7,62.2,6.1,57.7,5z"
+                  ></path>
+                </svg>
+              </div>
+              <div class="card-body">
+                <h4 class="card-title mb-1">Austin Evone</h4>
+                <p class="card-text mb-3">Business Consultant</p>
+                <div class="social-icons">
+                  <a href="#"><i class="fab fa-facebook-f"></i></a>
+                  <a href="#"><i class="fab fa-twitter"></i></a>
+                  <a href="#"><i class="fab fa-instagram"></i></a>
+                </div>
+              </div>
+            </div>
+            <!-- end card -->
+          </div>
+          <!-- end col-lg-3 -->
+          <div class="col-lg-3 col-md-6">
+            <div class="card hover-y text-center">
+              <div class="card-image">
+                <img
+                  src="images/img-loading.jpg"
+                  data-src="images/team2.jpg"
+                  alt="team image"
+                  class="card-img-top lazy"
+                />
+                <svg
+                  class="card-svg-shape"
+                  version="1.1"
+                  xmlns="http://www.w3.org/2000/svg"
+                  x="0px"
+                  y="0px"
+                  viewBox="0 0 74 7"
+                  xml:space="preserve"
+                >
+                  <path
+                    d="M57.7,5c-6.2-1.6-13.5-5-20.8-5c-7.2,0-14.4,3.3-20.5,4.8C11.2,6.1,5.3,6.7,0,7v0h72.4 C67.4,6.7,62.2,6.1,57.7,5z"
+                  ></path>
+                </svg>
+              </div>
+              <div class="card-body">
+                <h4 class="card-title mb-1">Nikolas Doe</h4>
+                <p class="card-text mb-3">Photographer</p>
+                <div class="social-icons">
+                  <a href="#"><i class="fab fa-facebook-f"></i></a>
+                  <a href="#"><i class="fab fa-twitter"></i></a>
+                  <a href="#"><i class="fab fa-instagram"></i></a>
+                </div>
+              </div>
+            </div>
+            <!-- end card -->
+          </div>
+          <!-- end col-lg-3 -->
+          <div class="col-lg-3 col-md-6">
+            <div class="card hover-y text-center">
+              <div class="card-image">
+                <img
+                  src="images/img-loading.jpg"
+                  data-src="images/team3.jpg"
+                  alt="team image"
+                  class="card-img-top lazy"
+                />
+                <svg
+                  class="card-svg-shape"
+                  version="1.1"
+                  xmlns="http://www.w3.org/2000/svg"
+                  x="0px"
+                  y="0px"
+                  viewBox="0 0 74 7"
+                  xml:space="preserve"
+                >
+                  <path
+                    d="M57.7,5c-6.2-1.6-13.5-5-20.8-5c-7.2,0-14.4,3.3-20.5,4.8C11.2,6.1,5.3,6.7,0,7v0h72.4 C67.4,6.7,62.2,6.1,57.7,5z"
+                  ></path>
+                </svg>
+              </div>
+              <div class="card-body">
+                <h4 class="card-title mb-1">Marlin Builders</h4>
+                <p class="card-text mb-3">Co-manager associated</p>
+                <div class="social-icons">
+                  <a href="#"><i class="fab fa-facebook-f"></i></a>
+                  <a href="#"><i class="fab fa-twitter"></i></a>
+                  <a href="#"><i class="fab fa-instagram"></i></a>
+                </div>
+              </div>
+            </div>
+            <!-- end card -->
+          </div>
+          <!-- end col-lg-3 -->
+          <div class="col-lg-3 col-md-6">
+            <div class="card hover-y text-center">
+              <div class="card-image">
+                <img
+                  src="images/img-loading.jpg"
+                  data-src="images/team4.jpg"
+                  alt="team image"
+                  class="card-img-top lazy"
+                />
+                <svg
+                  class="card-svg-shape"
+                  version="1.1"
+                  xmlns="http://www.w3.org/2000/svg"
+                  x="0px"
+                  y="0px"
+                  viewBox="0 0 74 7"
+                  xml:space="preserve"
+                >
+                  <path
+                    d="M57.7,5c-6.2-1.6-13.5-5-20.8-5c-7.2,0-14.4,3.3-20.5,4.8C11.2,6.1,5.3,6.7,0,7v0h72.4 C67.4,6.7,62.2,6.1,57.7,5z"
+                  ></path>
+                </svg>
+              </div>
+              <div class="card-body">
+                <h4 class="card-title mb-1">Kamran Ahmed</h4>
+                <p class="card-text mb-3">Director</p>
+                <div class="social-icons">
+                  <a href="#"><i class="fab fa-facebook-f"></i></a>
+                  <a href="#"><i class="fab fa-twitter"></i></a>
+                  <a href="#"><i class="fab fa-instagram"></i></a>
+                </div>
+              </div>
+            </div>
+            <!-- end card -->
+          </div>
+          <!-- end col-lg-3 -->
+        </div>
+        <!-- end row -->
+      </div>
+      <!-- end container -->
+    </section>
+    <!-- end team-area -->
+    <!-- ================================
+    END TEAM AREA
+================================= -->
+
+    <!-- ================================
+    START SUBSCRIBER AREA
+================================= -->
+    <section class="cta-area padding-bottom-100px text-center">
+      <div class="container">
+        <h2 class="sec__title mb-2">Want to Join with us?</h2>
+        <p class="sec__desc mb-4">
+          Morbi convallis bibendum urna ut viverra. Maecenas quis consequat
+          libero <br />
+          a feugiat eros. Nunc ut lacinia tortors.
+        </p>
+        <a href="#" class="theme-btn">Join Now</a>
+      </div>
+      <!-- end container -->
+    </section>
+    <!-- end cta-area -->
+    <!-- ================================
+    END SUBSCRIBER AREA
+================================= -->
+
 @endsection
+
