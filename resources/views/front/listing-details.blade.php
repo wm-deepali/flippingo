@@ -21,16 +21,16 @@
 
         <div class="gallery-carousel owl-carousel owl-theme border">
           <div class="gallery-item">
-          <img src="images/s1.webp" alt="gallery-image" />
+          <img src="{{ asset('assets') }}/images/s1.webp" alt="gallery-image" />
           </div>
           <div class="gallery-item">
-          <img src="images/s2.webp" alt="gallery-image" />
+          <img src="{{ asset('assets') }}/images/s2.webp" alt="gallery-image" />
           </div>
           <div class="gallery-item">
-          <img src="images/s3.webp" alt="gallery-image" />
+          <img src="{{ asset('assets') }}/images/s3.webp" alt="gallery-image" />
           </div>
           <div class="gallery-item">
-          <img src="images/s4.webp" alt="gallery-image" />
+          <img src="{{ asset('assets') }}/images/s4.webp" alt="gallery-image" />
           </div>
         </div>
         <div class="d-flex justify-content-between">
@@ -133,7 +133,7 @@
         <h4 class="font-size-20 font-weight-semi-bold mb-3">Video</h4>
         <div class="video-box text-center position-relative">
           <div class="overlay z-index-0 rounded"></div>
-          <img src="images/img-loading.jpg" data-src="images/img2.jpg" alt="video-image"
+          <img src="{{ asset('assets') }}/images/img-loading.jpg" data-src="{{ asset('assets') }}/images/img2.jpg" alt="video-image"
           class="w-100 rounded lazy" />
           <div
           class="video-content position-absolute top-0 left-0 w-100 h-100 d-flex align-items-center justify-content-center">
@@ -211,7 +211,7 @@
           <div class="comments-wrapper">
           <div class="comment media mb-5">
             <a href="{{ Route('user-profile') }}" class="user-avatar flex-shrink-0 d-block me-3">
-            <img src="images/small-team1.jpg" alt="author-img" />
+            <img src="{{ asset('assets') }}/images/small-team1.jpg" alt="author-img" />
             </a>
             <div class="comment-body media-body">
             <div class="d-flex align-items-center justify-content-between">
@@ -229,11 +229,11 @@
               looking at its layout.
             </p>
             <div class="review-photos d-flex flex-wrap align-items-center mt-3">
-              <a href="images/img1.jpg" class="d-inline-block" data-fancybox="review-gallery">
-              <img class="lazy" src="images/img-loading.jpg" data-src="images/img1.jpg" alt="review image" />
+              <a href="{{ asset('assets') }}/images/img1.jpg" class="d-inline-block" data-fancybox="review-gallery">
+              <img class="lazy" src="{{ asset('assets') }}/images/img-loading.jpg" data-src="{{ asset('assets') }}/images/img1.jpg" alt="review image" />
               </a>
-              <a href="images/img2.jpg" class="d-inline-block" data-fancybox="review-gallery">
-              <img class="lazy" src="images/img-loading.jpg" data-src="images/img2.jpg" alt="review image" />
+              <a href="{{ asset('assets') }}/images/img2.jpg" class="d-inline-block" data-fancybox="review-gallery">
+              <img class="lazy" src="{{ asset('assets') }}/images/img-loading.jpg" data-src="{{ asset('assets') }}/images/img2.jpg" alt="review image" />
               </a>
             </div>
             <!-- end review-photos -->
@@ -270,7 +270,7 @@
           <!-- end comment -->
           <div class="comment media mb-5">
             <a href="{{ Route('user-profile') }}" class="user-avatar flex-shrink-0 d-block me-3">
-            <img src="images/small-team1.jpg" alt="author-img" />
+            <img src="{{ asset('assets') }}/images/small-team1.jpg" alt="author-img" />
             </a>
             <div class="comment-body media-body">
             <div class="d-flex align-items-center justify-content-between">
@@ -288,8 +288,8 @@
               looking at its layout.
             </p>
             <div class="review-photos d-flex flex-wrap align-items-center mt-3">
-              <a href="images/img3.jpg" class="d-inline-block" data-fancybox="review-gallery-two">
-              <img class="lazy" src="images/img-loading.jpg" data-src="images/img3.jpg" alt="review image" />
+              <a href="{{ asset('assets') }}/images/img3.jpg" class="d-inline-block" data-fancybox="review-gallery-two">
+              <img class="lazy" src="{{ asset('assets') }}/images/img-loading.jpg" data-src="{{ asset('assets') }}/images/img3.jpg" alt="review image" />
               </a>
             </div>
             <!-- end review-photos -->
@@ -427,7 +427,7 @@
           <div class="card-body">
 
           <div class="media mt-4">
-            <img src="images/small-team1.jpg" alt="avatar" class="user-avatar flex-shrink-0 me-3" />
+            <img src="{{ asset('assets') }}/images/small-team1.jpg" alt="avatar" class="user-avatar flex-shrink-0 me-3" />
             <div class="media-body align-self-center">
             <h4 class="font-size-18 font-weight-semi-bold mb-1">
               <a href="{{ Route('user-profile') }}" class="btn-link text-black">Admin</a>
@@ -476,7 +476,7 @@
         <div class="card-body">
           <h4 class="card-title mb-3">Hosted by</h4>
           <div class="media mt-4">
-          <img src="images/small-team1.jpg" alt="avatar" class="user-avatar flex-shrink-0 me-3" />
+          <img src="{{ asset('assets') }}/images/small-team1.jpg" alt="avatar" class="user-avatar flex-shrink-0 me-3" />
           <div class="media-body align-self-center">
             <h4 class="font-size-18 font-weight-semi-bold mb-1">
             <a href="{{ Route('user-profile') }}" class="btn-link text-black">Mark Hardson</a>
@@ -528,12 +528,12 @@
     <div class="card-carousel owl-carousel owl-theme mt-4 mx-lg-n2">
       <div class="card mb-0 hover-y">
       <a href="{{ Route('listing-details') }}" class="card-image">
-        <img src="images/s1.webp" class="card-img-top" alt="card image" />
+        <img src="{{ asset('assets') }}/images/s1.webp" class="card-img-top" alt="card image" />
         <span class="badge text-bg-success badge-pill">Verified</span>
       </a>
       <div class="card-body position-relative">
         <a href="{{ Route('user-profile') }}" class="author-img">
-        <img src="images/small-team1.jpg" alt="author-img" />
+        <img src="{{ asset('assets') }}/images/small-team1.jpg" alt="author-img" />
         </a>
         <a href="#" class="card-cat mb-2">
 
@@ -571,12 +571,12 @@
       </div>
       <div class="card mb-0 hover-y">
       <a href="{{ Route('listing-details') }}" class="card-image">
-        <img src="images/s1.webp" class="card-img-top" alt="card image" />
+        <img src="{{ asset('assets') }}/images/s1.webp" class="card-img-top" alt="card image" />
         <span class="badge text-bg-success badge-pill">Verified</span>
       </a>
       <div class="card-body position-relative">
         <a href="{{ Route('user-profile') }}" class="author-img">
-        <img src="images/small-team1.jpg" alt="author-img" />
+        <img src="{{ asset('assets') }}/images/small-team1.jpg" alt="author-img" />
         </a>
         <a href="#" class="card-cat mb-2">
 
@@ -614,12 +614,12 @@
       </div>
       <div class="card mb-0 hover-y">
       <a href="{{ Route('listing-details') }}" class="card-image">
-        <img src="images/s1.webp" class="card-img-top" alt="card image" />
+        <img src="{{ asset('assets') }}/images/s1.webp" class="card-img-top" alt="card image" />
         <span class="badge text-bg-success badge-pill">Verified</span>
       </a>
       <div class="card-body position-relative">
         <a href="{{ Route('user-profile') }}" class="author-img">
-        <img src="images/small-team1.jpg" alt="author-img" />
+        <img src="{{ asset('assets') }}/images/small-team1.jpg" alt="author-img" />
         </a>
         <a href="#" class="card-cat mb-2">
 
@@ -657,12 +657,12 @@
       </div>
       <div class="card mb-0 hover-y">
       <a href="{{ Route('listing-details') }}" class="card-image">
-        <img src="images/s1.webp" class="card-img-top" alt="card image" />
+        <img src="{{ asset('assets') }}/images/s1.webp" class="card-img-top" alt="card image" />
         <span class="badge text-bg-success badge-pill">Verified</span>
       </a>
       <div class="card-body position-relative">
         <a href="{{ Route('user-profile') }}" class="author-img">
-        <img src="images/small-team1.jpg" alt="author-img" />
+        <img src="{{ asset('assets') }}/images/small-team1.jpg" alt="author-img" />
         </a>
         <a href="#" class="card-cat mb-2">
 
@@ -700,12 +700,12 @@
       </div>
       <div class="card mb-0 hover-y">
       <a href="{{ Route('listing-details') }}" class="card-image">
-        <img src="images/s1.webp" class="card-img-top" alt="card image" />
+        <img src="{{ asset('assets') }}/images/s1.webp" class="card-img-top" alt="card image" />
         <span class="badge text-bg-success badge-pill">Verified</span>
       </a>
       <div class="card-body position-relative">
         <a href="{{ Route('user-profile') }}" class="author-img">
-        <img src="images/small-team1.jpg" alt="author-img" />
+        <img src="{{ asset('assets') }}/images/small-team1.jpg" alt="author-img" />
         </a>
         <a href="#" class="card-cat mb-2">
 

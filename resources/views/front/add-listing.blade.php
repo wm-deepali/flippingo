@@ -4,6 +4,7 @@
     {{ $page->meta_title ?? 'Flippingo' }}
 @endsection
 
+@section('content')
 <!-- ================================
     START BREADCRUMB AREA
 ================================= -->

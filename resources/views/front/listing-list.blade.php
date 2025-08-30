@@ -4,6 +4,8 @@
     {{ $page->meta_title ?? 'Flippingo' }}
 @endsection
 
+@section('content')
+
 
 <!-- ================================
     START BREADCRUMB AREA
@@ -255,7 +257,7 @@
                     <div class="flippa-card" data-category="saas">
                         <div class="flippa-card-left">
                             <div class="flippa-image-wrapper">
-                                <img src="images/bg1.png" alt="Confidential" style="height: 230px;" />
+                                <img src="{{ asset('assets') }}/images/bg1.png" alt="Confidential" style="height: 230px;" />
                                 <div class="flippa-overlay">Confidential<br /><span>Sign NDA to view</span></div>
                                 <div class="flippa-sponsored">Sponsored</div>
                             </div>
@@ -292,7 +294,7 @@
                     <div class="flippa-card" data-category="ecommerce">
                         <div class="flippa-card-left">
                             <div class="flippa-image-wrapper">
-                                <img src="images/bg1.png" alt="Confidential" style="height: 230px;" />
+                                <img src="{{ asset('assets') }}/images/bg1.png" alt="Confidential" style="height: 230px;" />
                                 <div class="flippa-overlay">Confidential<br /><span>Sign NDA to view</span></div>
                                 <div class="flippa-sponsored">Sponsored</div>
                             </div>
@@ -329,7 +331,7 @@
                     <div class="flippa-card" data-category="ecommerce">
                         <div class="flippa-card-left">
                             <div class="flippa-image-wrapper">
-                                <img src="images/bg1.png" alt="Confidential" style="height: 230px;" />
+                                <img src="{{ asset('assets') }}/images/bg1.png" alt="Confidential" style="height: 230px;" />
                                 <div class="flippa-overlay">Confidential<br /><span>Sign NDA to view</span></div>
                                 <div class="flippa-sponsored">Sponsored</div>
                             </div>
@@ -366,7 +368,7 @@
                     <div class="flippa-card" data-category="ecommerce">
                         <div class="flippa-card-left">
                             <div class="flippa-image-wrapper">
-                                <img src="images/bg1.png" alt="Confidential" style="height: 230px;" />
+                                <img src="{{ asset('assets') }}/images/bg1.png" alt="Confidential" style="height: 230px;" />
                                 <div class="flippa-overlay">Confidential<br /><span>Sign NDA to view</span></div>
                                 <div class="flippa-sponsored">Sponsored</div>
                             </div>
@@ -406,7 +408,7 @@
                     <div class="flippa-card" data-category="ecommerce">
                         <div class="flippa-card-left">
                             <div class="flippa-image-wrapper">
-                                <img src="images/bg1.png" alt="Confidential" style="height: 230px;" />
+                                <img src="{{ asset('assets') }}/images/bg1.png" alt="Confidential" style="height: 230px;" />
                                 <div class="flippa-overlay">Confidential<br /><span>Sign NDA to view</span></div>
                                 <div class="flippa-sponsored">Sponsored</div>
                             </div>
