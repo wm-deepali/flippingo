@@ -1,188 +1,401 @@
 <!DOCTYPE html>
-
-<html lang="<?php echo e(str_replace('_', '-', app()->getLocale())); ?>">
+<html lang="en">
 
 <head>
- <meta charset="utf-8">
-	<meta name="viewport" content="width=device-width, initial-scale=1">
-	<!--favicon-->
-	<link rel="icon" href="<?php echo e(URL::asset('assets/images/favicon-32x32.png')); ?>" type="image/png" />
-
-    <meta name="csrf-token" content="<?php echo e(csrf_token()); ?>">
+  <meta name="csrf-token" content="<?php echo e(csrf_token()); ?>">
   <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
   <meta http-equiv="X-UA-Compatible" content="IE=edge">
-
-  <meta name="description" content="Flippingo">
-  <meta name="keywords" content="Flippingo">
-   <?php echo $__env->yieldPushContent('before-styles'); ?>
+  <meta name="viewport" content="width=device-width,initial-scale=1.0,user-scalable=0,minimal-ui">
+  <meta name="author" content=" Flippingo" />
+  <meta name="description" content="Flippingo Admin">
+  <meta name="keywords" content="Flippingo Admin">
+  <?php echo $__env->yieldPushContent('before-styles'); ?>
   <title><?php echo $__env->yieldContent('title'); ?></title>
-  
-  <link rel="stylesheet" type="text/css" href="<?php echo e(URL::asset('assets/plugins/OwlCarousel/css/owl.carousel.min.css')); ?>">
-  <link rel="stylesheet" type="text/css" href="<?php echo e(URL::asset('assets/plugins/simplebar/css/simplebar.css')); ?>">
-  <link rel="stylesheet" type="text/css" href="<?php echo e(URL::asset('assets/plugins/perfect-scrollbar/css/perfect-scrollbar.css')); ?>">
-  <link rel="stylesheet" type="text/css" href="<?php echo e(URL::asset('assets/plugins/metismenu/css/metisMenu.min.css')); ?>">
-  <link rel="stylesheet" type="text/css" href="<?php echo e(URL::asset('assets/css/pace.min.css')); ?>">
-  <script src="<?php echo e(URL::asset('assets/js/pace.min.js')); ?>"></script>
-  <link rel="stylesheet" type="text/css" href="<?php echo e(URL::asset('assets/css/bootstrap.min.css')); ?>">
-  <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@400;500&amp;display=swap" rel="stylesheet">
-  
-  <link rel="stylesheet" type="text/css" href="<?php echo e(URL::asset('assets/css/app.css')); ?>">
- <link rel="stylesheet" type="text/css" href="<?php echo e(URL::asset('assets/css/icons.css')); ?>">
- <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
- <?php echo $__env->yieldPushContent('after-styles'); ?>
+  <!-- Favicon -->
+  <link rel="icon" href="<?php echo e(asset('assets')); ?>/images/favicon.png" />
+
+
+  <!-- Google Fonts -->
+  <link href="https://fonts.googleapis.com/css?family=Work+Sans:100,200,300,400,500,600,700,800&amp;display=swap"
+    rel="stylesheet" />
+  <link href="https://fonts.googleapis.com/css?family=Mukta:200,300,400,500,600,700&amp;display=swap"
+    rel="stylesheet" />
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.7.2/css/all.min.css"
+    integrity="sha512-Evv84Mr4kqVGRNSgIGL/F/aIDqQb7xQ2vcrdIwxfjThSH8CSR7PBEakCr51Ck+w+/U6swU2Im1vVX0SVk9ABhg=="
+    crossorigin="anonymous" referrerpolicy="no-referrer" />
+
+  <!-- Template CSS Files -->
+  <link rel="stylesheet" href="<?php echo e(asset('assets')); ?>/css/bootstrap.min.css" />
+  <link rel="stylesheet" href="<?php echo e(asset('assets')); ?>/css/select2.min.css" />
+  <link rel="stylesheet" href="<?php echo e(asset('assets')); ?>/css/font-awesome.min.css" />
+  <link rel="stylesheet" href="<?php echo e(asset('assets')); ?>/css/owl.carousel.min.css" />
+  <link rel="stylesheet" href="<?php echo e(asset('assets')); ?>/css/owl.theme.default.min.css" />
+  <link rel="stylesheet" href="<?php echo e(asset('assets')); ?>/css/animated-headline.css" />
+  <link rel="stylesheet" href="<?php echo e(asset('assets')); ?>/css/jquery.fancybox.css" />
+  <link rel="stylesheet" href="<?php echo e(asset('assets')); ?>/css/style.css" />
+  <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" rel="stylesheet" />
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/swiper@10/swiper-bundle.min.css" />
+  <script src="https://cdn.jsdelivr.net/npm/swiper@10/swiper-bundle.min.js"></script>
+
+  <!-- Optional: Google Fonts -->
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600&display=swap" rel="stylesheet">
+
 </head>
 
-<body class="bg-theme bg-theme1">
 
-	<b class="screen-overlay"></b>
-    
+<body>
+  <!-- start per-loader -->
+  <div class="loader-container">
+    <div class="loader-ripple">
+      <div></div>
+      <div></div>
+    </div>
+  </div>
+  <!-- end per-loader -->
 
-   <?php echo $__env->make('layouts.includes.header', \Illuminate\Support\Arr::except(get_defined_vars(), ['__data', '__path']))->render(); ?>
+  <!-- ================================
+            START HEADER AREA
+================================= -->
+
+  <header class="header-area border-bottom border-bottom-gray">
+    <!-- <div class="top-header" style="background-color: rgb(3, 157, 247);">
+      <div class="top-header-list">
+        <div class="d-flex align-items-center gap-4">
+        <div class="">
+          <p ><i class="fa-solid fa-envelope"></i>  demo@gmail.com</p>
+        </div>
+        <div class="line"></div>
+        <div class="">
+          <p><i class="fa-solid fa-phone"></i>  +91 0000000000</p>
+        </div>
+        <div class="line"></div>
+        <div class="">
+          <p><i class="fa-brands fa-facebook" style="color: #3b5998;"></i> &nbsp; <i class="fa-brands fa-whatsapp" style="color: #075e54;"></i> &nbsp; <i class="fa-brands fa-instagram" style="color: #c13584;"></i> &nbsp; <i class="fa-brands fa-x-twitter" style="color: #14171A ;"></i></p>
+        </div>
+        </div>
+        <div class="d-flex align-items-center gap-4">
+          <div class="">
+          <p> FAQ</p>
+        </div>
+       
+        <div class="line"></div>
+        <div class="">
+          <p style="border: 1px solid #fff; border-radius: 5px; padding: 5px 10px; cursor: pointer;"> Get a Call Back</p>
+        </div>
+       
+         <div class="line"></div>
+        
+        <div class="">
+          <p> Pricing</p>
+        </div></div>
+        
 
 
-    <?php echo $__env->yieldContent('content'); ?>
+      </div>
 
-<?php echo $__env->make('layouts.includes.footer', \Illuminate\Support\Arr::except(get_defined_vars(), ['__data', '__path']))->render(); ?>
-    <?php echo $__env->yieldContent('footer'); ?>
+    </div> -->
+    <div class="main-header py-3">
+      <div class="container" style="max-width: 1260px;">
+        <div class="main-header-action-wrap d-flex justify-content-between">
+          <div class="logo">
+            <a href="<?php echo e(Route('home')); ?>"><img src="<?php echo e(asset('assets')); ?>/images/logo.png" alt="logo" width="180px" /></a>
+          </div>
 
-   <!-- Bootstrap JS -->
-	<script src="<?php echo e(URL::asset('assets/js/bootstrap.bundle.min.js')); ?>"></script>
-	<!--plugins-->
-	<script src="<?php echo e(URL::asset('assets/js/jquery.min.js')); ?>"></script>
-	<script src="<?php echo e(URL::asset('assets/plugins/simplebar/js/simplebar.min.js')); ?>"></script>
-	<script src="<?php echo e(URL::asset('assets/plugins/OwlCarousel/js/owl.carousel.min.js')); ?>"></script>
-	<script src="<?php echo e(URL::asset('assets/plugins/OwlCarousel/js/owl.carousel2.thumbs.min.js')); ?>"></script>
-	<script src="<?php echo e(URL::asset('assets/plugins/metismenu/js/metisMenu.min.js')); ?>"></script>
-	<script src="<?php echo e(URL::asset('assets/plugins/perfect-scrollbar/js/perfect-scrollbar.js')); ?>"></script>
-	<!--app JS-->
-	<script src="<?php echo e(URL::asset('assets/js/app.js')); ?>"></script>
-	<script src="<?php echo e(URL::asset('assets/js/index.js')); ?>"></script>
-	 <?php echo $__env->yieldPushContent('after-scripts'); ?>
-	  <script>
-    document.addEventListener('DOMContentLoaded', function () {
-      // Tab functionality
-      const tabButtons = document.querySelectorAll('.tab-buttons button');
-      const tabContents = document.querySelectorAll('.tab-content');
+          <div class="d-flex" style="width: 40%; align-items: center;margin-top: 15px;">
+            <div class="col-lg-12 pe-lg-0">
+              <div class="form-group">
+                <span class="fal fa-search form-icon"></span>
+                <input class="form-control form--control" type="text" placeholder="What are you looking for?"
+                  style="width: 105%;" />
+              </div>
+            </div>
+            <!-- end col-lg-3 -->
 
-      tabButtons.forEach(button => {
-        button.addEventListener('click', () => {
-          tabButtons.forEach(btn => btn.classList.remove('active'));
-          tabContents.forEach(content => content.classList.remove('active'));
 
-          button.classList.add('active');
-          const tabId = button.getAttribute('data-tab');
-          document.getElementById(tabId).classList.add('active');
-        });
-      });
+            <!-- end col-lg-3 -->
 
-      // Slider value display
-      const pageSlider = document.getElementById('page-slider');
-      const currentPages = document.getElementById('current-pages');
+          </div>
+          <!-- end col-lg-3 -->
 
-      pageSlider.addEventListener('input', function () {
-        currentPages.textContent = `Current: ${this.value}`;
-        updatePrice();
-      });
+          <!-- end card-body -->
 
-      // Paper type preview update
-      const paperTypeSelect = document.getElementById('paper-type');
-      const paperPreview = document.getElementById('paper-preview');
+          <!-- end logo -->
+          <!-- <nav class="main-menu me-4 ms-auto">
+            <ul>
+              <li>
+                <a href="#">Home </a>
+               
+              </li>
+              <li>
+                <a href="#">Services </a>
+                
+              </li>
+              <li>
+                <a href="list-left-sidebar.html">Listings </a>
+              
+              </li>
+             
+              <li>
+                <a href="pricing.html">Pricing </a>
+              </li>
 
-      paperTypeSelect.addEventListener('change', function () {
-        const selectedPaper = this.value;
-        paperPreview.textContent = `${selectedPaper.charAt(0).toUpperCase() + selectedPaper.slice(1)} Preview`;
-        updatePrice();
-      });
 
-      // Quantity input
-      const quantityInput = document.getElementById('quantity');
-      quantityInput.addEventListener('input', updatePrice);
+              <li>
+                <a href="list-left-sidebar.html">Resources </a>
+              </li>
+              <li>
+                <a href="contact.html">Contact Us </a>
+              </li>
+              <li>
+                <a href="#">Pages <span class="fal fa-angle-down"></span></a>
+                <ul class="dropdown-menu-item">
+                  <li><a href="user-profile.html">user profile</a></li>
+                  <li><a href="top-author.html">top authors </a></li>
+                  <li><a href="dashboard.html">dashboard</a></li>
+                  <li><a href="booking.html">booking </a></li>
+                  <li>
+                    <a href="booking-confirmation.html">booking confirmation
+                    </a>
+                  </li>
+                  <li><a href="invoice.html">invoice</a></li>
+                  <li><a href="pricing.html">pricing</a></li>
+                  <li><a href="about.html">about</a></li>
+                  <li><a href="faq.html">faq</a></li>
+                  <li><a href="contact.html">contact</a></li>
+                  <li><a href="page-404.html">404 page</a></li>
+                  <li><a href="recover.html">recover pass</a></li>
+                </ul>
+              </li>
+              <li>
+                <a href="#">Blog <span class="fal fa-angle-down"></span></a>
+                <ul class="dropdown-menu-item">
+                  <li><a href="blog-full-width.html">full width</a></li>
+                  <li><a href="blog-grid.html">blog grid</a></li>
+                  <li><a href="blog-left-sidebar.html">left sidebar </a></li>
+                  <li>
+                    <a href="blog-right-sidebar.html">right sidebar </a>
+                  </li>
+                  <li><a href="blog-single.html">blog detail</a></li>
+                </ul>
+              </li>
+            </ul>
+          </nav>  -->
+          <div class="nav-right-content d-flex align-items-center">
+            <div class="author-access-list me-3">
+              <a href="<?php echo e(Route('authentication-signin')); ?>">Login</a>
+              <span class="or-text">or</span>
+              <a href="<?php echo e(Route('authentication-signup')); ?>">Sign Up</a>
+            </div>
+            <a href="<?php echo e(Route('add-listing')); ?>" class="theme-btn" style="padding: 10px 20px;">
+              <!-- <span class="fal fa-plus me-1"></span> -->
+              Sell Now
+            </a>
+            <div class="side-menu-open ms-2">
+              <i class="fal fa-bars"></i>
+            </div>
+            <!-- end side-menu-open -->
+          </div>
+          <!-- end nav-right-content -->
+        </div>
+        <!-- end main-header-action-wrap -->
+      </div>
+      <!-- end container-fluid -->
+    </div>
+    <div class="top-header">
+      <div class="top-header-list">
+        <nav class="main-menu " style="width: 100%;">
+          <ul class="d-flex justify-content-between">
+            <li>
+              <a href="<?php echo e(Route('listing-list')); ?>">Browse <span class="fal fa-angle-down"></span></a>
+              <ul class="dropdown-menu-item">
+                <li><a href="<?php echo e(Route('listing-list')); ?>">Website</a></li>
+                <li><a href="<?php echo e(Route('listing-list')); ?>">YouTube Channel</a></li>
+                <li><a href="<?php echo e(Route('listing-list')); ?>">Instagram Pages </a></li>
+                <li>
+                  <a href="<?php echo e(Route('listing-list')); ?>">Telegram Account</a>
+                </li>
+                <li><a href="<?php echo e(Route('listing-list')); ?>">Facebook Account</a></li>
+              </ul>
+            </li>
+            <li>
+              <a href="<?php echo e(Route('meet-our-team')); ?>">Meet Our Team </a>
 
-      // Colour printing buttons
-      const colourButtons = document.querySelectorAll('#colour-printing button');
-      colourButtons.forEach(button => {
-        button.addEventListener('click', function () {
-          colourButtons.forEach(btn => btn.classList.remove('active'));
-          this.classList.add('active');
-          updatePrice();
-        });
-      });
+            </li>
+            <li>
+              <a href="#">Insight </a>
 
-      // Paper weight buttons
-      const weightButtons = document.querySelectorAll('#paper-weight button');
-      weightButtons.forEach(button => {
-        button.addEventListener('click', function () {
-          weightButtons.forEach(btn => btn.classList.remove('active'));
-          this.classList.add('active');
-          updatePrice();
-        });
-      });
+            </li>
+            <li>
+              <a href="">Buyers Mandate </a>
 
-      // Add cover checkbox
-      const addCoverCheckbox = document.getElementById('addCover');
-      addCoverCheckbox.addEventListener('change', updatePrice);
+            </li>
 
-      // Price update function
-      function updatePrice() {
-        // Base price for 4 pages
-        let basePrice = 20;
+            <li>
+              <a href="">Why Flippingo </a>
+            </li>
+            <li>
+              <a href="<?php echo e(Route('blogs')); ?>">Blogs </a>
+            </li>
+            <li>
+              <a href="">Sell Digitally </a>
+            </li>
 
-        // Quantity
-        const quantity = parseInt(quantityInput.value) || 1;
+            <li>
+              <a href="">Services </a>
+            </li>
+            <li>
+              <a href="">Resources </a>
+            </li>
+            <li>
+              <a href="<?php echo e(Route('contact-us')); ?>">Contact Us </a>
+            </li>
 
-        // Colour printing
-        const colourOption = document.querySelector('#colour-printing button.active').getAttribute('data-value');
-        const colourMultiplier = colourOption === 'colour' ? 1.2 : 1; // +20% for colour
 
-        // Paper type
-        const paperType = paperTypeSelect.value;
-        const paperTypeCost = {
-          gloss: 0,
-          matt: 1,
-          silk: 2
-        }[paperType];
 
-        // Paper weight
-        const paperWeight = document.querySelector('#paper-weight button.active').getAttribute('data-value');
-        const paperWeightCost = {
-          '90gsm': 0,
-          '130gsm': 1,
-          '150gsm': 2,
-          '200gsm': 3
-        }[paperWeight];
+          </ul>
+        </nav>
 
-        // Pages
-        const pages = parseInt(pageSlider.value);
-        const extraPages = Math.max(0, pages - 4); // Cost for pages beyond the minimum 4
-        const pageCost = extraPages * 0.10; // £0.10 per extra page
 
-        // Add cover
-        const addCover = addCoverCheckbox.checked;
-        const coverCost = addCover ? 5 : 0;
+      </div>
 
-        // Calculate total price per booklet
-        let pricePerBooklet = basePrice + paperTypeCost + paperWeightCost + pageCost + coverCost;
-        pricePerBooklet *= colourMultiplier; // Apply colour multiplier
+    </div>
+    <!-- end main-header -->
 
-        // Total price for all booklets
-        let totalPrice = pricePerBooklet * quantity;
+    <!-- end off-canvas -->
+  </header>
 
-        // Delivery options
-        const bestValuePrice = totalPrice;
-        const fasterPrice = totalPrice * 1.05; // +5% for faster delivery
+  <!-- ================================
+         END HEADER AREA
+================================= -->
 
-        // Update UI
-        document.getElementById('price-best-value').textContent = `£${bestValuePrice.toFixed(2)}`;
-        document.getElementById('price-faster').textContent = `£${fasterPrice.toFixed(2)}`;
-      }
 
-      // Initial price calculation
-      updatePrice();
-    });
-  </script>
+  <?php echo $__env->yieldContent('content'); ?>
+
+  <!-- ================================
+       START FOOTER AREA
+================================= -->
+  <section class="footer-area bg-gray padding-top-80px pattern-bg">
+    <div class="container">
+      <div class="row">
+        <div class="col-lg-3 col-md-6">
+          <div class="footer-item">
+            <a href=<?php echo e(Route('home')); ?> class="footer-logo mb-4 d-inline-block"><img src="<?php echo e(asset('assets')); ?>/images/logo.png" alt="logo"
+                style="background-color: #000; border-radius: 7px; padding: 7px 10px;" /></a>
+            <p class="mb-4">
+              Flippingo is a platform for Posting Free Ads - it only takes a few simple steps! Select the right category
+              and publish your classified ad for free.
+            </p>
+            <div class="social-icons">
+              <a href="#"><i class="fab fa-facebook-f"></i></a>
+              <a href="#"><i class="fab fa-twitter"></i></a>
+              <a href="#"><i class="fab fa-instagram"></i></a>
+              <a href="#"><i class="fab fa-youtube"></i></a>
+            </div>
+          </div>
+          <!-- end footer-item -->
+        </div>
+        <!-- end col-lg-3 -->
+        <div class="col-lg-3 col-md-6">
+          <div class="footer-item">
+            <h4 class="footer__title mb-3">Quick Links</h4>
+            <div class="stroke-shape mb-4"></div>
+            <ul class="list-items list-items-underline">
+              <li><a href=<?php echo e(Route('about-us')); ?>>About us</a></li>
+              <li><a href=<?php echo e(Route('authentication-signup')); ?>>Sign up</a></li>
+              <li><a href="<?php echo e(Route('authentication-signin')); ?>">Log in</a></li>
+              <li><a href="#">Terms & Conditions</a></li>
+              <li><a href="#">Privacy Policy</a></li>
+              <!-- <li><a href="#">Help Center</a></li> -->
+            </ul>
+          </div>
+          <!-- end footer-item -->
+        </div>
+        <!-- end col-lg-3 -->
+        <div class="col-lg-3 col-md-6">
+          <div class="footer-item">
+            <h4 class="footer__title mb-3">Categories</h4>
+            <div class="stroke-shape mb-4"></div>
+            <ul class="list-items list-items-underline">
+              <li><a href="#">Website</a></li>
+              <li><a href="#">YouTube Channel</a></li>
+              <li><a href="#">Instagram Pages</a></li>
+              <li><a href="#">Telegram Account</a></li>
+              <li><a href="#">Facebook Account</a></li>
+
+            </ul>
+          </div>
+          <!-- end footer-item -->
+        </div>
+        <!-- end col-lg-3 -->
+        <div class="col-lg-3 col-md-6">
+          <div class="footer-item">
+            <h4 class="footer__title mb-3">Contact with Us</h4>
+            <div class="stroke-shape mb-4"></div>
+            <ul class="info-list">
+              <li>
+                <span class="fal fa-home icon me-2"></span> Old Palasia, Indore, MP, PIN Code – 452001, India - 2
+              </li>
+              <li>
+                <span class="fal fa-headphones icon me-2"></span>
+                <a href="#">+918809772278</a>
+              </li>
+              <li>
+                <span class="fal fa-envelope icon me-2"></span>
+                <a href="#">support@flippingo.com</a>
+              </li>
+            </ul>
+          </div>
+          <!-- end footer-item -->
+        </div>
+        <!-- end col-lg-3 -->
+      </div>
+      <!-- end row -->
+      <hr class="border-top-gray" />
+      <div class="copy-right d-flex flex-wrap align-items-center justify-content-between pb-4">
+        <p class="copy__desc py-2">
+          &copy; Copyright Dirto <span id="copyright-year"></span>. Made with
+          <span class="fas fa-heart bounce-anim"></span> by
+          <a href="https:// Flippingo.com/"> Flippingo</a>
+        </p>
+        <select class="select-picker select-picker-sm" data-width="130" data-size="5">
+          <option value="1" selected>English</option>
+          <option value="2">French</option>
+          <option value="3">Czech</option>
+          <option value="4">German</option>
+          <option value="5">Italian</option>
+          <option value="6">Turkish</option>
+        </select>
+      </div>
+      <!-- end copy-right -->
+    </div>
+    <!-- end container -->
+  </section>
+  <!-- end footer-area -->
+  <!-- ================================
+       START FOOTER AREA
+================================= -->
+
+  <!-- start back-to-top -->
+  <div id="back-to-top">
+    <i class="far fa-angle-up" title="Go top"></i>
+  </div>
+  <!-- end back-to-top -->
+
+  <!-- Template JS Files -->
+  <script src="<?php echo e(asset('assets')); ?>/js/jquery-3.7.1.min.js"></script>
+  <script src="<?php echo e(asset('assets')); ?>/js/bootstrap.bundle.min.js"></script>
+  <script src="<?php echo e(asset('assets')); ?>/js/select2.min.js"></script>
+  <script src="<?php echo e(asset('assets')); ?>/js/jquery.fancybox.min.js"></script>
+  <script src="<?php echo e(asset('assets')); ?>/js/animated-headline.js"></script>
+  <script src="<?php echo e(asset('assets')); ?>/js/owl.carousel.min.js"></script>
+  <script src="<?php echo e(asset('assets')); ?>/js/waypoints.min.js"></script>
+  <script src="<?php echo e(asset('assets')); ?>/js/jquery.counterup.min.js"></script>
+  <script src="<?php echo e(asset('assets')); ?>/js/rating-script.js"></script>
+  <script src="<?php echo e(asset('assets')); ?>/js/jquery.lazy.min.js"></script>
+  <script src="<?php echo e(asset('assets')); ?>/js/main.js"></script>
+
 </body>
 
-
-<!-- Mirrored from codervent.com/etrans/demo/index.html by HTTrack Website Copier/3.x [XR&CO'2014], Mon, 02 Jun 2025 08:29:54 GMT -->
+<!-- Mirrored from  Flippingo.com/demos/themes/html/Flippingo-demo/Flippingo/index.html by HTTrack Website Copier/3.x [XR&CO'2014], Mon, 26 May 2025 04:17:44 GMT -->
 
 </html><?php /**PATH D:\web-mingo-project\flippingo_admin\resources\views/layouts/new-master.blade.php ENDPATH**/ ?>

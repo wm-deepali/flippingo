@@ -2,14 +2,18 @@
 <html lang="en">
 
 <head>
-  <meta http-equiv="content-type" content="text/html; charset=utf-8" />
+  <meta name="csrf-token" content="{{ csrf_token() }}">
+  <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <meta name="viewport" content="width=device-width,initial-scale=1.0,user-scalable=0,minimal-ui">
   <meta name="author" content=" Flippingo" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <meta http-equiv="X-UA-Compatible" content="ie=edge" />
+  <meta name="description" content="Flippingo Admin">
+  <meta name="keywords" content="Flippingo Admin">
   @stack('before-styles')
   <title>@yield('title')</title>
   <!-- Favicon -->
   <link rel="icon" href="{{ asset('assets') }}/images/favicon.png" />
+
 
   <!-- Google Fonts -->
   <link href="https://fonts.googleapis.com/css?family=Work+Sans:100,200,300,400,500,600,700,800&amp;display=swap"
@@ -37,7 +41,6 @@
   <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600&display=swap" rel="stylesheet">
 
 </head>
-
 
 
 <body>
@@ -95,7 +98,7 @@
       <div class="container" style="max-width: 1260px;">
         <div class="main-header-action-wrap d-flex justify-content-between">
           <div class="logo">
-            <a href="{{ Route('home') }}"><img src="{{ asset('assets') }}/images/logo.png" alt="logo" width="170px" /></a>
+            <a href="{{ Route('home') }}"><img src="{{ asset('assets') }}/images/logo.png" alt="logo" width="180px" /></a>
           </div>
 
           <div class="d-flex" style="width: 40%; align-items: center;margin-top: 15px;">
@@ -183,7 +186,7 @@
               <span class="or-text">or</span>
               <a href="{{ Route('authentication-signup') }}">Sign Up</a>
             </div>
-            <a href="{{ Route('add-listing') }}" class="theme-btn">
+            <a href="{{ Route('add-listing') }}" class="theme-btn" style="padding: 10px 20px;">
               <!-- <span class="fal fa-plus me-1"></span> -->
               Sell Now
             </a>
@@ -276,8 +279,7 @@
       <div class="row">
         <div class="col-lg-3 col-md-6">
           <div class="footer-item">
-            <a href={{ Route('home') }} class="footer-logo mb-4 d-inline-block"><img
-                src="{{ asset('assets') }}/images/logo.png" alt="logo"
+            <a href={{ Route('home') }} class="footer-logo mb-4 d-inline-block"><img src="{{ asset('assets') }}/images/logo.png" alt="logo"
                 style="background-color: #000; border-radius: 7px; padding: 7px 10px;" /></a>
             <p class="mb-4">
               Flippingo is a platform for Posting Free Ads - it only takes a few simple steps! Select the right category

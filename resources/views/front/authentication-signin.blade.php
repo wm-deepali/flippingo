@@ -38,73 +38,107 @@
     START CONTACT AREA
   ================================= -->
   <section class="contact-area padding-top-60px padding-bottom-90px">
-    <div class="container">
-    <div class="col-lg-5 mx-auto">
-      <form action="#" class="card">
-      <div class="card-body">
+    <div class="container ">
+    <div class="row align-items-center">
+
+
+
+      <!-- Right side form -->
+      <div class="col-lg-12 login-page">
+      <div class="loginimg">
+        <img
+        src="https://img.freepik.com/free-vector/user-verification-unauthorized-access-prevention-private-account-authentication-cyber-security-people-entering-login-password-safety-measures_335657-3530.jpg"
+        alt="Login illustration" class="img-fluid rounded ">
+      </div>
+
+      <form action="#" class="" style="padding: 30px 20px;">
+        <div class="card-body">
         <div class="text-center">
-        <h4 class="font-size-28 font-weight-semi-bold mb-1">
-          Login to your account
-        </h4>
-        <p class="card-text">with your social network</p>
-        <div class="d-flex flex-wrap align-items-center justify-content-between my-4">
-          <a href="#" class="theme-btn flex-grow-1 mx-1 my-1"><i class="fab fa-google me-2"></i>Google</a>
-          <!-- <a href="#" class="theme-btn flex-grow-1 mx-1 my-1 bg-5"
-            ><i class="fab fa-facebook-f me-2"></i>Facebook</a
-            >
-            <a href="#" class="theme-btn flex-grow-1 mx-1 my-1 bg-6"
-            ><i class="fab fa-twitter me-2"></i>Twitter</a
-            > -->
-        </div>
-        </div>
-        <div class="d-flex align-items-center">
-        <hr class="border-top-gray flex-grow-1" />
-        <span class="mx-1 text-uppercase">or</span>
-        <hr class="border-top-gray flex-grow-1" />
-        </div>
-        <div class="form-group">
-        <label class="label-text">Username, or email</label>
-        <input class="form-control form--control ps-3" type="text" name="name" placeholder="Username, or email" />
-        </div>
-        <!-- end form-group -->
-        <div class="form-group">
-        <label class="label-text">Password</label>
-        <div class="position-relative">
-          <input class="form-control form--control ps-3 password-field" type="password" name="password"
-          placeholder="Password" />
-          <a href="javascript:void(0)" class="position-absolute top-0 right-0 h-100 toggle-password"
-          title="toggle show/hide password">
-          <i class="far fa-eye eye-on"></i>
-          <i class="far fa-eye-slash eye-off"></i>
+          <h4 class="font-size-28 font-weight-semi-bold mb-1 mt-4">Login to your account</h4>
+          <p class="card-text">with your social network</p>
+          <div class="d-flex flex-wrap align-items-center justify-content-between my-4 sign-g">
+          <a href="#" class="theme-btn flex-grow-1 mx-1 my-1  ">
+            <img src="https://images.icon-icons.com/2699/PNG/512/google_logo_icon_169090.png"> Sign In with Google
           </a>
+          </div>
         </div>
+
+        <div class="d-flex align-items-center">
+          <hr class="border-top-gray flex-grow-1" />
+          <span class="mx-1 text-uppercase">or</span>
+          <hr class="border-top-gray flex-grow-1" />
         </div>
-        <!-- end form-group -->
-        <div class="form-group d-flex align-items-center justify-content-between">
-        <div class="custom-control custom-checkbox">
+
+        <!-- Step 1: Username / Email / Mobile -->
+        <div class="form-group position-relative mt-4">
+          <label class="label-text">Sign in with Mobile / Username / Email Id</label>
+          <input class="form-control form--control ps-3" type="text" name="loginId" id="loginId"
+          placeholder="Enter Mobile / Username / Email" />
+          <button type="button" class="arrow-btn" onclick="showNextField()">➜</button>
+        </div>
+
+        <!-- Step 2: Hidden initially -->
+        <div class="form-group hidden" id="passwordBox">
+          <label class="label-text">Password / OTP</label>
+          <div class="position-relative">
+          <input class="form-control form--control ps-3" type="password" name="password"
+            placeholder="Enter Password / OTP" />
+          </div>
+        </div>
+
+        <!-- Remember + Forgot -->
+        <div class="form-group d-flex align-items-center justify-content-between hidden" id="rememberBox">
+          <div class="custom-control custom-checkbox">
           <input type="checkbox" class="custom-control-input" id="RememberMe" />
           <label class="custom-control-label" for="RememberMe">Remember Me</label>
+          </div>
+          <a href="{{ Route('recover') }}" class="btn-link">Forgot password?</a>
         </div>
-        <a href="{{Route('recover')}}" class="btn-link">Forgot password?</a>
-        </div>
-        <!-- end form-group -->
-        <button class="theme-btn border-0" type="submit">
-        Login Now
+
+        <!-- Submit Button -->
+        <button class="theme-btn border-0 w-100 hidden" id="submitBtn" type="submit">
+          Login Now
         </button>
-        <p class="mt-3">
-        Not a member?
-        <a href="{{ Route('authentication-signup') }}" class="btn-link">Register</a>
+
+        <p class="mt-5 text-center">
+          Not a member?
+          <a href="{{ Route('authentication-signup') }}" class="btn-link">Register</a>
         </p>
-      </div>
+        </div>
       </form>
+      </div>
+
+      <!-- Styles -->
+
+
+      <!-- Script -->
+
+
+
     </div>
-    <!-- end col-lg-7 -->
     </div>
-    <!-- end container -->
   </section>
+
   <!-- end contact-area -->
   <!-- ================================
     END CONTACT AREA
   ================================= -->
+    <script>
+  function showNextField() {
+    let loginId = document.getElementById("loginId").value.trim();
+    if (loginId === "") {
+      alert("Please enter Mobile / Username / Email Id");
+      return;
+    }
+
+    // Show password/OTP + extra options
+    document.getElementById("passwordBox").classList.remove("hidden");
+    document.getElementById("rememberBox").classList.remove("hidden");
+    document.getElementById("submitBtn").classList.remove("hidden");
+
+    // Hide arrow button
+    document.querySelector(".arrow-btn").classList.add("hidden");
+  }
+</script>
 
 @endsection
