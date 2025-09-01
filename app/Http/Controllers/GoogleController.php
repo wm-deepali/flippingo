@@ -16,8 +16,7 @@ class GoogleController extends Controller
 {
     public function redirectToGoogle(Request $request)
     {
-        
-        
+    
         if(Auth::guard('customer')->check())
         {
             return redirect()->route('account-dashboard');

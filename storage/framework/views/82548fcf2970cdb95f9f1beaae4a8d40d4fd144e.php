@@ -1,10 +1,10 @@
-@extends('layouts.new-master')
 
-@section('title')
+
+<?php $__env->startSection('title'); ?>
 	Flippingo -Reset Password
-@endsection
+<?php $__env->stopSection(); ?>
 
-@section('content')
+<?php $__env->startSection('content'); ?>
 
 	<section class="breadcrumb-area bread-bg">
 		<div class="overlay"></div>
@@ -12,7 +12,7 @@
 			<div class="breadcrumb-content text-center">
 				<h2 class="sec__title text-white mb-3">Reset Password</h2>
 				<ul class="bread-list">
-					<li><a href="{{ Route('home') }}">home</a></li>
+					<li><a href="<?php echo e(Route('home')); ?>">home</a></li>
 					<li>Reset Password</li>
 				</ul>
 			</div>
@@ -26,14 +26,14 @@
 
 	<!--end breadcrumb-->
 	<!--start shop cart-->
-	@if (session('success'))
-		<h5 class="alert alert-success text-center">{{ Session::get('success') }}</h5><br>
+	<?php if(session('success')): ?>
+		<h5 class="alert alert-success text-center"><?php echo e(Session::get('success')); ?></h5><br>
 		<?php Session::forget('success');?>
-	@endif
-	@if (session('error'))
-		<h5 class="alert alert-danger text-center">{{ Session::get('error') }}</h5><br>
+	<?php endif; ?>
+	<?php if(session('error')): ?>
+		<h5 class="alert alert-danger text-center"><?php echo e(Session::get('error')); ?></h5><br>
 		<?php Session::forget('error');?>
-	@endif
+	<?php endif; ?>
 
 	<section class="recovery-area padding-top-60px padding-bottom-90px">
 		<div class="container">
@@ -50,11 +50,11 @@
 
 									<div class="form-body">
 										<form class="row g-3" id="registerForm" method="post"
-											action="{{ route('reset.password.post') }}" enctype="multipart/form-data">
-											@csrf
+											action="<?php echo e(route('reset.password.post')); ?>" enctype="multipart/form-data">
+											<?php echo csrf_field(); ?>
 
 											<!-- Hidden token from URL -->
-											<input type="hidden" name="token" value="{{ request()->route('token') }}">
+											<input type="hidden" name="token" value="<?php echo e(request()->route('token')); ?>">
 
 											<div class="col-12">
 												<label for="password" class="form-label">New Password</label>
@@ -89,8 +89,8 @@
 	</section>
 	<!--end shop cart-->
 
-@endsection
-@push('after-scripts')
+<?php $__env->stopSection(); ?>
+<?php $__env->startPush('after-scripts'); ?>
 	<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.6.4/jquery.min.js"></script>
 	<script src="
 					https://cdn.jsdelivr.net/npm/sweetalert2@11.11.0/dist/sweetalert2.all.min.js
@@ -100,4 +100,5 @@
 					" rel="stylesheet">
 
 
-@endpush
+<?php $__env->stopPush(); ?>
+<?php echo $__env->make('layouts.new-master', \Illuminate\Support\Arr::except(get_defined_vars(), ['__data', '__path']))->render(); ?><?php /**PATH D:\web-mingo-project\flippingo_admin\resources\views/front/forget-password-link.blade.php ENDPATH**/ ?>

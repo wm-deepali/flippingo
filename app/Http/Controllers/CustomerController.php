@@ -2,7 +2,7 @@
 
 namespace App\Http\Controllers;
 
-use App\Models\Quote;
+use App\Models\OTP;
 use Illuminate\Http\Request;
 use App\Models\Customer;
 use App\Models\CustomerTemp;
@@ -41,99 +41,283 @@ class CustomerController extends Controller
 
     public function authenticate(Request $request)
     {
-        // dd('ger');
+        // If already logged in
         if (Auth::guard('customer')->check()) {
-            return redirect()->route('account-dashboard');
-        } else {
-            $credentials = $request->validate([
-                'email' => 'required|email',
-                'password' => 'required'
+            // dd('here');
+            return response()->json([
+                'success' => true,
+                'redirect' => route('account-dashboard')
             ]);
-
-
-            $credentials = $request->only('email', 'password');
-            $customer = Customer::where('email', $request->email)->first();
-            if (!empty($customer)) {
-                if ($customer->email_verified_at == NULL) {
-                    $token = Str::random(64);
-                    CustomerVerify::create([
-                        'customer_id' => $customer->id,
-                        'token' => $token
-                    ]);
-                    $mailData = ['token' => $token];
-                    $mailContent = Mail::to($request->email)->send(new EmailVerificationEmail($mailData));
-                    return redirect()->route('authentication-signin')
-                        ->withErrors('Your email has not been verified yet, Verification Email sent, Please check your email in inbox, spam and junk folder.');
-                } else if ($customer->status != 'Active') {
-                    return redirect()->route('authentication-signin')
-                        ->withErrors('Your account has been blocked please contact to Admin.');
-                } else {
-                    if (Auth::guard('customer')->attempt($credentials)) {
-                        // dd(Auth::guard('customer')->user());
-                        return redirect()->route('account-dashboard')
-                            ->withSuccess('You have successfully logged in!');
-                    }
-
-
-                }
-
-            } else {
-                return back()->withErrors(['email' => 'Invalid email'])->onlyInput('email');
-            }
-            // return back()->withErrors(['email' => 'Invalid credentials'])->onlyInput('email');
-
         }
 
+        $loginId = $request->input('loginId');
+        $passwordOrOtp = $request->input('password');
+
+        // Check if it's a phone number
+        if (preg_match('/^[0-9]{10,15}$/', $loginId)) {
+            // === OTP Login Flow ===
+            $customer = Customer::where('mobile', $loginId)->first();
+
+            if (!$customer) {
+                return response()->json(['success' => false, 'message' => 'Mobile number not registered']);
+            }
+
+            $isValid = OTP::verifyOTP($loginId, $passwordOrOtp);
+
+            if (!$isValid) { // assuming otp stored in `otp` column
+                return response()->json(['success' => false, 'message' => 'Invalid OTP']);
+            }
+
+            if ($customer->status != 'active') {
+                return response()->json(['success' => false, 'message' => 'Your account is blocked']);
+            }
+
+            // OTP verified → log them in
+            Auth::guard('customer')->login($customer);
+
+            return response()->json([
+                'success' => true,
+                'message' => 'OTP login successful',
+                'redirect' => route('account-dashboard')
+            ]);
+        } else {
+            // === Email/Username + Password Login Flow ===
+            $credentials = $request->validate([
+                'loginId' => 'required|string',
+                'password' => 'required|string'
+            ]);
+
+            // Check by email OR username
+            $customer = Customer::where('email', $loginId)
+                ->orWhere('customer_id', $loginId)
+                ->first();
+
+            if (!$customer) {
+                return response()->json(['success' => false, 'message' => 'Invalid credentials']);
+            }
+
+            if ($customer->email_verified_at == null) {
+                // Send verification mail again
+                $token = Str::random(64);
+                CustomerVerify::create([
+                    'customer_id' => $customer->id,
+                    'token' => $token
+                ]);
+
+                Mail::to($customer->email)->send(new EmailVerificationEmail(['token' => $token]));
+
+                return response()->json([
+                    'success' => false,
+                    'message' => 'Email not verified. Verification email sent. Please check inbox/spam.'
+                ]);
+            }
+
+            if ($customer->status != 'active') {
+                return response()->json(['success' => false, 'message' => 'Your account has been blocked']);
+            }
+
+            // Try to login
+            if (Auth::guard('customer')->attempt(['email' => $customer->email, 'password' => $passwordOrOtp])) {
+                return response()->json([
+                    'success' => true,
+                    'message' => 'Login successful',
+                    'redirect' => route('account-dashboard')
+                ]);
+            }
+
+            return response()->json(['success' => false, 'message' => 'Invalid credentials']);
+        }
+    }
+
+
+    public function sendOtp(Request $request)
+    {
+        // Generate a six-digit OTP
+        $validator = Validator::make($request->all(), [
+            'mobile' => 'required|regex:/^[6-9]\d{9}$/',
+        ]);
+        if ($validator->fails()) {
+            return response()->json([
+                'success' => false,
+                'error' => 'Invalid Mobile number'
+            ], 422);
+        }
+        $otp = rand(100000, 999999);
+        $mobile_number = $request->mobile;
+        OTP::where('mobile', $mobile_number)->delete();
+
+        // Assuming you have a model named OTP for managing OTPs
+        OTP::create([
+            'mobile' => $mobile_number,
+            'otp' => $otp,
+            'expiry' => now()->addMinutes(10),
+        ]);
+
+
+
+        $message = "{$otp} is the OTP to verify your Mobile Number at https://ashtonwell.com. Please do not share this OTP with anyone. Regards Ashton & Well";
+
+        $dlt_id = '1707175291422915659';
+        $pe_id = '1701175290968159932';
+        $request_parameter = array(
+            'authkey' => '449195AevVjn7d6813877aP1',
+            'mobiles' => $mobile_number,
+            'sender' => 'ASHTWE',
+            'message' => urlencode($message),
+            'route' => '4',
+            'country' => '91',
+            //'unicode'   => '1',
+        );
+        $url = "http://sms.webmingo.in/api/sendhttp.php?";
+        foreach ($request_parameter as $key => $val) {
+            $url .= $key . '=' . $val . '&';
+        }
+        $url .= 'DLT_TE_ID=' . $dlt_id . '&PE_ID=' . $pe_id;
+        $url = rtrim($url, "&");
+
+        try {
+            $ch = curl_init();
+            curl_setopt($ch, CURLOPT_URL, $url);
+            curl_setopt($ch, CURLOPT_RETURNTRANSFER, 1);
+            curl_setopt($ch, CURLOPT_SSL_VERIFYPEER, false);
+            //get response
+            $output = curl_exec($ch);
+
+            curl_close($ch);
+            return response()->json([
+                'success' => true,
+                'message' => 'Otp Successfully Send on Your mobile number!',
+            ]);
+            // return true;
+        } catch (\Exception $e) {
+            //dd($e->getMessage());
+        }
+    }
+
+    public function verifyOTP(Request $request)
+    {
+        $mobile = $request->mobile;
+        $otp = $request->otp;
+
+        $isValid = OTP::verifyOTP($mobile, $otp);
+
+        if ($isValid) {
+            // Optionally delete OTP after successful verification
+            // OTP::deleteOTP($mobile, $otp);
+
+            return response()->json([
+                'success' => true,
+                'message' => 'OTP verified successfully!'
+            ]);
+        } else {
+            return response()->json([
+                'success' => false,
+                'error' => 'Invalid or expired OTP'
+            ], 422);
+        }
     }
 
 
     public function register(Request $request)
     {
-
         $validator = Validator::make($request->all(), [
+            'accountType' => 'required|in:individual,entity',
+            'legal_name' => 'nullable|string|max:250',
             'first_name' => 'required|string|max:250',
             'last_name' => 'required|string|max:250',
-            'email' => 'required|email|max:250|unique:customers',
-            'mobile' => 'required|unique:customers',
-            'password' => 'required|min:8',
-            'country' => 'required'
+            'email' => 'nullable|email|max:250|unique:customers',
+            'mobile' => 'nullable|unique:customers',
+            'password' => 'required|min:8|confirmed',
+            // 'country' => 'nullable|exists:countries,id',
         ]);
-        if ($validator->fails()) {
-            return redirect()->back()->withErrors($validator)->withInput();
+
+        // Require at least one (email OR mobile)
+        if (!$request->email && !$request->mobile) {
+            return response()->json([
+                'success' => false,
+                'error' => 'Either email or mobile is required'
+            ]);
         }
 
+        if ($validator->fails()) {
+            return response()->json([
+                'success' => false,
+                'error' => $validator->errors()->first()
+            ]);
+        }
+
+        // Check duplicate mobile
         $customerm = Customer::where('mobile', $request->mobile)->first();
         if ($customerm) {
-            \Session::put('error', 'Already Exists Mobile Number');
-            return redirect("authentication-signin");
+            return response()->json([
+                'success' => false,
+                'error' => 'Mobile number already exists'
+            ]);
         }
 
-
-        $customer = new customer();
-
+        $customer = new Customer();
+        $customer->account_type = $request->accountType;
+        $customer->legal_name = $request->accountType === 'entity' ? $request->legal_name : null;
         $customer->first_name = ucfirst($request->first_name);
         $customer->last_name = ucfirst($request->last_name);
         $customer->email = $request->email;
         $customer->mobile = $request->mobile;
-        $customer->customer_id = 'NUMPRINT' . date('y') . rand(1000, 9999);
-        $customer->mobile_verified_at = date('Y-m-d H:i:s');
+        $customer->customer_id = 'Flippingo' . date('y') . rand(1000, 9999);
         $customer->password = Hash::make($request->password);
-        $customer->country = $request->country;
+        // $customer->country = $request->country ?? null;
+
+        // Mobile verified instantly if signup with mobile
+        if ($request->mobile) {
+            $customer->mobile_verified_at = now();
+        }
+
+        // Email verification required if registered with email
+        if ($request->email) {
+            $customer->email_verified_at = null;
+        }
+
         $customer->save();
 
-        $token = Str::random(64);
-        CustomerVerify::create([
-            'customer_id' => $customer->id,
-            'token' => $token
+        // Send email verification only if email exists and not verified
+        if ($request->email && !$customer->mobile_verified_at) {
+            $token = Str::random(64);
+
+            CustomerVerify::create([
+                'customer_id' => $customer->id,
+                'token' => $token
+            ]);
+
+            $mailData = ['token' => $token];
+            Mail::to($request->email)->send(new EmailVerificationEmail($mailData));
+
+            return response()->json([
+                'success' => true,
+                'message' => 'Verification Email sent, Please check your inbox/spam',
+                'redirect' => route('authentication-signin')
+            ]);
+        }
+
+        return response()->json([
+            'success' => true,
+            'message' => 'Account created successfully.',
+            'redirect' => route('account-dashboard')
         ]);
-
-        $mailData = ['token' => $token];
-        $mailContent = Mail::to($request->email)->send(new EmailVerificationEmail($mailData));
-
-        return redirect()->route('authentication-signin')
-            ->withSuccess('Verification Email sent, Please check your email in inbox, spam and junk folder.');
     }
 
+    public function resendOtp()
+    {
+
+    }
+
+    // 🔄 Helper for validation failure
+    private function validationError($validator)
+    {
+        return response()->json([
+            'success' => false,
+            'code' => 422,
+            'errors' => $validator->errors(),
+        ]);
+    }
     public function verifyAccount($token)
     {
         $verifyUser = customerVerify::where('token', $token)->first();
@@ -195,7 +379,7 @@ class CustomerController extends Controller
             'profile_pic' => $customer_temp->profile_pic,
             'mobile_verified_at' => date('Y-m-d H:i:s'),
             'email_verified_at' => date('Y-m-d H:i:s'),
-
+            'password' => Hash::make($request->password)
         ]);
 
         $customer = Customer::find($customer->id);
@@ -203,9 +387,7 @@ class CustomerController extends Controller
             return redirect()->back()->with('error', 'Customer not found.');
         }
 
-
-        $customer->password = Hash::make($request->password);
-        $customer->customer_id = 'NUMPRINT' . date('y') . rand(1000, 9999);
+        $customer->customer_id = 'Flippingo' . date('y') . rand(1000, 9999);
         $customer->mobile = $request->mobile;
         $customer->save();
 
@@ -234,10 +416,12 @@ class CustomerController extends Controller
         ]);
 
         $mailData = ['token' => $token];
+        Mail::to($request->email)->send(new MailForgotPassword($mailData));
 
-        $mailContent = Mail::to($request->email)->send(new MailForgotPassword($mailData));
-
-        return back()->with('success', 'We have e-mailed your password reset link! Please check your email in inbox, spam and junk folder.');
+        return response()->json([
+            'status' => 'success',
+            'message' => 'We have e-mailed your password reset link! Please check your email in inbox, spam and junk folder.'
+        ]);
     }
 
     public function showResetPasswordForm($token)
@@ -283,24 +467,24 @@ class CustomerController extends Controller
         }
     }
 
-    public function orders()
-    {
-        if (Auth::guard('customer')->check()) {
-            $user = Auth::guard('customer')->user();
+    // public function orders()
+    // {
+    //     if (Auth::guard('customer')->check()) {
+    //         $user = Auth::guard('customer')->user();
 
-            // Fetch customer with their quotes
-            $data['user'] = $user;
-            $data['quotes'] = Quote::with(['items', 'billingAddress', 'deliveryAddress', 'documents', 'departments', 'payments', 'invoice'])
-                ->where('customer_id', $user->id)
-                ->orderBy('created_at', 'desc')
-                ->get();
+    //         // Fetch customer with their quotes
+    //         $data['user'] = $user;
+    //         $data['quotes'] = Quote::with(['items', 'billingAddress', 'deliveryAddress', 'documents', 'departments', 'payments', 'invoice'])
+    //             ->where('customer_id', $user->id)
+    //             ->orderBy('created_at', 'desc')
+    //             ->get();
 
-            return view('front.account-orders', $data);
-        } else {
-            return redirect()->route('authentication-signin')
-                ->withErrors('Please login to access the dashboard.');
-        }
-    }
+    //         return view('front.account-orders', $data);
+    //     } else {
+    //         return redirect()->route('authentication-signin')
+    //             ->withErrors('Please login to access the dashboard.');
+    //     }
+    // }
 
 
     public function downloads()

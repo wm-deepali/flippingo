@@ -1,12 +1,12 @@
-@extends('layouts.new-master')
 
-@section('title')
+
+<?php $__env->startSection('title'); ?>
     Flippingo -Dashboard
-@endsection
+<?php $__env->stopSection(); ?>
 
 
 
-@section('content')
+<?php $__env->startSection('content'); ?>
  <section class="breadcrumb-area bread-bg" style="margin-top: 50px;">
     <div class="overlay"></div>
     <!-- end overlay -->
@@ -14,7 +14,7 @@
       <div class="breadcrumb-content text-center">
         <h2 class="sec__title text-white mb-3">Dashboard</h2>
         <ul class="bread-list">
-          <li><a href="{{ Route('home') }}">home</a></li>
+          <li><a href="<?php echo e(Route('home')); ?>">home</a></li>
           <li>Dashboard</li>
         </ul>
       </div>
@@ -39,7 +39,7 @@
                                 <div class="card shadow-none mb-0">
                                     <div class="card-body">
                                         <p>Hello <strong>Madison Ruiz</strong> (not <strong>Madison Ruiz?</strong> <a
-                                                href="{{ route('account-logout') }}">Logout</a>)</p>
+                                                href="<?php echo e(route('account-logout')); ?>">Logout</a>)</p>
                                         <p>From your account dashboard you can view your Recent Orders, manage your
                                             shipping and billing addesses and edit your password and account details</p>
                                     </div>
@@ -80,7 +80,7 @@
                     <div class="card">
                         <div class="card-body">
                             <div class="row">
-                               	@include('layouts.includes.user-sidebar', ['activeMenu' => 'dashboard'])
+                               	<?php echo $__env->make('layouts.includes.user-sidebar', ['activeMenu' => 'dashboard'], \Illuminate\Support\Arr::except(get_defined_vars(), ['__data', '__path']))->render(); ?>
                                 <div class="col-lg-8">
                                     <div class="card shadow-none mb-0">
                                         <div class="card-body">
@@ -101,4 +101,5 @@
 
     <!--end page wrapper -->
 
-@endsection
+<?php $__env->stopSection(); ?>
+<?php echo $__env->make('layouts.new-master', \Illuminate\Support\Arr::except(get_defined_vars(), ['__data', '__path']))->render(); ?><?php /**PATH D:\web-mingo-project\flippingo_admin\resources\views/front/dashboard.blade.php ENDPATH**/ ?>

@@ -1,10 +1,11 @@
-@extends('layouts.new-master')
 
-@section('title')
-  {{ $page->meta_title ?? 'Flippingo' }}
-@endsection
 
-@section('content')
+<?php $__env->startSection('title'); ?>
+  <?php echo e($page->meta_title ?? 'Flippingo'); ?>
+
+<?php $__env->stopSection(); ?>
+
+<?php $__env->startSection('content'); ?>
 
   <section class="breadcrumb-area bread-bg">
     <div class="overlay"></div>
@@ -12,7 +13,7 @@
       <div class="breadcrumb-content text-center">
         <h2 class="sec__title text-white mb-3">Recover Password</h2>
         <ul class="bread-list">
-          <li><a href="{{ Route('home') }}">home</a></li>
+          <li><a href="<?php echo e(Route('home')); ?>">home</a></li>
           <li>Recover Password</li>
         </ul>
       </div>
@@ -29,15 +30,15 @@
       <div class="col-lg-7 mx-auto">
         <div class="card">
           <div class="card-body">
-            <form id="passwordForm" action="{{ route('password.email') }}" method="POST">
-              @csrf
-              @csrf
+            <form id="passwordForm" action="<?php echo e(route('password.email')); ?>" method="POST">
+              <?php echo csrf_field(); ?>
+              <?php echo csrf_field(); ?>
               <h4 class="card-title">Recover Password!</h4>
               <p class="card-text">
                 Enter the email of your account to reset password. Then you will
                 receive a link to email to reset the password.If you have any
                 issue about reset password
-                <a href="{{ Route('contact') }}" class="btn-link">Contact Us <i class="fal fa-angle-right ms-1"></i></a>
+                <a href="<?php echo e(Route('contact')); ?>" class="btn-link">Contact Us <i class="fal fa-angle-right ms-1"></i></a>
               </p>
               <hr class="border-top-gray" />
               <div id="alert-message"></div>
@@ -50,9 +51,9 @@
                 Reset Password
               </button>
               <p class="mt-3">
-                <a href="{{ Route('authentication-signin') }}" class="btn-link">Login</a>
+                <a href="<?php echo e(Route('authentication-signin')); ?>" class="btn-link">Login</a>
                 or
-                <a href="{{ Route('authentication-signup')  }}" class="btn-link">Register</a>
+                <a href="<?php echo e(Route('authentication-signup')); ?>" class="btn-link">Register</a>
               </p>
             </form>
           </div>
@@ -60,7 +61,7 @@
       </div>
     </div>
   </section>
-@endsection
+<?php $__env->stopSection(); ?>
 
 <script>
   document.addEventListener("DOMContentLoaded", function () {
@@ -76,7 +77,7 @@
       $("#alert-message").html(""); // clear old messages
 
       $.ajax({
-        url: "{{ route('authentication-forgot-password.post') }}",
+        url: "<?php echo e(route('authentication-forgot-password.post')); ?>",
         method: "POST",
         data: formData,
         success: function (response) {
@@ -104,3 +105,4 @@
     });
   });
 </script>
+<?php echo $__env->make('layouts.new-master', \Illuminate\Support\Arr::except(get_defined_vars(), ['__data', '__path']))->render(); ?><?php /**PATH D:\web-mingo-project\flippingo_admin\resources\views/front/recover.blade.php ENDPATH**/ ?>

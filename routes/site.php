@@ -169,11 +169,14 @@ Route::middleware(['web'])->group(function () {
 
     Route::controller(CustomerController::class)->group(function () {
         Route::get('/customer-data', 'getCustomerData');
+        Route::post('send-otp', 'sendOtp')->name('send.otp');
+        Route::post('/verify-otp', 'verifyOTP')->name('verify.otp');
+               Route::post('/resend-otp', 'resendOtp')->name('resend.otp');
 
         Route::get('add-required-details', 'addRequiredDetails')->name('first.details');
         Route::post('/check-email', 'checkEmail')->name('check-email');
         Route::get('account/verify/{token}', 'verifyAccount')->name('customer.verify');
-        Route::post('/customer-register', 'register')->name('customer-register');
+        Route::post('/customer-register', 'register')->name('customer.register');
         Route::post('/authenticate', 'authenticate')->name('customer.authenticate');
 
         Route::post('first/add-details/store', 'storeRequiredDetails')->name('first.details.store');
@@ -192,7 +195,7 @@ Route::middleware(['web'])->group(function () {
         Route::get('account-dashboard', [CustomerController::class, 'dashboard'])->name('account-dashboard');
         Route::get('account-orders', [CustomerController::class, 'orders'])->name('account-orders');
         Route::get('/view-invoice/{quote}', [CustomerController::class, 'viewInvoice'])->name('view-invoice');
-         Route::get('/order-details/{quote}', [CustomerController::class, 'orderDetails'])->name('order-details');
+        Route::get('/order-details/{quote}', [CustomerController::class, 'orderDetails'])->name('order-details');
         Route::get('account-downloads', [CustomerController::class, 'downloads'])->name('account-downloads');
         Route::get('account-addresses', [CustomerController::class, 'addresses'])->name('account-addresses');
         Route::get('account-payment-methods', [CustomerController::class, 'paymentmethods'])->name('account-payment-methods');
