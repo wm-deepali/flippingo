@@ -98,7 +98,8 @@
       <div class="container" style="max-width: 1260px;">
         <div class="main-header-action-wrap d-flex justify-content-between">
           <div class="logo">
-            <a href="<?php echo e(Route('home')); ?>"><img src="<?php echo e(asset('assets')); ?>/images/logo.png" alt="logo" width="180px" /></a>
+            <a href="<?php echo e(Route('home')); ?>"><img src="<?php echo e(asset('assets')); ?>/images/logo.png" alt="logo"
+                width="180px" /></a>
           </div>
 
           <div class="d-flex" style="width: 40%; align-items: center;margin-top: 15px;">
@@ -279,7 +280,8 @@
       <div class="row">
         <div class="col-lg-3 col-md-6">
           <div class="footer-item">
-            <a href=<?php echo e(Route('home')); ?> class="footer-logo mb-4 d-inline-block"><img src="<?php echo e(asset('assets')); ?>/images/logo.png" alt="logo"
+            <a href=<?php echo e(Route('home')); ?> class="footer-logo mb-4 d-inline-block"><img
+                src="<?php echo e(asset('assets')); ?>/images/logo.png" alt="logo"
                 style="background-color: #000; border-radius: 7px; padding: 7px 10px;" /></a>
             <p class="mb-4">
               Flippingo is a platform for Posting Free Ads - it only takes a few simple steps! Select the right category
@@ -393,6 +395,7 @@
   <script src="<?php echo e(asset('assets')); ?>/js/rating-script.js"></script>
   <script src="<?php echo e(asset('assets')); ?>/js/jquery.lazy.min.js"></script>
   <script src="<?php echo e(asset('assets')); ?>/js/main.js"></script>
+  <script src="//cdn.jsdelivr.net/npm/sweetalert2@11"></script>
 
 </body>
 

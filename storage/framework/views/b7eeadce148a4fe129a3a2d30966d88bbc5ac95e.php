@@ -1,6 +1,6 @@
-@extends('layouts.master')
 
-@section('content')
+
+<?php $__env->startSection('content'); ?>
     <style>
         #ef-widgets {
             height: 100%;
@@ -64,7 +64,7 @@
             box-shadow: 0 0 10px rgba(40, 167, 69, 0.5);
         }
 
-        @keyframes highlightPulse {
+        @keyframes  highlightPulse {
             0% {
                 transform: scale(1);
             }
@@ -180,16 +180,16 @@
             vertical-align: middle;
         }
     </style>
-    @push('styles')
+    <?php $__env->startPush('styles'); ?>
         <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/prismjs@1.29.0/themes/prism-okaidia.min.css">
-    @endpush
+    <?php $__env->stopPush(); ?>
 
     <div class="app-content content">
         <div class="content-wrapper">
             <div class="content-body">
                 <div class="row" id="form-builder-wrapper">
 
-                    {{-- Loader --}}
+                    
                     <div id="ef-loading" class="ef-loading w-100">
                         <div class="spinner-border text-primary" role="status"><span
                                 class="visually-hidden">Loading...</span></div>
@@ -224,11 +224,12 @@
                                             <label for="category_id" class="form-label"><strong>Category</strong></label>
                                             <select class="form-control" id="category_id" name="category_id">
                                                 <option value="">-- Select --</option>
-                                                @foreach($categories as $category)
-                                                    <option value="{{ $category->id }}" @if(isset($form->category_id) && $form->category_id == $category->id) selected @endif>
-                                                        {{ $category->name }}
+                                                <?php $__currentLoopData = $categories; $__env->addLoop($__currentLoopData); foreach($__currentLoopData as $category): $__env->incrementLoopIndices(); $loop = $__env->getLastLoop(); ?>
+                                                    <option value="<?php echo e($category->id); ?>" <?php if(isset($form->category_id) && $form->category_id == $category->id): ?> selected <?php endif; ?>>
+                                                        <?php echo e($category->name); ?>
+
                                                     </option>
-                                                @endforeach
+                                                <?php endforeach; $__env->popLoop(); $loop = $__env->getLastLoop(); ?>
                                             </select>
                                             <div id="categoryHelp" class="form-text">
                                                 Select a category for the form.
@@ -277,13 +278,14 @@
                         </div>
                     </div>
 
-                    {{-- Middle: Canvas --}}
+                    
                     <div id="ef-main" class="col-md-5 d-none">
                         <div id="canvas">
                             <form id="my-form" class="row">
-                                @csrf
-                                @method('PUT')
-                                {!! $formData->html !!}
+                                <?php echo csrf_field(); ?>
+                                <?php echo method_field('PUT'); ?>
+                                <?php echo $formData->html; ?>
+
                             </form>
                         </div>
                         <div class="mt-3">
@@ -293,7 +295,7 @@
                         </div>
                     </div>
 
-                    {{-- Right Sidebar --}}
+                    
                     <div id="ef-styles" class="col-md-3 d-none">
                         <div class="ef-sidebar-outer p-2">
                             <h5>Design</h5>
@@ -306,7 +308,7 @@
                     </div>
                 </div>
 
-                {{-- Saved modal --}}
+                
                 <div class="modal fade" id="savedModal" tabindex="-1" aria-hidden="true">
                     <div class="modal-dialog modal-lg">
                         <div class="modal-content">
@@ -317,9 +319,9 @@
                             <div class="modal-body">
                                 <p>What do you want to do?</p>
                                 <div class="list-group">
-                                    <a href="{{ route('admin.form.index') }}" class="list-group-item">Back to Form
+                                    <a href="<?php echo e(route('admin.form.index')); ?>" class="list-group-item">Back to Form
                                         Manager</a>
-                                    <a href="{{ route('admin.form.edit', $form->id) }}" id="editFormLink"
+                                    <a href="<?php echo e(route('admin.form.edit', $form->id)); ?>" id="editFormLink"
                                         class="list-group-item">Continue Editing</a>
                                 </div>
                             </div>
@@ -327,7 +329,7 @@
                     </div>
                 </div>
 
-                {{-- Toast --}}
+                
                 <div class="toast-container position-fixed bottom-0 end-0 p-3">
                     <div id="toast" class="toast text-bg-danger border-0">
                         <div class="d-flex">
@@ -341,18 +343,18 @@
                     </div>
                 </div>
 
-                {{-- Field Edit Modal --}}
-                @include('admin.form.partials.field-edit-modal')
+                
+                <?php echo $__env->make('admin.form.partials.field-edit-modal', \Illuminate\Support\Arr::except(get_defined_vars(), ['__data', '__path']))->render(); ?>
             </div>
         </div>
     </div>
-@endsection
+<?php $__env->stopSection(); ?>
 
-@push('scripts')
+<?php $__env->startPush('scripts'); ?>
 
-    @include('admin.form.partials.scripts')
+    <?php echo $__env->make('admin.form.partials.scripts', \Illuminate\Support\Arr::except(get_defined_vars(), ['__data', '__path']))->render(); ?>
 
-    {{-- Add edit page specific init --}}
+    
     <script>
         $(function () {
             // Hide loader and show UI
@@ -360,16 +362,16 @@
             $('#ef-widgets, #ef-main, #ef-styles').removeClass('d-none');
 
             // Pre-fill Settings panel
-            @if(isset($formData) && $formData->builder)
-                let builderSettings = @json($formData->builder);
-                $('#form-name').val(builderSettings.form_name || '{{ $form->name }}');
+            <?php if(isset($formData) && $formData->builder): ?>
+                let builderSettings = <?php echo json_encode($formData->builder, 15, 512) ?>;
+                $('#form-name').val(builderSettings.form_name || '<?php echo e($form->name); ?>');
                 $('#form-layout').val(builderSettings.form_layout || 'Vertical').trigger('change');
                 $('#disable-elements').prop('checked', builderSettings.disable_elements || false);
-            @endif
+            <?php endif; ?>
 
                 // Rebuild from JSON fields if required
-                @if(isset($formData) && $formData->fields)
-                    let savedFields = @json($formData->fields);
+                <?php if(isset($formData) && $formData->fields): ?>
+                    let savedFields = <?php echo json_encode($formData->fields, 15, 512) ?>;
                     $('#my-form').empty();
                     savedFields.forEach(f => {
                         let $fieldElement = $(`<div class="form-group" data-field-id="${f.id}" data-field-type="${f.type}">${getFieldHtml(f.type, f.id)}</div>`);
@@ -378,7 +380,7 @@
                         $('#my-form').append($fieldElement);
                     });
                     updateFieldCountersFromExisting();
-                @endif
+                <?php endif; ?>
 
             updateCodePreview();
 
@@ -415,7 +417,7 @@
                 $btn.prop('disabled', true);
 
                 $.ajax({
-                    url: "{{ route('admin.form.update', $form->id) }}",
+                    url: "<?php echo e(route('admin.form.update', $form->id)); ?>",
                     method: 'POST',
                     data: formData,
                     processData: false,
@@ -438,4 +440,5 @@
         });
 
     </script>
-@endpush
+<?php $__env->stopPush(); ?>
+<?php echo $__env->make('layouts.master', \Illuminate\Support\Arr::except(get_defined_vars(), ['__data', '__path']))->render(); ?><?php /**PATH D:\web-mingo-project\flippingo_admin\resources\views/admin/form/edit.blade.php ENDPATH**/ ?>

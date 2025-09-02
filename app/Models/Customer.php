@@ -35,6 +35,8 @@ class Customer extends Authenticatable
         'mobile_verified_at' => 'datetime',
     ];
 
+    protected $appends = ['listing_count'];  // Add this line to append listing_count
+
     public function countryname()
     {
         return $this->hasOne(Country::class, 'id', 'country');
@@ -54,4 +56,16 @@ class Customer extends Authenticatable
     {
         return $this->addresses()->where('type', 'shipping');
     }
+
+    public function submissions()
+    {
+        return $this->hasMany(FormSubmission::class, 'customer_id');
+    }
+
+    // Accessor to get count of verified listings only
+    public function getListingCountAttribute()
+    {
+        return $this->submissions()->where('published', true)->count();
+    }
+
 }

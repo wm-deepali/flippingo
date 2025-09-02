@@ -99,15 +99,23 @@
         <!--li class="nav-item"><a class="nav-link d-flex align-items-center" href="<?php echo e(route('slider.index')); ?>"><span>Slider</span></a></li-->
         <li class="dropdown nav-item" data-menu="dropdown">
           <a class="dropdown-toggle nav-link d-flex align-items-center" href="#" data-toggle="dropdown">
-            <span>Products Catalogue</span>
+            <span>Master</span>
           </a>
           <ul class="dropdown-menu">
             <li><a class="dropdown-item d-flex align-items-center"
                 href="<?php echo e(route('admin.manage-categories.index')); ?>"><span>Categories</span></a></li>
                 <li><a class="dropdown-item d-flex align-items-center"
                 href="<?php echo e(route('admin.form.index')); ?>"><span>Form Builder</span></a></li>
+                  <li><a class="dropdown-item d-flex align-items-center"
+                href="<?php echo e(route('admin.form-templates.index')); ?>"><span>Templates</span></a></li>
           </ul>
         </li>
+         <li>
+          <a class="dropdown-item d-flex align-items-center" href="<?php echo e(route('admin.form-submissions.index')); ?>">
+            <span>Form submissions</span>
+          </a>
+        </li>
+
       </ul>
     </div>
   </div>

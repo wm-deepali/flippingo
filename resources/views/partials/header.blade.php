@@ -109,6 +109,12 @@
                 href="{{ route('admin.form-templates.index') }}"><span>Templates</span></a></li>
           </ul>
         </li>
+         <li>
+          <a class="dropdown-item d-flex align-items-center" href="{{ route('admin.form-submissions.index') }}">
+            <span>Form submissions</span>
+          </a>
+        </li>
+
       </ul>
     </div>
   </div>

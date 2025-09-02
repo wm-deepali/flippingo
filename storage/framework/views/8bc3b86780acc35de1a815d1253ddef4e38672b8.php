@@ -1,6 +1,6 @@
-@extends('layouts.master')
 
-@section('content')
+
+<?php $__env->startSection('content'); ?>
 <style>
     .form-label { font-weight: bold; }
 </style>
@@ -9,10 +9,10 @@
     <div class="content-wrapper">
         <div class="content-body">
 
-            {{-- Top page toolbar --}}
+            
             <div class="row mb-2">
                 <div class="col-12 d-flex justify-content-end">
-                    <a href="{{ route('admin.form.index') }}" class="btn btn-outline-secondary">
+                    <a href="<?php echo e(route('admin.form.index')); ?>" class="btn btn-outline-secondary">
                         <i class="fas fa-arrow-left"></i> Back to Forms
                     </a>
                 </div>
@@ -24,8 +24,9 @@
                     <div class="card shadow-sm rounded">
                         <div class="card-body" style="background: #fff; padding:20px;">
 
-                            {{-- Render saved HTML --}}
-                            {!! $formData->html !!}
+                            
+                            <?php echo $formData->html; ?>
+
 
                         </div>
                     </div>
@@ -35,9 +36,9 @@
         </div>
     </div>
 </div>
-@endsection
+<?php $__env->stopSection(); ?>
 
-@push('scripts')
+<?php $__env->startPush('scripts'); ?>
 <script>
   document.addEventListener('DOMContentLoaded', function () {
     // Query all canvases with id starting with 'signature_'
@@ -98,4 +99,6 @@
 <script src="https://cdn.jsdelivr.net/npm/signature_pad@4.0.0/dist/signature_pad.umd.min.js"></script>
 <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
 <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
-@endpush
+<?php $__env->stopPush(); ?>
+
+<?php echo $__env->make('layouts.master', \Illuminate\Support\Arr::except(get_defined_vars(), ['__data', '__path']))->render(); ?><?php /**PATH D:\web-mingo-project\flippingo_admin\resources\views/admin/form/show.blade.php ENDPATH**/ ?>

@@ -2057,930 +2057,952 @@
 @section('content')
 
   <!-- ================================
-    START HERO-WRAPPER AREA
-    ================================= -->
+                            START HERO-WRAPPER AREA
+                            ================================= -->
   <!-- <section class="hero-wrapper hero-bg">
-    <div class="overlay"></div>
+                            <div class="overlay"></div>
 
-    <div class="container">
-      <div class="hero-heading text-center">
-      <h2 class="sec__title text-white cd-headline zoom">
-      What are you interested in
-      <span class="cd-words-wrapper">
-      <b class="is-visible">Monetized Website</b>
-      <b>Mobile Applications</b>
-      <b>Adwords Accounts</b>
-      <b>Facebook </b>
-      <b>Instagram</b>
-      <b>Telegram Groups</b>
+                            <div class="container">
+                              <div class="hero-heading text-center">
+                              <h2 class="sec__title text-white cd-headline zoom">
+                              What are you interested in
+                              <span class="cd-words-wrapper">
+                              <b class="is-visible">Monetized Website</b>
+                              <b>Mobile Applications</b>
+                              <b>Adwords Accounts</b>
+                              <b>Facebook </b>
+                              <b>Instagram</b>
+                              <b>Telegram Groups</b>
 
-      </span>
-      </h2>
+                              </span>
+                              </h2>
 
-      </div>
-      <div class="highlighted-categories text-center mt-5">
-      <p class="highlighted__title text-white">
-      Or browse featured categories:
-      </p>
-      <div class="highlight-lists d-flex flex-wrap justify-content-center mt-4">
-      <a href="#" class="highlight-category">
-      <span class="fal fa-building icon-element d-block mx-auto"></span>
-      Monetized Website
-      </a>
-      <a href="#" class="highlight-category">
-      <span class="fal fa-utensils icon-element d-block mx-auto"></span>
-      Mobile Applications
-      </a>
-      <a href="#" class="highlight-category">
-      <span class="fal fa-plane icon-element d-block mx-auto"></span>
-      Adwords Accounts
-      </a>
-      <a href="#" class="highlight-category">
-      <span class="fal fa-music icon-element d-block mx-auto"></span>
-      Facebook 
-      </a>
-      <a href="#" class="highlight-category">
-      <span class="fal fa-dumbbell icon-element d-block mx-auto"></span>
-      Instagram
-      </a>
-      <a href="#" class="highlight-category">
-      <span class="fal fa-hotel icon-element d-block mx-auto"></span>
-      Telegram Groups
-      </a>
-      </div>
-      </div>
+                              </div>
+                              <div class="highlighted-categories text-center mt-5">
+                              <p class="highlighted__title text-white">
+                              Or browse featured categories:
+                              </p>
+                              <div class="highlight-lists d-flex flex-wrap justify-content-center mt-4">
+                              <a href="#" class="highlight-category">
+                              <span class="fal fa-building icon-element d-block mx-auto"></span>
+                              Monetized Website
+                              </a>
+                              <a href="#" class="highlight-category">
+                              <span class="fal fa-utensils icon-element d-block mx-auto"></span>
+                              Mobile Applications
+                              </a>
+                              <a href="#" class="highlight-category">
+                              <span class="fal fa-plane icon-element d-block mx-auto"></span>
+                              Adwords Accounts
+                              </a>
+                              <a href="#" class="highlight-category">
+                              <span class="fal fa-music icon-element d-block mx-auto"></span>
+                              Facebook 
+                              </a>
+                              <a href="#" class="highlight-category">
+                              <span class="fal fa-dumbbell icon-element d-block mx-auto"></span>
+                              Instagram
+                              </a>
+                              <a href="#" class="highlight-category">
+                              <span class="fal fa-hotel icon-element d-block mx-auto"></span>
+                              Telegram Groups
+                              </a>
+                              </div>
+                              </div>
 
-    </div>
+                            </div>
 
-    </section> -->
+                            </section> -->
   <section class="hero-section" id="home" style="margin-top: 90px;">
     <div class="container">
-    <div class="row align-items-center">
-      <div class="col-xl-6">
-      <div class="hero-section-text">
-        <h1>#1 Platform to Buy & Sell Digital Assets</h1>
-        <p>Flippingo is a platform for Posting Free Ads - it only takes a few simple steps! Select the right
-        category and publish your classified ad for free.</p>
-        <div class="video">
+      <div class="row align-items-center">
+        <div class="col-xl-6">
+          <div class="hero-section-text">
+            <h1>#1 Platform to Buy & Sell Digital Assets</h1>
+            <p>Flippingo is a platform for Posting Free Ads - it only takes a few simple steps! Select the right
+              category and publish your classified ad for free.</p>
+            <div class="video">
 
-        <!-- Modal -->
-        <div class="modal fade" id="formmodal" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
-          <div class="modal-dialog">
-          <div class="modal-content">
+              <!-- Modal -->
+              <div class="modal fade" id="formmodal" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
+                <div class="modal-dialog">
+                  <div class="modal-content">
 
-            <div class="modal-body">
-            <form role="form" class="get-a-quote" id="contact-form" method="post">
-              <div class="mb-lg-2 mb-2 d-flex align-items-center">
+                    <div class="modal-body">
+                      <form role="form" class="get-a-quote" id="contact-form" method="post">
+                        <div class="mb-lg-2 mb-2 d-flex align-items-center">
 
-              <div>
-                <h2>Search Listing</h2>
-              </div>
+                          <div>
+                            <h2>Search Listing</h2>
+                          </div>
 
-              <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
-              </div>
-              <div class="group-img">
-              <svg width="18" height="18" viewBox="0 0 18 18" fill="none" xmlns="http://www.w3.org/2000/svg">
-                <path
-                d="M15.364 11.636C14.3837 10.6558 13.217 9.93013 11.9439 9.49085C13.3074 8.55179 14.2031 6.9802 14.2031 5.20312C14.2031 2.33413 11.869 0 9 0C6.131 0 3.79688 2.33413 3.79688 5.20312C3.79688 6.9802 4.69262 8.55179 6.05609 9.49085C4.78308 9.93013 3.61631 10.6558 2.63605 11.636C0.936176 13.3359 0 15.596 0 18H1.40625C1.40625 13.8128 4.81279 10.4062 9 10.4062C13.1872 10.4062 16.5938 13.8128 16.5938 18H18C18 15.596 17.0638 13.3359 15.364 11.636ZM9 9C6.90641 9 5.20312 7.29675 5.20312 5.20312C5.20312 3.1095 6.90641 1.40625 9 1.40625C11.0936 1.40625 12.7969 3.1095 12.7969 5.20312C12.7969 7.29675 11.0936 9 9 9Z"
-                fill="#555555"></path>
-              </svg>
-              <input type="text" name="name" placeholder="Full Name" required="">
-              </div>
-              <div class="group-img">
-              <svg width="22" height="18" viewBox="0 0 22 18" fill="none" xmlns="http://www.w3.org/2000/svg">
-                <path
-                d="M15.8649 18H6.13513C2.58377 18 0.540527 15.9568 0.540527 12.4054V5.5946C0.540527 2.04324 2.58377 0 6.13513 0H15.8649C19.4162 0 21.4595 2.04324 21.4595 5.5946V12.4054C21.4595 15.9568 19.4162 18 15.8649 18ZM6.13513 1.45946C3.35242 1.45946 1.99999 2.81189 1.99999 5.5946V12.4054C1.99999 15.1881 3.35242 16.5406 6.13513 16.5406H15.8649C18.6476 16.5406 20 15.1881 20 12.4054V5.5946C20 2.81189 18.6476 1.45946 15.8649 1.45946H6.13513Z"
-                fill="#444444"></path>
-                <path
-                d="M10.9988 9.8465C10.1815 9.8465 9.35452 9.59352 8.72208 9.07785L5.67668 6.64539C5.36532 6.39241 5.30696 5.93511 5.55992 5.62376C5.8129 5.31241 6.2702 5.25403 6.58155 5.50701L9.62695 7.93947C10.3664 8.53298 11.6215 8.53298 12.361 7.93947L15.4064 5.50701C15.7178 5.25403 16.1848 5.30268 16.428 5.62376C16.681 5.93511 16.6324 6.40214 16.3113 6.64539L13.2659 9.07785C12.6432 9.59352 11.8161 9.8465 10.9988 9.8465Z"
-                fill="#444444"></path>
-              </svg>
-              <input type="text" name="email" placeholder="Email Address" required="">
-              </div>
-              <div class="group-img">
-              <svg fill="none" height="112" viewBox="0 0 24 24" width="112"
-                xmlns="http://www.w3.org/2000/svg">
-                <g clip-rule="evenodd" fill="rgb(0,0,0)" fill-rule="evenodd">
-                <path
-                  d="m7 2.75c-.41421 0-.75.33579-.75.75v17c0 .4142.33579.75.75.75h10c.4142 0 .75-.3358.75-.75v-17c0-.41421-.3358-.75-.75-.75zm-2.25.75c0-1.24264 1.00736-2.25 2.25-2.25h10c1.2426 0 2.25 1.00736 2.25 2.25v17c0 1.2426-1.0074 2.25-2.25 2.25h-10c-1.24264 0-2.25-1.0074-2.25-2.25z">
-                </path>
-                <path
-                  d="m10.25 5c0-.41421.3358-.75.75-.75h2c.4142 0 .75.33579.75.75s-.3358.75-.75.75h-2c-.4142 0-.75-.33579-.75-.75z">
-                </path>
-                <path
-                  d="m9.25 19c0-.4142.33579-.75.75-.75h4c.4142 0 .75.3358.75.75s-.3358.75-.75.75h-4c-.41421 0-.75-.3358-.75-.75z">
-                </path>
-                </g>
-              </svg>
-              <input type="text" name="mobile" placeholder="Mobile Number"
-                oninput="this.value = this.value.replace(/[^0-9-+]/g, ''); this.value = this.value.replace(/(\..*)\./g, '$1');"
-                maxlength="10" minlength="8" required="">
-              <input type="hidden" name="form_type" value="button">
-              </div>
-              <div class="group-img">
-              <img src="{{ asset('site_assets') }}/img/dropdown.svg">
-              <select id="#" class="minimal" name="course">
-                <option value="Websites">Websites</option>
+                          <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                        </div>
+                        <div class="group-img">
+                          <svg width="18" height="18" viewBox="0 0 18 18" fill="none" xmlns="http://www.w3.org/2000/svg">
+                            <path
+                              d="M15.364 11.636C14.3837 10.6558 13.217 9.93013 11.9439 9.49085C13.3074 8.55179 14.2031 6.9802 14.2031 5.20312C14.2031 2.33413 11.869 0 9 0C6.131 0 3.79688 2.33413 3.79688 5.20312C3.79688 6.9802 4.69262 8.55179 6.05609 9.49085C4.78308 9.93013 3.61631 10.6558 2.63605 11.636C0.936176 13.3359 0 15.596 0 18H1.40625C1.40625 13.8128 4.81279 10.4062 9 10.4062C13.1872 10.4062 16.5938 13.8128 16.5938 18H18C18 15.596 17.0638 13.3359 15.364 11.636ZM9 9C6.90641 9 5.20312 7.29675 5.20312 5.20312C5.20312 3.1095 6.90641 1.40625 9 1.40625C11.0936 1.40625 12.7969 3.1095 12.7969 5.20312C12.7969 7.29675 11.0936 9 9 9Z"
+                              fill="#555555"></path>
+                          </svg>
+                          <input type="text" name="name" placeholder="Full Name" required="">
+                        </div>
+                        <div class="group-img">
+                          <svg width="22" height="18" viewBox="0 0 22 18" fill="none" xmlns="http://www.w3.org/2000/svg">
+                            <path
+                              d="M15.8649 18H6.13513C2.58377 18 0.540527 15.9568 0.540527 12.4054V5.5946C0.540527 2.04324 2.58377 0 6.13513 0H15.8649C19.4162 0 21.4595 2.04324 21.4595 5.5946V12.4054C21.4595 15.9568 19.4162 18 15.8649 18ZM6.13513 1.45946C3.35242 1.45946 1.99999 2.81189 1.99999 5.5946V12.4054C1.99999 15.1881 3.35242 16.5406 6.13513 16.5406H15.8649C18.6476 16.5406 20 15.1881 20 12.4054V5.5946C20 2.81189 18.6476 1.45946 15.8649 1.45946H6.13513Z"
+                              fill="#444444"></path>
+                            <path
+                              d="M10.9988 9.8465C10.1815 9.8465 9.35452 9.59352 8.72208 9.07785L5.67668 6.64539C5.36532 6.39241 5.30696 5.93511 5.55992 5.62376C5.8129 5.31241 6.2702 5.25403 6.58155 5.50701L9.62695 7.93947C10.3664 8.53298 11.6215 8.53298 12.361 7.93947L15.4064 5.50701C15.7178 5.25403 16.1848 5.30268 16.428 5.62376C16.681 5.93511 16.6324 6.40214 16.3113 6.64539L13.2659 9.07785C12.6432 9.59352 11.8161 9.8465 10.9988 9.8465Z"
+                              fill="#444444"></path>
+                          </svg>
+                          <input type="text" name="email" placeholder="Email Address" required="">
+                        </div>
+                        <div class="group-img">
+                          <svg fill="none" height="112" viewBox="0 0 24 24" width="112"
+                            xmlns="http://www.w3.org/2000/svg">
+                            <g clip-rule="evenodd" fill="rgb(0,0,0)" fill-rule="evenodd">
+                              <path
+                                d="m7 2.75c-.41421 0-.75.33579-.75.75v17c0 .4142.33579.75.75.75h10c.4142 0 .75-.3358.75-.75v-17c0-.41421-.3358-.75-.75-.75zm-2.25.75c0-1.24264 1.00736-2.25 2.25-2.25h10c1.2426 0 2.25 1.00736 2.25 2.25v17c0 1.2426-1.0074 2.25-2.25 2.25h-10c-1.24264 0-2.25-1.0074-2.25-2.25z">
+                              </path>
+                              <path
+                                d="m10.25 5c0-.41421.3358-.75.75-.75h2c.4142 0 .75.33579.75.75s-.3358.75-.75.75h-2c-.4142 0-.75-.33579-.75-.75z">
+                              </path>
+                              <path
+                                d="m9.25 19c0-.4142.33579-.75.75-.75h4c.4142 0 .75.3358.75.75s-.3358.75-.75.75h-4c-.41421 0-.75-.3358-.75-.75z">
+                              </path>
+                            </g>
+                          </svg>
+                          <input type="text" name="mobile" placeholder="Mobile Number"
+                            oninput="this.value = this.value.replace(/[^0-9-+]/g, ''); this.value = this.value.replace(/(\..*)\./g, '$1');"
+                            maxlength="10" minlength="8" required="">
+                          <input type="hidden" name="form_type" value="button">
+                        </div>
+                        <div class="group-img">
+                          <img src="{{ asset('site_assets') }}/img/dropdown.svg">
+                          <select id="#" class="minimal" name="course">
+                            <option value="Websites">Websites</option>
 
-                <option value="Theme And Scripts">Theme And Scripts</option>
-                <option value="Twitter Account">Twitter Account</option>
-                <option value="Instagram Pages">Instagram Pages</option>
-                <option value="Facebook Account">Facebook Account</option>
+                            <option value="Theme And Scripts">Theme And Scripts</option>
+                            <option value="Twitter Account">Twitter Account</option>
+                            <option value="Instagram Pages">Instagram Pages</option>
+                            <option value="Facebook Account">Facebook Account</option>
 
-                <option value="Facebook Account">Telegram Account</option>
-                <option value="Facebook Account">Youtube Channel</option>
+                            <option value="Facebook Account">Telegram Account</option>
+                            <option value="Facebook Account">Youtube Channel</option>
 
-              </select>
+                          </select>
+                        </div>
+                        <div class="row">
+                          <div class="col-6">
+                            <button type="submit" name="submit" class="btn batton">Submit</button>
+                          </div>
+                          <div class="col-6">
+                            <button type="button" class="btn batton b" data-bs-dismiss="modal">Close</button>
+                          </div>
+                        </div>
+                      </form>
+
+                    </div>
+
+                  </div>
+                </div>
               </div>
-              <div class="row">
-              <div class="col-6">
-                <button type="submit" name="submit" class="btn batton">Submit</button>
-              </div>
-              <div class="col-6">
-                <button type="button" class="btn batton b" data-bs-dismiss="modal">Close</button>
-              </div>
-              </div>
-            </form>
 
             </div>
+            <div class="review-section">
+              <div class="swiper reviewSwiper">
+                <div class="swiper-wrapper" style="padding: 20px 20px;">
+                  <div class="review-sectio-host">
+                    <div class="col-md-6 col-12">
+                      <div class="review-card">
+                        <div class="review-source"><img
+                            src="https://upload.wikimedia.org/wikipedia/commons/5/5c/Trustpilot_logo.png"></div>
+                        <div class="review-stars review-card-star">
+                          <i class="fa fa-star"></i>
+                          <i class="fa fa-star"></i>
+                          <i class="fa fa-star"></i>
+                          <i class="fa fa-star"></i>
+                          <i class="fas fa-star-half-alt"></i>
 
-          </div>
-          </div>
-        </div>
+                        </div>
+                        <div class="review-text">
+                          TrustScore <b>4.7</b> <a href="#">50,111 reviews</a>
+                        </div>
+                      </div>
+                    </div>
 
-        </div>
-        <div class="review-section">
-        <div class="swiper reviewSwiper">
-          <div class="swiper-wrapper" style="padding: 20px 20px;">
-          <div class="review-sectio-host">
-            <div class="col-md-6 col-12">
-            <div class="review-card">
-              <div class="review-source"><img
-                src="https://upload.wikimedia.org/wikipedia/commons/5/5c/Trustpilot_logo.png"></div>
-              <div class="review-stars review-card-star">
-              <i class="fa fa-star"></i>
-              <i class="fa fa-star"></i>
-              <i class="fa fa-star"></i>
-              <i class="fa fa-star"></i>
-              <i class="fas fa-star-half-alt"></i>
+                    <!-- Google -->
+                    <div class="col-md-6 col-12">
+                      <div class="review-card">
+                        <div class="review-source review-res-img"><img
+                            src="https://upload.wikimedia.org/wikipedia/commons/thumb/2/2f/Google_2015_logo.svg/800px-Google_2015_logo.svg.png">
+                        </div>
+                        <div class="review-stars">
+                          <i class="fa fa-star"></i>
+                          <i class="fa fa-star"></i>
+                          <i class="fa fa-star"></i>
+                          <i class="fa fa-star"></i>
+                          <i class="fa fa-star"></i>
+                        </div>
+                        <div class="review-text">
+                          Rating: <b>4.8/5</b> (1,237 reviews)
+                        </div>
+                      </div>
+                    </div>
+                  </div>
 
-              </div>
-              <div class="review-text">
-              TrustScore <b>4.7</b> <a href="#">50,111 reviews</a>
+                  <!-- Review 1 -->
+                  <!-- <div class="swiper-slide review-card">
+
+                              <div class="platform-name"><img
+                              src="https://upload.wikimedia.org/wikipedia/commons/thumb/2/2f/Google_2015_logo.svg/800px-Google_2015_logo.svg.png "
+                              alt="">
+                              </div>
+                              <div class="stars">★★★☆☆</div>
+                              <p style="color: #000000; padding-bottom: 0px; padding-top: 10px;">Scan the QR code below to leave
+                              us a review</p>
+                              <div class="qr-code">
+                              <img src="{{ asset('assets') }}/images/qr.png">
+
+                              </div>
+                              <p class="review-summary text-center mt-1"> 265 Review</p>
+
+
+
+                              </div> -->
+
+                  <!-- Review 2 -->
+                  <!-- <div class="swiper-slide review-card">
+
+
+                              <div class="platform-name"><img
+                              src="https://upload.wikimedia.org/wikipedia/commons/5/5c/Trustpilot_logo.png " alt="">
+                              </div>
+                              <div class="stars">★★☆☆☆</div>
+                              <p style="color: #000000; padding-bottom: 0px; padding-top: 10px;">Scan the QR code below to leave
+                              us a review</p>
+                              <div class="qr-code">
+                              <img src="{{ asset('assets') }}/images/qr.png">
+
+                              </div>
+                              <p class="review-summary text-center mt-1 "> 265 Review</p>
+                              </div> -->
+
+                  <!-- Add more reviews -->
+                </div>
+
+                <!-- Arrows -->
+
               </div>
             </div>
+
+
+
+            <div class="play-button" style="margin-top: 30px;  width: 180px; border-radius: 25px;">
+              <a class="batton" href="{{ Route('listing-details') }}">View Listing</a>
+            </div>
+            <img alt="img" class="dots" src="{{ asset('site_assets') }}/img/dots.png">
+            <img alt="img" class="landing-slider" src="{{ asset('site_assets') }}/img/landing-slider.png">
+          </div>
+        </div>
+        <div class="col-xl-6" style="display: flex; justify-content: end;">
+          <!-- <form role="form" class="get-a-quote" id="contact-form" method="post">
+                              <div class="mb-lg-3 mb-3 d-flex align-items-center">
+                              <i>
+                              <svg enable-background="new 0 0 124 124" height="52" viewbox="0 0 124 124" width="52" xmlns="http://www.w3.org/2000/svg"><path d="m82.899 50.646c-6.059 0-10.988-4.918-10.988-10.963s4.929-10.963 10.988-10.963 10.988 4.918 10.988 10.963-4.929 10.963-10.988 10.963zm0-17.979c-3.877 0-7.031 3.147-7.031 7.015s3.154 7.015 7.031 7.015 7.031-3.147 7.031-7.015-3.154-7.015-7.031-7.015z"></path><path d="m122.558 2.183c-.069-.986-.853-1.773-1.841-1.848-14.728-1.125-41.975-.347-58.941 17.482-.002.002-.005.004-.007.007-2.3 2.441-4.418 5.209-6.382 8.136-24.65 8.882-35.589 25.07-38.168 33.298-.376 1.202.496 2.487 1.756 2.582l17.94 1.359c-1.478 3.901-2.824 7.823-4.017 11.748-.215.706-.02 1.472.504 1.992l11.995 11.891c.513.508 1.288.703 1.98.495 4-1.194 7.996-2.545 11.97-4.027l1.381 17.923c.097 1.253 1.377 2.122 2.581 1.752 7.562-2.328 24.216-13.247 33.545-37.919 2.953-1.954 5.73-4.064 8.153-6.359 17.668-16.682 18.58-43.82 17.551-58.512-.07-.987 1.029 14.692 0 0zm-3.878 2.008c.413 7.551.219 17.908-2.38 28.202l-26.124-25.897c10.42-2.625 20.888-2.767 28.504-2.305zm-96.722 53.877c3.21-7.053 12.265-18.732 29.892-26.418-2.945 5.084-5.502 10.331-7.777 15.002-2.04 4.172-3.917 8.403-5.638 12.665zm42.549 42.183-1.267-16.452c4.264-1.695 8.496-3.541 12.668-5.545 4.732-2.244 10.045-4.763 15.169-7.669-7.959 17.563-19.588 26.513-26.57 29.666zm37.752-42.448c-7.489 7.094-18.422 12.277-28.076 16.854-8.762 4.212-17.778 7.744-26.816 10.507l-10.293-10.205c2.785-8.95 6.346-17.879 10.592-26.562 4.394-9.022 9.862-20.251 17.01-27.839 5.992-6.295 13.426-10.299 21.11-12.794l29.252 28.998c-2.497 7.687-6.497 15.108-12.779 21.041z"></path><path d="m4.185 122.808c-1.728 0-2.631-2.145-1.437-3.378l27.357-28.26c1.788-1.841 4.666.918 2.874 2.77l-27.357 28.259c-.392.405-.914.609-1.437.609z"></path><path d="m23.435 124c-1.688 0-2.609-2.063-1.493-3.318l17.73-19.91c1.71-1.913 4.7.723 2.987 2.648l-17.73 19.91c-.394.444-.943.67-1.494.67z"></path><path d="m2.982 104.917c-1.688 0-2.609-2.063-1.493-3.318l17.731-19.91c1.709-1.914 4.7.724 2.987 2.648l-17.731 19.91c-.395.444-.943.67-1.494.67z"></path></svg>
+                              </i>
+                              <div>
+                              <p class="p-0">Marketing Business campaign</p>
+                              <h2>Search Listing</h2>
+                              </div>
+                              </div>
+                              <div class="group-img">
+                              <svg width="18" height="18" viewbox="0 0 18 18" fill="none" xmlns="http://www.w3.org/2000/svg">
+                              <path d="M15.364 11.636C14.3837 10.6558 13.217 9.93013 11.9439 9.49085C13.3074 8.55179 14.2031 6.9802 14.2031 5.20312C14.2031 2.33413 11.869 0 9 0C6.131 0 3.79688 2.33413 3.79688 5.20312C3.79688 6.9802 4.69262 8.55179 6.05609 9.49085C4.78308 9.93013 3.61631 10.6558 2.63605 11.636C0.936176 13.3359 0 15.596 0 18H1.40625C1.40625 13.8128 4.81279 10.4062 9 10.4062C13.1872 10.4062 16.5938 13.8128 16.5938 18H18C18 15.596 17.0638 13.3359 15.364 11.636ZM9 9C6.90641 9 5.20312 7.29675 5.20312 5.20312C5.20312 3.1095 6.90641 1.40625 9 1.40625C11.0936 1.40625 12.7969 3.1095 12.7969 5.20312C12.7969 7.29675 11.0936 9 9 9Z" fill="#555555"></path>
+                              </svg>
+                              <input type="text" name="name" placeholder="I am looking for..." required="">
+                              </div>
+                              <div class="group-img">
+                              <svg width="22" height="18" viewbox="0 0 22 18" fill="none" xmlns="http://www.w3.org/2000/svg">
+                              <path d="M15.8649 18H6.13513C2.58377 18 0.540527 15.9568 0.540527 12.4054V5.5946C0.540527 2.04324 2.58377 0 6.13513 0H15.8649C19.4162 0 21.4595 2.04324 21.4595 5.5946V12.4054C21.4595 15.9568 19.4162 18 15.8649 18ZM6.13513 1.45946C3.35242 1.45946 1.99999 2.81189 1.99999 5.5946V12.4054C1.99999 15.1881 3.35242 16.5406 6.13513 16.5406H15.8649C18.6476 16.5406 20 15.1881 20 12.4054V5.5946C20 2.81189 18.6476 1.45946 15.8649 1.45946H6.13513Z" fill="#444444"></path>
+                              <path d="M10.9988 9.8465C10.1815 9.8465 9.35452 9.59352 8.72208 9.07785L5.67668 6.64539C5.36532 6.39241 5.30696 5.93511 5.55992 5.62376C5.8129 5.31241 6.2702 5.25403 6.58155 5.50701L9.62695 7.93947C10.3664 8.53298 11.6215 8.53298 12.361 7.93947L15.4064 5.50701C15.7178 5.25403 16.1848 5.30268 16.428 5.62376C16.681 5.93511 16.6324 6.40214 16.3113 6.64539L13.2659 9.07785C12.6432 9.59352 11.8161 9.8465 10.9988 9.8465Z" fill="#444444"></path>
+                              </svg>
+                              <input type="text" name="email" placeholder="Email Address" required="">
+                              </div>
+                              <div class="group-img">
+                              <svg fill="none" height="112" viewbox="0 0 24 24" width="112" xmlns="http://www.w3.org/2000/svg"><g clip-rule="evenodd" fill="rgb(0,0,0)" fill-rule="evenodd"><path d="m7 2.75c-.41421 0-.75.33579-.75.75v17c0 .4142.33579.75.75.75h10c.4142 0 .75-.3358.75-.75v-17c0-.41421-.3358-.75-.75-.75zm-2.25.75c0-1.24264 1.00736-2.25 2.25-2.25h10c1.2426 0 2.25 1.00736 2.25 2.25v17c0 1.2426-1.0074 2.25-2.25 2.25h-10c-1.24264 0-2.25-1.0074-2.25-2.25z"></path><path d="m10.25 5c0-.41421.3358-.75.75-.75h2c.4142 0 .75.33579.75.75s-.3358.75-.75.75h-2c-.4142 0-.75-.33579-.75-.75z"></path><path d="m9.25 19c0-.4142.33579-.75.75-.75h4c.4142 0 .75.3358.75.75s-.3358.75-.75.75h-4c-.41421 0-.75-.3358-.75-.75z"></path></g></svg>
+                              <input type="text" name="mobile" placeholder="Mobile Number" required="">
+                              <input type="hidden" name="form_type" value="banner">               
+                               </div>
+                              <div class="group-img">
+                              <img src="{{ asset('site_assets') }}/img/dropdown.svg"/>
+                              <select id="#" class="minimal" name="course">
+                              <option value="Websites">Websites</option>
+
+                              <option value="Theme And Scripts">Theme And Scripts</option>
+                              <option value="Twitter Account">Twitter Account</option>
+                              <option value="Instagram Pages">Instagram Pages</option>
+                              <option value="Facebook Account">Facebook Account</option>
+
+                              <option value="Facebook Account">Telegram Account</option>
+                               <option value="Facebook Account">Youtube Channel</option>
+                              </select>
+                              </div>
+
+                              <button type="submit" name="submit" class="btn batton" style="background-color: #0062ef; width: 100%; text-align: center;display: flex;justify-content: center;">Submit</button>
+                              </form>
+                              <div class="row mobile-v">
+                              <div class="col-6">
+                              <div class="btn-wh">
+                              <div class="bttn w">
+                              <a href="https://wa.me/+918809772278" target="_blank">
+                              <img src="{{ asset('site_assets') }}/img/wb.png"></a>
+                              </div>
+                              </div>
+                              </div>
+                              <div class="col-6">
+                              <div class="btn-wh ">
+                              <div class="bttn ">
+                              <a href="tel:+918809772278">
+
+                              <img src="./{{ asset('site_assets') }}/img/cb.png">
+                             </a>
+
+                              </div>
+                              </div>
+                              </div>
+                              </div> -->
+          <div class="right-form-card">
+            <h3>Search Listings</h3>
+
+            <!-- Search Input -->
+            <div class="form-group icon-input">
+              <i class="fas fa-search"></i>
+              <input type="text" placeholder="I'm looking for..." />
+            </div>
+            <div class="form-group country-dropdown">
+              <div class="dropdown-toggle" id="countryDropdownToggle">
+                <div>
+                  <i class="fa-solid fa-globe"
+                    style="color: #ffffff; font-size: 14px; background: black; padding: 4px; border-radius: 3px; margin-right: 5px;"></i>
+                  <span id="selectedCountry" style="font-weight: 300; color: #000;">Country</span>
+                </div>
+              </div>
+
+              <div class="dropdown-menu" id="countryDropdownMenu">
+                <ul style="padding-left: 20px;">
+                  <li onclick="selectCountry(this)" data-disabled="false">India</li>
+                  <li onclick="selectCountry(this)" data-disabled="false">America</li>
+                  <li onclick="selectCountry(this)" data-disabled="false">England</li>
+                </ul>
+              </div>
             </div>
 
-            <!-- Google -->
-            <div class="col-md-6 col-12">
-            <div class="review-card">
-              <div class="review-source review-res-img"><img
-                src="https://upload.wikimedia.org/wikipedia/commons/thumb/2/2f/Google_2015_logo.svg/800px-Google_2015_logo.svg.png">
+            <!-- Category Dropdown -->
+            <div class="form-group category-dropdown">
+              <div class="dropdown-toggle" onclick="toggleDropdown()">
+                <div>
+                  <i class="fas fa-tags" style=" color: #ffffff;
+                            font-size: 14px;
+                            background: black;
+                            padding: 4px;
+                            border-radius: 3px; 
+                            margin-right: 5px;"></i>
+                  <span id="selectedCategory" style="font-weight: 300; color: #000;">Category</span>
+                </div>
+                <!-- <i class="fas fa-chevron-down arrow-icon"></i> -->
+
               </div>
-              <div class="review-stars">
-              <i class="fa fa-star"></i>
-              <i class="fa fa-star"></i>
-              <i class="fa fa-star"></i>
-              <i class="fa fa-star"></i>
-              <i class="fa fa-star"></i>
-              </div>
-              <div class="review-text">
-              Rating: <b>4.8/5</b> (1,237 reviews)
+
+              <div class="dropdown-menu" id="dropdownMenu">
+                <input type="text" placeholder="Search..." class="dropdown-search"
+                  oninput="filterCategories(this.value)" />
+                <ul id="categoryList">
+                  <li onclick="selectCategory(this)" data-disabled="false">
+                    Websites <span class="badge">1</span>
+                  </li>
+                  <li onclick="selectCategory(this)" data-disabled="true" class="disabled">
+                    Facebook Account <span class="badge">0</span>
+                  </li>
+                  <li onclick="selectCategory(this)" data-disabled="false">
+                    Instagram Pages <span class="badge">0</span>
+                  </li>
+                  <li onclick="selectCategory(this)" data-disabled="false">
+                    Telegram Account <span class="badge">0</span>
+                  </li>
+                  <li onclick="selectCategory(this)" data-disabled="false">
+                    Theme And Scripts <span class="badge">0</span>
+                  </li>
+                  <li onclick="selectCategory(this)" data-disabled="false">
+                    Twitter Account <span class="badge">0</span>
+                  </li>
+                  <li onclick="selectCategory(this)" data-disabled="false">
+                    YouTube Channel <span class="badge">0</span>
+                  </li>
+                </ul>
               </div>
             </div>
+
+
+            <!-- Price Range -->
+            <div class="form-group price-range">
+              <div class="icon-input">
+                <!-- <i class="fas fa-dollar-sign"></i> -->
+                <input type="number" placeholder="Min Price" />
+              </div>
+              <span>-</span>
+              <div class="icon-input">
+                <!-- <i class="fas fa-dollar-sign"></i> -->
+                <input type="number" placeholder="Max Price" />
+              </div>
             </div>
+
+            <button class="search-btn">Search</button>
           </div>
 
-          <!-- Review 1 -->
-          <!-- <div class="swiper-slide review-card">
-
-      <div class="platform-name"><img
-      src="https://upload.wikimedia.org/wikipedia/commons/thumb/2/2f/Google_2015_logo.svg/800px-Google_2015_logo.svg.png "
-      alt="">
-      </div>
-      <div class="stars">★★★☆☆</div>
-      <p style="color: #000000; padding-bottom: 0px; padding-top: 10px;">Scan the QR code below to leave
-      us a review</p>
-      <div class="qr-code">
-      <img src="{{ asset('assets') }}/images/qr.png">
-
-      </div>
-      <p class="review-summary text-center mt-1"> 265 Review</p>
-
-
-
-      </div> -->
-
-          <!-- Review 2 -->
-          <!-- <div class="swiper-slide review-card">
-
-
-      <div class="platform-name"><img
-      src="https://upload.wikimedia.org/wikipedia/commons/5/5c/Trustpilot_logo.png " alt="">
-      </div>
-      <div class="stars">★★☆☆☆</div>
-      <p style="color: #000000; padding-bottom: 0px; padding-top: 10px;">Scan the QR code below to leave
-      us a review</p>
-      <div class="qr-code">
-      <img src="{{ asset('assets') }}/images/qr.png">
-
-      </div>
-      <p class="review-summary text-center mt-1 "> 265 Review</p>
-      </div> -->
-
-          <!-- Add more reviews -->
-          </div>
-
-          <!-- Arrows -->
 
         </div>
-        </div>
-
-
-
-        <div class="play-button" style="margin-top: 30px;  width: 180px; border-radius: 25px;">
-        <a class="batton" href="{{ Route('listing-details') }}">View Listing</a>
-        </div>
-        <img alt="img" class="dots" src="{{ asset('site_assets') }}/img/dots.png">
-        <img alt="img" class="landing-slider" src="{{ asset('site_assets') }}/img/landing-slider.png">
       </div>
-      </div>
-      <div class="col-xl-6" style="display: flex; justify-content: end;">
-      <!-- <form role="form" class="get-a-quote" id="contact-form" method="post">
-      <div class="mb-lg-3 mb-3 d-flex align-items-center">
-      <i>
-      <svg enable-background="new 0 0 124 124" height="52" viewbox="0 0 124 124" width="52" xmlns="http://www.w3.org/2000/svg"><path d="m82.899 50.646c-6.059 0-10.988-4.918-10.988-10.963s4.929-10.963 10.988-10.963 10.988 4.918 10.988 10.963-4.929 10.963-10.988 10.963zm0-17.979c-3.877 0-7.031 3.147-7.031 7.015s3.154 7.015 7.031 7.015 7.031-3.147 7.031-7.015-3.154-7.015-7.031-7.015z"></path><path d="m122.558 2.183c-.069-.986-.853-1.773-1.841-1.848-14.728-1.125-41.975-.347-58.941 17.482-.002.002-.005.004-.007.007-2.3 2.441-4.418 5.209-6.382 8.136-24.65 8.882-35.589 25.07-38.168 33.298-.376 1.202.496 2.487 1.756 2.582l17.94 1.359c-1.478 3.901-2.824 7.823-4.017 11.748-.215.706-.02 1.472.504 1.992l11.995 11.891c.513.508 1.288.703 1.98.495 4-1.194 7.996-2.545 11.97-4.027l1.381 17.923c.097 1.253 1.377 2.122 2.581 1.752 7.562-2.328 24.216-13.247 33.545-37.919 2.953-1.954 5.73-4.064 8.153-6.359 17.668-16.682 18.58-43.82 17.551-58.512-.07-.987 1.029 14.692 0 0zm-3.878 2.008c.413 7.551.219 17.908-2.38 28.202l-26.124-25.897c10.42-2.625 20.888-2.767 28.504-2.305zm-96.722 53.877c3.21-7.053 12.265-18.732 29.892-26.418-2.945 5.084-5.502 10.331-7.777 15.002-2.04 4.172-3.917 8.403-5.638 12.665zm42.549 42.183-1.267-16.452c4.264-1.695 8.496-3.541 12.668-5.545 4.732-2.244 10.045-4.763 15.169-7.669-7.959 17.563-19.588 26.513-26.57 29.666zm37.752-42.448c-7.489 7.094-18.422 12.277-28.076 16.854-8.762 4.212-17.778 7.744-26.816 10.507l-10.293-10.205c2.785-8.95 6.346-17.879 10.592-26.562 4.394-9.022 9.862-20.251 17.01-27.839 5.992-6.295 13.426-10.299 21.11-12.794l29.252 28.998c-2.497 7.687-6.497 15.108-12.779 21.041z"></path><path d="m4.185 122.808c-1.728 0-2.631-2.145-1.437-3.378l27.357-28.26c1.788-1.841 4.666.918 2.874 2.77l-27.357 28.259c-.392.405-.914.609-1.437.609z"></path><path d="m23.435 124c-1.688 0-2.609-2.063-1.493-3.318l17.73-19.91c1.71-1.913 4.7.723 2.987 2.648l-17.73 19.91c-.394.444-.943.67-1.494.67z"></path><path d="m2.982 104.917c-1.688 0-2.609-2.063-1.493-3.318l17.731-19.91c1.709-1.914 4.7.724 2.987 2.648l-17.731 19.91c-.395.444-.943.67-1.494.67z"></path></svg>
-      </i>
-      <div>
-      <p class="p-0">Marketing Business campaign</p>
-      <h2>Search Listing</h2>
-      </div>
-      </div>
-      <div class="group-img">
-      <svg width="18" height="18" viewbox="0 0 18 18" fill="none" xmlns="http://www.w3.org/2000/svg">
-      <path d="M15.364 11.636C14.3837 10.6558 13.217 9.93013 11.9439 9.49085C13.3074 8.55179 14.2031 6.9802 14.2031 5.20312C14.2031 2.33413 11.869 0 9 0C6.131 0 3.79688 2.33413 3.79688 5.20312C3.79688 6.9802 4.69262 8.55179 6.05609 9.49085C4.78308 9.93013 3.61631 10.6558 2.63605 11.636C0.936176 13.3359 0 15.596 0 18H1.40625C1.40625 13.8128 4.81279 10.4062 9 10.4062C13.1872 10.4062 16.5938 13.8128 16.5938 18H18C18 15.596 17.0638 13.3359 15.364 11.636ZM9 9C6.90641 9 5.20312 7.29675 5.20312 5.20312C5.20312 3.1095 6.90641 1.40625 9 1.40625C11.0936 1.40625 12.7969 3.1095 12.7969 5.20312C12.7969 7.29675 11.0936 9 9 9Z" fill="#555555"></path>
-      </svg>
-      <input type="text" name="name" placeholder="I am looking for..." required="">
-      </div>
-      <div class="group-img">
-      <svg width="22" height="18" viewbox="0 0 22 18" fill="none" xmlns="http://www.w3.org/2000/svg">
-      <path d="M15.8649 18H6.13513C2.58377 18 0.540527 15.9568 0.540527 12.4054V5.5946C0.540527 2.04324 2.58377 0 6.13513 0H15.8649C19.4162 0 21.4595 2.04324 21.4595 5.5946V12.4054C21.4595 15.9568 19.4162 18 15.8649 18ZM6.13513 1.45946C3.35242 1.45946 1.99999 2.81189 1.99999 5.5946V12.4054C1.99999 15.1881 3.35242 16.5406 6.13513 16.5406H15.8649C18.6476 16.5406 20 15.1881 20 12.4054V5.5946C20 2.81189 18.6476 1.45946 15.8649 1.45946H6.13513Z" fill="#444444"></path>
-      <path d="M10.9988 9.8465C10.1815 9.8465 9.35452 9.59352 8.72208 9.07785L5.67668 6.64539C5.36532 6.39241 5.30696 5.93511 5.55992 5.62376C5.8129 5.31241 6.2702 5.25403 6.58155 5.50701L9.62695 7.93947C10.3664 8.53298 11.6215 8.53298 12.361 7.93947L15.4064 5.50701C15.7178 5.25403 16.1848 5.30268 16.428 5.62376C16.681 5.93511 16.6324 6.40214 16.3113 6.64539L13.2659 9.07785C12.6432 9.59352 11.8161 9.8465 10.9988 9.8465Z" fill="#444444"></path>
-      </svg>
-      <input type="text" name="email" placeholder="Email Address" required="">
-      </div>
-      <div class="group-img">
-      <svg fill="none" height="112" viewbox="0 0 24 24" width="112" xmlns="http://www.w3.org/2000/svg"><g clip-rule="evenodd" fill="rgb(0,0,0)" fill-rule="evenodd"><path d="m7 2.75c-.41421 0-.75.33579-.75.75v17c0 .4142.33579.75.75.75h10c.4142 0 .75-.3358.75-.75v-17c0-.41421-.3358-.75-.75-.75zm-2.25.75c0-1.24264 1.00736-2.25 2.25-2.25h10c1.2426 0 2.25 1.00736 2.25 2.25v17c0 1.2426-1.0074 2.25-2.25 2.25h-10c-1.24264 0-2.25-1.0074-2.25-2.25z"></path><path d="m10.25 5c0-.41421.3358-.75.75-.75h2c.4142 0 .75.33579.75.75s-.3358.75-.75.75h-2c-.4142 0-.75-.33579-.75-.75z"></path><path d="m9.25 19c0-.4142.33579-.75.75-.75h4c.4142 0 .75.3358.75.75s-.3358.75-.75.75h-4c-.41421 0-.75-.3358-.75-.75z"></path></g></svg>
-      <input type="text" name="mobile" placeholder="Mobile Number" required="">
-      <input type="hidden" name="form_type" value="banner">               
-       </div>
-      <div class="group-img">
-      <img src="{{ asset('site_assets') }}/img/dropdown.svg"/>
-      <select id="#" class="minimal" name="course">
-      <option value="Websites">Websites</option>
-
-      <option value="Theme And Scripts">Theme And Scripts</option>
-      <option value="Twitter Account">Twitter Account</option>
-      <option value="Instagram Pages">Instagram Pages</option>
-      <option value="Facebook Account">Facebook Account</option>
-
-      <option value="Facebook Account">Telegram Account</option>
-       <option value="Facebook Account">Youtube Channel</option>
-      </select>
-      </div>
-
-      <button type="submit" name="submit" class="btn batton" style="background-color: #0062ef; width: 100%; text-align: center;display: flex;justify-content: center;">Submit</button>
-      </form>
-      <div class="row mobile-v">
-      <div class="col-6">
-      <div class="btn-wh">
-      <div class="bttn w">
-      <a href="https://wa.me/+918809772278" target="_blank">
-      <img src="{{ asset('site_assets') }}/img/wb.png"></a>
-      </div>
-      </div>
-      </div>
-      <div class="col-6">
-      <div class="btn-wh ">
-      <div class="bttn ">
-      <a href="tel:+918809772278">
-
-      <img src="./{{ asset('site_assets') }}/img/cb.png">
-     </a>
-
-      </div>
-      </div>
-      </div>
-      </div> -->
-      <div class="right-form-card">
-        <h3>Search Listings</h3>
-
-        <!-- Search Input -->
-        <div class="form-group icon-input">
-        <i class="fas fa-search"></i>
-        <input type="text" placeholder="I'm looking for..." />
-        </div>
-        <div class="form-group country-dropdown">
-        <div class="dropdown-toggle" id="countryDropdownToggle">
-          <div>
-          <i class="fa-solid fa-globe"
-            style="color: #ffffff; font-size: 14px; background: black; padding: 4px; border-radius: 3px; margin-right: 5px;"></i>
-          <span id="selectedCountry" style="font-weight: 300; color: #000;">Country</span>
-          </div>
-        </div>
-
-        <div class="dropdown-menu" id="countryDropdownMenu">
-          <ul style="padding-left: 20px;">
-          <li onclick="selectCountry(this)" data-disabled="false">India</li>
-          <li onclick="selectCountry(this)" data-disabled="false">America</li>
-          <li onclick="selectCountry(this)" data-disabled="false">England</li>
-          </ul>
-        </div>
-        </div>
-
-        <!-- Category Dropdown -->
-        <div class="form-group category-dropdown">
-        <div class="dropdown-toggle" onclick="toggleDropdown()">
-          <div>
-          <i class="fas fa-tags" style=" color: #ffffff;
-    font-size: 14px;
-    background: black;
-    padding: 4px;
-    border-radius: 3px; 
-    margin-right: 5px;"></i>
-          <span id="selectedCategory" style="font-weight: 300; color: #000;">Category</span>
-          </div>
-          <!-- <i class="fas fa-chevron-down arrow-icon"></i> -->
-
-        </div>
-
-        <div class="dropdown-menu" id="dropdownMenu">
-          <input type="text" placeholder="Search..." class="dropdown-search"
-          oninput="filterCategories(this.value)" />
-          <ul id="categoryList">
-          <li onclick="selectCategory(this)" data-disabled="false">
-            Websites <span class="badge">1</span>
-          </li>
-          <li onclick="selectCategory(this)" data-disabled="true" class="disabled">
-            Facebook Account <span class="badge">0</span>
-          </li>
-          <li onclick="selectCategory(this)" data-disabled="false">
-            Instagram Pages <span class="badge">0</span>
-          </li>
-          <li onclick="selectCategory(this)" data-disabled="false">
-            Telegram Account <span class="badge">0</span>
-          </li>
-          <li onclick="selectCategory(this)" data-disabled="false">
-            Theme And Scripts <span class="badge">0</span>
-          </li>
-          <li onclick="selectCategory(this)" data-disabled="false">
-            Twitter Account <span class="badge">0</span>
-          </li>
-          <li onclick="selectCategory(this)" data-disabled="false">
-            YouTube Channel <span class="badge">0</span>
-          </li>
-          </ul>
-        </div>
-        </div>
-
-
-        <!-- Price Range -->
-        <div class="form-group price-range">
-        <div class="icon-input">
-          <!-- <i class="fas fa-dollar-sign"></i> -->
-          <input type="number" placeholder="Min Price" />
-        </div>
-        <span>-</span>
-        <div class="icon-input">
-          <!-- <i class="fas fa-dollar-sign"></i> -->
-          <input type="number" placeholder="Max Price" />
-        </div>
-        </div>
-
-        <button class="search-btn">Search</button>
-      </div>
-
-
-      </div>
-    </div>
     </div>
   </section>
   <!-- end hero-wrapper -->
   <!-- ================================
-    END HERO-WRAPPER AREA
-    ================================= -->
+                            END HERO-WRAPPER AREA
+                            ================================= -->
 
   <!-- ================================
-    START CAT AREA
-    ================================= -->
+                            START CAT AREA
+                            ================================= -->
 
 
   <section class="cat-area section--padding">
     <div class="container">
-    <div class="">
-      <h2 class="sec__title mb-3 text-center">Most Popular Categories</h2>
-      <p class="sec__desc text-center">
-      Morbi convallis bibendum urna ut viverra. Maecenas quis consequat libero, <br />
-      a feugiat eros. Nunc ut lacinia tortors.
-      </p>
-    </div>
-    <div class="social-media-slider">
-      <div class="social-media-icon-section">
-      <div class="s-image-card">
-        <img src="{{ asset('assets') }}/images/instagram.svg" alt="" />
+      <div class="">
+        <h2 class="sec__title mb-3 text-center">Most Popular Categories</h2>
+        <p class="sec__desc text-center">
+          Morbi convallis bibendum urna ut viverra. Maecenas quis consequat libero, <br />
+          a feugiat eros. Nunc ut lacinia tortors.
+        </p>
       </div>
-      <h3>Instagram</h3>
-      <p>230 Accounts</p>
-
+      <div class="social-media-slider">
+        @foreach($categories as $category)
+          <div class="social-media-icon-section">
+            <div class="s-image-card">
+              <img src="{{ asset('storage/' . $category->image) }}" alt="{{ $category->name }} Icon" />
+            </div>
+            <h3>{{ $category->name }}</h3>
+            <p>230 Accounts</p>
+          </div>
+        @endforeach
       </div>
-      <div class="social-media-icon-section">
-      <div class="s-image-card">
-        <img src="{{ asset('assets') }}/images/youtube-icon-5.svg" alt="" />
-      </div>
-      <h3>YouTube</h3>
-      <p>230 Accounts</p>
-
-      </div>
-      <div class="social-media-icon-section">
-      <div class="s-image-card">
-        <img src="{{ asset('assets') }}/images/telegram.svg" alt="" />
-      </div>
-      <h3>Telegram</h3>
-      <p>230 Accounts</p>
-
-      </div>
-      <div class="social-media-icon-section">
-      <div class="s-image-card">
-        <img src="{{ asset('assets') }}/images/twitter-x.png" alt="" />
-      </div>
-      <h3>X</h3>
-      <p>230 Accounts</p>
-
-      </div>
-      <div class="social-media-icon-section">
-      <div class="s-image-card">
-        <img src="{{ asset('assets') }}/images/instagram.svg" alt="" />
-      </div>
-      <h3>Instagram</h3>
-      <p>230 Accounts</p>
-
-      </div>
-      <div class="social-media-icon-section">
-      <div class="s-image-card">
-        <img src="{{ asset('assets') }}/images/instagram.svg" alt="" />
-      </div>
-      <h3>Instagram</h3>
-      <p>230 Accounts</p>
-
-      </div>
-      <div class="social-media-icon-section">
-      <div class="s-image-card">
-        <img src="{{ asset('assets') }}/images/instagram.svg" alt="" />
-      </div>
-      <h3>Instagram</h3>
-      <p>230 Accounts</p>
-
-      </div>
-
-    </div>
-
     </div>
   </section>
 
   <!-- end cat-area -->
   <!-- ================================
-    END CAT AREA
-    ================================= -->
+                            END CAT AREA
+                            ================================= -->
 
   <!-- ================================
-    START HIW AREA
-    ================================= -->
+                            START HIW AREA
+                            ================================= -->
   <section class="hiw-area bg-gray section--padding">
     <div class="container">
-    <div class="">
-      <h2 class="sec__title mb-3 text-center">How to Buy a Business on Flippa</h2>
-      <p class="sec__desc text-center">
-      Discover the simple steps to find, evaluate, and purchase your dream online business. <br />
-      Whether you're a first-time buyer or seasoned investor, we make the process smooth.
-      </p>
-    </div>
-    <!-- end section-heading -->
-    <div class="row mt-5">
-      <!-- Card 1 -->
-      <div class="col-lg-3 col-md-6">
-      <div class="flip-card">
-        <div class="flip-card-inner">
-        <!-- Front -->
-        <div class="flip-card-front">
-          <img src="{{ asset('assets') }}/images/deal.png" width="74px" />
-          <h4 class="mt-3">Apply For Sponsorship</h4>
-        </div>
-        <!-- Back -->
-        <div class="flip-card-back">
-          <p>
-          If you want to get sponsorship from us kindly read our requirements first,
-          then apply by clicking on get sponsorship button.
-          </p>
-          <button>View More</button>
-        </div>
-        </div>
+      <div class="">
+        <h2 class="sec__title mb-3 text-center">How to Buy a Business on Flippa</h2>
+        <p class="sec__desc text-center">
+          Discover the simple steps to find, evaluate, and purchase your dream online business. <br />
+          Whether you're a first-time buyer or seasoned investor, we make the process smooth.
+        </p>
       </div>
-      </div>
+      <!-- end section-heading -->
+      <div class="row mt-5">
+        <!-- Card 1 -->
+        <div class="col-lg-3 col-md-6">
+          <div class="flip-card">
+            <div class="flip-card-inner">
+              <!-- Front -->
+              <div class="flip-card-front">
+                <img src="{{ asset('assets') }}/images/deal.png" width="74px" />
+                <h4 class="mt-3">Apply For Sponsorship</h4>
+              </div>
+              <!-- Back -->
+              <div class="flip-card-back">
+                <p>
+                  If you want to get sponsorship from us kindly read our requirements first,
+                  then apply by clicking on get sponsorship button.
+                </p>
+                <button>View More</button>
+              </div>
+            </div>
+          </div>
+        </div>
 
-      <!-- Card 2 -->
-      <div class="col-lg-3 col-md-6">
-      <div class="flip-card">
-        <div class="flip-card-inner">
-        <!-- Front -->
-        <div class="flip-card-front">
-          <img src="{{ asset('assets') }}/images/approved.png" width="74px" />
-          <h4 class="mt-3">Wait For Approval</h4>
+        <!-- Card 2 -->
+        <div class="col-lg-3 col-md-6">
+          <div class="flip-card">
+            <div class="flip-card-inner">
+              <!-- Front -->
+              <div class="flip-card-front">
+                <img src="{{ asset('assets') }}/images/approved.png" width="74px" />
+                <h4 class="mt-3">Wait For Approval</h4>
+              </div>
+              <!-- Back -->
+              <div class="flip-card-back">
+                <p>
+                  After applying for sponsorship for your page or channel, please wait for our approval.
+                  Once you are approved, then proceed further.
+                </p>
+                <button>View More</button>
+              </div>
+            </div>
+          </div>
         </div>
-        <!-- Back -->
-        <div class="flip-card-back">
-          <p>
-          After applying for sponsorship for your page or channel, please wait for our approval.
-          Once you are approved, then proceed further.
-          </p>
-          <button>View More</button>
-        </div>
-        </div>
-      </div>
-      </div>
 
-      <!-- Card 3 -->
-      <div class="col-lg-3 col-md-6">
-      <div class="flip-card">
-        <div class="flip-card-inner">
-        <!-- Front -->
-        <div class="flip-card-front">
-          <img src="{{ asset('assets') }}/images/brand.png" width="74px" />
-          <h4 class="mt-3">Start Promoting Brand</h4>
+        <!-- Card 3 -->
+        <div class="col-lg-3 col-md-6">
+          <div class="flip-card">
+            <div class="flip-card-inner">
+              <!-- Front -->
+              <div class="flip-card-front">
+                <img src="{{ asset('assets') }}/images/brand.png" width="74px" />
+                <h4 class="mt-3">Start Promoting Brand</h4>
+              </div>
+              <!-- Back -->
+              <div class="flip-card-back">
+                <p>
+                  Start promoting brand logo, links, tools, & services. Earn money by promoting the brand’s
+                  content and products.
+                </p>
+                <button>View More</button>
+              </div>
+            </div>
+          </div>
         </div>
-        <!-- Back -->
-        <div class="flip-card-back">
-          <p>
-          Start promoting brand logo, links, tools, & services. Earn money by promoting the brand’s
-          content and products.
-          </p>
-          <button>View More</button>
-        </div>
-        </div>
-      </div>
-      </div>
 
-      <!-- Card 4 -->
-      <div class="col-lg-3 col-md-6">
-      <div class="flip-card">
-        <div class="flip-card-inner">
-        <!-- Front -->
-        <div class="flip-card-front">
-          <img src="{{ asset('assets') }}/images/banking.png" width="74px" />
-          <h4 class="mt-3">Get Paid For Promotion</h4>
-        </div>
-        <!-- Back -->
-        <div class="flip-card-back">
-          <p>
-          Get paid for promotion. We provide instant, daily, and weekly payments
-          to our influencers.
-          </p>
-          <button>View More</button>
-        </div>
+        <!-- Card 4 -->
+        <div class="col-lg-3 col-md-6">
+          <div class="flip-card">
+            <div class="flip-card-inner">
+              <!-- Front -->
+              <div class="flip-card-front">
+                <img src="{{ asset('assets') }}/images/banking.png" width="74px" />
+                <h4 class="mt-3">Get Paid For Promotion</h4>
+              </div>
+              <!-- Back -->
+              <div class="flip-card-back">
+                <p>
+                  Get paid for promotion. We provide instant, daily, and weekly payments
+                  to our influencers.
+                </p>
+                <button>View More</button>
+              </div>
+            </div>
+          </div>
         </div>
       </div>
-      </div>
-    </div>
-    <!-- end row -->
+      <!-- end row -->
     </div>
     <!-- end container -->
   </section>
 
   <!-- end hiw-area -->
   <!-- ================================
-    END HIW AREA
-    ================================= -->
+                            END HIW AREA
+                            ================================= -->
 
   <!-- ================================
-    START CARD AREA
-    ================================= -->
+                            START CARD AREA
+                            ================================= -->
   <section class="card-area section-padding">
     <div class="container">
-    <div class="">
-      <h2 class="sec__title mb-3 text-center">Most Searched Businesses</h2>
-      <p class="sec__desc text-center">
-      Morbi convallis bibendum urna ut viverra. Maecenas quis consequat
-      libero, <br />
-      a feugiat eros. Nunc ut lacinia tortors.
-      </p>
-    </div>
-
-    <!-- Tabs -->
-    <div class=" my-4">
-      <button class="tab-btn active" data-category="all">All</button>
-      <button class="tab-btn" data-category="saas">SaaS</button>
-      <button class="tab-btn" data-category="ecommerce">E-Commerce</button>
-    </div>
-
-    <!-- Cards -->
-    <div class="flippa-card-wrapper">
-      <div class="flippa-card" data-category="saas">
-      <div class="flippa-card-left">
-        <div class="flippa-image-wrapper">
-        <img src="{{ asset('assets') }}/images/hero-bg2.jpg" alt="Confidential" style="height: 230px;" />
-        <div class="flippa-overlay">Confidential<br /><span>Sign NDA to view</span></div>
-        <div class="flippa-sponsored">Sponsored</div>
-        </div>
-      </div>
-      <div class="flippa-card-center">
-        <div class="flippa-title">SaaS | Business</div>
-        <div class="flippa-badges">
-        <span class="flippa-badge blue">Verified Listing</span>
-        <span class="flippa-icon">📍 GA, United States</span>
-        </div>
-        <div class="flippa-description">
-        Proprietary AI-powered Consumer Lending SaaS for Small to Mid Size Businesses.
-        </div>
-        <div class="flippa-details">
-        <div><strong>Type:</strong> SaaS</div>
-        <div><strong>Industry:</strong> Business</div>
-        <div><strong>Monetization:</strong> Affiliate Sales</div>
-        <div><strong>Site Age:</strong> 3 years</div>
-        <div><strong>Net Profit:</strong> USD $2,482 /mo</div>
-        </div>
-      </div>
-      <div class="flippa-card-right justify-content-between">
-        <div>
-        <div class="flippa-price-label">Asking Price</div>
-        <div class="flippa-price">USD $1,200,000</div>
-        </div>
-        <div class="flippa-buttons">
-        <button class="flippa-btn outline">👁 Watch</button>
-        <a href="{{ Route('listing-details') }}">
-          <button class="flippa-btn filled">View Listing</button>
-        </a>
-        </div>
-      </div>
+      <div class="">
+        <h2 class="sec__title mb-3 text-center">Most Searched Businesses</h2>
+        <p class="sec__desc text-center">
+          Morbi convallis bibendum urna ut viverra. Maecenas quis consequat
+          libero, <br />
+          a feugiat eros. Nunc ut lacinia tortors.
+        </p>
       </div>
 
-      <div class="flippa-card" data-category="ecommerce">
-      <div class="flippa-card-left">
-        <div class="flippa-image-wrapper">
-        <img src="{{ asset('assets') }}/images/bg1.png" alt="Confidential" style="height: 230px;" />
-        <div class="flippa-overlay">Confidential<br /><span>Sign NDA to view</span></div>
-        <div class="flippa-sponsored">Sponsored</div>
+      <!-- Tabs -->
+      <div class="my-4">
+        <button class="tab-btn active" data-category="all">All</button>
+        @foreach($categories as $category)
+          <button class="tab-btn" data-category="{{ $category->slug }}">{{ $category->name }}</button>
+        @endforeach
+      </div>
+
+      <div class="flippa-card-wrapper" id="submissions-container">
+
+        {{-- All submissions (for All tab) --}}
+        <div class="submission-group" data-group="all">
+          @foreach($allSubmissions as $submission)
+            @php
+              $catSlug = $submission->form->category->slug ?? 'uncategorized';
+            @endphp
+            <div class="flippa-card" data-category="{{ $catSlug }}">
+              @php
+                $fields = json_decode($submission->data, true);
+                $imageFile = $submission->files->firstWhere('show_on_summary', true); // Assuming relation 'files' loaded
+                // Filter fields that show on summary and are not image files
+                $summaryFields = collect($fields)->filter(function ($field) use ($imageFile) {
+                  if (empty($field['show_on_summary'])) {
+                    return false;
+                  }
+                  return true;
+                });
+              @endphp
+              <div class="flippa-card-left">
+                <div class="flippa-image-wrapper">
+                  @if($imageFile)
+                    <img src="{{ asset('storage/' . $imageFile['file_path']) }}" alt="{{ $imageFile['label'] ?? 'Image' }}"
+                      style="height: 230px; object-fit: cover;" />
+                  @else
+                    <img src="{{ asset('assets/images/hero-bg2.jpg') }}" alt="Confidential" style="height: 230px;" />
+                  @endif
+                  <div class="flippa-overlay">Confidential<br /><span>Sign NDA to view</span></div>
+                  <div class="flippa-sponsored">Sponsored</div>
+                </div>
+              </div>
+
+              <div class="flippa-card-center">
+                <div class="flippa-title">{{ $submission->form->category->name ?? 'Category' }}</div>
+                <div class="flippa-badges">
+                  <span class="flippa-badge blue">Verified Listing</span>
+                  <span class="flippa-icon">{{ $submission->customer->countryname ?? '-' }}</span>
+                </div>
+                <!-- <div class="flippa-description">
+                                      {{ $submission->form->description ?? 'No description provided.' }}
+                                    </div> -->
+
+                <div class="flippa-details">
+                  @if($fields)
+                    @foreach($fields as $field)
+                      @if(!empty($field['show_on_summary']))
+                        <!-- Skip image field here -->
+                        <div>
+                          <strong>{{ $field['label'] ?? ucfirst($field['field_id']) }}:</strong> {{ $field['value'] }}
+                        </div>
+                      @endif
+                    @endforeach
+                  @endif
+                </div>
+              </div>
+
+              <div class="flippa-card-right justify-content-between">
+                <div>
+                  <!-- <div class="flippa-price-label">Asking Price</div>
+                                      <div class="flippa-price">{{ $submission->price ?? '' }}</div> -->
+                </div>
+                <div class="flippa-buttons">
+                  <button class="flippa-btn outline">👁 Watch</button>
+                  <a href="{{ route('listing.details', ['id' => $submission->id]) }}">
+                    <button class="flippa-btn filled">View Listing</button>
+                  </a>
+                </div>
+              </div>
+
+            </div>
+          @endforeach
+        </div>
+
+        {{-- Submission per category --}}
+        @foreach($categories as $category)
+          <div class="submission-group" data-group="{{ $category->slug }}" style="display:none;">
+            @if(isset($submissionsByCategory[$category->id]))
+              @php $submission = $submissionsByCategory[$category->id]; @endphp
+              <div class="flippa-card" data-category="{{ $category->slug }}">
+
+                @php
+                  $fields = json_decode($submission->data, true);
+                  $imageFile = $submission->files->firstWhere('show_on_summary', true); // Assuming relation 'files' loaded
+                  // Filter fields that show on summary and are not image files
+                  $summaryFields = collect($fields)->filter(function ($field) use ($imageFile) {
+                    if (empty($field['show_on_summary'])) {
+                      return false;
+                    }
+                    return true;
+                  });
+                @endphp
+
+                <div class="flippa-card-left">
+                  <div class="flippa-image-wrapper">
+                    @if($imageFile)
+                      <img src="{{ asset('storage/' . $imageFile['file_path']) }}" alt="{{ $imageFile['label'] ?? 'Image' }}"
+                        style="height: 230px; object-fit: cover;" />
+                    @else
+                      <img src="{{ asset('assets/images/hero-bg2.jpg') }}" alt="Confidential" style="height: 230px;" />
+                    @endif
+                    <div class="flippa-overlay">Confidential<br /><span>Sign NDA to view</span></div>
+                    <div class="flippa-sponsored">Sponsored</div>
+                  </div>
+                </div>
+
+                <div class="flippa-card-center">
+                  <div class="flippa-title">{{ $category->name ?? 'Category' }}</div>
+                  <div class="flippa-badges">
+                    <span class="flippa-badge blue">Verified Listing</span>
+                    <span class="flippa-icon">{{ $submission->customer->countryname ?? '-' }}</span>
+                  </div>
+                  <!-- <div class="flippa-description">
+                                          {{ $submission->form->description ?? 'No description provided.' }}
+                                        </div> -->
+
+                  <div class="flippa-details">
+                    @if($fields)
+                      @foreach($fields as $field)
+                        @if(!empty($field['show_on_summary']))
+                          <!-- Skip image field here -->
+                          <div>
+                            <strong>{{ $field['label'] ?? ucfirst($field['field_id']) }}:</strong> {{ $field['value'] }}
+                          </div>
+                        @endif
+                      @endforeach
+                    @endif
+                  </div>
+                </div>
+
+                <div class="flippa-card-right justify-content-between">
+                  <div>
+                    <!-- <div class="flippa-price-label">Asking Price</div>
+                                          <div class="flippa-price">{{ $submission->price ?? '' }}</div> -->
+                  </div>
+                  <div class="flippa-buttons">
+                    <button class="flippa-btn outline">👁 Watch</button>
+                    <a href="{{ route('listing.details', ['id' => $submission->id]) }}">
+                      <button class="flippa-btn filled">View Listing</button>
+                    </a>
+                  </div>
+                </div>
+              </div>
+            @else
+              <p>No submission available.</p>
+            @endif
+          </div>
+        @endforeach
+
+        <div class="view-more-button">
+          <button class="flippa-btn filled">View All Listings</button>
         </div>
       </div>
-      <div class="flippa-card-center">
-        <div class="flippa-title">E-Commerce | Home & Living</div>
-        <div class="flippa-badges">
-        <span class="flippa-badge blue">Featured Listing</span>
-        <span class="flippa-icon">📍 Austin, TX</span>
-        </div>
-        <div class="flippa-description">
-        Profitable DTC brand selling sustainable home products with a loyal customer base and 20K email
-        subscribers.
-        </div>
-        <div class="flippa-details">
-        <div><strong>Type:</strong> E-Commerce</div>
-        <div><strong>Industry:</strong> Home & Living</div>
-        <div><strong>Monetization:</strong> Product Sales</div>
-        <div><strong>Site Age:</strong> 4 years</div>
-        <div><strong>Net Profit:</strong> USD $18,750 /mo</div>
-        </div>
-      </div>
-      <div class="flippa-card-right justify-content-between">
-        <div>
-        <div class="flippa-price-label">Asking Price</div>
-        <div class="flippa-price">USD $1,200,000</div>
-        </div>
-        <div class="flippa-buttons">
-        <button class="flippa-btn outline">👁 Watch</button>
-        <a href="{{ Route('listing-details') }}">
-          <button class="flippa-btn filled">View Listing</button>
-        </a>
-        </div>
-      </div>
-      </div>
-      <div class="view-more-button">
-      <button class="flippa-btn filled">View All Listings</button>
-      </div>
-    </div>
+
     </div>
   </section>
 
   <!-- end card-area -->
   <!-- ================================
-    END CARD AREA
-    ================================= -->
+                            END CARD AREA
+                            ================================= -->
   <section class="hiw-area text-center" style="padding: 80px 0; background: #f9fafc;">
     <div class="container">
-    <h2 class="sec__title mb-3">How It Works</h2>
-    <p class="sec__desc mb-5">
-      Selling or buying digital assets on our platform is fast, safe, and easy. Follow these simple steps to get
-      started.
-    </p>
+      <h2 class="sec__title mb-3">How It Works</h2>
+      <p class="sec__desc mb-5">
+        Selling or buying digital assets on our platform is fast, safe, and easy. Follow these simple steps to get
+        started.
+      </p>
 
-    <div class="process-steps">
-      <!-- Step 1 -->
-      <div class="step">
-      <div class="step-icon">
-        <i class="fal fa-user-plus"></i>
-      </div>
-      <h4>1. Sign Up</h4>
-      <p>Create a free account to start exploring or listing digital assets.</p>
-      </div>
+      <div class="process-steps">
+        <!-- Step 1 -->
+        <div class="step">
+          <div class="step-icon">
+            <i class="fal fa-user-plus"></i>
+          </div>
+          <h4>1. Sign Up</h4>
+          <p>Create a free account to start exploring or listing digital assets.</p>
+        </div>
 
-      <!-- Step 2 -->
-      <div class="step">
-      <div class="step-icon">
-        <i class="fal fa-search"></i>
-      </div>
-      <h4>2. Explore Listings</h4>
-      <p>Browse a wide variety of domains, websites, templates, and more.</p>
-      </div>
+        <!-- Step 2 -->
+        <div class="step">
+          <div class="step-icon">
+            <i class="fal fa-search"></i>
+          </div>
+          <h4>2. Explore Listings</h4>
+          <p>Browse a wide variety of domains, websites, templates, and more.</p>
+        </div>
 
-      <!-- Step 3 -->
-      <div class="step">
-      <div class="step-icon">
-        <i class="fal fa-exchange"></i>
-      </div>
-      <h4>3. Make a Deal</h4>
-      <p>Connect with buyers or sellers, negotiate terms, and finalize your transaction.</p>
-      </div>
+        <!-- Step 3 -->
+        <div class="step">
+          <div class="step-icon">
+            <i class="fal fa-exchange"></i>
+          </div>
+          <h4>3. Make a Deal</h4>
+          <p>Connect with buyers or sellers, negotiate terms, and finalize your transaction.</p>
+        </div>
 
-      <!-- Step 4 -->
-      <div class="step">
-      <div class="step-icon">
-        <i class="fal fa-shield-check"></i>
+        <!-- Step 4 -->
+        <div class="step">
+          <div class="step-icon">
+            <i class="fal fa-shield-check"></i>
+          </div>
+          <h4>4. Secure Transfer</h4>
+          <p>Assets are securely transferred once the payment is confirmed.</p>
+        </div>
       </div>
-      <h4>4. Secure Transfer</h4>
-      <p>Assets are securely transferred once the payment is confirmed.</p>
-      </div>
-    </div>
     </div>
   </section>
 
   <!-- ================================
-    START FUN-FACT AREA
-    ================================= -->
+                            START FUN-FACT AREA
+                            ================================= -->
   <section class="prt-row home03-fid-section bg-base-grey clearfix">
     <div class="container">
-    <div class="row">
-      <div class="col-lg-3 col-md-6 col-sm-6">
-      <!-- prt-fid -->
-      <div class="prt-fid inside prt-fid-with-icon prt-fid-view-lefticon style4">
-        <div class="prt-fid-icon-wrapper">
-        <i class="fa-solid fa-city"></i>
+      <div class="row">
+        <div class="col-lg-3 col-md-6 col-sm-6">
+          <!-- prt-fid -->
+          <div class="prt-fid inside prt-fid-with-icon prt-fid-view-lefticon style4">
+            <div class="prt-fid-icon-wrapper">
+              <i class="fa-solid fa-city"></i>
+            </div>
+            <div class="prt-fid-contents">
+              <h4 class="prt-fid-inner">
+                <span data-appear-animation="animateDigits" data-from="0" data-to="100" data-interval="5" data-before=""
+                  data-before-style="sup" data-after="+" data-after-style="sub" class="numinate">100
+                </span>
+                <span class="fid-prefix">+</span>
+              </h4>
+            </div>
+            <h3 class="prt-fid-title">Business Setups </h3>
+            <div class="prt-fid-desc">
+              <p>Helping entrepreneurs bring their vision to life with successful business setups
+                in Dubai and across the UAE.</p>
+            </div>
+          </div><!-- prt-fid end -->
         </div>
-        <div class="prt-fid-contents">
-        <h4 class="prt-fid-inner">
-          <span data-appear-animation="animateDigits" data-from="0" data-to="100" data-interval="5" data-before=""
-          data-before-style="sup" data-after="+" data-after-style="sub" class="numinate">100
-          </span>
-          <span class="fid-prefix">+</span>
-        </h4>
+        <div class="col-lg-3 col-md-6 col-sm-6">
+          <!-- prt-fid -->
+          <div class="prt-fid inside prt-fid-with-icon prt-fid-view-lefticon style4">
+            <div class="prt-fid-icon-wrapper">
+              <i class="fa-solid fa-users"></i>
+            </div>
+            <div class="prt-fid-contents">
+              <h4 class="prt-fid-inner">
+                <span data-appear-animation="animateDigits" data-from="0" data-to="200" data-interval="5" data-before=""
+                  data-before-style="sup" data-after="+" data-after-style="sub" class="numinate">200
+                </span>
+                <span class="fid-prefix">+</span>
+              </h4>
+            </div>
+            <h3 class="prt-fid-title">Satisfied Clients
+            </h3>
+            <div class="prt-fid-desc">
+              <p>A proven track record of delivering exceptional results and exceeding client
+                expectations.</p>
+            </div>
+          </div><!-- prt-fid end -->
         </div>
-        <h3 class="prt-fid-title">Business Setups </h3>
-        <div class="prt-fid-desc">
-        <p>Helping entrepreneurs bring their vision to life with successful business setups
-          in Dubai and across the UAE.</p>
+        <div class="col-lg-3 col-md-6 col-sm-6">
+          <!-- prt-fid -->
+          <div class="prt-fid inside prt-fid-with-icon prt-fid-view-lefticon style4">
+            <div class="prt-fid-icon-wrapper">
+              <i class="fa-brands fa-servicestack"></i>
+            </div>
+            <div class="prt-fid-contents">
+              <h4 class="prt-fid-inner">
+                <span data-appear-animation="animateDigits" data-from="0" data-to="30" data-interval="1" data-before=""
+                  data-before-style="sup" data-after="+" data-after-style="sub" class="numinate">30
+                </span>
+                <span class="fid-prefix">+</span>
+                <!-- <span class="fid-prefix">K</span> -->
+              </h4>
+            </div>
+            <h3 class="prt-fid-title">Services</h3>
+            <div class="prt-fid-desc">
+              <p>Offering a wide range of services, from business setup to digital marketing,
+                ensuring all your needs are covered.</p>
+            </div>
+          </div><!-- prt-fid end -->
         </div>
-      </div><!-- prt-fid end -->
-      </div>
-      <div class="col-lg-3 col-md-6 col-sm-6">
-      <!-- prt-fid -->
-      <div class="prt-fid inside prt-fid-with-icon prt-fid-view-lefticon style4">
-        <div class="prt-fid-icon-wrapper">
-        <i class="fa-solid fa-users"></i>
-        </div>
-        <div class="prt-fid-contents">
-        <h4 class="prt-fid-inner">
-          <span data-appear-animation="animateDigits" data-from="0" data-to="200" data-interval="5" data-before=""
-          data-before-style="sup" data-after="+" data-after-style="sub" class="numinate">200
-          </span>
-          <span class="fid-prefix">+</span>
-        </h4>
-        </div>
-        <h3 class="prt-fid-title">Satisfied Clients
-        </h3>
-        <div class="prt-fid-desc">
-        <p>A proven track record of delivering exceptional results and exceeding client
-          expectations.</p>
-        </div>
-      </div><!-- prt-fid end -->
-      </div>
-      <div class="col-lg-3 col-md-6 col-sm-6">
-      <!-- prt-fid -->
-      <div class="prt-fid inside prt-fid-with-icon prt-fid-view-lefticon style4">
-        <div class="prt-fid-icon-wrapper">
-        <i class="fa-brands fa-servicestack"></i>
-        </div>
-        <div class="prt-fid-contents">
-        <h4 class="prt-fid-inner">
-          <span data-appear-animation="animateDigits" data-from="0" data-to="30" data-interval="1" data-before=""
-          data-before-style="sup" data-after="+" data-after-style="sub" class="numinate">30
-          </span>
-          <span class="fid-prefix">+</span>
-          <!-- <span class="fid-prefix">K</span> -->
-        </h4>
-        </div>
-        <h3 class="prt-fid-title">Services</h3>
-        <div class="prt-fid-desc">
-        <p>Offering a wide range of services, from business setup to digital marketing,
-          ensuring all your needs are covered.</p>
-        </div>
-      </div><!-- prt-fid end -->
-      </div>
-      <div class="col-lg-3 col-md-6 col-sm-6">
-      <!-- prt-fid -->
-      <div class="prt-fid inside prt-fid-with-icon prt-fid-view-lefticon style4">
-        <div class="prt-fid-icon-wrapper">
-        <i class="fa-solid fa-users"></i>
-        </div>
-        <div class="prt-fid-contents">
-        <h4 class="prt-fid-inner">
-          <span data-appear-animation="animateDigits" data-from="0" data-to="20" data-interval="5" data-before=""
-          data-before-style="sup" data-after="+" data-after-style="sub" class="numinate">20
-          </span>
-          <span class="fid-prefix">+</span>
-        </h4>
-        </div>
-        <h3 class="prt-fid-title"> Team Members</h3>
-        <div class="prt-fid-desc">
-        <p>A dedicated team of experts working together to provide you with personalized and
-          efficient solutions.
+        <div class="col-lg-3 col-md-6 col-sm-6">
+          <!-- prt-fid -->
+          <div class="prt-fid inside prt-fid-with-icon prt-fid-view-lefticon style4">
+            <div class="prt-fid-icon-wrapper">
+              <i class="fa-solid fa-users"></i>
+            </div>
+            <div class="prt-fid-contents">
+              <h4 class="prt-fid-inner">
+                <span data-appear-animation="animateDigits" data-from="0" data-to="20" data-interval="5" data-before=""
+                  data-before-style="sup" data-after="+" data-after-style="sub" class="numinate">20
+                </span>
+                <span class="fid-prefix">+</span>
+              </h4>
+            </div>
+            <h3 class="prt-fid-title"> Team Members</h3>
+            <div class="prt-fid-desc">
+              <p>A dedicated team of experts working together to provide you with personalized and
+                efficient solutions.
 
 
-          .</p>
+                .</p>
+            </div>
+          </div><!-- prt-fid end -->
         </div>
-      </div><!-- prt-fid end -->
       </div>
-    </div>
     </div>
   </section>
   <!-- end funfact-area -->
   <!-- ================================
-    END FUN-FACT AREA
-    ================================= -->
+                            END FUN-FACT AREA
+                            ================================= -->
 
   <!-- ================================
-    START HIW AREA
-    ================================= -->
+                            START HIW AREA
+                            ================================= -->
   <section class="hiw-area section--padding text-center">
     <div class="container">
-    <!-- Heading -->
-    <h2 class="sec__title mb-3">What We Offer</h2>
-    <p class="sec__desc mb-5">
-      Explore a range of digital assets ready to buy or sell — from premium domains
-      to full-fledged websites, digital templates, and more.
-    </p>
+      <!-- Heading -->
+      <h2 class="sec__title mb-3">What We Offer</h2>
+      <p class="sec__desc mb-5">
+        Explore a range of digital assets ready to buy or sell — from premium domains
+        to full-fledged websites, digital templates, and more.
+      </p>
 
-    <!-- Cards Grid -->
-    <div class="row g-4">
-      <!-- Card 1 -->
-      <div class="col-lg-3 col-md-6">
-      <div class="offer-box">
-        <div class="offer-icon bg-gradient-1">
-        <i class="fal fa-globe"></i>
+      <!-- Cards Grid -->
+      <div class="row g-4">
+        <!-- Card 1 -->
+        <div class="col-lg-3 col-md-6">
+          <div class="offer-box">
+            <div class="offer-icon bg-gradient-1">
+              <i class="fal fa-globe"></i>
+            </div>
+            <h4>Domain Names</h4>
+            <p>Buy or sell high-value domains to power your next project or brand.</p>
+          </div>
         </div>
-        <h4>Domain Names</h4>
-        <p>Buy or sell high-value domains to power your next project or brand.</p>
-      </div>
-      </div>
 
-      <!-- Card 2 -->
-      <div class="col-lg-3 col-md-6">
-      <div class="offer-box">
-        <div class="offer-icon bg-gradient-2">
-        <i class="fal fa-browser"></i>
+        <!-- Card 2 -->
+        <div class="col-lg-3 col-md-6">
+          <div class="offer-box">
+            <div class="offer-icon bg-gradient-2">
+              <i class="fal fa-browser"></i>
+            </div>
+            <h4>Websites & Blogs</h4>
+            <p>Discover profitable websites and ready-to-grow blogs for sale.</p>
+          </div>
         </div>
-        <h4>Websites & Blogs</h4>
-        <p>Discover profitable websites and ready-to-grow blogs for sale.</p>
-      </div>
-      </div>
 
-      <!-- Card 3 -->
-      <div class="col-lg-3 col-md-6">
-      <div class="offer-box">
-        <div class="offer-icon bg-gradient-3">
-        <i class="fal fa-code"></i>
+        <!-- Card 3 -->
+        <div class="col-lg-3 col-md-6">
+          <div class="offer-box">
+            <div class="offer-icon bg-gradient-3">
+              <i class="fal fa-code"></i>
+            </div>
+            <h4>Themes & Templates</h4>
+            <p>Shop and sell high-quality HTML, WordPress, and eCommerce templates.</p>
+          </div>
         </div>
-        <h4>Themes & Templates</h4>
-        <p>Shop and sell high-quality HTML, WordPress, and eCommerce templates.</p>
-      </div>
-      </div>
 
-      <!-- Card 4 -->
-      <div class="col-lg-3 col-md-6">
-      <div class="offer-box">
-        <div class="offer-icon bg-gradient-4">
-        <i class="fal fa-layer-group"></i>
+        <!-- Card 4 -->
+        <div class="col-lg-3 col-md-6">
+          <div class="offer-box">
+            <div class="offer-icon bg-gradient-4">
+              <i class="fal fa-layer-group"></i>
+            </div>
+            <h4>Digital Products</h4>
+            <p>From ebooks to software, monetize or purchase downloadable assets.</p>
+          </div>
         </div>
-        <h4>Digital Products</h4>
-        <p>From ebooks to software, monetize or purchase downloadable assets.</p>
       </div>
-      </div>
-    </div>
     </div>
   </section>
 
@@ -2989,50 +3011,50 @@
 
   <!-- end hiw-area -->
   <!-- ================================
-    END HIW AREA
-    ================================= -->
+                            END HIW AREA
+                            ================================= -->
 
   <!-- ================================
-    START CTA AREA
-    ================================= -->
+                            START CTA AREA
+                            ================================= -->
   <section class="cta-area bg-gray padding-top-80px padding-bottom-80px position-relative">
     <img src="{{ asset('assets') }}/images/symble1.png" alt="" class="symble-img" />
     <img src="{{ asset('assets') }}/images/symble2.png" alt="" class="symble-img" />
     <img src="{{ asset('assets') }}/images/symble3.png" alt="" class="symble-img" />
     <img src="{{ asset('assets') }}/images/symble4.png" alt="" class="symble-img" />
     <div class="container">
-    <div class="d-flex flex-wrap align-items-center justify-content-between">
-      <div class="me-2 my-3">
-      <h2 class="mb-3 font-size-30 font-weight-bold">
-        Flippingo is the best way to find & discover <br />
-        great local businesses
-      </h2>
-      <p class="font-size-17">
-        Morbi convallis bibendum urna ut viverra. Maecenas quis consequat
-        libero
-      </p>
+      <div class="d-flex flex-wrap align-items-center justify-content-between">
+        <div class="me-2 my-3">
+          <h2 class="mb-3 font-size-30 font-weight-bold">
+            Flippingo is the best way to find & discover <br />
+            great local businesses
+          </h2>
+          <p class="font-size-17">
+            Morbi convallis bibendum urna ut viverra. Maecenas quis consequat
+            libero
+          </p>
+        </div>
+        <a href="{{ Route('authentication-signup') }}" class="theme-btn">Create Account</a>
       </div>
-      <a href="{{ Route('authentication-signup') }}" class="theme-btn">Create Account</a>
-    </div>
     </div>
     <!-- end container -->
   </section>
   <!-- end cta-area -->
   <!-- ================================
-    END CTA AREA
-    ================================= -->
+                            END CTA AREA
+                            ================================= -->
 
   <!-- ================================
-       START TESTIMONIAL AREA
-    ================================= -->
+                               START TESTIMONIAL AREA
+                            ================================= -->
   <section class="hiw-area section--padding text-center" style="background-color: #fff; padding-bottom: 0px;">
     <div class="container">
-    <h2 class="sec__title mb-3">Testimonial</h2>
-    <p class="sec__desc">
-      Explore a range of digital assets ready to buy or sell — from premium domains to full-fledged websites,
-      <br>digital
-      templates, and more.
-    </p>
+      <h2 class="sec__title mb-3">Testimonial</h2>
+      <p class="sec__desc">
+        Explore a range of digital assets ready to buy or sell — from premium domains to full-fledged websites,
+        <br>digital
+        templates, and more.
+      </p>
 
     </div>
   </section>
@@ -3041,26 +3063,26 @@
   <div class="testimonial-container" style="margin-bottom: 70px;">
 
     <div class="testimonial-grid">
-    <div class="image-container" id="image-container"></div>
-    <div class="testimonial-content">
-      <div>
-      <h3 class="name" id="name"></h3>
-      <p class="designation" id="designation"></p>
-      <p class="quote" id="quote"></p>
+      <div class="image-container" id="image-container"></div>
+      <div class="testimonial-content">
+        <div>
+          <h3 class="name" id="name"></h3>
+          <p class="designation" id="designation"></p>
+          <p class="quote" id="quote"></p>
+        </div>
+        <div class="arrow-buttons">
+          <button class="arrow-button prev-button" id="prev-button">
+            <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24">
+              <path d="M15.41 7.41L14 6l-6 6 6 6 1.41-1.41L10.83 12z" />
+            </svg>
+          </button>
+          <button class="arrow-button next-button" id="next-button">
+            <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24">
+              <path d="M10 6L8.59 7.41 13.17 12l-4.58 4.59L10 18l6-6z" />
+            </svg>
+          </button>
+        </div>
       </div>
-      <div class="arrow-buttons">
-      <button class="arrow-button prev-button" id="prev-button">
-        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24">
-        <path d="M15.41 7.41L14 6l-6 6 6 6 1.41-1.41L10.83 12z" />
-        </svg>
-      </button>
-      <button class="arrow-button next-button" id="next-button">
-        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24">
-        <path d="M10 6L8.59 7.41 13.17 12l-4.58 4.59L10 18l6-6z" />
-        </svg>
-      </button>
-      </div>
-    </div>
     </div>
   </div>
 
@@ -3069,61 +3091,61 @@
 
   <section class="testimonial-reels-section py-5 bg-light">
     <div class="container">
-    <h2 class="sec__title mb-3 text-center">Reels</h2>
-    <p class="sec__desc text-center">
-      Explore a range of digital assets ready to buy or sell
-    </p>
-    <div class="row g-4 justify-content-center">
+      <h2 class="sec__title mb-3 text-center">Reels</h2>
+      <p class="sec__desc text-center">
+        Explore a range of digital assets ready to buy or sell
+      </p>
+      <div class="row g-4 justify-content-center">
 
-      <!-- Reel 1 -->
-      <div class="col-md-3 col-sm-6">
-      <div class="reel-card">
-        <video controls loop muted autoplay playsinline>
-        <source src="{{ asset('assets') }}/images/reels.mp4" type="video/mp4">
-        Your browser does not support video.
-        </video>
-      </div>
-      </div>
+        <!-- Reel 1 -->
+        <div class="col-md-3 col-sm-6">
+          <div class="reel-card">
+            <video controls loop muted autoplay playsinline>
+              <source src="{{ asset('assets') }}/images/reels.mp4" type="video/mp4">
+              Your browser does not support video.
+            </video>
+          </div>
+        </div>
 
-      <!-- Reel 2 -->
-      <div class="col-md-3 col-sm-6">
-      <div class="reel-card">
-        <video controls loop muted autoplay playsinline>
-        <source src="{{ asset('assets') }}/images/reels1.mp4" type="video/mp4">
-        Your browser does not support video.
-        </video>
-      </div>
-      </div>
+        <!-- Reel 2 -->
+        <div class="col-md-3 col-sm-6">
+          <div class="reel-card">
+            <video controls loop muted autoplay playsinline>
+              <source src="{{ asset('assets') }}/images/reels1.mp4" type="video/mp4">
+              Your browser does not support video.
+            </video>
+          </div>
+        </div>
 
-      <!-- Reel 3 -->
-      <div class="col-md-3 col-sm-6">
-      <div class="reel-card">
-        <video controls loop muted autoplay playsinline>
-        <source src="{{ asset('assets') }}/images/reels.mp4" type="video/mp4">
-        Your browser does not support video.
-        </video>
-      </div>
-      </div>
+        <!-- Reel 3 -->
+        <div class="col-md-3 col-sm-6">
+          <div class="reel-card">
+            <video controls loop muted autoplay playsinline>
+              <source src="{{ asset('assets') }}/images/reels.mp4" type="video/mp4">
+              Your browser does not support video.
+            </video>
+          </div>
+        </div>
 
-      <!-- Reel 4 -->
-      <div class="col-md-3 col-sm-6">
-      <div class="reel-card">
-        <video controls loop muted autoplay playsinline>
-        <source src="{{ asset('assets') }}/images/reels.mp41" type="video/mp4">
-        Your browser does not support video.
-        </video>
-      </div>
-      </div>
+        <!-- Reel 4 -->
+        <div class="col-md-3 col-sm-6">
+          <div class="reel-card">
+            <video controls loop muted autoplay playsinline>
+              <source src="{{ asset('assets') }}/images/reels.mp41" type="video/mp4">
+              Your browser does not support video.
+            </video>
+          </div>
+        </div>
 
-    </div>
+      </div>
     </div>
   </section>
 
 
 
   <!-- ================================
-       START TESTIMONIAL AREA
-    ================================= -->
+                               START TESTIMONIAL AREA
+                            ================================= -->
 
   <section class="mobile-area section-padding bg-gray position-relative mt-5">
     <img src="{{ asset('assets') }}/images/symble1.png" alt="" class="symble-img" />
@@ -3131,258 +3153,257 @@
     <img src="{{ asset('assets') }}/images/symble3.png" alt="" class="symble-img" />
     <img src="{{ asset('assets') }}/images/symble4.png" alt="" class="symble-img" />
     <div class="container">
-    <div class="row align-items-center">
-      <div class="col-lg-5 me-auto">
-      <div class="mobile-img my-4">
-        <img src="{{ asset('assets') }}/images/img-loading.jpg"
-        data-src="{{ asset('assets') }}/images/undraw-Internet-on-the-go.svg" alt="mobile-img" class="lazy" />
-      </div>
-      </div>
-      <!-- end col-lg-5 -->
-      <div class="col-lg-6">
-      <div class="mobile-app-content">
-        <div class="section-heading">
-        <h2 class="sec__title mb-3">
-          Selling Out? <br />
-          Flippingo Buys Digital Assets Directly
-        </h2>
-        <p class="sec__desc mb-4">
-          The free Flippingo mobile app is the fastest and easiest way to
-          search for businesses near you. Download it now to get
-          started.
-        </p>
+      <div class="row align-items-center">
+        <div class="col-lg-5 me-auto">
+          <div class="mobile-img my-4">
+            <img src="{{ asset('assets') }}/images/img-loading.jpg"
+              data-src="{{ asset('assets') }}/images/undraw-Internet-on-the-go.svg" alt="mobile-img" class="lazy" />
+          </div>
         </div>
-        <!-- end section-heading -->
-        <ul class="info-list mobile-feature-list">
-        <li class="d-flex align-items-center mb-3">
-          <span class="fal fa-star icon me-2"></span> Write & read
-          reviews
-        </li>
-        <li class="d-flex align-items-center mb-3">
-          <span class="fal fa-directions icon me-2"></span> Get
-          directions
-        </li>
-        <li class="d-flex align-items-center mb-3">
-          <span class="fal fa-paper-plane icon me-2"></span> Browse
-          nearby
-        </li>
-        <li class="d-flex align-items-center mb-3">
-          <span class="fal fa-utensils icon me-2"></span> View menu
-        </li>
-        <li class="d-flex align-items-center mb-3">
-          <span class="fal fa-camera icon me-2"></span> Add & view
-          photos
-        </li>
-        <li class="d-flex align-items-center mb-3">
-          <span class="fal fa-badge-check icon me-2"></span> Check-in
-        </li>
-        </ul>
-        <div class="btn-box mt-4">
-        <a href="#" class="theme-btn me-2 bg-dark"><i class="fab fa-apple me-2"></i> Sell My Asset</a>
-        <a href="#" class="theme-btn bg-success"><i class="fab fa-android me-2"></i> Know More</a>
+        <!-- end col-lg-5 -->
+        <div class="col-lg-6">
+          <div class="mobile-app-content">
+            <div class="section-heading">
+              <h2 class="sec__title mb-3">
+                Selling Out? <br />
+                Flippingo Buys Digital Assets Directly
+              </h2>
+              <p class="sec__desc mb-4">
+                The free Flippingo mobile app is the fastest and easiest way to
+                search for businesses near you. Download it now to get
+                started.
+              </p>
+            </div>
+            <!-- end section-heading -->
+            <ul class="info-list mobile-feature-list">
+              <li class="d-flex align-items-center mb-3">
+                <span class="fal fa-star icon me-2"></span> Write & read
+                reviews
+              </li>
+              <li class="d-flex align-items-center mb-3">
+                <span class="fal fa-directions icon me-2"></span> Get
+                directions
+              </li>
+              <li class="d-flex align-items-center mb-3">
+                <span class="fal fa-paper-plane icon me-2"></span> Browse
+                nearby
+              </li>
+              <li class="d-flex align-items-center mb-3">
+                <span class="fal fa-utensils icon me-2"></span> View menu
+              </li>
+              <li class="d-flex align-items-center mb-3">
+                <span class="fal fa-camera icon me-2"></span> Add & view
+                photos
+              </li>
+              <li class="d-flex align-items-center mb-3">
+                <span class="fal fa-badge-check icon me-2"></span> Check-in
+              </li>
+            </ul>
+            <div class="btn-box mt-4">
+              <a href="#" class="theme-btn me-2 bg-dark"><i class="fab fa-apple me-2"></i> Sell My Asset</a>
+              <a href="#" class="theme-btn bg-success"><i class="fab fa-android me-2"></i> Know More</a>
+            </div>
+            <!-- end btn-box -->
+          </div>
         </div>
-        <!-- end btn-box -->
+        <!-- end col-lg-6 -->
       </div>
-      </div>
-      <!-- end col-lg-6 -->
-    </div>
-    <!-- end row -->
+      <!-- end row -->
     </div>
     <!-- end container -->
   </section>
 
   <!-- ================================
-       START BLOG AREA
-    ================================= -->
+                               START BLOG AREA
+                            ================================= -->
   <section class="blog-area section--padding">
     <div class="container">
-    <div class="d-flex flex-wrap align-items-center justify-content-between">
-      <div class="me-2 my-3">
-      <h2 class="sec__title mb-3">Latest Business Insights & Guides</h2>
-      <p class="sec__desc">
-        Stay ahead with expert advice, growth hacks, and step-by-step guides<br />
-        tailored for entrepreneurs and digital business buyers.
-      </p>
+      <div class="d-flex flex-wrap align-items-center justify-content-between">
+        <div class="me-2 my-3">
+          <h2 class="sec__title mb-3">Latest Business Insights & Guides</h2>
+          <p class="sec__desc">
+            Stay ahead with expert advice, growth hacks, and step-by-step guides<br />
+            tailored for entrepreneurs and digital business buyers.
+          </p>
+        </div>
+        <a href="{{ Route('blogs') }}" class="theme-btn">View all posts</a>
       </div>
-      <a href="{{ Route('blogs') }}" class="theme-btn">View all posts</a>
-    </div>
-    <div class="row mt-5">
-      <div class="col-lg-4 col-md-6">
-      <div class="card hover-y">
-        <a href="{{ Route('blog-single') }}" class="card-image">
-        <img src="{{ asset('assets') }}/images/img-loading.jpg" data-src="{{ asset('assets') }}/images/img6.jpg"
-          alt="blog image" class="card-img-top lazy" />
-        </a>
-        <div class="card-body">
-        <h4 class="card-title">
-          <a href="{{ Route('blog-single') }}">How to Evaluate an Online Business Before You Buy</a>
-        </h4>
-        <ul class="card-meta d-flex flex-wrap align-items-center">
-          <li>18 Apr, 2025</li>
-          <li><span class="mx-1">-</span></li>
-          <li><a href="#">Business Tips</a></li>
-        </ul>
-        <p class="card-text mt-3">
-          Learn how to assess traffic, revenue, and market potential when considering an online business
-          investment.
-        </p>
-        <div class="post-author d-flex align-items-center justify-content-between mt-3">
-          <div>
-          <img src="{{ asset('assets') }}/images/testi-img7.jpg" alt="" />
-          <span>By</span>
-          <a href="#">Sophia Allen</a>
+      <div class="row mt-5">
+        <div class="col-lg-4 col-md-6">
+          <div class="card hover-y">
+            <a href="{{ Route('blog-single') }}" class="card-image">
+              <img src="{{ asset('assets') }}/images/img-loading.jpg" data-src="{{ asset('assets') }}/images/img6.jpg"
+                alt="blog image" class="card-img-top lazy" />
+            </a>
+            <div class="card-body">
+              <h4 class="card-title">
+                <a href="{{ Route('blog-single') }}">How to Evaluate an Online Business Before You Buy</a>
+              </h4>
+              <ul class="card-meta d-flex flex-wrap align-items-center">
+                <li>18 Apr, 2025</li>
+                <li><span class="mx-1">-</span></li>
+                <li><a href="#">Business Tips</a></li>
+              </ul>
+              <p class="card-text mt-3">
+                Learn how to assess traffic, revenue, and market potential when considering an online business
+                investment.
+              </p>
+              <div class="post-author d-flex align-items-center justify-content-between mt-3">
+                <div>
+                  <img src="{{ asset('assets') }}/images/testi-img7.jpg" alt="" />
+                  <span>By</span>
+                  <a href="#">Sophia Allen</a>
+                </div>
+                <a href="{{ Route('blog-single') }}">Read more</a>
+              </div>
+            </div>
           </div>
-          <a href="{{ Route('blog-single') }}">Read more</a>
         </div>
-        </div>
-      </div>
-      </div>
-      <!-- end col-lg-4 -->
-      <div class="col-lg-4 col-md-6">
-      <div class="card hover-y">
-        <a href="{{ Route('blog-single') }}" class="card-image">
-        <img src="{{ asset('assets') }}/images/img-loading.jpg" data-src="{{ asset('assets') }}/images/img6.jpg"
-          alt="blog image" class="card-img-top lazy" />
-        </a>
-        <div class="card-body">
-        <h4 class="card-title">
-          <a href="{{ Route('blog-single') }}">Top 7 SEO Trends That Will Shape 2025</a>
-        </h4>
-        <ul class="card-meta d-flex flex-wrap align-items-center">
-          <li>02 May, 2025</li>
-          <li><span class="mx-1">-</span></li>
-          <li><a href="#">Marketing</a></li>
-        </ul>
-        <p class="card-text mt-3">
-          Get ready for Google's latest updates and future-proof your site’s visibility with these key SEO
-          tactics.
-        </p>
-        <div class="post-author d-flex align-items-center justify-content-between mt-3">
-          <div>
-          <img src="{{ asset('assets') }}/images/testi-img7.jpg" alt="" />
-          <span>By</span>
-          <a href="#">Liam Grant</a>
+        <!-- end col-lg-4 -->
+        <div class="col-lg-4 col-md-6">
+          <div class="card hover-y">
+            <a href="{{ Route('blog-single') }}" class="card-image">
+              <img src="{{ asset('assets') }}/images/img-loading.jpg" data-src="{{ asset('assets') }}/images/img6.jpg"
+                alt="blog image" class="card-img-top lazy" />
+            </a>
+            <div class="card-body">
+              <h4 class="card-title">
+                <a href="{{ Route('blog-single') }}">Top 7 SEO Trends That Will Shape 2025</a>
+              </h4>
+              <ul class="card-meta d-flex flex-wrap align-items-center">
+                <li>02 May, 2025</li>
+                <li><span class="mx-1">-</span></li>
+                <li><a href="#">Marketing</a></li>
+              </ul>
+              <p class="card-text mt-3">
+                Get ready for Google's latest updates and future-proof your site’s visibility with these key SEO
+                tactics.
+              </p>
+              <div class="post-author d-flex align-items-center justify-content-between mt-3">
+                <div>
+                  <img src="{{ asset('assets') }}/images/testi-img7.jpg" alt="" />
+                  <span>By</span>
+                  <a href="#">Liam Grant</a>
+                </div>
+                <a href="{{ Route('blog-single') }}">Read more</a>
+              </div>
+            </div>
           </div>
-          <a href="{{ Route('blog-single') }}">Read more</a>
         </div>
-        </div>
-      </div>
-      </div>
-      <!-- end col-lg-4 -->
-      <div class="col-lg-4 col-md-6">
-      <div class="card hover-y">
-        <a href="{{ Route('blog-single') }}" class="card-image">
-        <img src="{{ asset('assets') }}/images/img-loading.jpg" data-src="{{ asset('assets') }}/images/img3.jpg"
-          alt="blog image" class="card-img-top lazy" />
-        </a>
-        <div class="card-body">
-        <h4 class="card-title">
-          <a href="{{ Route('blog-single') }}">Startup Funding 101: What Investors Look For</a>
-        </h4>
-        <ul class="card-meta d-flex flex-wrap align-items-center">
-          <li>10 May, 2025</li>
-          <li><span class="mx-1">-</span></li>
-          <li><a href="#">Startup</a></li>
-        </ul>
-        <p class="card-text mt-3">
-          Discover what it takes to pitch and secure funding from angel investors, VCs, and crowdfunding
-          platforms.
-        </p>
-        <div class="post-author d-flex align-items-center justify-content-between mt-3">
-          <div>
-          <img src="{{ asset('assets') }}/images/testi-img7.jpg" alt="" />
-          <span>By</span>
-          <a href="#">Ava Brooks</a>
+        <!-- end col-lg-4 -->
+        <div class="col-lg-4 col-md-6">
+          <div class="card hover-y">
+            <a href="{{ Route('blog-single') }}" class="card-image">
+              <img src="{{ asset('assets') }}/images/img-loading.jpg" data-src="{{ asset('assets') }}/images/img3.jpg"
+                alt="blog image" class="card-img-top lazy" />
+            </a>
+            <div class="card-body">
+              <h4 class="card-title">
+                <a href="{{ Route('blog-single') }}">Startup Funding 101: What Investors Look For</a>
+              </h4>
+              <ul class="card-meta d-flex flex-wrap align-items-center">
+                <li>10 May, 2025</li>
+                <li><span class="mx-1">-</span></li>
+                <li><a href="#">Startup</a></li>
+              </ul>
+              <p class="card-text mt-3">
+                Discover what it takes to pitch and secure funding from angel investors, VCs, and crowdfunding
+                platforms.
+              </p>
+              <div class="post-author d-flex align-items-center justify-content-between mt-3">
+                <div>
+                  <img src="{{ asset('assets') }}/images/testi-img7.jpg" alt="" />
+                  <span>By</span>
+                  <a href="#">Ava Brooks</a>
+                </div>
+                <a href="{{ Route('blog-single') }}">Read more</a>
+              </div>
+            </div>
           </div>
-          <a href="{{ Route('blog-single') }}">Read more</a>
         </div>
-        </div>
+        <!-- end col-lg-4 -->
       </div>
-      </div>
-      <!-- end col-lg-4 -->
-    </div>
-    <!-- end row -->
+      <!-- end row -->
     </div>
     <!-- end container -->
   </section>
 
   <!-- end blog-area -->
   <!-- ================================
-       START BLOG AREA
-    ================================= -->
+                               START BLOG AREA
+                            ================================= -->
 
   <!-- ================================
-    START MOBILE AREA
-    ================================= -->
+                            START MOBILE AREA
+                            ================================= -->
 
   <!-- end mobile-area -->
   <!-- ================================
-    END MOBILE AREA
-    ================================= -->
+                            END MOBILE AREA
+                            ================================= -->
 
   <!-- ================================
-       START CLIENTLOGO AREA
-    ================================= -->
+                               START CLIENTLOGO AREA
+                            ================================= -->
 
   <!-- end clientlogo-area -->
   <!-- ================================
-       START CLIENTLOGO AREA
-    ================================= -->
+                               START CLIENTLOGO AREA
+                            ================================= -->
 
   <!-- ================================
-    START SUBSCRIBER AREA
-    ================================= -->
+                            START SUBSCRIBER AREA
+                            ================================= -->
   <section class="subscriber-area mb-n5 position-relative z-index-2">
     <div class="container">
-    <div class="subscriber-box d-flex flex-wrap align-items-center justify-content-between bg-dark overflow-hidden">
-      <div class="section-heading my-2">
-      <h2 class="sec__title text-white mb-2">Subscribe to Newsletter!</h2>
-      <p class="sec__desc text-white-50">
-        Subscribe to get latest updates and information.
-      </p>
-      </div>
-      <!-- end section-heading -->
-      <form method="post">
-      <div class="input-group">
-        <span class="fal fa-envelope form-icon"></span>
-        <input class="form-control form--control" type="email" placeholder="Enter your email" />
-        <div class="input-group-append">
-        <button class="theme-btn" type="submit">Subscribe</button>
+      <div class="subscriber-box d-flex flex-wrap align-items-center justify-content-between bg-dark overflow-hidden">
+        <div class="section-heading my-2">
+          <h2 class="sec__title text-white mb-2">Subscribe to Newsletter!</h2>
+          <p class="sec__desc text-white-50">
+            Subscribe to get latest updates and information.
+          </p>
         </div>
+        <!-- end section-heading -->
+        <form method="post">
+          <div class="input-group">
+            <span class="fal fa-envelope form-icon"></span>
+            <input class="form-control form--control" type="email" placeholder="Enter your email" />
+            <div class="input-group-append">
+              <button class="theme-btn" type="submit">Subscribe</button>
+            </div>
+          </div>
+        </form>
       </div>
-      </form>
-    </div>
-    <!-- end subscriber-box -->
+      <!-- end subscriber-box -->
     </div>
     <!-- end container -->
   </section>
   <!-- end subscriber-area -->
   <!-- ================================
-    END SUBSCRIBER AREA
-    ================================= -->
+                            END SUBSCRIBER AREA
+                            ================================= -->
+
   <script>
-    const tabButtons = document.querySelectorAll('.tab-btn');
-    const cards = document.querySelectorAll('.flippa-card');
+    document.querySelectorAll('.tab-btn').forEach(btn => {
+      btn.addEventListener('click', () => {
+        // Remove active class from all buttons
+        document.querySelectorAll('.tab-btn').forEach(b => b.classList.remove('active'));
+        btn.classList.add('active');
 
-    tabButtons.forEach(btn => {
-    btn.addEventListener('click', () => {
-      // Remove active from all buttons
-      tabButtons.forEach(b => b.classList.remove('active'));
-      btn.classList.add('active');
+        const category = btn.getAttribute('data-category');
+        const groups = document.querySelectorAll('.submission-group');
 
-      const category = btn.getAttribute('data-category');
-
-      cards.forEach(card => {
-      const cardCategory = card.getAttribute('data-category');
-      if (category === 'all' || cardCategory === category) {
-        card.style.display = 'flex';
-      } else {
-        card.style.display = 'none';
-      }
+        groups.forEach(group => {
+          if (category === 'all') {
+            group.style.display = group.getAttribute('data-group') === 'all' ? 'block' : 'none';
+          } else {
+            group.style.display = group.getAttribute('data-group') === category ? 'block' : 'none';
+          }
+        });
       });
     });
-    });
   </script>
+
   <script>
     const track = document.querySelector('.popular-slider-track');
     const cards1 = document.querySelectorAll('.p-card-item');
@@ -3392,158 +3413,158 @@
     const cardWidth = 220;
 
     function goToSlide(index) {
-    const offset = -index * (cardWidth + cardGap);
-    track.style.transform = `translateX(${offset}px)`;
+      const offset = -index * (cardWidth + cardGap);
+      track.style.transform = `translateX(${offset}px)`;
     }
 
     setInterval(() => {
-    const maxSlide = cards1.length - slidesPerView;
-    currentSlide = (currentSlide + 1) % (maxSlide + 1);
-    goToSlide(currentSlide);
+      const maxSlide = cards1.length - slidesPerView;
+      currentSlide = (currentSlide + 1) % (maxSlide + 1);
+      goToSlide(currentSlide);
     }, 3000);
   </script>
   <script>
     document.querySelectorAll('.p-card-item').forEach(card => {
-    const platform = card.getAttribute('data-platform');
-    let color = "#ff0000";
+      const platform = card.getAttribute('data-platform');
+      let color = "#ff0000";
 
-    switch (platform) {
-      case "instagram":
-      color = "#E1306C"; // Instagram pink
-      break;
-      case "youtube":
-      color = "#FF0000"; // YouTube red
-      break;
-      case "telegram":
-      color = "#0088cc"; // Telegram blue
-      break;
-      case "x":
-      color = "#000000"; // Black for X
-      break;
-    }
+      switch (platform) {
+        case "instagram":
+          color = "#E1306C"; // Instagram pink
+          break;
+        case "youtube":
+          color = "#FF0000"; // YouTube red
+          break;
+        case "telegram":
+          color = "#0088cc"; // Telegram blue
+          break;
+        case "x":
+          color = "#000000"; // Black for X
+          break;
+      }
 
-    card.style.setProperty('--border-color', color);
+      card.style.setProperty('--border-color', color);
     });
   </script>
 
   <script>
     function toggleDropdown() {
-    document.getElementById('dropdownMenu').style.display =
-      document.getElementById('dropdownMenu').style.display === 'block' ? 'none' : 'block';
+      document.getElementById('dropdownMenu').style.display =
+        document.getElementById('dropdownMenu').style.display === 'block' ? 'none' : 'block';
     }
 
     function selectCategory(element) {
-    if (element.dataset.disabled === "true") return;
-    document.getElementById('selectedCategory').textContent = element.innerText.trim();
-    document.getElementById('dropdownMenu').style.display = 'none';
+      if (element.dataset.disabled === "true") return;
+      document.getElementById('selectedCategory').textContent = element.innerText.trim();
+      document.getElementById('dropdownMenu').style.display = 'none';
     }
 
     function filterCategories(searchText) {
-    const items = document.querySelectorAll('#categoryList li');
-    items.forEach(item => {
-      const text = item.innerText.toLowerCase();
-      item.style.display = text.includes(searchText.toLowerCase()) ? 'flex' : 'none';
-    });
+      const items = document.querySelectorAll('#categoryList li');
+      items.forEach(item => {
+        const text = item.innerText.toLowerCase();
+        item.style.display = text.includes(searchText.toLowerCase()) ? 'flex' : 'none';
+      });
     }
 
     // Hide dropdown when clicking outside
     document.addEventListener('click', function (e) {
-    const dropdown = document.querySelector('.category-dropdown');
-    if (!dropdown.contains(e.target)) {
-      document.getElementById('dropdownMenu').style.display = 'none';
-    }
+      const dropdown = document.querySelector('.category-dropdown');
+      if (!dropdown.contains(e.target)) {
+        document.getElementById('dropdownMenu').style.display = 'none';
+      }
     });
   </script>
   <script>
     // Toggle country dropdown
     document.getElementById('countryDropdownToggle').addEventListener('click', function (e) {
-    e.stopPropagation(); // Prevent closing from document click
-    const menu = document.getElementById('countryDropdownMenu');
-    menu.style.display = menu.style.display === 'block' ? 'none' : 'block';
+      e.stopPropagation(); // Prevent closing from document click
+      const menu = document.getElementById('countryDropdownMenu');
+      menu.style.display = menu.style.display === 'block' ? 'none' : 'block';
     });
 
     // Select a country from dropdown
     function selectCountry(element) {
-    if (element.dataset.disabled === "true") return;
-    document.getElementById('selectedCountry').textContent = element.innerText.trim();
-    document.getElementById('countryDropdownMenu').style.display = 'none';
+      if (element.dataset.disabled === "true") return;
+      document.getElementById('selectedCountry').textContent = element.innerText.trim();
+      document.getElementById('countryDropdownMenu').style.display = 'none';
     }
 
     // Close on outside click
     document.addEventListener('click', function (e) {
-    const dropdown = document.querySelector('.country-dropdown');
-    if (!dropdown.contains(e.target)) {
-      document.getElementById('countryDropdownMenu').style.display = 'none';
-    }
+      const dropdown = document.querySelector('.country-dropdown');
+      if (!dropdown.contains(e.target)) {
+        document.getElementById('countryDropdownMenu').style.display = 'none';
+      }
     });
   </script>
 
 
   <script>
     const swiper = new Swiper(".reviewSwiper", {
-    slidesPerView: 4,
-    spaceBetween: 30,
-    slidesPerGroup: 1,
-    loop: true,
+      slidesPerView: 4,
+      spaceBetween: 30,
+      slidesPerGroup: 1,
+      loop: true,
 
-    autoplay: {
-      delay: 3000,
-    },
-    navigation: {
-      nextEl: ".swiper-button-next",
-      prevEl: ".swiper-button-prev",
-    },
-    breakpoints: {
-      1024: { slidesPerView: 4 },
-      768: { slidesPerView: 2 },
-      480: { slidesPerView: 1 }
-    }
+      autoplay: {
+        delay: 3000,
+      },
+      navigation: {
+        nextEl: ".swiper-button-next",
+        prevEl: ".swiper-button-prev",
+      },
+      breakpoints: {
+        1024: { slidesPerView: 4 },
+        768: { slidesPerView: 2 },
+        480: { slidesPerView: 1 }
+      }
     });
   </script>
   <script>
     const counters = document.querySelectorAll('.counter');
 
     counters.forEach(counter => {
-    const target = +counter.getAttribute('data-target');
-    let count = 0;
-    const duration = 2000; // total time in milliseconds
-    const increment = target / (duration / 10);
+      const target = +counter.getAttribute('data-target');
+      let count = 0;
+      const duration = 2000; // total time in milliseconds
+      const increment = target / (duration / 10);
 
-    const update = () => {
-      count += increment;
-      if (count >= target) {
-      counter.textContent = target;
-      } else {
-      counter.textContent = Math.floor(count);
-      requestAnimationFrame(update); // smoother than setInterval
-      }
-    };
+      const update = () => {
+        count += increment;
+        if (count >= target) {
+          counter.textContent = target;
+        } else {
+          counter.textContent = Math.floor(count);
+          requestAnimationFrame(update); // smoother than setInterval
+        }
+      };
 
-    update();
+      update();
     });
   </script>
 
 
   <script>
     const testimonials = [
-    {
-      quote: "I was impressed by the food — every dish is bursting with flavor! And I could really tell that they use high-quality ingredients. The staff was friendly and attentive, going the extra mile. I'll definitely be back for more!",
-      name: "Tamar Mendelson",
-      designation: "Restaurant Critic",
-      src: "https://images.unsplash.com/photo-1512316609839-ce289d3eba0a?q=80&w=1368&auto=format&fit=crop"
-    },
-    {
-      quote: "This place exceeded all expectations! The atmosphere is inviting, and the staff truly goes above and beyond to ensure a fantastic visit. I'll definitely keep returning for more exceptional dining experience.",
-      name: "Joe Charlescraft",
-      designation: "Frequent Visitor",
-      src: "https://images.unsplash.com/photo-1628749528992-f5702133b686?q=80&w=1368&auto=format&fit=crop"
-    },
-    {
-      quote: "Shining Yam is a hidden gem! From the moment I walked in, I knew I was in for a treat. The impeccable service and overall attention to detail created a memorable experience. I highly recommend it!",
-      name: "Martina Edelweist",
-      designation: "Satisfied Customer",
-      src: "https://images.unsplash.com/photo-1524267213992-b76e8577d046?q=80&w=1368&auto=format&fit=crop"
-    }
+      {
+        quote: "I was impressed by the food — every dish is bursting with flavor! And I could really tell that they use high-quality ingredients. The staff was friendly and attentive, going the extra mile. I'll definitely be back for more!",
+        name: "Tamar Mendelson",
+        designation: "Restaurant Critic",
+        src: "https://images.unsplash.com/photo-1512316609839-ce289d3eba0a?q=80&w=1368&auto=format&fit=crop"
+      },
+      {
+        quote: "This place exceeded all expectations! The atmosphere is inviting, and the staff truly goes above and beyond to ensure a fantastic visit. I'll definitely keep returning for more exceptional dining experience.",
+        name: "Joe Charlescraft",
+        designation: "Frequent Visitor",
+        src: "https://images.unsplash.com/photo-1628749528992-f5702133b686?q=80&w=1368&auto=format&fit=crop"
+      },
+      {
+        quote: "Shining Yam is a hidden gem! From the moment I walked in, I knew I was in for a treat. The impeccable service and overall attention to detail created a memorable experience. I highly recommend it!",
+        name: "Martina Edelweist",
+        designation: "Satisfied Customer",
+        src: "https://images.unsplash.com/photo-1524267213992-b76e8577d046?q=80&w=1368&auto=format&fit=crop"
+      }
     ];
 
     let activeIndex = 0;
@@ -3555,63 +3576,63 @@
     const nextButton = document.getElementById('next-button');
 
     function updateTestimonial(direction) {
-    activeIndex = (activeIndex + direction + testimonials.length) % testimonials.length;
+      activeIndex = (activeIndex + direction + testimonials.length) % testimonials.length;
 
-    testimonials.forEach((testimonial, index) => {
-      let img = imageContainer.querySelector(`[data-index="${index}"]`);
-      if (!img) {
-      img = document.createElement('img');
-      img.src = testimonial.src;
-      img.alt = testimonial.name;
-      img.classList.add('testimonial-image');
-      img.dataset.index = index;
-      imageContainer.appendChild(img);
-      }
+      testimonials.forEach((testimonial, index) => {
+        let img = imageContainer.querySelector(`[data-index="${index}"]`);
+        if (!img) {
+          img = document.createElement('img');
+          img.src = testimonial.src;
+          img.alt = testimonial.name;
+          img.classList.add('testimonial-image');
+          img.dataset.index = index;
+          imageContainer.appendChild(img);
+        }
 
-      const offset = index - activeIndex;
-      const absOffset = Math.abs(offset);
-      const zIndex = testimonials.length - absOffset;
-      const opacity = index === activeIndex ? 1 : 0.7;
-      const scale = 1 - (absOffset * 0.15);
-      const translateY = offset === -1 ? '-20%' : offset === 1 ? '20%' : '0%';
-      const rotateY = offset === -1 ? '15deg' : offset === 1 ? '-15deg' : '0deg';
+        const offset = index - activeIndex;
+        const absOffset = Math.abs(offset);
+        const zIndex = testimonials.length - absOffset;
+        const opacity = index === activeIndex ? 1 : 0.7;
+        const scale = 1 - (absOffset * 0.15);
+        const translateY = offset === -1 ? '-20%' : offset === 1 ? '20%' : '0%';
+        const rotateY = offset === -1 ? '15deg' : offset === 1 ? '-15deg' : '0deg';
 
-      img.style.zIndex = zIndex;
-      img.style.opacity = opacity;
-      img.style.transform = `translateY(${translateY}) scale(${scale}) rotateY(${rotateY})`;
-    });
+        img.style.zIndex = zIndex;
+        img.style.opacity = opacity;
+        img.style.transform = `translateY(${translateY}) scale(${scale}) rotateY(${rotateY})`;
+      });
 
-    nameElement.textContent = testimonials[activeIndex].name;
-    designationElement.textContent = testimonials[activeIndex].designation;
-    quoteElement.innerHTML = testimonials[activeIndex].quote
-      .split(' ')
-      .map(word => `<span class="word">${word}</span>`)
-      .join(' ');
+      nameElement.textContent = testimonials[activeIndex].name;
+      designationElement.textContent = testimonials[activeIndex].designation;
+      quoteElement.innerHTML = testimonials[activeIndex].quote
+        .split(' ')
+        .map(word => `<span class="word">${word}</span>`)
+        .join(' ');
 
-    animateWords();
+      animateWords();
     }
 
     function animateWords() {
-    const words = quoteElement.querySelectorAll('.word');
-    words.forEach((word, index) => {
-      word.style.opacity = '0';
-      word.style.transform = 'translateY(10px)';
-      word.style.filter = 'blur(10px)';
-      setTimeout(() => {
-      word.style.transition = 'opacity 0.2s ease-in-out, transform 0.2s ease-in-out, filter 0.2s ease-in-out';
-      word.style.opacity = '1';
-      word.style.transform = 'translateY(0)';
-      word.style.filter = 'blur(0)';
-      }, index * 20);
-    });
+      const words = quoteElement.querySelectorAll('.word');
+      words.forEach((word, index) => {
+        word.style.opacity = '0';
+        word.style.transform = 'translateY(10px)';
+        word.style.filter = 'blur(10px)';
+        setTimeout(() => {
+          word.style.transition = 'opacity 0.2s ease-in-out, transform 0.2s ease-in-out, filter 0.2s ease-in-out';
+          word.style.opacity = '1';
+          word.style.transform = 'translateY(0)';
+          word.style.filter = 'blur(0)';
+        }, index * 20);
+      });
     }
 
     function handleNext() {
-    updateTestimonial(1);
+      updateTestimonial(1);
     }
 
     function handlePrev() {
-    updateTestimonial(-1);
+      updateTestimonial(-1);
     }
 
     prevButton.addEventListener('click', handlePrev);
@@ -3622,9 +3643,9 @@
     const autoplayInterval = setInterval(handleNext, 5000);
 
     [prevButton, nextButton].forEach(button => {
-    button.addEventListener('click', () => {
-      clearInterval(autoplayInterval);
-    });
+      button.addEventListener('click', () => {
+        clearInterval(autoplayInterval);
+      });
     });
   </script>
 

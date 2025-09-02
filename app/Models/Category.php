@@ -20,4 +20,11 @@ class Category extends Model
             ->saveSlugsTo('slug');
     }
 
+    public function form()
+    {
+        return $this->hasOne(\App\Models\Form::class, 'category_id')->latest();
+    }
+
+
 }
+

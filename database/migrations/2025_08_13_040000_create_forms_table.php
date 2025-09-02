@@ -11,7 +11,7 @@ class CreateFormsTable extends Migration
             $table->id();
             $table->text('name'); // NOT NULL
             $table->text('slug')->nullable();
-
+            $table->foreignId('category_id')->constrained('categories')->onDelete('cascade');
             $table->boolean('status')->default(true);
             $table->boolean('is_private')->default(false);
             $table->boolean('use_password')->default(false);

@@ -3,6 +3,7 @@
 namespace App\Http\Controllers\Admin;
 
 use App\Http\Controllers\Controller;
+use App\Models\Category;
 use App\Models\FormData;
 use Illuminate\Http\Request;
 use Illuminate\Support\Str;
@@ -30,11 +31,37 @@ class FormController extends Controller
     }
 
 
+    public function showFormHtml($id)
+    {
+        $form = Form::findOrFail($id);
+        // Fetch the associated form data (fields/configuration) if any
+        $formData = FormData::where('form_id', $form->id)->first();
+
+        // Assuming you want to return the rendered form HTML or form data JSON
+        // Here, returning HTML snippet or form JSON to inject into frontend
+
+        // If form HTML is stored in form_data table under 'html'
+        $html = $formData ? $formData->html : '';
+
+        // Respond with HTML content to be injected
+        return response()->json([
+            'success' => true,
+            'html' => $html,
+            'form_id' => $form->id,
+            'form_name' => $form->name,
+        ]);
+    }
+
+
     /**
      * Show the form for creating a new resource.
      */
     public function create()
     {
+
+        // Fetch categories, for example: ID and Name
+        $categories = Category::all(); // or use pluck('name', 'id') if you want an array
+
         $i18n = [
             'untitledForm' => __('Untitled Form'),
             'thisIsMyForm' => __('This is my form. Please fill it out. Thanks!'),
@@ -111,16 +138,16 @@ class FormController extends Controller
             ]
         ];
 
-        return view('admin.form.create', compact('i18n', 'defaultForm'));
+        return view('admin.form.create', compact('i18n', 'defaultForm', 'categories'));
     }
 
 
     public function store(Request $request)
     {
-        //  dd($request->all());
         // Validate incoming data
         $validated = $request->validate([
             'name' => 'required|string|max:255',
+            'category_id' => 'required|exists:categories,id', // Add this line
             'fields' => 'required|json',
             'builder' => 'required|json',
             'html' => 'nullable|string',
@@ -133,20 +160,19 @@ class FormController extends Controller
 
         // Create slug from name
         $slug = Str::slug($validated['name']);
+        $userId = auth()->id();
 
-        $userId = auth()->id(); // Get authenticated user ID
-
-        // Save to `forms` table
+        // Save to `forms` table,
         $form = Form::create([
             'name' => $validated['name'],
             'slug' => $slug,
+            'category_id' => $validated['category_id'],
             'status' => true,
             'language' => 'en',
             'created_by' => $userId,
             'updated_by' => $userId,
         ]);
 
-        // Save to `form_datas` table
         FormData::create([
             'form_id' => $form->id,
             'builder' => $builder,
@@ -163,12 +189,15 @@ class FormController extends Controller
         ]);
     }
 
+
     public function edit($id)
     {
         $form = Form::findOrFail($id);
         $formData = FormData::where('form_id', $form->id)->first();
-
-        return view('admin.form.edit', compact('form', 'formData'));
+        // Fetch categories, for example: ID and Name
+        $categories = Category::all(); // or use pluck('name', 'id') if you want an array
+        // dd($formData->toArray());
+        return view('admin.form.edit', compact('form', 'formData', 'categories'));
     }
 
     public function update(Request $request, $id)
@@ -180,6 +209,7 @@ class FormController extends Controller
             'fields' => 'required|json',
             'builder' => 'required|json',
             'html' => 'nullable|string',
+            'category_id' => 'required|exists:categories,id',
             'height' => 'nullable|numeric'
         ]);
 
@@ -196,6 +226,8 @@ class FormController extends Controller
             'slug' => Str::slug($validated['name']),
             'status' => $form->status, // keep existing unless you add in form
             'language' => $form->language ?? 'en',
+            'category_id' => $validated['category_id'],
+
         ]);
 
         // Update form_datas table
@@ -301,6 +333,18 @@ class FormController extends Controller
     public function submissionsReport($id)
     {
         // Generate submissions report
+    }
+
+    public function destroy($id)
+    {
+        $form = Form::find($id);
+        if (!$form) {
+            return response()->json(['success' => false, 'msgText' => 'Form not found']);
+        }
+
+        $form->delete();
+
+        return response()->json(['success' => true]);
     }
 
 

@@ -3,19 +3,62 @@ namespace App\Http\Controllers;
 
 use App\Models\Attribute;
 use App\Models\CentralizedAttributePricing;
+use App\Models\FormSubmission;
 use App\Models\PricingRule;
 use App\Models\Category;
 use Illuminate\Http\Request;
 use App\Models\PricingRuleAttribute;
 use App\Models\AttributeValue;
+use Illuminate\Support\Facades\Auth;
 
 class SiteController extends Controller
 {
     public function index()
-    {
+{
+    $categories = Category::where('status', 'active')->get();
 
-        return view('front.index');
+    // Latest submission per category
+    $submissionsByCategory = [];
+    foreach ($categories as $category) {
+        $latestSubmission = FormSubmission::whereHas('form', function ($query) use ($category) {
+                $query->where('category_id', $category->id);
+            })
+            ->with('form', 'customer', 'files')
+            ->latest()
+            ->first();
+
+        if ($latestSubmission) {
+            $submissionsByCategory[$category->id] = $latestSubmission;
+        }
     }
+
+    // All latest submissions (one per category) for "All" tab
+    // For simplicity, you may also load all submissions or customize as needed
+    $allSubmissions = collect($submissionsByCategory)->values();
+
+    return view('front.index', compact('categories', 'submissionsByCategory', 'allSubmissions'));
+}
+
+
+
+
+
+    public function addListing()
+    {
+        if (!Auth::guard('customer')->check()) {
+            $intendedUrl = 'add-listing';
+            return redirect()->route('authentication-signup', ['redirect' => $intendedUrl]);
+        }
+
+        // Get latest active categories, ordered by newest first
+        $categories = Category::where('status', true)
+            ->orderBy('created_at', 'desc')
+            ->with('form')  // eager load form relationship
+            ->get();
+
+        return view('front.add-listing', compact('categories'));
+    }
+
 
 
     // public function subcateDetails($slug){
@@ -52,7 +95,7 @@ class SiteController extends Controller
         $proofReadings = collect();
 
 
-    
+
         return view('front.subcategory-detail', compact(
             'subcategory',
             'attributeGroups',
@@ -323,12 +366,12 @@ class SiteController extends Controller
                         // dd($total);
                         // Use Regular Pricing
                         $attrs = PricingRuleAttribute::with(['quantityRanges', 'attribute', 'dependencies'])
-                        ->where('attribute_id', $attributeId)
-                        ->where('value_id', $valueId)
-                        ->where('pricing_rule_id', $pricingRule->id)
-                        ->get();
-                        
-                        
+                            ->where('attribute_id', $attributeId)
+                            ->where('value_id', $valueId)
+                            ->where('pricing_rule_id', $pricingRule->id)
+                            ->get();
+
+
                         $validAttrs = $attrs->filter(function ($item) use ($selectedAttributes, $expandedAttributes) {
                             foreach ($item->dependencies as $dep) {
                                 $selected = $selectedAttributes[$dep->parent_attribute_id] ?? null;

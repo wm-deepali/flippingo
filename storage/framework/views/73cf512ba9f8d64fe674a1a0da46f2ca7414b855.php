@@ -28,4 +28,4 @@
       </div>
     </div>
   </div>
-</div>
+</div><?php /**PATH D:\web-mingo-project\flippingo_admin\resources\views/admin/form/partials/field-edit-modal.blade.php ENDPATH**/ ?>

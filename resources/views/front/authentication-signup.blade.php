@@ -6,8 +6,8 @@
 
 @section('content')
   <!-- ================================
-                                            START BREADCRUMB AREA
-                                          ================================= -->
+                                              START BREADCRUMB AREA
+                                            ================================= -->
   <section class="breadcrumb-area bread-bg" style="margin-top: 50px;">
     <div class="overlay"></div>
     <!-- end overlay -->
@@ -31,12 +31,12 @@
   </section>
   <!-- end breadcrumb-area -->
   <!-- ================================
-                                            END BREADCRUMB AREA
-                                          ================================= -->
+                                              END BREADCRUMB AREA
+                                            ================================= -->
 
   <!-- ================================
-                                            START CONTACT AREA
-                                          ================================= -->
+                                              START CONTACT AREA
+                                            ================================= -->
   <section class="contact-area padding-top-60px padding-bottom-90px">
     <div class="container ">
       <div class="row align-items-center">
@@ -101,26 +101,26 @@
 
 
             <!-- <div id="step1" class="mt-3">
-                                                <div class="input-group mb-3">
-                                                  <select class="form-select" style="max-width:120px;">
-                                                  <option value="+91">+91</option>
-                                                  <option value="+1">+1</option>
-                                                  <option value="+44">+44</option>
-                                                  </select>
-                                                  <input type="text" class="form-control" placeholder="Sign up with Mobile / Email Id">
-                                                  <button type="button" class="btn btn-primary" id="sendOtpBtn">➔</button>
-                                                </div>
-                                                <small class="text-muted d-block mb-3">In case of outside India, enter your WhatsApp number.</small> -->
+                                                  <div class="input-group mb-3">
+                                                    <select class="form-select" style="max-width:120px;">
+                                                    <option value="+91">+91</option>
+                                                    <option value="+1">+1</option>
+                                                    <option value="+44">+44</option>
+                                                    </select>
+                                                    <input type="text" class="form-control" placeholder="Sign up with Mobile / Email Id">
+                                                    <button type="button" class="btn btn-primary" id="sendOtpBtn">➔</button>
+                                                  </div>
+                                                  <small class="text-muted d-block mb-3">In case of outside India, enter your WhatsApp number.</small> -->
 
             <!-- OTP Field (Hidden Initially) -->
             <!-- <div id="otpSection" class="d-none">
-                                                          <div class="d-flex mb-2">
-                                                          <input type="text" class="form-control me-2" placeholder="Enter OTP" style="width: 70%;">
-                                                          <button type="button" class="btn btn-outline-secondary" id="resendOtpBtn">Resend OTP</button>
+                                                            <div class="d-flex mb-2">
+                                                            <input type="text" class="form-control me-2" placeholder="Enter OTP" style="width: 70%;">
+                                                            <button type="button" class="btn btn-outline-secondary" id="resendOtpBtn">Resend OTP</button>
+                                                            </div>
+                                                            <button type="button" class="btn btn-success w-100" id="verifyOtpBtn">Verify Now</button>
                                                           </div>
-                                                          <button type="button" class="btn btn-success w-100" id="verifyOtpBtn">Verify Now</button>
-                                                        </div>
-                                                        </div> -->
+                                                          </div> -->
 
             <!-- Step 2 (Hidden Initially) -->
             <div id="step2" class="d-none">
@@ -139,18 +139,20 @@
                 <input type="text" class="form-control" placeholder="Enter Legal Name">
               </div>
 
+              <input type="hidden" id="redirectUrl" value="{{ request()->query('redirect', url('/')) }}">
+
               <!-- Other Fields -->
               <input type="text" class="form-control mb-3" placeholder="First Name">
               <input type="text" class="form-control mb-3" placeholder="Last Name">
               <input type="email" class="form-control mb-3" placeholder="Email Id">
               <!-- 
-                      <select class="form-select mb-3" name="country" id="inputSelectCountry" required>
-                        <option value="">Select Country</option>
-                        @php $countries = countrylist(); @endphp
-                        @foreach($countries as $country)
-                          <option value="{{$country->id}}">{{$country->name}}</option>
-                        @endforeach
-                      </select> -->
+                        <select class="form-select mb-3" name="country" id="inputSelectCountry" required>
+                          <option value="">Select Country</option>
+                          @php $countries = countrylist(); @endphp
+                          @foreach($countries as $country)
+                            <option value="{{$country->id}}">{{$country->name}}</option>
+                          @endforeach
+                        </select> -->
 
               <!-- Password with Eye Icon -->
               <div class="mb-3 position-relative">
@@ -182,8 +184,8 @@
 
   <!-- end contact-area -->
   <!-- ================================
-                                            END CONTACT AREA
-                                          ================================= -->
+                                              END CONTACT AREA
+                                            ================================= -->
 
   <script>
     document.addEventListener("DOMContentLoaded", function () {
@@ -263,7 +265,7 @@
 
 
       // Handle Next button
-   
+
       document.getElementById('sendOtpBtn').addEventListener('click', function () {
         const input = document.getElementById('signupInput').value.trim();
         const code = document.getElementById('countryCode').value;
@@ -404,7 +406,7 @@
         const firstName = document.querySelector('input[placeholder="First Name"]').value.trim();
         const lastName = document.querySelector('input[placeholder="Last Name"]').value.trim();
         const emailInput = document.querySelector('input[placeholder="Email Id"]').value.trim();
-        const countryId = document.getElementById("inputSelectCountry").value;
+        // const countryId = document.getElementById("inputSelectCountry").value;
 
         const password = document.getElementById("passwordField").value;
         const confirmPass = document.getElementById("confirmPasswordField").value;
@@ -429,6 +431,7 @@
           mobile = code + signupInput; // typed phone
           finalEmail = emailInput || null; // optional additional email
         }
+        const redirectUrl = document.getElementById('redirectUrl').value;
 
         // ✅ send to backend
         fetch("{{ route('customer.register') }}", {
@@ -446,6 +449,7 @@
             mobile: mobile,
             password: password,
             password_confirmation: confirmPass,
+            redirect: redirectUrl,
             // country: countryId // <-- now sends country.id (not +91)
           })
         })

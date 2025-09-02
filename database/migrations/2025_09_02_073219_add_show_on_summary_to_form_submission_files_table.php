@@ -4,7 +4,7 @@ use Illuminate\Database\Migrations\Migration;
 use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Support\Facades\Schema;
 
-class CreateFormSubmissionFilesTable extends Migration
+class AddShowOnSummaryToFormSubmissionFilesTable extends Migration
 {
     /**
      * Run the migrations.
@@ -13,9 +13,8 @@ class CreateFormSubmissionFilesTable extends Migration
      */
     public function up()
     {
-        Schema::create('form_submission_files', function (Blueprint $table) {
-            $table->id();
-            $table->timestamps();
+        Schema::table('form_submission_files', function (Blueprint $table) {
+            $table->boolean('show_on_summary')->default(false)->after('size');
         });
     }
 
@@ -26,6 +25,8 @@ class CreateFormSubmissionFilesTable extends Migration
      */
     public function down()
     {
-        Schema::dropIfExists('form_submission_files');
+        Schema::table('form_submission_files', function (Blueprint $table) {
+              $table->dropColumn(['show_on_summary']);
+        });
     }
 }

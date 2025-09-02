@@ -6,7 +6,8 @@ use App\Http\Controllers\Admin\{
     SliderController,
     FormController,
     FormBuilderController,
-    FormTemplateController
+    FormTemplateController,
+    ListingController
 };
 
 /*
@@ -118,5 +119,11 @@ Route::group(['middleware' => 'auth'], function () {
         Route::get('/ajax/builder-phrases', [FormBuilderController::class, 'builderPhrases'])
             ->name('ajax.builder.phrases');
 
+        Route::get('/form-submissions', [ListingController::class, 'index'])->name('form-submissions.index');
+        // Show submission details
+        Route::get('form-submissions/{submission}', [ListingController::class, 'show'])->name('form-submissions.show');
+
+        // Publish submission (POST)
+        Route::post('form-submissions/{submission}/publish', [ListingController::class, 'publish'])->name('form-submissions.publish');
     });
 });

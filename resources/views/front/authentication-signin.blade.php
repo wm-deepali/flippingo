@@ -122,7 +122,10 @@
   <!-- end contact-area -->
   <!-- ================================
               END CONTACT AREA
-            ================================= -->
+        
+              ================================= -->
+                <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+
   <script>
     function showNextField() {
       let loginId = document.getElementById("loginId").value.trim();

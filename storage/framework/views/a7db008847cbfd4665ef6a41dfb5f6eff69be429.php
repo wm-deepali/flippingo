@@ -22,8 +22,8 @@
   <link rel="stylesheet" type="text/css" href="//cdn.datatables.net/1.11.1/css/jquery.dataTables.css">
   <script src="<?php echo e(URL::asset('admin_assets/js/tree.js')); ?>"></script>
   <script src="https://unpkg.com/sweetalert/dist/sweetalert.min.js"></script>
-	 <script src="https://cdn.ckeditor.com/4.22.1/standard/ckeditor.js"></script>
 
+<script src="https://cdn.jsdelivr.net/npm/signature_pad@4.0.0/dist/signature_pad.umd.min.js"></script>
 
   <style>
    .error{ color:red; } 

@@ -43,9 +43,9 @@
               <th>Status</th>
               <th>Language</th>
               <th>Created At</th>
+              <th>Action</th>
             </tr>
             </thead>
-      
             <tbody>
             <?php $__currentLoopData = $forms; $__env->addLoop($__currentLoopData); foreach($__currentLoopData as $form): $__env->incrementLoopIndices(); $loop = $__env->getLastLoop(); ?>
           <tr>
@@ -60,24 +60,79 @@
             </td>
             <td><?php echo e($form->language ?? 'N/A'); ?></td>
             <td><?php echo e($form->updated_at->format('d M Y, h:i A')); ?></td>
-            <!-- <td>
-            <ul class="list-inline">
-            <li class="list-inline-item">
-            <a href="javascript:void(0)" class="btn btn-primary btn-sm edit-form"
-              data-id="<?php echo e($form->id); ?>">
-              <i class="fas fa-pencil-alt"></i>
-            </a>
+            <td>
+            <div class="dropdown">
+            <button class="btn btn-primary btn-sm dropdown-toggle" type="button"
+            id="actionMenu<?php echo e($form->id); ?>" data-toggle="dropdown" aria-expanded="false">
+            Actions
+            </button>
+            <ul class="dropdown-menu" aria-labelledby="actionMenu<?php echo e($form->id); ?>">
+            <li>
+              <a class="dropdown-item" href="<?php echo e(route('admin.form.edit', $form->id)); ?>">
+              <i class="fas fa-pen"></i> Update
+              </a>
             </li>
-            <li class="list-inline-item">
-            <a href="javascript:void(0)" onclick="deleteConfirmation(<?php echo e($form->id); ?>)">
-              <i class="fa fa-trash text-danger"></i>
-            </a>
+            <li>
+              <a class="dropdown-item" href="<?php echo e(route('admin.form.show', $form->id)); ?>" target="_blank">
+              <i class="fas fa-eye"></i> View
+              </a>
             </li>
-            </ul>
-            </td> -->
+            <li>
+              <a class="dropdown-item" href="<?php echo e(route('admin.form.settings', $form->id)); ?>">
+              <i class="fas fa-cog"></i> Settings
+              </a>
+            </li>
+            <li>
+  <a class="dropdown-item text-danger" href="javascript:void(0)" 
+     onclick="deleteConfirmation(<?php echo e($form->id); ?>)">
+    <i class="fas fa-trash"></i> Delete
+  </a>
+</li>
+
+            <!-- <li>
+              <a class="dropdown-item" href="<?php echo e(route('admin.form.conditionalRules', $form->id)); ?>">
+              <i class="fas fa-random"></i> Conditional Rules
+              </a>
+            </li>
+            <li>
+              <a class="dropdown-item" href="<?php echo e(route('admin.form.show', $form->id)); ?>" target="_blank">
+              <i class="fas fa-file-alt"></i> View Record
+              </a>
+            </li>
+            <li>
+              <a class="dropdown-item" href="<?php echo e(route('admin.form.copy', $form->id)); ?>">
+              <i class="fas fa-copy"></i> Copy
+              </a>
+            </li>
+            <li>
+              <a class="dropdown-item" href="<?php echo e(route('admin.form.publishShare', $form->id)); ?>">
+              <i class="fas fa-share-alt"></i> Publish & Share
+              </a>
+            </li>
+            <li>
+              <a class="dropdown-item" href="<?php echo e(route('admin.form.submissions', $form->id)); ?>">
+              <i class="fas fa-paper-plane"></i> Submissions
+              </a>
+            </li>
+            <li>
+              <a class="dropdown-item" href="<?php echo e(route('admin.form.addons', $form->id)); ?>">
+              <i class="fas fa-puzzle-piece"></i> Add-Ons
+              </a>
+            </li>
+            <li>
+              <a class="dropdown-item" href="<?php echo e(route('admin.form.submissionsReport', $form->id)); ?>">
+              <i class="fas fa-clock"></i> Submissions Report
+              </a>
+            </li>
+            </ul> -->
+
+
+            </div>
+            </td>
           </tr>
         <?php endforeach; $__env->popLoop(); $loop = $__env->getLastLoop(); ?>
             </tbody>
+
 
           </table>
           </div>

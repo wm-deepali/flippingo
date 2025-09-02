@@ -2091,7 +2091,22 @@ class FormBuilderController extends Controller
             ]
         ];
 
+        // After defining $components array
+        foreach ($components as &$component) {
+            // Add show_on_summary field to each component's fields
+            $component['fields']['show_on_summary'] = [
+                'label' => __('Show on Summary Card'),
+                'type' => 'checkbox',
+                'value' => false,
+                'advanced' => true,
+            ];
+        }
+        // Unset reference
+        unset($component);
+
+        // Then return response
         return response()->json($components);
+
     }
 
 

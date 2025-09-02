@@ -8,8 +8,8 @@
     document.addEventListener('DOMContentLoaded', function () {
 
         Promise.all([
-            fetch('{{ asset('data/css-rules.json') }}').then(r => r.json()),
-            fetch('{{ asset('data/css-properties.json') }}').then(r => r.json())
+            fetch('<?php echo e(asset('data/css-rules.json')); ?>').then(r => r.json()),
+            fetch('<?php echo e(asset('data/css-properties.json')); ?>').then(r => r.json())
         ])
             .then(([rules, properties]) => {
                 renderDesignAccordion(rules, properties);
@@ -262,7 +262,7 @@
     let BUILDER_PHRASES = {};
 
     // fetch component configs
-    $.getJSON("{{ route('admin.ajax.builder.components') }}", function (components) {
+    $.getJSON("<?php echo e(route('admin.ajax.builder.components')); ?>", function (components) {
         const $fieldsTab = $('#tab-fields');
         $fieldsTab.empty();
 
@@ -290,7 +290,7 @@
 
 
     // Fetch phrases from backend to translate label keys
-    $.getJSON("{{ route('admin.ajax.builder.phrases') }}", function (phrases) {
+    $.getJSON("<?php echo e(route('admin.ajax.builder.phrases')); ?>", function (phrases) {
         BUILDER_PHRASES = phrases || {};
         window.BUILDER_PHRASES = BUILDER_PHRASES;
     });
@@ -2290,4 +2290,4 @@
             toastEl.show();
         }
     });
-</script>
+</script><?php /**PATH D:\web-mingo-project\flippingo_admin\resources\views/admin/form/partials/scripts.blade.php ENDPATH**/ ?>

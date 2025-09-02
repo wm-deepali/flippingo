@@ -82,6 +82,13 @@
               <i class="fas fa-cog"></i> Settings
               </a>
             </li>
+            <li>
+  <a class="dropdown-item text-danger" href="javascript:void(0)" 
+     onclick="deleteConfirmation({{ $form->id }})">
+    <i class="fas fa-trash"></i> Delete
+  </a>
+</li>
+
             <!-- <li>
               <a class="dropdown-item" href="{{ route('admin.form.conditionalRules', $form->id) }}">
               <i class="fas fa-random"></i> Conditional Rules

@@ -1,4 +1,5 @@
 <?php
+
 use Illuminate\Database\Migrations\Migration;
 use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Support\Facades\Schema;
@@ -9,15 +10,16 @@ class CreateFormSubmissionsTable extends Migration
     {
         Schema::create('form_submissions', function (Blueprint $table) {
             $table->id();
+
+            // Reference to the dynamic form
             $table->foreignId('form_id')->constrained('forms')->onDelete('cascade');
-            $table->boolean('status')->default(true);
-            $table->boolean('new')->default(true);
-            $table->boolean('important')->default(false);
-            $table->text('sender')->nullable();
-            $table->longText('data')->nullable();
-            $table->string('ip', 45)->nullable();
-            $table->foreignId('created_by')->nullable()->constrained('users');
-            $table->foreignId('updated_by')->nullable()->constrained('users');
+
+            // Customer (user) who submitted, nullable (guest submissions)
+            $table->foreignId('customer_id')->nullable()->constrained('users')->onDelete('set null');
+
+            // JSON column to store submitted form fields (key=>value)
+            $table->json('data')->nullable();
+
             $table->timestamps();
         });
     }

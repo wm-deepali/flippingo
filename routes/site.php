@@ -2,6 +2,8 @@
 
 use App\Http\Controllers\Admin\BlogController;
 use App\Http\Controllers\Admin\FaqController;
+use App\Http\Controllers\Admin\FormController;
+use App\Http\Controllers\Admin\ListingController;
 use App\Http\Controllers\Admin\PageController;
 use App\Http\Controllers\CartController;
 use Illuminate\Http\Request;
@@ -88,6 +90,10 @@ Route::post('/get-vat', [CartController::class, 'getByTitle'])->name('get.vat.by
 
 Route::get('checkout', [CartController::class, 'checkout'])->name('checkout');
 
+Route::get('add-listing', [SiteController::class, 'addListing'])->name('add-listing');
+Route::get('/forms/{id}', [FormController::class, 'showFormHtml']);
+Route::post('/listing/store', [ListingController::class, 'store'])->name('listing.store');
+Route::get('/form-submissions', [ListingController::class, 'apiIndex'])->name('form-submissions');
 
 
 Route::get('order-tracking', function () {
@@ -99,18 +105,16 @@ Route::get('about-us', function () {
 })->name('about-us');
 
 
-Route::get('add-listing', function () {
-    return view('front.add-listing');
-})->name('add-listing');
 
 Route::get('listing-list', function () {
     return view('front.listing-list');
 })->name('listing-list');
 
 
-Route::get('listing-details', function () {
-    return view('front.listing-details');
-})->name('listing-details');
+// Route::get('listing-details', function () {
+//     return view('front.listing-details');
+// })->name('listing-details');
+Route::get('listing-details', [ListingController::class, 'apiShow'])->name('listing-details');
 
 Route::get('meet-our-team', function () {
     return view('front.meet-our-team');
@@ -171,7 +175,7 @@ Route::middleware(['web'])->group(function () {
         Route::get('/customer-data', 'getCustomerData');
         Route::post('send-otp', 'sendOtp')->name('send.otp');
         Route::post('/verify-otp', 'verifyOTP')->name('verify.otp');
-               Route::post('/resend-otp', 'resendOtp')->name('resend.otp');
+        Route::post('/resend-otp', 'resendOtp')->name('resend.otp');
 
         Route::get('add-required-details', 'addRequiredDetails')->name('first.details');
         Route::post('/check-email', 'checkEmail')->name('check-email');

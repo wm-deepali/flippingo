@@ -31,6 +31,6 @@ class CreateLoginActivitiesTable extends Migration
      */
     public function down()
     {
-        Schema::dropIfExists('user_logs');
+        Schema::dropIfExists('login_activities');
     }
 }

@@ -220,6 +220,7 @@ class CustomerController extends Controller
 
     public function register(Request $request)
     {
+        // dd($request->all());
         $validator = Validator::make($request->all(), [
             'accountType' => 'required|in:individual,entity',
             'legal_name' => 'nullable|string|max:250',
@@ -297,11 +298,19 @@ class CustomerController extends Controller
             ]);
         }
 
+        // **Auto-login customer after registration**
+        Auth::guard('customer')->login($customer);
+
+        // Redirect URL from request or default after login
+        $redirectUrl = $request->input('redirect', route('account-dashboard'));
+
         return response()->json([
             'success' => true,
-            'message' => 'Account created successfully.',
-            'redirect' => route('account-dashboard')
+            'message' => 'Account created and logged in successfully.',
+            'redirect' => $redirectUrl,
         ]);
+
+
     }
 
     public function resendOtp()
