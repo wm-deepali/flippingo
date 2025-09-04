@@ -2,10 +2,12 @@
 namespace App\Http\Controllers;
 
 use App\Models\Attribute;
+use App\Models\Blog;
 use App\Models\CentralizedAttributePricing;
 use App\Models\FormSubmission;
 use App\Models\PricingRule;
 use App\Models\Category;
+use App\Models\Testimonial;
 use Illuminate\Http\Request;
 use App\Models\PricingRuleAttribute;
 use App\Models\AttributeValue;
@@ -14,30 +16,38 @@ use Illuminate\Support\Facades\Auth;
 class SiteController extends Controller
 {
     public function index()
-{
-    $categories = Category::where('status', 'active')->get();
+    {
+        $categories = Category::where('status', 'active')->get();
 
-    // Latest submission per category
-    $submissionsByCategory = [];
-    foreach ($categories as $category) {
-        $latestSubmission = FormSubmission::whereHas('form', function ($query) use ($category) {
+        // Latest submission per category
+        $submissionsByCategory = [];
+        foreach ($categories as $category) {
+            $latestSubmission = FormSubmission::whereHas('form', function ($query) use ($category) {
                 $query->where('category_id', $category->id);
             })
-            ->with('form', 'customer', 'files')
-            ->latest()
-            ->first();
+                ->with('form', 'customer', 'files')
+                ->latest()
+                ->first();
 
-        if ($latestSubmission) {
-            $submissionsByCategory[$category->id] = $latestSubmission;
+            if ($latestSubmission) {
+                $submissionsByCategory[$category->id] = $latestSubmission;
+            }
         }
+
+        // All latest submissions (one per category) for "All" tab
+        // For simplicity, you may also load all submissions or customize as needed
+        $allSubmissions = collect($submissionsByCategory)->values();
+
+        $blogs = Blog::with('category')
+            ->where('status', 'published')
+            ->orderBy('created_at', 'desc')
+            ->take(3)
+            ->get();
+
+        $testimonials = Testimonial::where('status', 'active')->get();
+
+        return view('front.index', compact('categories', 'submissionsByCategory', 'allSubmissions', 'blogs'));
     }
-
-    // All latest submissions (one per category) for "All" tab
-    // For simplicity, you may also load all submissions or customize as needed
-    $allSubmissions = collect($submissionsByCategory)->values();
-
-    return view('front.index', compact('categories', 'submissionsByCategory', 'allSubmissions'));
-}
 
 
 

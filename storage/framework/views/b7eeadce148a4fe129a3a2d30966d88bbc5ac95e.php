@@ -360,7 +360,7 @@
             // Hide loader and show UI
             $('#ef-loading').hide();
             $('#ef-widgets, #ef-main, #ef-styles').removeClass('d-none');
-
+ 
             // Pre-fill Settings panel
             <?php if(isset($formData) && $formData->builder): ?>
                 let builderSettings = <?php echo json_encode($formData->builder, 15, 512) ?>;
@@ -369,9 +369,11 @@
                 $('#disable-elements').prop('checked', builderSettings.disable_elements || false);
             <?php endif; ?>
 
+          
                 // Rebuild from JSON fields if required
                 <?php if(isset($formData) && $formData->fields): ?>
                     let savedFields = <?php echo json_encode($formData->fields, 15, 512) ?>;
+                    
                     $('#my-form').empty();
                     savedFields.forEach(f => {
                         let $fieldElement = $(`<div class="form-group" data-field-id="${f.id}" data-field-type="${f.type}">${getFieldHtml(f.type, f.id)}</div>`);
@@ -426,6 +428,7 @@
                         if (res.success) {
                             $('#savedModal').modal('show');
                             $('#editFormLink').attr('href', res.edit_url);
+
                         } else {
                             showToast('Error', res.message || 'Update failed');
                             $btn.prop('disabled', false);

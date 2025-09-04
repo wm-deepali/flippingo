@@ -17,12 +17,14 @@ class FormData extends Model
         'fields',
         'html',
         'height',
+        'field_layout'
     ];
 
 
     protected $casts = [
         'fields' => 'array',
-        'builder' => 'array', // if you want same for builder
+        'builder' => 'array',
+        'field_layout' => 'array'
     ];
 
 

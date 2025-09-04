@@ -6,10 +6,12 @@
         <a class="navbar-brand" href="{{ url('admin/home') }}">
           <span class="brand-logo">
             @if(\Auth::user()->logo_img)
-        <img src="{{ asset('images/logo/' . \Auth::user()->logo_img) }}" alt="" style="background-color: #000; border-radius: 7px; padding: 7px 10px;">
-      @else
-        <img src="{{ asset('admin_assets') }}/images/logo.png" alt="" style="background-color: #000; border-radius: 7px; padding: 7px 10px;">
-      @endif
+              <img src="{{ asset('images/logo/' . \Auth::user()->logo_img) }}" alt=""
+                style="background-color: #000; border-radius: 7px; padding: 7px 10px;">
+            @else
+              <img src="{{ asset('admin_assets') }}/images/logo.png" alt=""
+                style="background-color: #000; border-radius: 7px; padding: 7px 10px;">
+            @endif
           </span>
         </a>
       </li>
@@ -44,12 +46,12 @@
           </div>
           <span class="avatar">
             @if(\Auth::user()->profile_img)
-        <img class="round" src="{{ asset('images/profiles/' . \Auth::user()->profile_img) }}" alt="Robert Downey"
-          height="40" width="40">
-      @else
-        <img class="round" src="{{ asset('admin_assets') }}/images/admin-profile.png" alt="Robert Downey"
-          height="40" width="40">
-      @endif
+              <img class="round" src="{{ asset('images/profiles/' . \Auth::user()->profile_img) }}" alt="Robert Downey"
+                height="40" width="40">
+            @else
+              <img class="round" src="{{ asset('admin_assets') }}/images/admin-profile.png" alt="Robert Downey"
+                height="40" width="40">
+            @endif
             <span class="avatar-status-online"></span>
           </span>
         </a>
@@ -103,18 +105,65 @@
           <ul class="dropdown-menu">
             <li><a class="dropdown-item d-flex align-items-center"
                 href="{{ route('admin.manage-categories.index') }}"><span>Categories</span></a></li>
-                <li><a class="dropdown-item d-flex align-items-center"
-                href="{{ route('admin.form.index') }}"><span>Form Builder</span></a></li>
-                  <li><a class="dropdown-item d-flex align-items-center"
+            <li><a class="dropdown-item d-flex align-items-center" href="{{ route('admin.form.index') }}"><span>Form
+                  Builder</span></a></li>
+            <li><a class="dropdown-item d-flex align-items-center"
                 href="{{ route('admin.form-templates.index') }}"><span>Templates</span></a></li>
           </ul>
         </li>
-         <li>
-          <a class="dropdown-item d-flex align-items-center" href="{{ route('admin.form-submissions.index') }}">
-            <span>Form submissions</span>
+
+        <li class="dropdown nav-item" data-menu="dropdown">
+          <a class="dropdown-toggle nav-link d-flex align-items-center" href="#" data-toggle="dropdown">
+            <span>Submissions</span>
           </a>
+          <ul class="dropdown-menu">
+            <li>
+              <a class="dropdown-item d-flex align-items-center" href="{{ route('admin.form-submissions.index') }}">
+                Form Submission
+              </a>
+            </li>
+            <li>
+              <a class="dropdown-item d-flex align-items-center" href="{{ route('admin.enquiry.index') }}">
+                Enquiry
+              </a>
+            </li>
+          </ul>
         </li>
 
+        <li class="dropdown nav-item" data-menu="dropdown">
+          <a class="dropdown-toggle nav-link d-flex align-items-center" href="#" data-toggle="dropdown">
+            <span>Content Management</span>
+          </a>
+          <ul class="dropdown-menu">
+            <li><a class="dropdown-item d-flex align-items-center"
+                href="{{ route('admin.content.dynamic.pages') }}"><span>Dynamic Page Creations</span></a>
+            </li>
+            <li><a class="dropdown-item d-flex align-items-center"
+                href="{{ route('admin.testimonials.index') }}"><span>Testimonials Content</span></a>
+            </li>
+            <li><a class="dropdown-item d-flex align-items-center" href="{{ route('admin.client-reels.index') }}"><span>Client Reels</span></a>
+            </li>
+          </ul>
+        </li>
+
+
+        <li class="dropdown nav-item" data-menu="dropdown">
+          <a class="dropdown-toggle nav-link d-flex align-items-center" href="#" data-toggle="dropdown">
+            <span>FAQ & Blogs</span>
+          </a>
+          <ul class="dropdown-menu">
+            <li><a class="dropdown-item d-flex align-items-center"
+                href="{{ route('admin.faq-categories.index') }}"><span>FAQ Category</span></a>
+            </li>
+            <li><a class="dropdown-item d-flex align-items-center"
+                href="{{ route('admin.faqs.index') }}"><span>Manage FAQ</span></a>
+            </li>
+            <li><a class="dropdown-item d-flex align-items-center" href="{{ route('admin.blog-categories.index') }}"><span>Blogs Category</span></a>
+            </li>
+              <li><a class="dropdown-item d-flex align-items-center" href="{{ route('admin.blogs.index') }}"><span>Manage Blogs</span></a>
+            </li>
+          </ul>
+        </li>
       </ul>
     </div>
   </div>

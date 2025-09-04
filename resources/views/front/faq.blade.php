@@ -1,97 +1,82 @@
 @extends('layouts.new-master')
 
 @section('title')
-    Flippingo Blogs
+    {{ $page->meta_title ?? 'Flippingo' }}
 @endsection
 
-@push('after-styles')
-<style>
-  .accordion-button {
-      color: #212529 !important;
-      background-color: transparent !important;
-      border: 0 !important;
-  }
-
-  .accordion-button:not(.collapsed) {
-      background-color: transparent !important;
-      box-shadow: none !important;
-  }
-
-  .accordion-button:focus {
-      box-shadow: none !important;
-  }
-</style>
-@endpush
-
 @section('content')
+    <section class="breadcrumb-area bread-bg">
+        <div class="overlay"></div>
+        <div class="container">
+            <div class="breadcrumb-content text-center">
+                <h2 class="sec__title text-white mb-3">Frequently Asked Questions</h2>
+                <ul class="bread-list">
+                    <li><a href="{{ Route('home') }}">home</a></li>
+                    <li>pages</li>
+                    <li>faq</li>
+                </ul>
+            </div>
+        </div>
+        <div class="bread-svg">
+            <svg viewBox="0 0 500 150" preserveAspectRatio="none">
+                <path d="M-4.22,89.30 C280.19,26.14 324.21,125.81 511.00,41.94 L500.00,150.00 L0.00,150.00 Z"></path>
+            </svg>
+        </div>
+    </section>
 
-    <!--start page wrapper -->
-    <div class="page-wrapper">
-        <div class="page-content">
-            <!--start breadcrumb-->
-            <section class="py-3 border-bottom d-none d-md-flex">
-                <div class="container">
-                    <div class="page-breadcrumb d-flex align-items-center">
-                        <div class="breadcrumb-title pe-3">Faq</div>
-                        <div class="ms-auto">
-                            <nav aria-label="breadcrumb">
-                                <ol class="breadcrumb mb-0 p-0">
-                                    <li class="breadcrumb-item"><a href="javascript:;">
-                                            <i class="bx bx-home-alt"></i> Home</a>
-                                    </li>
-                                    <li class="breadcrumb-item active"><a href="javascript:;">Faq</a>
-                                    </li>
-                                </ol>
-                            </nav>
-                        </div>
-                    </div>
-                </div>
-            </section>
-            <!--end breadcrumb-->
-
-            <!--start page content-->
-            <section class="py-4">
-                <div class="container">
-                    <div class="row">
-
-                        <div class="accordion accordion-flush" id="footerFaqAccordion" style="width:100%">
-
-                            @foreach($faqs as $index => $faq)
-                                @php
-                                    $isFirst = $index === 0;
-                                    $questionNumber = 'Q' . ($index + 1);
-                                @endphp
-                                <div class="accordion-item bg-transparent">
-                                    <h2 class="accordion-header" id="heading{{ $faq->id }}">
-                                        <button
-                                            class="accordion-button px-0 py-1 bg-transparent {{ $isFirst ? '' : 'collapsed' }}"
-                                            type="button" data-bs-toggle="collapse" data-bs-target="#collapse{{ $faq->id }}"
-                                            aria-expanded="{{ $isFirst ? 'true' : 'false' }}"
-                                            aria-controls="collapse{{ $faq->id }}">
-                                            <span class="me-2">{{ $questionNumber }}.</span>
-                                            {{ Str::limit($faq->question, 60) }}
-                                        </button>
-                                    </h2>
-                                    <div id="collapse{{ $faq->id }}"
-                                        class="accordion-collapse collapse {{ $isFirst ? 'show' : '' }}"
-                                        aria-labelledby="heading{{ $faq->id }}" data-bs-parent="#footerFaqAccordion">
-                                        <div class="accordion-body px-0 py-1 text-muted small">
-                                            {!! $faq->answer !!}
-                                        </div>
+    <section class="faq-area padding-top-60px padding-bottom-90px">
+        <div class="container">
+            <div class="row">
+                <div class="col-lg-8">
+                    <div class="accordion my-accordion" id="accordionExample">
+                        @foreach($faqs as $index => $faq)
+                            <div class="card">
+                                <div class="card-header" id="heading{{ $index }}">
+                                    <button class="btn btn-link {{ $index !== 0 ? 'collapsed' : '' }}" type="button"
+                                        data-bs-toggle="collapse" data-bs-target="#collapse{{ $index }}"
+                                        aria-expanded="{{ $index === 0 ? 'true' : 'false' }}"
+                                        aria-controls="collapse{{ $index }}">
+                                        <span>{{ $faq->question }}</span>
+                                        <i class="fal fa-plus accordion-icon"></i>
+                                    </button>
+                                </div>
+                                <div id="collapse{{ $index }}" class="collapse {{ $index === 0 ? 'show' : '' }}"
+                                    aria-labelledby="heading{{ $index }}" data-bs-parent="#accordionExample">
+                                    <div class="card-body">
+                                        <p>{{ $faq->answer }}</p>
                                     </div>
                                 </div>
-                                <hr>
-                            @endforeach
-
-                        </div>
-
+                            </div>
+                        @endforeach
                     </div>
-                    <!--end row-->
                 </div>
-            </section>
-            <!--end start page content-->
 
+                <div class="col-lg-4">
+                    <form action="#" method="POST" class="contact-form card">
+                        @csrf
+                        <div class="card-body">
+                            <h4 class="card-title">Still have a question?</h4>
+                            <hr class="border-top-gray" />
+                            <div class="form-group">
+                                <label class="label-text">Your Name</label>
+                                <input id="name" class="form-control form--control ps-3" type="text" name="name"
+                                    placeholder="Your name" required />
+                            </div>
+                            <div class="form-group">
+                                <label class="label-text">Your Email</label>
+                                <input id="email" class="form-control form--control ps-3" type="email" name="email"
+                                    placeholder="you@email.com" required />
+                            </div>
+                            <div class="form-group">
+                                <label class="label-text">Message</label>
+                                <textarea id="message" class="form-control form--control ps-3" rows="5" name="message"
+                                    placeholder="Write message" required></textarea>
+                            </div>
+                            <button id="send-message-btn" class="theme-btn border-0" type="submit">Send Message</button>
+                        </div>
+                    </form>
+                </div>
+            </div>
         </div>
-    </div>
-    <!--end page wrapper -->
+    </section>
 @endsection

@@ -7,7 +7,15 @@ use App\Http\Controllers\Admin\{
     FormController,
     FormBuilderController,
     FormTemplateController,
-    ListingController
+    ListingController,
+    FormLayoutController,
+    PageController,
+    TestimonialController,
+    FaqController,
+    BlogController,
+    BlogCategoryController,
+    FaqCategoryController,
+    ClientReelController
 };
 
 /*
@@ -79,7 +87,6 @@ Route::group(['middleware' => 'auth'], function () {
         // ===== Category route ===== //
         Route::resource('manage-categories', CategoryController::class);
 
-
         // RESTful resource for forms (index, create, store, show, edit, update, destroy)
         Route::resource('form', FormController::class);
 
@@ -121,9 +128,30 @@ Route::group(['middleware' => 'auth'], function () {
 
         Route::get('/form-submissions', [ListingController::class, 'index'])->name('form-submissions.index');
         // Show submission details
-        Route::get('form-submissions/{submission}', [ListingController::class, 'show'])->name('form-submissions.show');
-
+        Route::get('form-submissions/{submission}', action: [ListingController::class, 'show'])->name('form-submissions.show');
         // Publish submission (POST)
         Route::post('form-submissions/{submission}/publish', [ListingController::class, 'publish'])->name('form-submissions.publish');
+        Route::get('enquiry', [ListingController::class, 'enquiryIndex'])->name('enquiry.index');
+
+        // In routes file
+        Route::get('form-layout/{id}/edit', [FormLayoutController::class, 'edit'])->name('form-layout.edit');
+        Route::post('form-layout/{id}', [FormLayoutController::class, 'update'])->name('form-layout.update');
+
+
+        // content managemnent
+        Route::get('content/dynamic-pages', [PageController::class, 'index'])->name('content.dynamic.pages');
+        Route::prefix('pages')->name('pages.')->group(function () {
+            Route::post('/store', [PageController::class, 'store'])->name('store');
+            Route::get('/{id}/edit', [PageController::class, 'edit'])->name('edit');
+            Route::post('/{id}/update', [PageController::class, 'update'])->name('update');
+            Route::delete('/{id}', [PageController::class, 'destroy'])->name('destroy');
+        });
+        Route::resource('testimonials', TestimonialController::class);
+        Route::resource('faq-categories', FaqCategoryController::class);
+        Route::resource('faqs', FaqController::class);
+        Route::resource('blog-categories', BlogCategoryController::class);
+        Route::post('blogs/update/{id}', [BlogController::class, 'update'])->name('blog-update');
+        Route::resource('blogs', BlogController::class);
+        Route::resource('client-reels', ClientReelController::class);
     });
 });

@@ -88,5 +88,10 @@ class Form extends Model
         return $this->belongsTo(Category::class, 'category_id');
     }
 
+    public function formData()
+    {
+        return $this->hasOne(FormData::class, 'form_id', 'id');
+    }
+
 }
 

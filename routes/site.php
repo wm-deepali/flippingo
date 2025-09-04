@@ -1,10 +1,12 @@
 <?php
 
 use App\Http\Controllers\Admin\BlogController;
+use App\Http\Controllers\Admin\ClientReelController;
 use App\Http\Controllers\Admin\FaqController;
 use App\Http\Controllers\Admin\FormController;
 use App\Http\Controllers\Admin\ListingController;
 use App\Http\Controllers\Admin\PageController;
+use App\Http\Controllers\Admin\TestimonialController;
 use App\Http\Controllers\CartController;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
@@ -94,6 +96,9 @@ Route::get('add-listing', [SiteController::class, 'addListing'])->name('add-list
 Route::get('/forms/{id}', [FormController::class, 'showFormHtml']);
 Route::post('/listing/store', [ListingController::class, 'store'])->name('listing.store');
 Route::get('/form-submissions', [ListingController::class, 'apiIndex'])->name('form-submissions');
+Route::post('/send-enquiry', [ListingController::class, 'sendEnquiry']);
+Route::get('/testimonials', [TestimonialController::class, 'publicIndex'])->name('testimonials');
+Route::get('/reels', [ClientReelController::class, 'publicIndex'])->name('reels');
 
 
 Route::get('order-tracking', function () {
@@ -129,13 +134,10 @@ Route::get('contact', function () {
     return view('front.contact');
 })->name('contact');
 
-Route::get('blogs', function () {
-    return view('front.blogs');
-})->name('blogs');
+Route::get('blogs', [BlogController::class, 'publicIndex'])->name('blogs');
+Route::get('/blog/{slug}', [BlogController::class, 'publicShow'])->name('blogs.show');
+Route::get('/blogs/category/{slug}', [BlogController::class, 'category'])->name('blogs.category');
 
-Route::get('blog-single', function () {
-    return view('front.blog-single');
-})->name('blog-single');
 
 Route::get('user-profile', function () {
     return view('front.user-profile');

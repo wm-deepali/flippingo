@@ -77,12 +77,10 @@
                                         <?php echo e($val); ?>
 
                                     <?php endif; ?>
-                                    <?php if(!empty($data['show_on_summary'])): ?>
-                                    (<span class="ms-2">Shown in summary</span>)
-                                    <?php endif; ?>
+
                                 </dd>
                             <?php endforeach; $__env->popLoop(); $loop = $__env->getLastLoop(); ?>
-                          
+
 
                         </dl>
                     <?php else: ?>

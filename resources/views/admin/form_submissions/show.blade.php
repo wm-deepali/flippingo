@@ -74,12 +74,10 @@
                                     @else
                                         {{ $val }}
                                     @endif
-                                    @if(!empty($data['show_on_summary']))
-                                    (<span class="ms-2">Shown in summary</span>)
-                                    @endif
+
                                 </dd>
                             @endforeach
-                          
+
 
                         </dl>
                     @else

@@ -305,8 +305,14 @@
               <li><a href=<?php echo e(Route('about-us')); ?>>About us</a></li>
               <li><a href=<?php echo e(Route('authentication-signup')); ?>>Sign up</a></li>
               <li><a href="<?php echo e(Route('authentication-signin')); ?>">Log in</a></li>
-              <li><a href="#">Terms & Conditions</a></li>
-              <li><a href="#">Privacy Policy</a></li>
+               <li><a href=<?php echo e(Route('faq')); ?>>FAQ</a></li>
+              <?php
+                    use App\Models\Page;
+                    $footerPages = Page::where('status', 'published')->get();
+                  ?>
+                  <?php $__currentLoopData = $footerPages; $__env->addLoop($__currentLoopData); foreach($__currentLoopData as $page): $__env->incrementLoopIndices(); $loop = $__env->getLastLoop(); ?>
+                    <li><a href="<?php echo e(route('page.show', $page->slug)); ?>"><?php echo e($page->page_name); ?></a></li>
+                  <?php endforeach; $__env->popLoop(); $loop = $__env->getLastLoop(); ?>
               <!-- <li><a href="#">Help Center</a></li> -->
             </ul>
           </div>

@@ -305,8 +305,14 @@
               <li><a href={{ Route('about-us') }}>About us</a></li>
               <li><a href={{ Route('authentication-signup') }}>Sign up</a></li>
               <li><a href="{{ Route('authentication-signin') }}">Log in</a></li>
-              <li><a href="#">Terms & Conditions</a></li>
-              <li><a href="#">Privacy Policy</a></li>
+               <li><a href={{ Route('faq') }}>FAQ</a></li>
+              @php
+                    use App\Models\Page;
+                    $footerPages = Page::where('status', 'published')->get();
+                  @endphp
+                  @foreach($footerPages as $page)
+                    <li><a href="{{ route('page.show', $page->slug) }}">{{ $page->page_name }}</a></li>
+                  @endforeach
               <!-- <li><a href="#">Help Center</a></li> -->
             </ul>
           </div>

@@ -3,6 +3,7 @@
 namespace App\Http\Controllers\Admin;
 
 use App\Http\Controllers\Controller;
+use App\Models\Enquiry;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Storage;
@@ -182,12 +183,53 @@ class ListingController extends Controller
     public function apiShow(Request $request)
     {
         $id = $request->get('id');
-        // Fetch the submission with related form, category, customer, and files for image display
+
+        // Fetch submission with relations
         $submission = FormSubmission::with(['form.category', 'customer', 'files'])->findOrFail($id);
 
-        // dd($submission->toArray());
-        // Pass submission data to the view
-        return view('front.listing-details', compact('submission'));
+        // Fetch the FormData record for the related form to get layout and fields
+        $formData = \App\Models\FormData::where('form_id', $submission->form_id)->first();
+
+        // Decode layout JSON to array, or set as empty array if missing
+        $layout = $formData && !empty($formData->field_layout) ? $formData->field_layout : [];
+
+        // Decode fields JSON to array, or set as empty array if missing
+        $fields = $formData && !empty($formData->fields) ? $formData->fields : [];
+        // dd($fields);
+        // Pass submission, layout, and fields to the view
+        return view('front.listing-details', compact('submission', 'layout', 'fields'));
+    }
+
+
+
+    public function sendEnquiry(Request $request)
+    {
+        $submissionId = $request->input('submission_id');
+        $message = $request->input('message', '');
+
+        $authCustomer = Auth::guard('customer')->user();
+        if (!$authCustomer) {
+            return response()->json(['success' => false, 'message' => 'Unauthorized'], 401);
+        }
+
+        if (!FormSubmission::where('id', $submissionId)->exists()) {
+            return response()->json(['success' => false, 'message' => 'Invalid submission ID'], 400);
+        }
+
+        Enquiry::create([
+            'submission_id' => $submissionId,
+            'customer_id' => $authCustomer->id,
+            'message' => $message,
+            'status' => 'pending',
+        ]);
+
+        return response()->json(['success' => true]);
+    }
+
+    public function enquiryIndex()
+    {
+        $enquiries = Enquiry::with('customer', 'submission')->paginate(20);
+        return view('admin.enquiry.index', compact('enquiries'));
     }
 
 
