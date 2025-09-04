@@ -7,7 +7,6 @@ use App\Http\Controllers\Admin\FormController;
 use App\Http\Controllers\Admin\ListingController;
 use App\Http\Controllers\Admin\PageController;
 use App\Http\Controllers\Admin\TestimonialController;
-use App\Http\Controllers\CartController;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\SiteController;
@@ -137,26 +136,82 @@ Route::middleware(['web'])->group(function () {
     });
 
 
-    Route::get('shop-categories', [SiteController::class, 'shopCategories'])->name('shop-categories');
-
-
     // Update front routes and functions start
     Route::middleware(['auth:customer'])->group(function () {
-        Route::get('account-dashboard', [CustomerController::class, 'dashboard'])->name('account-dashboard');
-        Route::get('account-orders', [CustomerController::class, 'orders'])->name('account-orders');
-        Route::get('/view-invoice/{quote}', [CustomerController::class, 'viewInvoice'])->name('view-invoice');
-        Route::get('/order-details/{quote}', [CustomerController::class, 'orderDetails'])->name('order-details');
-        Route::get('account-downloads', [CustomerController::class, 'downloads'])->name('account-downloads');
-        Route::get('account-addresses', [CustomerController::class, 'addresses'])->name('account-addresses');
-        Route::get('account-payment-methods', [CustomerController::class, 'paymentmethods'])->name('account-payment-methods');
-        Route::get('account-user-details', [CustomerController::class, 'userDetails'])->name('account-user-details');
+        Route::prefix('dashboard')->group(function () {
 
-        Route::post('profile-update', [CustomerController::class, 'updateProfile'])->name('profile.update');
-        Route::post('profile-pic-update', [CustomerController::class, 'updateProfilePic'])->name('profile-pic.update');
-        Route::post('profile-password-update', [CustomerController::class, 'changePassword'])->name('profile-password.update');
+            Route::get('/', [CustomerController::class, 'dashboard'])->name('dashboard.index');
 
-        Route::post('addresses-store', [CustomerController::class, 'addressStore'])->name('addresses.store');
+            // Profile
+            Route::get('/profile', function () {
+                return view('front.profile');
+            })->name('dashboard.profile');
 
+            Route::get('/bank-account', function () {
+                return view('user.bank-account');
+            })->name('dashboard.bank');
+
+            Route::get('/notifications', function () {
+                return view('user.notifications');
+            })->name('dashboard.notifications');
+            // FAQ
+            Route::get('/faq', function () {
+                return view('user.faq');
+            })->name('dashboard.faq');
+
+            Route::get('/raise-request', function () {
+                return view('user.raise-request');
+            })->name('dashboard.raise');
+
+            // Contact Us
+            Route::get('/contact-us', function () {
+                return view('user.contact-us');
+            })->name('dashboard.contact');
+
+            // Orders
+            Route::get('/orders',  function () {
+                return view('user.orders');
+            })->name('dashboard.orders');
+
+            // Invoice (usually linked with orders)
+            Route::get('/invoices', function () {
+                return view('user.invoices');
+            })->name('dashboard.invoices');
+
+            // Wallet
+            Route::get('/wallet', function () {
+                return view('user.wallet');
+            })->name('dashboard.wallet');
+
+            // Business Enquiries
+            Route::get('/business-enquiries', function () {
+                return view('user.enquiries');
+            })->name('dashboard.enquiries');
+
+            // Wishlist
+            Route::get('/wishlist', function () {
+                return view('user.wishlist');
+            })->name('dashboard.wishlist');
+
+             // Wishlist
+            Route::get('/subscriptions', function () {
+                return view('user.subscriptions');
+            })->name('dashboard.subscriptions');
+
+             // Wishlist
+            Route::get('/listing', function () {
+                return view('user.listing');
+            })->name('dashboard.listing');
+
+              Route::get('/reports', function () {
+                return view('user.reports');
+            })->name('dashboard.reports');
+
+              Route::get('/analytics', function () {
+                return view('user.analytics');
+            })->name('dashboard.analytics');
+
+        });
 
 
         Route::get('account-logout', [CustomerController::class, 'logout'])->name('account-logout');

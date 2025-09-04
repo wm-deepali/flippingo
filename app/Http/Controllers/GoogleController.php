@@ -19,7 +19,7 @@ class GoogleController extends Controller
     
         if(Auth::guard('customer')->check())
         {
-            return redirect()->route('account-dashboard');
+            return redirect()->route('dashboard.index');
         }
         else{
             $redirectUrl = route('first.details'); // The URL you want to redirect to after authentication
@@ -41,7 +41,7 @@ class GoogleController extends Controller
                 return redirect()->route('first.details');
             }
             Auth::guard('customer')->login($user);
-        	return redirect()->route('account-dashboard');
+        	return redirect()->route('dashboard.index');
      
         } else {
       

@@ -205,7 +205,7 @@
         .then(res => res.json())
         .then(data => {
           if (data.success) {
-            window.location.href = data.redirect ?? "{{ route('account-dashboard') }}";
+            window.location.href = data.redirect ?? "{{ route('dashboard.index') }}";
           } else {
             Swal.fire({ icon: "error", title: "Login Failed", text: data.message || "Invalid credentials/OTP" });
           }

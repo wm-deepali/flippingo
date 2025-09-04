@@ -888,7 +888,7 @@
                     const id = `${fieldId}_${idx}`;
                     $container.append(`
                     <div class="form-check">
-                        <input class="form-check-input" type="checkbox" id="${escapeHtml(id)}" name="checkboxes[]" value="${escapeHtml(val)}" ${selected ? 'checked' : ''}>
+                        <input class="form-check-input" type="checkbox" id="${escapeHtml(id)}" name="${fieldId}[]" value="${escapeHtml(val)}" ${selected ? 'checked' : ''}>
                         <label class="form-check-label" for="${escapeHtml(id)}">${escapeHtml(val)}</label>
                     </div>`);
                 });
@@ -906,7 +906,7 @@
                     const id = `${fieldId}_${idx}`;
                     $container.append(`
                     <div class="form-check">
-                        <input class="form-check-input" type="radio" id="${escapeHtml(id)}" name="radio-group-${fieldId}" value="${escapeHtml(val)}" ${selected ? 'checked' : ''}>
+                        <input class="form-check-input" type="radio" id="${escapeHtml(id)}" name="${fieldId}" value="${escapeHtml(val)}" ${selected ? 'checked' : ''}>
                         <label class="form-check-label" for="${escapeHtml(id)}">${escapeHtml(val)}</label>
                     </div>`);
                 });

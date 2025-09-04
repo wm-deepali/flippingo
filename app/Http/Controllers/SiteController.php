@@ -60,30 +60,30 @@ class SiteController extends Controller
         return view('front.add-listing', compact('categories'));
     }
 
-   public function FormSubmissionList()
-{
-    $categories = Category::where('status', 'active')->get();
+    public function FormSubmissionList()
+    {
+        $categories = Category::where('status', 'active')->get();
 
-    $submissionsByCategory = [];
+        $submissionsByCategory = [];
 
-    foreach ($categories as $category) {
-        $allSubmissions = FormSubmission::whereHas('form', function ($query) use ($category) {
+        foreach ($categories as $category) {
+            $allSubmissions = FormSubmission::whereHas('form', function ($query) use ($category) {
                 $query->where('category_id', $category->id);
             })
-            ->with('form.category', 'customer', 'files')
-            ->latest()
-            ->get();
+                ->with('form.category', 'customer', 'files')
+                ->latest()
+                ->get();
 
-        // Only include categories that have at least one submission
-        if ($allSubmissions->isNotEmpty()) {
-            $submissionsByCategory[$category->id] = $allSubmissions;
+            // Only include categories that have at least one submission
+            if ($allSubmissions->isNotEmpty()) {
+                $submissionsByCategory[$category->id] = $allSubmissions;
+            }
         }
+
+        // For "All" tab → flatten everything into one collection
+        $allSubmissions = collect($submissionsByCategory)->flatten(1);
+
+        return view('front.listing-list', compact('categories', 'submissionsByCategory', 'allSubmissions'));
     }
-
-    // For "All" tab → flatten everything into one collection
-    $allSubmissions = collect($submissionsByCategory)->flatten(1);
-
-    return view('front.listing-list', compact('categories', 'submissionsByCategory', 'allSubmissions'));
-}
 
 }

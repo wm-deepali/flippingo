@@ -46,7 +46,7 @@ class CustomerController extends Controller
             // dd('here');
             return response()->json([
                 'success' => true,
-                'redirect' => route('account-dashboard')
+                'redirect' => route('dashboard.index')
             ]);
         }
 
@@ -78,7 +78,7 @@ class CustomerController extends Controller
             return response()->json([
                 'success' => true,
                 'message' => 'OTP login successful',
-                'redirect' => route('account-dashboard')
+                'redirect' => route('dashboard.index')
             ]);
         } else {
             // === Email/Username + Password Login Flow ===
@@ -121,7 +121,7 @@ class CustomerController extends Controller
                 return response()->json([
                     'success' => true,
                     'message' => 'Login successful',
-                    'redirect' => route('account-dashboard')
+                    'redirect' => route('dashboard.index')
                 ]);
             }
 
@@ -302,7 +302,7 @@ class CustomerController extends Controller
         Auth::guard('customer')->login($customer);
 
         // Redirect URL from request or default after login
-        $redirectUrl = $request->input('redirect', route('account-dashboard'));
+        $redirectUrl = $request->input('redirect', route('dashboard.index'));
 
         return response()->json([
             'success' => true,
@@ -313,10 +313,6 @@ class CustomerController extends Controller
 
     }
 
-    public function resendOtp()
-    {
-
-    }
 
     // 🔄 Helper for validation failure
     private function validationError($validator)
@@ -327,6 +323,7 @@ class CustomerController extends Controller
             'errors' => $validator->errors(),
         ]);
     }
+
     public function verifyAccount($token)
     {
         $verifyUser = customerVerify::where('token', $token)->first();
@@ -402,7 +399,7 @@ class CustomerController extends Controller
 
         Auth::guard('customer')->login($customer);
 
-        return redirect()->route('account-dashboard');
+        return redirect()->route('dashboard.index');
     }
 
     public function showForgetPasswordForm()
@@ -461,39 +458,18 @@ class CustomerController extends Controller
     }
 
 
-
-
     public function dashboard()
     {
         if (Auth::guard('customer')->check()) {
             $user_id = Auth::guard('customer')->user()->id;
             $data['user'] = Customer::findOrFail($user_id);
             // dd($data);
-            return view('front.dashboard', $data);
+            return view('user.dashboard', $data);
         } else {
             return redirect()->route('authentication-signin')
                 ->withErrors('Please login to access the dashboard.');
         }
     }
-
-    // public function orders()
-    // {
-    //     if (Auth::guard('customer')->check()) {
-    //         $user = Auth::guard('customer')->user();
-
-    //         // Fetch customer with their quotes
-    //         $data['user'] = $user;
-    //         $data['quotes'] = Quote::with(['items', 'billingAddress', 'deliveryAddress', 'documents', 'departments', 'payments', 'invoice'])
-    //             ->where('customer_id', $user->id)
-    //             ->orderBy('created_at', 'desc')
-    //             ->get();
-
-    //         return view('front.account-orders', $data);
-    //     } else {
-    //         return redirect()->route('authentication-signin')
-    //             ->withErrors('Please login to access the dashboard.');
-    //     }
-    // }
 
 
     public function downloads()
