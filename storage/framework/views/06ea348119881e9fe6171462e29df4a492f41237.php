@@ -2179,7 +2179,7 @@
                           <input type="hidden" name="form_type" value="button">
                         </div>
                         <div class="group-img">
-                          <img src="<?php echo e(asset('assets')); ?>/images/dropdown.svg">
+                          <img src="<?php echo e(asset('site_assets')); ?>/img/dropdown.svg">
                           <select id="#" class="minimal" name="course">
                             <option value="Websites">Websites</option>
 

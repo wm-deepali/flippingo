@@ -163,7 +163,9 @@ class BlogController extends Controller
             ->latest()
             ->paginate(10);
 
-        $categories = BlogCategory::all();
+        $categories = BlogCategory::where('status', 'Published')
+            ->where('id', '!=', $category->id)
+            ->get();
 
         return view('front.blogs-category', compact('category', 'blogs', 'categories'));
     }

@@ -14,6 +14,7 @@
                 <ul class="bread-list">
                     <li><a href="<?php echo e(Route('home')); ?>">home</a></li>
                     <li>faq</li>
+                    <li><?php echo e($category->name); ?></li>
                 </ul>
             </div>
         </div>
@@ -145,4 +146,4 @@
         </div>
     </section>
 <?php $__env->stopSection(); ?>
-<?php echo $__env->make('layouts.new-master', \Illuminate\Support\Arr::except(get_defined_vars(), ['__data', '__path']))->render(); ?><?php /**PATH D:\web-mingo-project\flippingo_admin\resources\views/front/faq.blade.php ENDPATH**/ ?>
+<?php echo $__env->make('layouts.new-master', \Illuminate\Support\Arr::except(get_defined_vars(), ['__data', '__path']))->render(); ?><?php /**PATH D:\web-mingo-project\flippingo_admin\resources\views/front/faq-category.blade.php ENDPATH**/ ?>

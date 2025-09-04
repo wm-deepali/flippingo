@@ -11,7 +11,6 @@
       <ul class="bread-list">
         <li><a href="{{ route('home') }}">Home</a></li>
         <li>Blog</li>
-        <li>Blog Grid</li>
       </ul>
     </div>
   </div>

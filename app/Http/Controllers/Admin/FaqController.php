@@ -11,10 +11,10 @@ class FaqController extends Controller
 {
     public function index()
     {
-        $faqs = Faq::latest()->get();
+        $faqs = Faq::with('category')->latest()->get();
         $categories = FaqCategory::all(); // Fetch all FAQ categories
         $faqTypes = ['Buyers FAQ', 'Seller FAQ']; // Example types
-
+// dd($faqs->toArray());
         return view('admin.content.faq', compact('faqs', 'categories', 'faqTypes'));
     }
 
@@ -25,7 +25,7 @@ class FaqController extends Controller
             'question' => 'required|string',
             'type' => 'required|string',
             'answer' => 'required|string',
-            'status' => 'required|in:published,draft',
+            'status' => 'required|in:Published,Draft',
         ]);
 
         Faq::create($validated);
@@ -35,7 +35,8 @@ class FaqController extends Controller
 
     public function edit($id)
     {
-        $faq = Faq::findOrFail($id);
+        $faq = Faq::with('category')->findOrFail($id);
+        // dd($faq->toArray());
         return response()->json($faq);
     }
 
@@ -46,7 +47,7 @@ class FaqController extends Controller
             'question' => 'required|string',
             'type' => 'required|string',
             'answer' => 'required|string',
-            'status' => 'required|in:published,draft',
+            'status' => 'required|in:Published,Draft',
         ]);
 
         $faq = Faq::findOrFail($id);
@@ -65,6 +66,23 @@ class FaqController extends Controller
     public function publicIndex()
     {
         $faqs = Faq::where('status', 'published')->get();
-        return view('front.faq', compact('faqs'));
+        $categories = FaqCategory::where('status', 'Published')->get();
+        return view('front.faq', compact('faqs', 'categories'));
+    }
+
+    public function category($slug)
+    {
+        $category = FaqCategory::where('slug', $slug)->firstOrFail();
+
+        $faqs = Faq::where('status', 'Published')
+            ->where('category_id', $category->id)
+            ->latest()
+            ->get();
+
+        $categories = FaqCategory::where('status', 'Published')
+            ->where('id', "!=", $category->id)
+            ->get();
+
+        return view('front.faq-category', compact('category', 'faqs', 'categories'));
     }
 }

@@ -39,10 +39,10 @@
                     <thead>
                       <tr>
                         <th>Date & Time</th>
+                        <th>Type</th>
                         <th>Category</th>
                         <th>Question</th>
                         <th>Answer</th>
-                        <th>Type</th>
                         <th>Status</th>
                         <th>Action</th>
                       </tr>
@@ -51,10 +51,10 @@
                       @foreach($faqs as $faq)
                         <tr>
                           <td>{{ $faq->created_at->format('Y-m-d H:i') }}</td>
-                          <td>{{ $blog->category->name ?? 'N/A' }}</td>
+                          <td>{{ $faq->type }}</td>
+                          <td>{{ $faq->category->name ?? 'N/A' }}</td>
                           <td>{{ $faq->question }}</td>
                           <td>{{ $faq->answer }}</td>
-                          <td>{{ $faq->status }}</td>
                           <td>{{ $faq->status }}</td>
 
                           <td>
@@ -129,8 +129,8 @@
               <div class="form-group">
                 <label for="status">Status</label>
                 <select name="status" id="status" class="form-control" required>
-                  <option value="published">Published</option>
-                  <option value="draft">Draft</option>
+                  <option value="Published">Published</option>
+                  <option value="Draft">Draft</option>
                 </select>
               </div>
 
@@ -148,11 +148,13 @@
   <script>
 
     function editFaq(id) {
-      $.get("{{ url('admin/faqs/edit') }}/" + id, function (data) {
+      $.get("{{ url('admin/faqs') }}/" + id + '/edit', function (data) {
         $('#faq_id').val(data.id);
         $('#question').val(data.question);
         $('#answer').val(data.answer);
         $('#status').val(data.status);
+        $('#type').val(data.type);
+        $('#category_id').val(data?.category?.id);
         $('#addFaqModalLabel').text("Edit FAQ");
         $('#addFaqModal').modal('show');
       });
@@ -200,11 +202,11 @@
       e.preventDefault();
 
       let id = $('#faq_id').val();
-      let url = id ? '{{ url("admin/faqs/update") }}/' + id : '{{ route("admin.faqs.store") }}';
+      let url = id ? '{{ url("admin/faqs") }}/' + id : '{{ route("admin.faqs.store") }}';
 
       $.ajax({
         url: url,
-        method: 'POST',
+        method: 'PUT',
         data: $(this).serialize(),
         headers: {
           'X-CSRF-TOKEN': '{{ csrf_token() }}'

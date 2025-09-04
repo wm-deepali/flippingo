@@ -39,87 +39,42 @@ Route::get('/stl', function () {
     \Artisan::call('storage:link');
     dd('linked');
 });
+
 Route::get('/', [SiteController::class, 'index'])->name('home');
-Route::get('{slug}/details', [SiteController::class, 'subcateDetails'])->name('subcategory-details');
 
 Route::get('/page/{slug}', [PageController::class, 'show'])->name('page.show');
-
-Route::post('/calculate-price', [SiteController::class, 'calculate'])->name('calculate.price');
-
-Route::prefix('cart')->name('cart.')->group(function () {
-    Route::get('/', [CartController::class, 'showCart'])->name('show');        // cart.show
-    Route::post('store', [CartController::class, 'addToCart'])->name('store'); // cart.store
-    Route::post('clear', [CartController::class, 'clear'])->name('clear');
-    Route::post('save-before-checkout', [CartController::class, 'saveBeforeCheckout'])->name('save.before.checkout');
-    Route::post('/details', [CartController::class, 'storeAddress'])->name('address-details');
-    Route::get('/get-session', [CartController::class, 'getCartSession']);
-    Route::post('/uploaded-file', [CartController::class, 'saveUploadedFile']);
-    Route::get('/session-files', function () {
-        $files = session()->get('cart.images', []);
-        $details = session()->get('cart.details', '');
-        // dd($details);
-        return response()->json([
-            ...$files,
-            'details' => $details,
-        ]);
-
-    });
-
-    Route::post('/save-details', function (Request $request) {
-        session()->put('cart.details', $request->input('details'));
-        return response()->json(['success' => true]);
-    });
-
-    Route::post('/pay-later', [CartController::class, 'PayLater']);
-    // In web.php
-    Route::post('/remove-file', [CartController::class, 'removeUploadedFile']);
-
-    // cart.clear
-});
-
-Route::get('/thank-you', function () {
-    return view('front.thank-you');
-})->name('thank-you');
-
-
-Route::post('/cart/update-delivery', [CartController::class, 'updateDelivery'])->name('cart.update.delivery');
-
-
-
-Route::post('/check-postcode', [CartController::class, 'check'])->name('check.postcode');
-Route::post('/get-vat', [CartController::class, 'getByTitle'])->name('get.vat.by.title');
-
-
-Route::get('checkout', [CartController::class, 'checkout'])->name('checkout');
-
 Route::get('add-listing', [SiteController::class, 'addListing'])->name('add-listing');
 Route::get('/forms/{id}', [FormController::class, 'showFormHtml']);
-Route::post('/listing/store', [ListingController::class, 'store'])->name('listing.store');
 Route::get('/form-submissions', [ListingController::class, 'apiIndex'])->name('form-submissions');
 Route::post('/send-enquiry', [ListingController::class, 'sendEnquiry']);
 Route::get('/testimonials', [TestimonialController::class, 'publicIndex'])->name('testimonials');
 Route::get('/reels', [ClientReelController::class, 'publicIndex'])->name('reels');
 
 
+Route::post('/listing/store', [ListingController::class, 'store'])->name('listing.store');
+Route::get('listing-details', [ListingController::class, 'apiShow'])->name('listing-details');
+Route::get('listing-list', [SiteController::class, 'FormSubmissionList'])->name('listing-list');
+
+
+Route::get('blogs', [BlogController::class, 'publicIndex'])->name('blogs');
+Route::get('/blog/{slug}', [BlogController::class, 'publicShow'])->name('blogs.show');
+Route::get('/blogs/category/{slug}', [BlogController::class, 'category'])->name('blogs.category');
+Route::get('/blogs/search', [BlogController::class, 'search'])->name('blogs.search');
+
+
+Route::get('faq', [FaqController::class, 'publicIndex'])->name('faq');
+Route::get('faq/category/{slug}', [FaqController::class, 'category'])->name('faq.category');
+
+
 Route::get('order-tracking', function () {
     return view('front.order-tracking');
 })->name('order-tracking');
+
 
 Route::get('about-us', function () {
     return view('front.about-us');
 })->name('about-us');
 
-
-
-Route::get('listing-list', function () {
-    return view('front.listing-list');
-})->name('listing-list');
-
-
-// Route::get('listing-details', function () {
-//     return view('front.listing-details');
-// })->name('listing-details');
-Route::get('listing-details', [ListingController::class, 'apiShow'])->name('listing-details');
 
 Route::get('meet-our-team', function () {
     return view('front.meet-our-team');
@@ -130,14 +85,6 @@ Route::get('contact-us', function () {
     return view('front.contact-us');
 })->name('contact-us');
 
-Route::get('contact', function () {
-    return view('front.contact');
-})->name('contact');
-
-Route::get('blogs', [BlogController::class, 'publicIndex'])->name('blogs');
-Route::get('/blog/{slug}', [BlogController::class, 'publicShow'])->name('blogs.show');
-Route::get('/blogs/category/{slug}', [BlogController::class, 'category'])->name('blogs.category');
-
 
 Route::get('user-profile', function () {
     return view('front.user-profile');
@@ -147,10 +94,7 @@ Route::get('recover', function () {
     return view('front.recover');
 })->name('recover');
 
-Route::get('/blog/{slug}', [BlogController::class, 'publicShow'])->name('blogs.show');
-Route::get('/blogs/search', [BlogController::class, 'search'])->name('blogs.search');
 
-Route::get('faq', [FaqController::class, 'publicIndex'])->name('faq');
 
 Route::post('states-by-country', [CustomerController::class, 'statesByCountry'])->name('states-by-country');
 Route::post('cities-by-state', [CustomerController::class, 'citiesByState'])->name('cities-by-state');

@@ -2783,7 +2783,7 @@
         @endforeach
 
         <div class="view-more-button">
-          <button class="flippa-btn filled">View All Listings</button>
+          <button href="{{ Route('listing-list') }}" class="flippa-btn filled">View All Listings</button>
         </div>
       </div>
 

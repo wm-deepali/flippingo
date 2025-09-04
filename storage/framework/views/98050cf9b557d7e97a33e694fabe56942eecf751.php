@@ -39,10 +39,10 @@
                     <thead>
                       <tr>
                         <th>Date & Time</th>
+                        <th>Type</th>
                         <th>Category</th>
                         <th>Question</th>
                         <th>Answer</th>
-                        <th>Type</th>
                         <th>Status</th>
                         <th>Action</th>
                       </tr>
@@ -51,10 +51,10 @@
                       <?php $__currentLoopData = $faqs; $__env->addLoop($__currentLoopData); foreach($__currentLoopData as $faq): $__env->incrementLoopIndices(); $loop = $__env->getLastLoop(); ?>
                         <tr>
                           <td><?php echo e($faq->created_at->format('Y-m-d H:i')); ?></td>
-                          <td><?php echo e($blog->category->name ?? 'N/A'); ?></td>
+                          <td><?php echo e($faq->type); ?></td>
+                          <td><?php echo e($faq->category->name ?? 'N/A'); ?></td>
                           <td><?php echo e($faq->question); ?></td>
                           <td><?php echo e($faq->answer); ?></td>
-                          <td><?php echo e($faq->status); ?></td>
                           <td><?php echo e($faq->status); ?></td>
 
                           <td>
@@ -129,8 +129,8 @@
               <div class="form-group">
                 <label for="status">Status</label>
                 <select name="status" id="status" class="form-control" required>
-                  <option value="published">Published</option>
-                  <option value="draft">Draft</option>
+                  <option value="Published">Published</option>
+                  <option value="Draft">Draft</option>
                 </select>
               </div>
 
@@ -148,11 +148,13 @@
   <script>
 
     function editFaq(id) {
-      $.get("<?php echo e(url('admin/faqs/edit')); ?>/" + id, function (data) {
+      $.get("<?php echo e(url('admin/faqs')); ?>/" + id + '/edit', function (data) {
         $('#faq_id').val(data.id);
         $('#question').val(data.question);
         $('#answer').val(data.answer);
         $('#status').val(data.status);
+        $('#type').val(data.type);
+        $('#category_id').val(data?.category?.id);
         $('#addFaqModalLabel').text("Edit FAQ");
         $('#addFaqModal').modal('show');
       });
@@ -200,11 +202,11 @@
       e.preventDefault();
 
       let id = $('#faq_id').val();
-      let url = id ? '<?php echo e(url("admin/faqs/update")); ?>/' + id : '<?php echo e(route("admin.faqs.store")); ?>';
+      let url = id ? '<?php echo e(url("admin/faqs")); ?>/' + id : '<?php echo e(route("admin.faqs.store")); ?>';
 
       $.ajax({
         url: url,
-        method: 'POST',
+        method: 'PUT',
         data: $(this).serialize(),
         headers: {
           'X-CSRF-TOKEN': '<?php echo e(csrf_token()); ?>'

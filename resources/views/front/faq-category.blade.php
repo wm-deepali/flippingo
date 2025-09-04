@@ -1,19 +1,19 @@
+@extends('layouts.new-master')
 
+@section('title')
+    {{ $page->meta_title ?? 'Flippingo' }}
+@endsection
 
-<?php $__env->startSection('title'); ?>
-    <?php echo e($page->meta_title ?? 'Flippingo'); ?>
-
-<?php $__env->stopSection(); ?>
-
-<?php $__env->startSection('content'); ?>
+@section('content')
     <section class="breadcrumb-area bread-bg">
         <div class="overlay"></div>
         <div class="container">
             <div class="breadcrumb-content text-center">
                 <h2 class="sec__title text-white mb-3">Frequently Asked Questions</h2>
                 <ul class="bread-list">
-                    <li><a href="<?php echo e(Route('home')); ?>">home</a></li>
+                    <li><a href="{{ Route('home') }}">home</a></li>
                     <li>faq</li>
+                    <li>{{ $category->name }}</li>
                 </ul>
             </div>
         </div>
@@ -51,50 +51,50 @@
                         <!-- Buyers FAQs -->
                         <div class="tab-pane fade show active" id="buyers" role="tabpanel" aria-labelledby="buyers-tab">
                             <div class="accordion my-accordion" id="accordionBuyers">
-                                <?php $__currentLoopData = $faqs->where('type', 'Buyers FAQ'); $__env->addLoop($__currentLoopData); foreach($__currentLoopData as $index => $faq): $__env->incrementLoopIndices(); $loop = $__env->getLastLoop(); ?>
+                                @foreach($faqs->where('type', 'Buyers FAQ') as $index => $faq)
                                     <div class="card">
-                                        <div class="card-header" id="headingBuyer<?php echo e($index); ?>">
-                                            <button class="btn btn-link <?php echo e($index !== 0 ? 'collapsed' : ''); ?>" type="button"
-                                                data-bs-toggle="collapse" data-bs-target="#collapseBuyer<?php echo e($index); ?>"
-                                                aria-expanded="<?php echo e($index === 0 ? 'true' : 'false'); ?>"
-                                                aria-controls="collapseBuyer<?php echo e($index); ?>">
-                                                <span><?php echo e($faq->question); ?></span>
+                                        <div class="card-header" id="headingBuyer{{ $index }}">
+                                            <button class="btn btn-link {{ $index !== 0 ? 'collapsed' : '' }}" type="button"
+                                                data-bs-toggle="collapse" data-bs-target="#collapseBuyer{{ $index }}"
+                                                aria-expanded="{{ $index === 0 ? 'true' : 'false' }}"
+                                                aria-controls="collapseBuyer{{ $index }}">
+                                                <span>{{ $faq->question }}</span>
                                                 <i class="fal fa-plus accordion-icon"></i>
                                             </button>
                                         </div>
-                                        <div id="collapseBuyer<?php echo e($index); ?>" class="collapse <?php echo e($index === 0 ? 'show' : ''); ?>"
-                                            aria-labelledby="headingBuyer<?php echo e($index); ?>" data-bs-parent="#accordionBuyers">
+                                        <div id="collapseBuyer{{ $index }}" class="collapse {{ $index === 0 ? 'show' : '' }}"
+                                            aria-labelledby="headingBuyer{{ $index }}" data-bs-parent="#accordionBuyers">
                                             <div class="card-body">
-                                                <p><?php echo e($faq->answer); ?></p>
+                                                <p>{{ $faq->answer }}</p>
                                             </div>
                                         </div>
                                     </div>
-                                <?php endforeach; $__env->popLoop(); $loop = $__env->getLastLoop(); ?>
+                                @endforeach
                             </div>
                         </div>
 
                         <!-- Sellers FAQs -->
                         <div class="tab-pane fade" id="sellers" role="tabpanel" aria-labelledby="sellers-tab">
                             <div class="accordion my-accordion" id="accordionSellers">
-                                <?php $__currentLoopData = $faqs->where('type', 'Seller FAQ'); $__env->addLoop($__currentLoopData); foreach($__currentLoopData as $index => $faq): $__env->incrementLoopIndices(); $loop = $__env->getLastLoop(); ?>
+                                @foreach($faqs->where('type', 'Seller FAQ') as $index => $faq)
                                     <div class="card">
-                                        <div class="card-header" id="headingSeller<?php echo e($index); ?>">
-                                            <button class="btn btn-link <?php echo e($index !== 0 ? 'collapsed' : ''); ?>" type="button"
-                                                data-bs-toggle="collapse" data-bs-target="#collapseSeller<?php echo e($index); ?>"
-                                                aria-expanded="<?php echo e($index === 0 ? 'true' : 'false'); ?>"
-                                                aria-controls="collapseSeller<?php echo e($index); ?>">
-                                                <span><?php echo e($faq->question); ?></span>
+                                        <div class="card-header" id="headingSeller{{ $index }}">
+                                            <button class="btn btn-link {{ $index !== 0 ? 'collapsed' : '' }}" type="button"
+                                                data-bs-toggle="collapse" data-bs-target="#collapseSeller{{ $index }}"
+                                                aria-expanded="{{ $index === 0 ? 'true' : 'false' }}"
+                                                aria-controls="collapseSeller{{ $index }}">
+                                                <span>{{ $faq->question }}</span>
                                                 <i class="fal fa-plus accordion-icon"></i>
                                             </button>
                                         </div>
-                                        <div id="collapseSeller<?php echo e($index); ?>" class="collapse <?php echo e($index === 0 ? 'show' : ''); ?>"
-                                            aria-labelledby="headingSeller<?php echo e($index); ?>" data-bs-parent="#accordionSellers">
+                                        <div id="collapseSeller{{ $index }}" class="collapse {{ $index === 0 ? 'show' : '' }}"
+                                            aria-labelledby="headingSeller{{ $index }}" data-bs-parent="#accordionSellers">
                                             <div class="card-body">
-                                                <p><?php echo e($faq->answer); ?></p>
+                                                <p>{{ $faq->answer }}</p>
                                             </div>
                                         </div>
                                     </div>
-                                <?php endforeach; $__env->popLoop(); $loop = $__env->getLastLoop(); ?>
+                                @endforeach
                             </div>
                         </div>
 
@@ -106,19 +106,18 @@
                         <div class="card-body">
                             <h4 class="card-title mb-3">Categories</h4>
                             <ul class="tag-list">
-                                <?php $__currentLoopData = $categories; $__env->addLoop($__currentLoopData); foreach($__currentLoopData as $category): $__env->incrementLoopIndices(); $loop = $__env->getLastLoop(); ?>
+                                @foreach($categories as $category)
                                     <li>
-                                        <a href="<?php echo e(route('faq.category', $category->slug)); ?>">
-                                            <?php echo e($category->name); ?>
-
+                                        <a href="{{ route('faq.category', $category->slug) }}">
+                                            {{ $category->name }}
                                         </a>
                                     </li>
-                                <?php endforeach; $__env->popLoop(); $loop = $__env->getLastLoop(); ?>
+                                @endforeach
                             </ul>
                         </div>
                     </div>
                     <!-- <form action="#" method="POST" class="contact-form card">
-                            <?php echo csrf_field(); ?>
+                            @csrf
                             <div class="card-body">
                                 <h4 class="card-title">Still have a question?</h4>
                                 <hr class="border-top-gray" />
@@ -144,5 +143,4 @@
             </div>
         </div>
     </section>
-<?php $__env->stopSection(); ?>
-<?php echo $__env->make('layouts.new-master', \Illuminate\Support\Arr::except(get_defined_vars(), ['__data', '__path']))->render(); ?><?php /**PATH D:\web-mingo-project\flippingo_admin\resources\views/front/faq.blade.php ENDPATH**/ ?>
+@endsection
