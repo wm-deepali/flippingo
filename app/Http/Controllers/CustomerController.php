@@ -2,19 +2,14 @@
 
 namespace App\Http\Controllers;
 
+use App\Models\AccountDeletionRequest;
 use App\Models\OTP;
 use Illuminate\Http\Request;
 use App\Models\Customer;
 use App\Models\CustomerTemp;
 use App\Models\CustomerVerify;
-use App\Models\Address;
-use App\Models\Country;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Hash;
-use Laravel\Socialite\Facades\Socialite;
-use App\Providers\RouteServiceProvider;
-use Illuminate\Support\Facades\Storage;
-use PHPUnit\Framework\Constraint\Count;
 use Session;
 use Validator;
 use Illuminate\Support\Str;
@@ -43,7 +38,6 @@ class CustomerController extends Controller
     {
         // If already logged in
         if (Auth::guard('customer')->check()) {
-            // dd('here');
             return response()->json([
                 'success' => true,
                 'redirect' => route('dashboard.index')
@@ -55,16 +49,28 @@ class CustomerController extends Controller
 
         // Check if it's a phone number
         if (preg_match('/^[0-9]{10,15}$/', $loginId)) {
-            // === OTP Login Flow ===
             $customer = Customer::where('mobile', $loginId)->first();
 
             if (!$customer) {
                 return response()->json(['success' => false, 'message' => 'Mobile number not registered']);
             }
 
+            // Check pending deletion
+            $pendingDeletion = AccountDeletionRequest::where('customer_id', $customer->id)
+                ->where('status', 'pending')
+                ->first();
+
+            if ($pendingDeletion) {
+                return response()->json([
+                    'success' => false,
+                    'pending_deletion' => true,
+                    'message' => 'Your Account is Pending Deletion. Do you want to restore your account?'
+                ]);
+            }
+
             $isValid = OTP::verifyOTP($loginId, $passwordOrOtp);
 
-            if (!$isValid) { // assuming otp stored in `otp` column
+            if (!$isValid) {
                 return response()->json(['success' => false, 'message' => 'Invalid OTP']);
             }
 
@@ -72,7 +78,6 @@ class CustomerController extends Controller
                 return response()->json(['success' => false, 'message' => 'Your account is blocked']);
             }
 
-            // OTP verified → log them in
             Auth::guard('customer')->login($customer);
 
             return response()->json([
@@ -80,14 +85,9 @@ class CustomerController extends Controller
                 'message' => 'OTP login successful',
                 'redirect' => route('dashboard.index')
             ]);
-        } else {
-            // === Email/Username + Password Login Flow ===
-            $credentials = $request->validate([
-                'loginId' => 'required|string',
-                'password' => 'required|string'
-            ]);
 
-            // Check by email OR username
+        } else {
+            // Email/Username + Password
             $customer = Customer::where('email', $loginId)
                 ->orWhere('customer_id', $loginId)
                 ->first();
@@ -96,8 +96,20 @@ class CustomerController extends Controller
                 return response()->json(['success' => false, 'message' => 'Invalid credentials']);
             }
 
+            // Check pending deletion
+            $pendingDeletion = AccountDeletionRequest::where('customer_id', $customer->id)
+                ->where('status', 'pending')
+                ->first();
+
+            if ($pendingDeletion) {
+                return response()->json([
+                    'success' => false,
+                    'pending_deletion' => true,
+                    'message' => 'Your Account is Pending Deletion. Do you want to restore your account?'
+                ]);
+            }
+
             if ($customer->email_verified_at == null) {
-                // Send verification mail again
                 $token = Str::random(64);
                 CustomerVerify::create([
                     'customer_id' => $customer->id,
@@ -116,7 +128,6 @@ class CustomerController extends Controller
                 return response()->json(['success' => false, 'message' => 'Your account has been blocked']);
             }
 
-            // Try to login
             if (Auth::guard('customer')->attempt(['email' => $customer->email, 'password' => $passwordOrOtp])) {
                 return response()->json([
                     'success' => true,
@@ -127,6 +138,40 @@ class CustomerController extends Controller
 
             return response()->json(['success' => false, 'message' => 'Invalid credentials']);
         }
+    }
+
+
+    public function restoreAccount(Request $request)
+    {
+        $loginId = $request->input('loginId');
+
+        if (!$loginId) {
+            return response()->json(['success' => false, 'message' => 'Login ID is required'], 400);
+        }
+
+        // Find customer by email, username, or mobile
+        $customer = Customer::where('email', $loginId)
+            ->orWhere('customer_id', $loginId)
+            ->orWhere('mobile', $loginId)
+            ->first();
+
+        if (!$customer) {
+            return response()->json(['success' => false, 'message' => 'Customer not found'], 404);
+        }
+
+        // Check for pending deletion request
+        $pending = AccountDeletionRequest::where('customer_id', $customer->id)
+            ->where('status', 'pending')
+            ->first();
+
+        if ($pending) {
+            $pending->delete(); // cancel the pending request
+        }
+
+        return response()->json([
+            'success' => true,
+            'message' => 'Your account deletion request has been cancelled. You can now continue using your account.'
+        ]);
     }
 
 
@@ -148,7 +193,7 @@ class CustomerController extends Controller
 
         // Assuming you have a model named OTP for managing OTPs
         OTP::create([
-            'mobile' => $mobile_number,
+            'value' => $mobile_number,
             'otp' => $otp,
             'expiry' => now()->addMinutes(10),
         ]);
@@ -518,36 +563,6 @@ class CustomerController extends Controller
         }
     }
 
-    public function updateProfile(Request $request)
-    {
-        if (Auth::guard('customer')->check()) {
-            $user = Auth::guard('customer')->user();
-
-            $request->validate([
-                'first_name' => 'required|string|max:155',
-                'display_name' => 'required|string|max:155',
-                'last_name' => 'required|string|max:155',
-                'email' => 'required|email|unique:customers,email,' . $user->id,
-                'mobile' => 'required|digits_between:10,15|unique:customers,mobile,' . $user->id,
-                'whatsapp_number' => 'required|digits_between:10,15',
-            ]);
-
-            $user->first_name = $request->first_name;
-            $user->display_name = $request->display_name;
-            $user->last_name = $request->last_name;
-            $user->email = $request->email;
-            $user->mobile = $request->mobile;
-            $user->whatsapp_number = $request->whatsapp_number;
-
-            $user->save();
-            return response()->json(['success' => true, 'message' => 'Profile updated successfully.']);
-
-        } else {
-            return redirect()->route('authentication-signin')
-                ->withErrors('Please login to access the dashboard.');
-        }
-    }
-
     public function updateProfilePic(Request $request)
     {
         if (Auth::guard('customer')->check()) {
@@ -682,41 +697,7 @@ class CustomerController extends Controller
 
     }
 
-    public function orderDetails($id)
-    {
-        $quote = Quote::with([
-            'customer',
-            'items.attributes.attribute',
-            'items.attributes.attributeValue',
-            'documents',
-            'deliveryAddress',
-            'departments' // eager load existing departments
-        ])->findOrFail($id);
 
 
-        return view('front.order-details', [
-            'quote' => $quote,
-        ]);
-    }
-
-
-    public function viewInvoice($quoteId)
-    {
-        $quote = Quote::with([
-            'customer',
-            'billingAddress',
-            'deliveryAddress',
-            'items.attributes.attribute',
-            'items.attributes.attributeValue',
-            'payments',
-            'invoice'
-        ])->findOrFail($quoteId);
-        return view('front.view-invoice', [
-            'quote' => $quote,
-            'invoice' => $quote->invoice,
-            'payments' => $quote->payments,
-            'customer' => $quote->customer,
-        ]);
-    }
 
 }

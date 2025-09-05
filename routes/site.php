@@ -7,6 +7,7 @@ use App\Http\Controllers\Admin\FormController;
 use App\Http\Controllers\Admin\ListingController;
 use App\Http\Controllers\Admin\PageController;
 use App\Http\Controllers\Admin\TestimonialController;
+use App\Http\Controllers\ProfileController;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\SiteController;
@@ -127,6 +128,7 @@ Route::middleware(['web'])->group(function () {
         Route::get('account/verify/{token}', 'verifyAccount')->name('customer.verify');
         Route::post('/customer-register', 'register')->name('customer.register');
         Route::post('/authenticate', 'authenticate')->name('customer.authenticate');
+        Route::post('/account/restore',  'restoreAccount')->name('customer.restore');
 
         Route::post('first/add-details/store', 'storeRequiredDetails')->name('first.details.store');
         Route::get('authentication-forgot-password', 'showForgetPasswordForm')->name('authentication-forgot-password.get');
@@ -142,10 +144,15 @@ Route::middleware(['web'])->group(function () {
 
             Route::get('/', [CustomerController::class, 'dashboard'])->name('dashboard.index');
 
-            // Profile
-            Route::get('/profile', function () {
-                return view('front.profile');
-            })->name('dashboard.profile');
+            // Profile routes
+            Route::get('/profile', [ProfileController::class, 'profile'])->name('dashboard.profile');
+            Route::post('/profile/update', [ProfileController::class, 'updateProfile'])->name('dashboard.profile.update');
+            Route::post('/send-otp-both', [ProfileController::class, 'sendOtpBoth'])->name('send.otp.both');
+            Route::post('/verify-otp-both', [ProfileController::class, 'verifyOTPBoth'])->name('verify.otp.both');
+            Route::post('/Supdate-password', [ProfileController::class, 'updatePassword'])->name('update.password');
+            Route::post('/delete-account', [ProfileController::class, 'deleteAccount'])
+                ->name('delete.account');
+
 
             Route::get('/bank-account', function () {
                 return view('user.bank-account');
@@ -169,7 +176,7 @@ Route::middleware(['web'])->group(function () {
             })->name('dashboard.contact');
 
             // Orders
-            Route::get('/orders',  function () {
+            Route::get('/orders', function () {
                 return view('user.orders');
             })->name('dashboard.orders');
 
@@ -193,21 +200,21 @@ Route::middleware(['web'])->group(function () {
                 return view('user.wishlist');
             })->name('dashboard.wishlist');
 
-             // Wishlist
+            // Wishlist
             Route::get('/subscriptions', function () {
                 return view('user.subscriptions');
             })->name('dashboard.subscriptions');
 
-             // Wishlist
+            // Wishlist
             Route::get('/listing', function () {
                 return view('user.listing');
             })->name('dashboard.listing');
 
-              Route::get('/reports', function () {
+            Route::get('/reports', function () {
                 return view('user.reports');
             })->name('dashboard.reports');
 
-              Route::get('/analytics', function () {
+            Route::get('/analytics', function () {
                 return view('user.analytics');
             })->name('dashboard.analytics');
 

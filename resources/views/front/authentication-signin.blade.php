@@ -6,8 +6,8 @@
 
 @section('content')
   <!-- ================================
-              START BREADCRUMB AREA
-            ================================= -->
+                  START BREADCRUMB AREA
+                ================================= -->
   <section class="breadcrumb-area bread-bg" style="margin-top: 50px;">
     <div class="overlay"></div>
     <!-- end overlay -->
@@ -31,12 +31,12 @@
   </section>
   <!-- end breadcrumb-area -->
   <!-- ================================
-              END BREADCRUMB AREA
-            ================================= -->
+                  END BREADCRUMB AREA
+                ================================= -->
 
   <!-- ================================
-              START CONTACT AREA
-            ================================= -->
+                  START CONTACT AREA
+                ================================= -->
   <section class="contact-area padding-top-60px padding-bottom-90px">
     <div class="container ">
       <div class="row align-items-center">
@@ -121,10 +121,11 @@
 
   <!-- end contact-area -->
   <!-- ================================
-              END CONTACT AREA
-        
-              ================================= -->
-                <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+                  END CONTACT AREA
+
+                  ================================= -->
+  <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+
 
   <script>
     function showNextField() {
@@ -185,6 +186,7 @@
     }
 
     // Final submit via AJAX
+    // Final submit via AJAX
     document.getElementById("loginForm").addEventListener("submit", function (e) {
       e.preventDefault();
 
@@ -206,6 +208,44 @@
         .then(data => {
           if (data.success) {
             window.location.href = data.redirect ?? "{{ route('dashboard.index') }}";
+          } else if (data.pending_deletion) {
+            // Show SweetAlert for pending deletion
+            Swal.fire({
+              title: 'Account Pending Deletion',
+              text: data.message,
+              icon: 'warning',
+              showCancelButton: true,
+              confirmButtonText: 'Yes, restore account',
+              cancelButtonText: 'Cancel'
+            }).then((result) => {
+              if (result.isConfirmed) {
+                // Call route to restore account
+                fetch("{{ route('customer.restore') }}", {
+                  method: "POST",
+                  headers: {
+                    "Content-Type": "application/json",
+                    "X-CSRF-TOKEN": "{{ csrf_token() }}"
+                  },
+                  body: JSON.stringify({ loginId: loginId }) // optional
+                })
+                  .then(res => res.json())
+                  .then(resData => {
+                    if (resData.success) {
+                      Swal.fire('Restored!', resData.message, 'success')
+                        .then(() => {
+                          // After restore, attempt login again
+                          document.getElementById("loginForm").dispatchEvent(new Event('submit'));
+                        });
+                    } else {
+                      Swal.fire('Error!', resData.message, 'error');
+                    }
+                  })
+                  .catch(err => {
+                    console.error(err);
+                    Swal.fire('Error!', 'Something went wrong.', 'error');
+                  });
+              }
+            });
           } else {
             Swal.fire({ icon: "error", title: "Login Failed", text: data.message || "Invalid credentials/OTP" });
           }
@@ -215,7 +255,67 @@
           Swal.fire({ icon: "error", title: "Error", text: "Error during login" });
         });
     });
+
   </script>
+
+  @if(session('pending_deletion'))
+    <script>
+      document.addEventListener('DOMContentLoaded', function () {
+        let loginId = "{{ session('loginId') }}";
+        Swal.fire({
+          title: 'Account Pending Deletion',
+          text: "{{ session('pending_message') }}",
+          icon: 'warning',
+          showCancelButton: true,
+          confirmButtonText: 'Yes, restore account',
+          cancelButtonText: 'Cancel'
+        }).then((result) => {
+          if (result.isConfirmed) {
+            // Call restore route
+            fetch("{{ route('customer.restore') }}", {
+              method: "POST",
+              headers: {
+                "Content-Type": "application/json",
+                "X-CSRF-TOKEN": "{{ csrf_token() }}"
+              },
+              body: JSON.stringify({ loginId: loginId })
+            })
+              .then(res => res.json())
+              .then(resData => {
+                if (resData.success) {
+                  Swal.fire('Restored!', resData.message, 'success')
+                    .then(() => {
+                      // Log in automatically
+                      fetch("{{ route('customer.authenticate') }}", {
+                        method: "POST",
+                        headers: {
+                          "Content-Type": "application/json",
+                          "X-CSRF-TOKEN": "{{ csrf_token() }}"
+                        },
+                        body: JSON.stringify({ loginId: loginId, password: '' }) // no password needed for Google
+                      })
+                        .then(r => r.json())
+                        .then(d => {
+                          if (d.success) {
+                            window.location.href = d.redirect ?? "{{ route('dashboard.index') }}";
+                          } else {
+                            Swal.fire('Error', d.message, 'error');
+                          }
+                        });
+                    });
+                } else {
+                  Swal.fire('Error!', resData.message, 'error');
+                }
+              })
+              .catch(err => {
+                console.error(err);
+                Swal.fire('Error!', 'Something went wrong.', 'error');
+              });
+          }
+        });
+      });
+    </script>
+  @endif
 
 
 @endsection

@@ -8,45 +8,40 @@ use Illuminate\Database\Eloquent\Model;
 class OTP extends Model
 {
     use HasFactory;
-    protected $table='customer_otp';
+    protected $table = 'customer_otp';
 
-    protected $fillable = ['mobile', 'otp', 'expiry'];
+    protected $fillable = ['value', 'type', 'otp', 'expiry', 'verified'];
 
     protected $dates = ['expiry'];
-    
-    public static function verifyOTP($mobile, $otp)
+
+    public static function verifyOTP($value, $otp, $type = 'mobile')
     {
-        $otpRecord = self::where('mobile', $mobile)
+        $otpRecord = self::where('value', $value)
+            ->where('type', $type)
             ->where('otp', $otp)
             ->where('expiry', '>=', now())
             ->first();
-        
-        if ($otpRecord) {
-            // OTP is valid
-            $otpRecord->verified = '1';
-            $otpRecord->save();
 
+        if ($otpRecord) {
+            $otpRecord->verified = true;
+            $otpRecord->save();
             return true;
         }
-
-        // OTP is invalid or expired
         return false;
     }
-    public static function deleteOTP($mobile, $otp)
+
+    public static function deleteOTP($value, $otp, $type = 'mobile')
     {
-        $otpRecord = self::where('mobile', $mobile)
+        $otpRecord = self::where('value', $value)
+            ->where('type', $type)
             ->where('otp', $otp)
             ->first();
-        
-        if ($otpRecord) {
-            // OTP is valid
-            $otpRecord->delete();
 
+        if ($otpRecord) {
+            $otpRecord->delete();
             return true;
         }
-
-        // OTP is invalid or expired
         return false;
     }
-   
 }
+

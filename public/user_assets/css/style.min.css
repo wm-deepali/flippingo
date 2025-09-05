@@ -11210,10 +11210,383 @@ fieldset:disabled a.btn {
 .dashboard-switching {
     width: 93%;
     margin: auto;
+ 
+  margin-top: 30px;
+}
+.profile-setting{
+      width: 93%;
+    margin: auto;
   /* margin: 20px 0; */
   margin-top: 30px;
 }
+.profile-setting {
+  /* max-width: 700px; */
+  margin: 20px auto;
+  font-family: Arial, sans-serif;
+}
 
+.profile-tabs {
+  display: flex;
+  border-bottom: 2px solid #e5e5e5;
+  margin-bottom: 20px;
+}
+
+/* Each Tab */
+.profile-tab {
+  flex: 1;
+  text-align: center;
+  padding: 12px;
+  cursor: pointer;
+  background: #f9f9f9;
+  border: 1px solid #e5e5e5;
+  border-bottom: none;
+  transition: 0.3s;
+  font-weight: 500;
+  color: #555;
+}
+
+.profile-tab:not(:last-child) {
+  border-right: none;
+}
+
+/* Active Tab */
+.profile-tab.active {
+  background: #fff;
+  font-weight: 600;
+  color: #000;
+  border-bottom: 2px solid #000;
+}
+
+/* Card Content */
+.profile-content {
+  border: 1px solid #e5e5e5;
+  background: #fff;
+  padding: 20px;
+  border-radius: 0 0 6px 6px;
+}
+.profile-card {
+  display: none;
+}
+.profile-card.active {
+  display: block;
+}
+
+/* .profile-card {
+  border: 1px solid #e5e5e5;
+  background: #fff;
+  padding: 20px;
+  border-radius: 6px;
+  font-family: Arial, sans-serif;
+  max-width: 750px;
+  margin: 20px auto;
+  box-shadow: 0 2px 6px rgba(0,0,0,0.05);
+} */
+
+.profile-card h3 {
+  margin-bottom: 5px;
+  font-size: 18px;
+  font-weight: 600;
+}
+
+.profile-card p.small {
+  font-size: 13px;
+  color: #777;
+  margin-bottom: 20px;
+}
+
+/* Layout */
+.profile-form {
+  display: flex;
+  gap: 20px;
+  align-items: flex-start;
+}
+
+.profile-left {
+  flex: 0 0 160px;
+  text-align: center;
+}
+.profile-left img {
+  width: 100px;
+  height: 100px;
+  border-radius: 50%;
+  background: #ddd;
+  object-fit: cover;
+  margin-bottom: 10px;
+}
+.change-photo {
+  font-size: 13px;
+  padding: 6px 12px;
+  border: 1px solid #ddd;
+  background: #f8f8f8;
+  border-radius: 4px;
+  cursor: pointer;
+}
+.profile-left small {
+  display: block;
+  margin-top: 8px;
+  color: #888;
+  font-size: 12px;
+}
+
+/* Right side form */
+.profile-right {
+  flex: 1;
+}
+.profile-group {
+  margin-bottom: 15px;
+}
+.profile-group label {
+  font-size: 14px;
+  font-weight: 500;
+  margin-bottom: 5px;
+  display: block;
+}
+.profile-group input,
+.profile-group textarea {
+  width: 100%;
+  padding: 8px 10px;
+  border: 1px solid #ddd;
+  border-radius: 4px;
+  font-size: 14px;
+}
+.profile-group textarea {
+  height: 80px;
+  resize: none;
+}
+
+.profile-actions {
+  display: flex;
+  justify-content: flex-end;
+  gap: 10px;
+  margin-top: 15px;
+}
+.btn-cancel {
+  background: #f5f5f5;
+  border: 1px solid #ddd;
+  padding: 8px 14px;
+  border-radius: 4px;
+  cursor: pointer;
+}
+.btn-save {
+  background: #007bff;
+  border: none;
+  padding: 8px 14px;
+  border-radius: 4px;
+  cursor: pointer;
+  color: #fff;
+}
+
+/* Profile Card */
+/* .personal-info-card {
+  border: 1px solid #e5e5e5;
+  background: #fff;
+  padding: 20px;
+  border-radius: 6px;
+  font-family: Arial, sans-serif;
+  max-width: 850px;
+  margin: 20px auto;
+  box-shadow: 0 2px 6px rgba(0,0,0,0.05);
+} */
+.personal-info-card h3 {
+  margin-bottom: 5px;
+  font-size: 18px;
+  font-weight: 600;
+}
+.personal-info-card p.small {
+  font-size: 13px;
+  color: #777;
+  margin-bottom: 20px;
+}
+.personal-info-form {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 15px 20px;
+}
+.info-group {
+  display: flex;
+  flex-direction: column;
+}
+.info-group label {
+  font-size: 14px;
+  font-weight: 500;
+  margin-bottom: 5px;
+}
+.info-group input, 
+.info-group textarea, 
+.info-group select {
+  padding: 8px 10px;
+  border: 1px solid #ddd;
+  border-radius: 4px;
+  font-size: 14px;
+}
+.info-group textarea {
+  resize: none;
+  height: 70px;
+}
+.change-btn {
+  margin-top: 5px;
+  font-size: 12px;
+  color: #007bff;
+  background: none;
+  border: none;
+  cursor: pointer;
+  padding: 0;
+  text-decoration: underline;
+}
+.personal-info-actions {
+  grid-column: span 2;
+  display: flex;
+  justify-content: flex-end;
+  gap: 10px;
+  margin-top: 15px;
+}
+.btn-cancel {
+  background: #f5f5f5;
+  border: 1px solid #ddd;
+  padding: 8px 14px;
+  border-radius: 4px;
+  cursor: pointer;
+}
+.btn-save {
+  background: #007bff;
+  border: none;
+  padding: 8px 14px;
+  border-radius: 4px;
+  cursor: pointer;
+  color: #fff;
+}
+
+/* Modal Popup */
+.modal-overlay {
+  position: fixed;
+  top: 0; left: 0; right: 0; bottom: 0;
+  background: rgba(0,0,0,0.5);
+  display: none;
+  justify-content: center;
+  align-items: center;
+  z-index: 1000;
+}
+.modal-box {
+  background: #fff;
+  padding: 20px;
+  border-radius: 6px;
+  width: 500px;
+  max-width: 90%;
+  text-align: left;
+}
+.modal-box h4 {
+  margin-bottom: 10px;
+  font-size: 16px;
+}
+.modal-box .info-group {
+  margin-bottom: 12px;
+}
+.modal-actions {
+  display: flex;
+  justify-content: flex-end;
+  gap: 10px;
+}
+.btn-close {
+  background: #ccc;
+  border: none;
+  padding: 6px 12px;
+  border-radius: 4px;
+  cursor: pointer;
+}
+.btn-verify {
+  background: #007bff;
+  border: none;
+  padding: 6px 12px;
+  border-radius: 4px;
+  color: #fff;
+  cursor: pointer;
+}
+
+/* Hidden file input */
+#uploadInput {
+  display: none;
+}
+.account-top-card{
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 20px;
+}
+.account-settings-card {
+  border: 1px solid #e5e5e5;
+  background: #fff;
+  padding: 20px;
+  border-radius: 6px;
+  margin-bottom: 20px;
+  box-shadow: 0 2px 6px rgba(0,0,0,0.05);
+}
+.account-settings-card h4 {
+  margin-bottom: 12px;
+  font-size: 16px;
+  font-weight: 600;
+}
+.account-info {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 12px 20px;
+}
+.account-info .info-row {
+  font-size: 14px;
+}
+.account-info strong {
+  display: block;
+  color: #333;
+  font-weight: 600;
+}
+.account-info span {
+  color: #666;
+  font-size: 13px;
+}
+
+/* Change Password */
+.password-group {
+  margin-bottom: 15px;
+  position: relative;
+}
+.password-group input {
+  width: 100%;
+  padding: 8px 35px 8px 10px;
+  border: 1px solid #ddd;
+  border-radius: 4px;
+  font-size: 14px;
+}
+.password-group .toggle-view {
+  position: absolute;
+  right: 10px;
+  top: 50%;
+  transform: translateY(-50%);
+  cursor: pointer;
+  font-size: 14px;
+  color: #666;
+}
+.password-note {
+  font-size: 12px;
+  color: #999;
+  margin-top: 5px;
+}
+
+/* Delete Account */
+.delete-card {
+  border: 1px solid #f5c2c7;
+  background: #f8d7da;
+  color: #842029;
+  text-align: center;
+}
+.delete-card p {
+  margin: 10px 0;
+}
+.delete-btn {
+  background: #dc3545;
+  border: none;
+  padding: 8px 16px;
+  border-radius: 4px;
+  color: #fff;
+  cursor: pointer;
+}
 .dashboard-tabs {
   display: flex;
   list-style: none;
@@ -19483,4 +19856,20 @@ ul.list-style-none li a:hover {
     src: url(fonts/Gilmer-Boldd41d.eot?#iefix) format("embedded-opentype"), url(fonts/Gilmer-Bold.otf) format("opentype"), url(fonts/Gilmer-Bold.woff) format("woff"), url(fonts/Gilmer-Bold.ttf) format("truetype"), url(fonts/Gilmer-Bold.svg#Gilmer-Bold) format("svg");
     font-weight: 400;
     font-style: normal
+}
+
+.notification-section {
+    width: 93%;
+    margin: auto;
+    margin-top: 30px;
+}
+.bank-account{
+     width: 93%;
+    margin: auto;
+    margin-top: 30px;
+}
+.order-invoice{
+     width: 93%;
+    margin: auto;
+    margin-top: 30px;
 }

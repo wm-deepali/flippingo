@@ -5,19 +5,19 @@
 
 <head>
     <meta name="csrf-token" content="<?php echo e(csrf_token()); ?>">
-  <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
-  <meta http-equiv="X-UA-Compatible" content="IE=edge">
-  <meta name="viewport" content="width=device-width,initial-scale=1.0,user-scalable=0,minimal-ui">
-  <meta name="author" content=" Flippingo" />
-  <meta name="description" content="Flippingo Admin">
-  <meta name="keywords" content="Flippingo Admin">
+    <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width,initial-scale=1.0,user-scalable=0,minimal-ui">
+    <meta name="author" content=" Flippingo" />
+    <meta name="description" content="Flippingo Admin">
+    <meta name="keywords" content="Flippingo Admin">
 
-  <?php echo $__env->yieldPushContent('before-styles'); ?>
-  <title><?php echo $__env->yieldContent('title'); ?></title>
+    <?php echo $__env->yieldPushContent('before-styles'); ?>
+    <title><?php echo $__env->yieldContent('title'); ?></title>
 
-  <!-- Favicon icon -->
-  <link rel="icon" type="image/png" sizes="16x16" href="<?php echo e(asset('user_assets')); ?>/images/favicon.png">
-  <!-- Custom CSS -->
+    <!-- Favicon icon -->
+    <link rel="icon" type="image/png" sizes="16x16" href="<?php echo e(asset('user_assets')); ?>/images/favicon.png">
+    <!-- Custom CSS -->
     <link href="<?php echo e(asset('user_assets')); ?>/extra-libs/c3/c3.min.css" rel="stylesheet">
     <link href="<?php echo e(asset('user_assets')); ?>/libs/chartist/dist/chartist.min.css" rel="stylesheet">
     <link href="<?php echo e(asset('user_assets')); ?>/extra-libs/jvector/jquery-jvectormap-2.0.2.css" rel="stylesheet" />
@@ -66,17 +66,21 @@
                         <a href="index.html">
                             <b class="logo-icon">
                                 <!-- Dark Logo icon -->
-                                <img src="<?php echo e(asset('user_assets')); ?>/images/logo-icon.png" alt="homepage" class="dark-logo" />
+                                <img src="<?php echo e(asset('user_assets')); ?>/images/logo-icon.png" alt="homepage"
+                                    class="dark-logo" />
                                 <!-- Light Logo icon -->
-                                <img src="<?php echo e(asset('user_assets')); ?>/images/logo-icon.png" alt="homepage" class="light-logo" />
+                                <img src="<?php echo e(asset('user_assets')); ?>/images/logo-icon.png" alt="homepage"
+                                    class="light-logo" />
                             </b>
                             <!--End Logo icon -->
                             <!-- Logo text -->
                             <span class="logo-text">
                                 <!-- dark Logo text -->
-                                <img src="<?php echo e(asset('user_assets')); ?>/images/logo-text.png" alt="homepage" class="dark-logo" />
+                                <img src="<?php echo e(asset('user_assets')); ?>/images/logo-text.png" alt="homepage"
+                                    class="dark-logo" />
                                 <!-- Light Logo text -->
-                                <img src="<?php echo e(asset('user_assets')); ?>/images/logo-light-text.png" class="light-logo" alt="homepage" />
+                                <img src="<?php echo e(asset('user_assets')); ?>/images/logo-light-text.png" class="light-logo"
+                                    alt="homepage" />
                             </span>
                         </a>
                     </div>
@@ -225,52 +229,73 @@
                         <!-- ============================================================== -->
                         <!-- User profile and search -->
                         <!-- ============================================================== -->
+                        <?php
+                            $customer = auth('customer')->user();
+                        ?>
+
                         <li class="nav-item dropdown">
                             <a class="nav-link dropdown-toggle" href="javascript:void(0)" data-toggle="dropdown"
                                 aria-haspopup="true" aria-expanded="false">
-                                <img src="<?php echo e(asset('user_assets')); ?>/images/users/profile-pic.jpg" alt="user" class="rounded-circle"
-                                    width="40">
-                                <span class="ml-2 d-none d-lg-inline-block"> <span class="text-dark">Jason Doe</span>
+                                <img src="<?php echo e($customer->profile_pic ? asset('storage/' . $customer->profile_pic) : asset('user_assets/images/users/profile-pic.jpg')); ?>"
+                                    alt="user" class="rounded-circle" width="40">
+                                <span class="ml-2 d-none d-lg-inline-block">
+                                    <span
+                                        class="text-dark"><?php echo e($customer->first_name . ' ' . $customer->last_name); ?></span>
                                 </span>
-
                             </a>
+
                             <div class="dropdown-menu dropdown-menu-right user-dd animated flipInY">
                                 <div class="dropdown-header px-3 py-2">
-                                    <h6 class="mb-0 font-weight-bold">Jason Doe</h6>
-                                    <small class="text-muted">amazingtariqhabib@gmail.com</small>
+                                    <h6 class="mb-0 font-weight-bold">
+                                        <?php echo e($customer->first_name . ' ' . $customer->last_name); ?>
+
+                                    </h6>
+                                    <small class="text-muted"><?php echo e($customer->email); ?></small>
                                 </div>
+
                                 <div class="dropdown-divider"></div>
-                                <a class="dropdown-item d-flex align-items-center " href="#">
-                                    <i data-feather="user" class="svg-icon mr-2"
-                                        style="width: 40px;height: 40px;display: flex;justify-content: center;align-items: center; border-radius: 50%;background-color: rgba(0, 0, 0, 0.116);font-size: 20px; padding: 7px;"></i><span
-                                        class="d-flex justify-content-center flex-column"> Profile
-                                        <small class="text-muted">Manage your account</small></span>
 
+                                <a class="dropdown-item d-flex align-items-center"
+                                    href="<?php echo e(route('dashboard.profile')); ?>">
+                                    <i data-feather="user" class="svg-icon mr-2" style="width: 40px;height: 40px;display: flex;justify-content: center;align-items: center;
+                       border-radius: 50%;background-color: rgba(0,0,0,0.116);font-size: 20px;padding: 7px;"></i>
+                                    <span class="d-flex justify-content-center flex-column">
+                                        Profile
+                                        <small class="text-muted">Manage your account</small>
+                                    </span>
                                 </a>
-                                <a class="dropdown-item d-flex align-items-center " href="#">
-                                    <i data-feather="user" class="svg-icon mr-2"
-                                        style="width: 40px;height: 40px;display: flex;justify-content: center;align-items: center; border-radius: 50%;background-color: #036b081e;font-size: 20px; padding: 7px;"></i><span
-                                        class="d-flex justify-content-center flex-column" style="color: green;"> Wallet
-                                        <small class="text-muted">Manage your fund</small></span>
 
+                                <a class="dropdown-item d-flex align-items-center" href="<?php echo e(route('dashboard.wallet')); ?>">
+                                    <i data-feather="credit-card" class="svg-icon mr-2" style="width: 40px;height: 40px;display: flex;justify-content: center;align-items: center;
+                       border-radius: 50%;background-color: #036b081e;font-size: 20px;padding: 7px;"></i>
+                                    <span class="d-flex justify-content-center flex-column" style="color: green;">
+                                        Wallet
+                                        <small class="text-muted">Manage your fund</small>
+                                    </span>
                                 </a>
-                                <a class="dropdown-item d-flex align-items-center " href="#">
-                                    <i data-feather="user" class="svg-icon mr-2"
-                                        style="width: 40px;height: 40px;display: flex;justify-content: center;align-items: center; border-radius: 50%;background-color: rgba(0, 255, 255, 0.116);font-size: 20px; padding: 7px;"></i><span
-                                        class="d-flex justify-content-center flex-column"> Support
-                                        <small class="text-muted">Update your setting</small></span>
 
+                                <a class="dropdown-item d-flex align-items-center" href="<?php echo e(route('dashboard.contact')); ?>">
+                                    <i data-feather="help-circle" class="svg-icon mr-2" style="width: 40px;height: 40px;display: flex;justify-content: center;align-items: center;
+                       border-radius: 50%;background-color: rgba(0,255,255,0.116);font-size: 20px;padding: 7px;"></i>
+                                    <span class="d-flex justify-content-center flex-column">
+                                        Support
+                                        <small class="text-muted">Update your setting</small>
+                                    </span>
                                 </a>
-                                <a class="dropdown-item d-flex align-items-center " href="#">
-                                    <i data-feather="user" class="svg-icon mr-2"
-                                        style="width: 40px;height: 40px;display: flex;justify-content: center;align-items: center; border-radius: 50%;background-color: rgba(160, 23, 5, 0.116);font-size: 20px; padding: 7px;"></i><span
-                                        class="d-flex justify-content-center flex-column" style="color: red;"> Logout
-                                        <small class="text-muted">Sign out of your account</small></span>
 
+                                <a class="dropdown-item d-flex align-items-center" href="<?php echo e(Route('account-logout')); ?>"
+                                    onclick="event.preventDefault(); document.getElementById('logout-form').submit();">
+                                    <i data-feather="log-out" class="svg-icon mr-2" style="width: 40px;height: 40px;display: flex;justify-content: center;align-items: center;
+                       border-radius: 50%;background-color: rgba(160,23,5,0.116);font-size: 20px;padding: 7px;"></i>
+                                    <span class="d-flex justify-content-center flex-column" style="color: red;">
+                                        Logout
+                                        <small class="text-muted">Sign out of your account</small>
+                                    </span>
                                 </a>
 
                             </div>
                         </li>
+
                         <!-- ============================================================== -->
                         <!-- User profile and search -->
                         <!-- ============================================================== -->
@@ -285,7 +310,7 @@
         <!-- ============================================================== -->
         <!-- Left Sidebar - style you can find in sidebar.scss  -->
         <!-- ============================================================== -->
-       
+
         <!-- ============================================================== -->
         <!-- End Left Sidebar - style you can find in sidebar.scss  -->
         <!-- ============================================================== -->
@@ -304,9 +329,9 @@
     <!-- ============================================================== -->
     <!-- All Jquery -->
     <!-- ============================================================== -->
- <script src="<?php echo e(asset('user_assets')); ?>/libs/jquery/dist/jquery.min.js"></script>
-<script src="<?php echo e(asset('user_assets')); ?>/libs/popper.js/dist/umd/popper.min.js"></script>
-<script src="<?php echo e(asset('user_assets')); ?>/libs/bootstrap/dist/js/bootstrap.min.js"></script>
+    <script src="<?php echo e(asset('user_assets')); ?>/libs/jquery/dist/jquery.min.js"></script>
+    <script src="<?php echo e(asset('user_assets')); ?>/libs/popper.js/dist/umd/popper.min.js"></script>
+    <script src="<?php echo e(asset('user_assets')); ?>/libs/bootstrap/dist/js/bootstrap.min.js"></script>
 
     <!-- apps -->
     <!-- apps -->
@@ -324,6 +349,7 @@
     <script src="<?php echo e(asset('user_assets')); ?>/extra-libs/jvector/jquery-jvectormap-2.0.2.min.js"></script>
     <script src="<?php echo e(asset('user_assets')); ?>/extra-libs/jvector/jquery-jvectormap-world-mill-en.js"></script>
     <script src="<?php echo e(asset('user_assets')); ?>/js/pages/dashboards/dashboard1.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
     <?php echo $__env->yieldPushContent('scripts'); ?>
 
 </body>

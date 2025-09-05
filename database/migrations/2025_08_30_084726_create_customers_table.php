@@ -14,7 +14,6 @@ class CreateCustomersTable extends Migration
             $table->string('last_name')->nullable();
             $table->string('display_name')->nullable();
             $table->enum('account_type', ['individual', 'entity'])->default('individual');
-            // legal_name: only required when account_type = entity
             $table->string('legal_name')->nullable();
             $table->string('email', 191)->unique();
             $table->string('password');

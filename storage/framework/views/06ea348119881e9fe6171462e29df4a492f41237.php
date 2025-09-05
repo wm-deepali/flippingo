@@ -2788,7 +2788,7 @@
         <?php endforeach; $__env->popLoop(); $loop = $__env->getLastLoop(); ?>
 
         <div class="view-more-button">
-          <button class="flippa-btn filled">View All Listings</button>
+          <button href="<?php echo e(Route('listing-list')); ?>" class="flippa-btn filled">View All Listings</button>
         </div>
       </div>
 

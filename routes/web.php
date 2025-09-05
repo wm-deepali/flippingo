@@ -15,7 +15,9 @@ use App\Http\Controllers\Admin\{
     BlogController,
     BlogCategoryController,
     FaqCategoryController,
-    ClientReelController
+    ClientReelController,
+    AccountDeletionRequestController,
+    CustomerController
 };
 
 /*
@@ -153,5 +155,19 @@ Route::group(['middleware' => 'auth'], function () {
         Route::post('blogs/update/{id}', [BlogController::class, 'update'])->name('blog-update');
         Route::resource('blogs', BlogController::class);
         Route::resource('client-reels', ClientReelController::class);
+
+        Route::resource('deletion_reasons', \App\Http\Controllers\Admin\DeletionReasonController::class);
+
+        Route::get('account_deletion_requests', [AccountDeletionRequestController::class, 'index'])
+        ->name('account_deletion_requests.index');
+
+    Route::post('account_deletion_requests/{id}/delete-instant', [AccountDeletionRequestController::class, 'deleteInstant'])
+        ->name('account_deletion_requests.delete_instant');
+        
+    // Customer list
+    Route::get('/customers', [CustomerController::class, 'index'])->name('customers.index');
+    Route::get('/customers/{id}/view', [CustomerController::class, 'view'])->name('customers.view');
+    Route::delete('/customers/{id}', [CustomerController::class, 'destroy'])->name('customers.destroy');
+
     });
 });

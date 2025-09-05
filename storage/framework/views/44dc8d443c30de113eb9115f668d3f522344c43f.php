@@ -165,6 +165,25 @@
             </li>
           </ul>
         </li>
+
+          <li class="dropdown nav-item" data-menu="dropdown">
+          <a class="dropdown-toggle nav-link d-flex align-items-center" href="#" data-toggle="dropdown">
+            <span>Customers & Actions</span>
+          </a>
+          <ul class="dropdown-menu">
+            <li><a class="dropdown-item d-flex align-items-center"
+                href="<?php echo e(route('admin.customers.index')); ?>"><span>Customer List</span></a>
+            </li>
+            <li><a class="dropdown-item d-flex align-items-center"
+                href="<?php echo e(route('admin.deletion_reasons.index')); ?>"><span>Reasons for Account Deletion</span></a>
+            </li>
+            <li><a class="dropdown-item d-flex align-items-center"
+                href="<?php echo e(route('admin.account_deletion_requests.index')); ?>"><span>Account Delete Request</span></a>
+            </li>
+           
+          </ul>
+        </li>
+        
       </ul>
     </div>
   </div>
