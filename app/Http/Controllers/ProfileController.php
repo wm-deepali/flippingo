@@ -3,11 +3,13 @@
 namespace App\Http\Controllers;
 
 use App\Models\AccountDeletionRequest;
+use App\Models\CustomerKyc;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Hash;
 use App\Models\OTP;
 use Mail;
+use Storage;
 
 class ProfileController extends Controller
 {
@@ -15,10 +17,15 @@ class ProfileController extends Controller
     public function profile()
     {
         $customer = Auth::guard('customer')->user(); // logged-in customer
-        $customer->load(['countryname']); // eager load relations
+
+        // Eager load related models
+        $customer->load(['countryname', 'kyc']);
+
+        // dd($customer->toArray());
 
         return view('user.profile', compact('customer'));
     }
+
 
     public function updateProfile(Request $request)
     {
@@ -231,6 +238,71 @@ class ProfileController extends Controller
         return response()->json([
             'success' => true,
             'message' => 'Your account deletion request has been sent to the admin. You have been logged out.'
+        ]);
+    }
+
+    public function updateKyc(Request $request)
+    {
+        $customer = Auth::guard('customer')->user();
+
+        // Validation rules
+        $rules = [
+            'pan_number' => 'nullable|string|max:20',
+            'pan_document' => 'nullable|file|mimes:jpeg,jpg,png,pdf|max:2048',
+            'aadhaar_number' => 'nullable|string|max:20',
+            'aadhaar_front' => 'nullable|file|mimes:jpeg,jpg,png,pdf|max:2048',
+            'aadhaar_back' => 'nullable|file|mimes:jpeg,jpg,png,pdf|max:2048',
+            'gst_number' => 'nullable|string|max:20',
+            'gst_document' => 'nullable|file|mimes:jpeg,jpg,png,pdf|max:2048',
+
+            'personal_id_number' => 'nullable|string|max:50',
+            'personal_id_document' => 'nullable|file|mimes:jpeg,jpg,png,pdf|max:2048',
+            'entity_registration_number' => 'nullable|string|max:50',
+            'entity_registration_document' => 'nullable|file|mimes:jpeg,jpg,png,pdf|max:2048',
+            'tax_registration_number' => 'nullable|string|max:50',
+        ];
+
+        $validated = $request->validate($rules);
+
+        // Find existing KYC or create new
+        $kyc = CustomerKyc::firstOrNew(['customer_id' => $customer->id]);
+
+        // Handle file uploads
+        $fileFields = [
+            'pan_document',
+            'aadhaar_front',
+            'aadhaar_back',
+            'gst_document',
+            'personal_id_document',
+            'entity_registration_document',
+        ];
+
+        foreach ($fileFields as $field) {
+            if ($request->hasFile($field)) {
+                // Delete old file if exists
+                if ($kyc->$field) {
+                    Storage::delete($kyc->$field);
+                }
+                // Store new file
+                $kyc->$field = $request->file($field)->store('kyc_documents');
+            }
+        }
+
+        // Save other KYC data
+        $kyc->pan_number = $validated['pan_number'] ?? $kyc->pan_number;
+        $kyc->aadhaar_number = $validated['aadhaar_number'] ?? $kyc->aadhaar_number;
+        $kyc->gst_number = $validated['gst_number'] ?? $kyc->gst_number;
+
+        $kyc->personal_id_number = $validated['personal_id_number'] ?? $kyc->personal_id_number;
+        $kyc->entity_registration_number = $validated['entity_registration_number'] ?? $kyc->entity_registration_number;
+        $kyc->tax_registration_number = $validated['tax_registration_number'] ?? $kyc->tax_registration_number;
+
+        $kyc->save();
+
+        return response()->json([
+            'success' => true,
+            'message' => 'KYC details updated successfully.',
+            'data' => $kyc
         ]);
     }
 

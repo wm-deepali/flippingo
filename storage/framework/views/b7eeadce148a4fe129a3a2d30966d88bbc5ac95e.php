@@ -45,8 +45,8 @@
         }
 
         /* #my-form {
-                                        height: 100vh;
-                                    } */
+                                                height: 100vh;
+                                            } */
 
         /* Modal button styling */
         .modal-footer .btn {
@@ -296,7 +296,7 @@
                     </div>
 
                     
-                    <div id="ef-styles" class="col-md-3 d-none">
+                    <!-- <div id="ef-styles" class="col-md-3 d-none">
                         <div class="ef-sidebar-outer p-2">
                             <h5>Design</h5>
                             <div id="styles-panel"></div>
@@ -305,7 +305,7 @@
                                 <a href="#" id="expand-styles">Expand All</a>
                             </div>
                         </div>
-                    </div>
+                    </div> -->
                 </div>
 
                 
@@ -360,7 +360,7 @@
             // Hide loader and show UI
             $('#ef-loading').hide();
             $('#ef-widgets, #ef-main, #ef-styles').removeClass('d-none');
- 
+
             // Pre-fill Settings panel
             <?php if(isset($formData) && $formData->builder): ?>
                 let builderSettings = <?php echo json_encode($formData->builder, 15, 512) ?>;
@@ -369,25 +369,45 @@
                 $('#disable-elements').prop('checked', builderSettings.disable_elements || false);
             <?php endif; ?>
 
-          
+
                 // Rebuild from JSON fields if required
                 <?php if(isset($formData) && $formData->fields): ?>
                     let savedFields = <?php echo json_encode($formData->fields, 15, 512) ?>;
-                    
+
+                    const criticalFields = ['product_title', 'mrp', 'discount', 'offered_price'];
+
+
                     $('#my-form').empty();
                     savedFields.forEach(f => {
                         let $fieldElement = $(`<div class="form-group" data-field-id="${f.id}" data-field-type="${f.type}">${getFieldHtml(f.type, f.id)}</div>`);
-                        setFieldData($fieldElement, f.properties || {});
-                        applyConfigToField($fieldElement, f.type, f.properties || {}, f.id);
+
+                        setTimeout(() => {
+                            setFieldData($fieldElement, f.properties || {});
+
+                            // Determine if this field is critical — check id or alias in properties
+                            const isCritical = (f.id && criticalFields.includes(f.id.toLowerCase()))
+                                || (f.properties && f.properties.id && criticalFields.includes(f.properties.id.toLowerCase()));
+
+                            // Pass an extra flag or config object accordingly
+                            let config = {};
+                            if (isCritical) {
+                                config.isCritical = true;
+                                config.id = f.properties.id;
+                            }
+
+                            applyConfigToField($fieldElement, f.type, f.properties || {}, f.id, config);
+                        }, 0);
+
                         $('#my-form').append($fieldElement);
                     });
+
                     updateFieldCountersFromExisting();
                 <?php endif; ?>
 
             updateCodePreview();
 
 
-           
+
 
             // Save/Update handler
             $('#save-form-btn').off('click').on('click', function () {

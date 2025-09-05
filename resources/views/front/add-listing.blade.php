@@ -141,31 +141,36 @@
                     });
             });
         });
+function loadForm(formId) {
+    const container = $('#dynamicFormContainer');
+    if (!formId) {
+        container.html('<p>No form available.</p>');
+        return;
+    }
 
-        function loadForm(formId) {
-            const container = $('#dynamicFormContainer');
-            if (!formId) {
+    container.html('Loading...');
+
+    // Blade will render something like "/forms/"
+    const baseUrl = "{{ route('forms', ['id' => 'FORM_ID']) }}".replace('FORM_ID', formId);
+
+    fetch(baseUrl)
+        .then(response => {
+            if (!response.ok) throw new Error('Network error fetching form.');
+            return response.json(); // make sure your controller returns JSON
+        })
+        .then(data => {
+            if (data.success && data.html.trim()) {
+                container.html(data.html);
+            } else {
                 container.html('<p>No form available.</p>');
-                return;
             }
-            container.html('Loading...');
-            fetch('/forms/' + formId)
-                .then(response => {
-                    if (!response.ok) throw new Error('Network error fetching form.');
-                    return response.json();
-                })
-                .then(data => {
-                    if (data.success && data.html.trim()) {
-                        container.html(data.html);
-                    } else {
-                        container.html('<p>No form available.</p>');
-                    }
-                })
-                .catch(err => {
-                    container.html(`<p class="text-danger">${err.message}</p>`);
-                    console.error(err);
-                });
-        }
+        })
+        .catch(err => {
+            container.html(`<p class="text-danger">${err.message}</p>`);
+            console.error(err);
+        });
+}
+
 
 
     </script>
@@ -186,7 +191,7 @@
 
                 // Wire up Clear button
                 const clearBtn = document.getElementById('clear_signature_field_' + fieldId);
-           =;
+        
                 if (clearBtn) {
                     clearBtn.addEventListener('click', function () {
 

@@ -9,8 +9,8 @@
 
 
     <!-- ================================
-                START BREADCRUMB AREA
-            ================================= -->
+                                START BREADCRUMB AREA
+                            ================================= -->
     <section class="breadcrumb-area bread-bg" style="margin-top: 40px;">
         <div class="overlay"></div>
         <!-- end overlay -->
@@ -35,8 +35,8 @@
     </section>
     <!-- end breadcrumb-area -->
     <!-- ================================
-                END BREADCRUMB AREA
-            ================================= -->
+                                END BREADCRUMB AREA
+                            ================================= -->
     <section class="card-area padding-top-60px padding-bottom-90px">
         <div class="container">
             <div class="card">
@@ -267,6 +267,9 @@
                                     <?php
                                         $fields = json_decode($submission->data, true);
                                         $imageFile = $submission->files->firstWhere('show_on_summary', true); // Assuming relation 'files' loaded
+
+                                        $productTitle = $fields['product_title']['value'] ?? 'No Title';
+                                        $offeredPrice = $fields['offered_price']['value'] ?? '0';
                                         // Filter fields that show on summary and are not image files
                                         $summaryFields = collect($fields)->filter(function ($field) use ($imageFile) {
                                             if (empty($field['show_on_summary'])) {
@@ -291,15 +294,15 @@
                                     </div>
 
                                     <div class="flippa-card-center">
-                                        <div class="flippa-title"><?php echo e($submission->form->category->name ?? 'Category'); ?></div>
+                                        <div class="flippa-title"><?php echo e($productTitle); ?></div>
                                         <div class="flippa-badges">
                                             <span class="flippa-badge blue">Verified Listing</span>
                                             <span class="flippa-icon"><?php echo e($submission->customer->countryname ?? '-'); ?></span>
                                         </div>
                                         <!-- <div class="flippa-description">
-                                                                          <?php echo e($submission->form->description ?? 'No description provided.'); ?>
+                                                                                                          <?php echo e($submission->form->description ?? 'No description provided.'); ?>
 
-                                                                        </div> -->
+                                                                                                        </div> -->
 
                                         <div class="flippa-details">
                                             <?php if($fields): ?>
@@ -319,8 +322,8 @@
 
                                     <div class="flippa-card-right justify-content-between">
                                         <div>
-                                            <!-- <div class="flippa-price-label">Asking Price</div>
-                                                                          <div class="flippa-price"><?php echo e($submission->price ?? ''); ?></div> -->
+                                            <div class="flippa-price-label">Asking Price</div>
+                                            <div class="flippa-price">₹<?php echo e(number_format($offeredPrice)); ?></div>
                                         </div>
                                         <div class="flippa-buttons">
                                             <button class="flippa-btn outline">👁 Watch</button>
@@ -343,6 +346,8 @@
                                             <?php
                                                 $fields = json_decode($submission->data, true);
                                                 $imageFile = $submission->files->firstWhere('show_on_summary', true);
+                                                $productTitle = $fields['product_title']['value'] ?? 'No Title';
+                                                $offeredPrice = $fields['offered_price']['value'] ?? '0';
                                                 $summaryFields = collect($fields)->filter(fn($field) => !empty($field['show_on_summary']));
                                             ?>
 
@@ -362,7 +367,7 @@
                                             </div>
 
                                             <div class="flippa-card-center">
-                                                <div class="flippa-title"><?php echo e($catesgory->name ?? 'Category'); ?></div>
+                                                <div class="flippa-title"><?php echo e($productTitle); ?></div>
                                                 <div class="flippa-badges">
                                                     <span class="flippa-badge blue">Verified Listing</span>
                                                     <span class="flippa-icon"><?php echo e($submission->customer->countryname ?? '-'); ?></span>
@@ -384,7 +389,10 @@
                                             </div>
 
                                             <div class="flippa-card-right justify-content-between">
-                                                <div></div>
+                                                <div>
+                                                    <div class="flippa-price-label">Asking Price</div>
+                                                    <div class="flippa-price">₹<?php echo e(number_format($offeredPrice)); ?></div>
+                                                </div>
                                                 <div class="flippa-buttons">
                                                     <button class="flippa-btn outline">👁 Watch</button>
                                                     <a href="<?php echo e(route('listing-details', ['id' => $submission->id])); ?>">
@@ -410,17 +418,17 @@
         <!-- end container -->
     </section>
     <!-- ================================
-                START CARD AREA
-            ================================= -->
+                                START CARD AREA
+                            ================================= -->
 
     <!-- end card-area -->
     <!-- ================================
-                END CARD AREA
-            ================================= -->
+                                END CARD AREA
+                            ================================= -->
 
     <!-- ================================
-                START SUBSCRIBER AREA
-            ================================= -->
+                                START SUBSCRIBER AREA
+                            ================================= -->
     <section class="subscriber-area mb-n5 position-relative z-index-2">
         <div class="container">
             <div class="subscriber-box d-flex flex-wrap align-items-center justify-content-between bg-dark overflow-hidden">
@@ -447,8 +455,8 @@
     </section>
     <!-- end subscriber-area -->
     <!-- ================================
-                END SUBSCRIBER AREA
-            ================================= -->
+                                END SUBSCRIBER AREA
+                            ================================= -->
 
     <script>
         document.querySelectorAll('.tab-btn').forEach(btn => {

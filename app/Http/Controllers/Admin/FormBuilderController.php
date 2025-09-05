@@ -1394,94 +1394,94 @@ class FormBuilderController extends Controller
                     ]
                 ]
             ],
-            [
-                "name" => "recaptcha",
-                "title" => "recaptcha.title",
-                "fields" => [
-                    "id" => [
-                        "label" => "component.id",
-                        "type" => "input",
-                        "value" => "recaptcha"
-                    ],
-                    "theme" => [
-                        "label" => "component.theme",
-                        "type" => "select",
-                        "value" => [
-                            [
-                                "value" => "light",
-                                "label" => "Light",
-                                "selected" => true
-                            ],
-                            [
-                                "value" => "dark",
-                                "label" => "Dark",
-                                "selected" => false
-                            ]
-                        ]
-                    ],
-                    "type" => [
-                        "label" => "component.type",
-                        "type" => "select",
-                        "value" => [
-                            [
-                                "value" => "image",
-                                "label" => "Image",
-                                "selected" => true
-                            ],
-                            [
-                                "value" => "audio",
-                                "label" => "Audio",
-                                "selected" => false
-                            ]
-                        ],
-                        "advanced" => true
-                    ],
-                    "size" => [
-                        "label" => "component.size",
-                        "type" => "select",
-                        "value" => [
-                            [
-                                "value" => "normal",
-                                "label" => "Normal",
-                                "selected" => true
-                            ],
-                            [
-                                "value" => "compact",
-                                "label" => "Compact",
-                                "selected" => false
-                            ]
-                        ],
-                        "advanced" => true
-                    ],
-                    "containerClass" => [
-                        "label" => "component.containerClass",
-                        "type" => "input",
-                        "value" => "col-12",
-                        "advanced" => true
-                    ]
-                ]
-            ],
-            [
-                "name" => "pagebreak",
-                "title" => "pagebreak.title",
-                "fields" => [
-                    "id" => [
-                        "label" => "component.id",
-                        "type" => "input",
-                        "value" => "pagebreak"
-                    ],
-                    "prev" => [
-                        "label" => "component.prev",
-                        "type" => "input",
-                        "value" => $i18n['previous']
-                    ],
-                    "next" => [
-                        "label" => "component.next",
-                        "type" => "input",
-                        "value" => $i18n['next']
-                    ]
-                ]
-            ],
+            // [
+            //     "name" => "recaptcha",
+            //     "title" => "recaptcha.title",
+            //     "fields" => [
+            //         "id" => [
+            //             "label" => "component.id",
+            //             "type" => "input",
+            //             "value" => "recaptcha"
+            //         ],
+            //         "theme" => [
+            //             "label" => "component.theme",
+            //             "type" => "select",
+            //             "value" => [
+            //                 [
+            //                     "value" => "light",
+            //                     "label" => "Light",
+            //                     "selected" => true
+            //                 ],
+            //                 [
+            //                     "value" => "dark",
+            //                     "label" => "Dark",
+            //                     "selected" => false
+            //                 ]
+            //             ]
+            //         ],
+            //         "type" => [
+            //             "label" => "component.type",
+            //             "type" => "select",
+            //             "value" => [
+            //                 [
+            //                     "value" => "image",
+            //                     "label" => "Image",
+            //                     "selected" => true
+            //                 ],
+            //                 [
+            //                     "value" => "audio",
+            //                     "label" => "Audio",
+            //                     "selected" => false
+            //                 ]
+            //             ],
+            //             "advanced" => true
+            //         ],
+            //         "size" => [
+            //             "label" => "component.size",
+            //             "type" => "select",
+            //             "value" => [
+            //                 [
+            //                     "value" => "normal",
+            //                     "label" => "Normal",
+            //                     "selected" => true
+            //                 ],
+            //                 [
+            //                     "value" => "compact",
+            //                     "label" => "Compact",
+            //                     "selected" => false
+            //                 ]
+            //             ],
+            //             "advanced" => true
+            //         ],
+            //         "containerClass" => [
+            //             "label" => "component.containerClass",
+            //             "type" => "input",
+            //             "value" => "col-12",
+            //             "advanced" => true
+            //         ]
+            //     ]
+            // ],
+            // [
+            //     "name" => "pagebreak",
+            //     "title" => "pagebreak.title",
+            //     "fields" => [
+            //         "id" => [
+            //             "label" => "component.id",
+            //             "type" => "input",
+            //             "value" => "pagebreak"
+            //         ],
+            //         "prev" => [
+            //             "label" => "component.prev",
+            //             "type" => "input",
+            //             "value" => $i18n['previous']
+            //         ],
+            //         "next" => [
+            //             "label" => "component.next",
+            //             "type" => "input",
+            //             "value" => $i18n['next']
+            //         ]
+            //     ]
+            // ],
             [
                 "name" => "spacer",
                 "title" => "spacer.title",

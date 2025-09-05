@@ -18,6 +18,12 @@
         border: 1px solid #ccc;
         display: block;
     }
+
+    #kycForm {
+        display: grid;
+        grid-template-columns: 1fr 1fr;
+        gap: 15px 20px;
+    }
 </style>
 
 <?php $__env->startSection('content'); ?>
@@ -35,12 +41,7 @@
             <!-- Content -->
             <div class="profile-content">
 
-
-
                 <div class="profile-card active" id="personal">
-
-
-
                     <div class="personal-info-card">
                         <h3>Personal Information</h3>
                         <p class="small">Update your personal and business details</p>
@@ -201,7 +202,7 @@
 
                 <div class="profile-card" id="account">
                     <h3>Account Setting</h3>
-                    <p>Yahan se aap password change, email update aur security settings kar sakte ho.</p>
+                    <p>Manage your password, configure your security settings here.</p>
 
                     <div class="account-top-card">
                         <!-- Card 1: Account Info -->
@@ -269,7 +270,138 @@
 
                 <div class="profile-card" id="kyc">
                     <h3>KYC</h3>
-                    <p>Apne KYC documents upload karke verify karen.</p>
+                    <p>Please upload your KYC documents to verify your account.</p>
+
+                    <form id="kycForm" method="POST" action="<?php echo e(route('kyc.update')); ?>" enctype="multipart/form-data">
+                        <?php echo csrf_field(); ?>
+
+                        <?php $isIndian = strtolower($customer->country) === 'india'; ?>
+
+                        <?php if($isIndian): ?>
+                            
+                            <div class="info-group">
+                                <label>PAN Number</label>
+                                <input type="text" name="pan_number"
+                                    value="<?php echo e(old('pan_number', $customer->kyc?->pan_number ?? '')); ?>"
+                                    placeholder="Enter PAN Number" required>
+                            </div>
+
+                            
+                            <div class="info-group">
+                                <label>Aadhaar Number</label>
+                                <input type="text" name="aadhaar_number"
+                                    value="<?php echo e(old('aadhaar_number', $customer->kyc?->aadhaar_number ?? '')); ?>"
+                                    placeholder="Enter Aadhaar Number" required>
+                            </div>
+
+                            
+                            <div class="info-group">
+                                <label>GST Number</label>
+                                <input type="text" name="gst_number"
+                                    value="<?php echo e(old('gst_number', $customer->kyc?->gst_number ?? '')); ?>">
+                            </div>
+
+                            <div class="info-group">
+                                <label>PAN Card Document</label>
+                                <input type="file" id="panDocInput" name="pan_document" accept="image/*,application/pdf">
+                                <?php if($customer->kyc && $customer->kyc->pan_document): ?>
+                                    <img id="panDocPreview" src="<?php echo e(asset('storage/' . $customer->kyc->pan_document)); ?>"
+                                        style="display:block; width:100px; margin-top:5px;">
+                                <?php else: ?>
+                                    <img id="panDocPreview" style="display:none; width:100px; margin-top:5px;">
+                                <?php endif; ?>
+                            </div>
+
+                            <div class="info-group">
+                                <label>Aadhaar Front Document</label>
+                                
+                                <input type="file" id="aadhaarFrontInput" name="aadhaar_front" accept="image/*,application/pdf">
+                                <?php if($customer->kyc && $customer->kyc->aadhaar_front): ?>
+                                    <img id="aadhaarFrontPreview" src="<?php echo e(asset('storage/' . $customer->kyc->aadhaar_front)); ?>"
+                                        style="display:block; width:100px; margin-top:5px;">
+                                <?php else: ?>
+                                    <img id="aadhaarFrontPreview" style="display:none; width:100px; margin-top:5px;">
+                                <?php endif; ?>
+                            </div>
+
+                            <div class="info-group">
+                                <label>Aadhaar Back Document</label>
+                                <input type="file" id="aadhaarBackInput" name="aadhaar_back" accept="image/*,application/pdf">
+                                <?php if($customer->kyc && $customer->kyc->aadhaar_back): ?>
+                                    <img id="aadhaarBackPreview" src="<?php echo e(asset('storage/' . $customer->kyc->aadhaar_back)); ?>"
+                                        style="display:block; width:100px; margin-top:5px;" />
+                                <?php else: ?>
+                                    <img id="aadhaarBackPreview" style="display:none; width:100px; margin-top:5px;" />
+                                <?php endif; ?>
+                            </div>
+
+
+                            <div class="info-group">
+                                <label>GST Certificate</label>
+                                <input type="file" id="gstDocInput" name="gst_document" accept="image/*,application/pdf">
+                                <?php if($customer->kyc && $customer->kyc->gst_document): ?>
+                                    <img id="gstDocPreview" src="<?php echo e(asset('storage/' . $customer->kyc->gst_document)); ?>"
+                                        style="display:block; width:100px; margin-top:5px;" />
+                                <?php else: ?>
+                                    <img id="gstDocPreview" style="display:none; width:100px; margin-top:5px;" />
+                                <?php endif; ?>
+                            </div>
+
+                        <?php else: ?>
+                            
+                            <div class="info-group">
+                                <label>Personal ID Number</label>
+                                <input type="text" name="personal_id_number"
+                                    value="<?php echo e(old('personal_id_number', $customer->kyc?->personal_id_number ?? '')); ?>">
+                            </div>
+                            
+                            <div class="info-group">
+                                <label>Entity Registration Number</label>
+                                <input type="text" name="entity_registration_number"
+                                    value="<?php echo e(old('entity_registration_number', $customer->kyc?->entity_registration_number ?? '')); ?>">
+                            </div>
+
+                            
+                            <div class="info-group">
+                                <label>Tax Registration Number</label>
+                                <input type="text" name="tax_registration_number"
+                                    value="<?php echo e(old('tax_registration_number', $customer->kyc?->tax_registration_number ?? '')); ?>">
+                            </div>
+
+                            <div class="info-group">
+                                <label>Govt. ID Document</label>
+                                <input type="file" id="personalIdInput" name="personal_id_document"
+                                    accept="image/*,application/pdf">
+                                <?php if($customer->kyc && $customer->kyc->personal_id_document): ?>
+                                    <img id="personalIdPreview" src="<?php echo e(asset('storage/' . $customer->kyc->personal_id_document)); ?>"
+                                        style="display:block; width:100px; margin-top:5px;" />
+                                <?php else: ?>
+                                    <img id="personalIdPreview" style="display:none; width:100px; margin-top:5px;" />
+                                <?php endif; ?>
+                            </div>
+
+                            <div class="info-group">
+                                <label>Entity Registration Certificate</label>
+                                <input type="file" id="entityRegInput" name="entity_registration_document"
+                                    accept="image/*,application/pdf">
+                                <?php if($customer->kyc && $customer->kyc->entity_registration_document): ?>
+                                    <img id="entityRegPreview"
+                                        src="<?php echo e(asset('storage/' . $customer->kyc->entity_registration_document)); ?>"
+                                        style="display:block; width:100px; margin-top:5px;" />
+                                <?php else: ?>
+                                    <img id="entityRegPreview" style="display:none; width:100px; margin-top:5px;" />
+                                <?php endif; ?>
+                            </div>
+
+
+                        <?php endif; ?>
+
+                        <div class="personal-info-actions">
+                            <button class="btn-cancel" type="reset">Cancel</button>
+                            <button class="btn-save" type="submit">Save KYC</button>
+                        </div>
+                    </form>
+
                 </div>
             </div>
         </div>
@@ -286,16 +418,7 @@
 
 <?php $__env->startPush('scripts'); ?>
     <script>
-        document.getElementById('profilePicInput').addEventListener('change', function (event) {
-            const [file] = event.target.files;
-            if (file) {
-                document.querySelector('.profile-pic-preview').src = URL.createObjectURL(file);
-            }
-        });
-    </script>
 
-
-    <script>
         const tabs = document.querySelectorAll(".profile-tab");
         const cards = document.querySelectorAll(".profile-card");
 
@@ -313,16 +436,45 @@
             });
         });
 
-        function previewImage(event) {
-            const file = event.target.files[0];
-            if (file) {
-                const reader = new FileReader();
-                reader.onload = function (e) {
-                    document.getElementById("profileImage").src = e.target.result;
-                };
-                reader.readAsDataURL(file);
-            }
+
+
+        // Indian KYC
+        previewFile('panDocInput', 'panDocPreview');
+        previewFile('aadhaarFrontInput', 'aadhaarFrontPreview');
+        previewFile('aadhaarBackInput', 'aadhaarBackPreview');
+        previewFile('gstDocInput', 'gstDocPreview');
+
+        // Non-Indian KYC
+        previewFile('personalIdInput', 'personalIdPreview');
+        previewFile('entityRegInput', 'entityRegPreview');
+
+        // Live preview for KYC documents
+        function previewFile(inputId, imgId) {
+            const inputEl = document.getElementById(inputId);
+            const imgEl = document.getElementById(imgId);
+
+            if (!inputEl || !imgEl) return; // exit if either element doesn't exist
+
+            inputEl.addEventListener('change', function (event) {
+                const [file] = event.target.files;
+                if (file) {
+                    if (file.type.startsWith('image/')) {
+                        imgEl.src = URL.createObjectURL(file);
+                        imgEl.style.display = 'block';
+                    } else {
+                        imgEl.style.display = 'none';
+                    }
+                }
+            });
         }
+
+
+        document.getElementById('profilePicInput').addEventListener('change', function (event) {
+            const [file] = event.target.files;
+            if (file) {
+                document.querySelector('.profile-pic-preview').src = URL.createObjectURL(file);
+            }
+        });
 
 
         function changeField(type) {
@@ -675,6 +827,64 @@
                                 });
                             }
                         });
+                    }
+                });
+            });
+
+            $('#kycForm').on('submit', function (e) {
+                e.preventDefault();
+
+                let formData = new FormData(this);
+
+                $.ajax({
+                    url: $(this).attr('action'),
+                    type: 'POST',
+                    data: formData,
+                    processData: false,
+                    contentType: false,
+                    beforeSend: function () {
+                        Swal.fire({
+                            title: 'Uploading KYC...',
+                            text: 'Please wait while we verify your documents.',
+                            allowOutsideClick: false,
+                            didOpen: () => Swal.showLoading()
+                        });
+                    },
+                    success: function (response) {
+                        Swal.fire({
+                            icon: 'success',
+                            title: 'KYC Submitted!',
+                            text: response.message || 'Your KYC documents have been submitted successfully.',
+                            confirmButtonColor: '#3085d6'
+                        }).then(() => {
+                            // Optional: reload page or reset form
+                            // location.reload();
+                            $('#kycForm')[0].reset();
+                        });
+                    },
+                    error: function (xhr) {
+                        Swal.close(); // close loading
+                        if (xhr.status === 422) {
+                            let errors = xhr.responseJSON.errors;
+                            let errorMsg = '';
+                            $.each(errors, function (key, value) {
+                                errorMsg += value[0] + "\n";
+                            });
+
+                            Swal.fire({
+                                icon: 'error',
+                                title: 'Validation Error',
+                                text: errorMsg,
+                                confirmButtonColor: '#d33'
+                            });
+                        } else {
+                            Swal.fire({
+                                icon: 'error',
+                                title: 'Oops...',
+                                text: xhr.responseJSON?.message || 'Something went wrong while submitting your KYC!',
+                                confirmButtonColor: '#d33'
+                            });
+                        }
                     }
                 });
             });

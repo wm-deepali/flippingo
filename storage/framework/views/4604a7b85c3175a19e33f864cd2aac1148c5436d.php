@@ -188,7 +188,7 @@
 
                 // Wire up Clear button
                 const clearBtn = document.getElementById('clear_signature_field_' + fieldId);
-           =;
+        
                 if (clearBtn) {
                     clearBtn.addEventListener('click', function () {
 

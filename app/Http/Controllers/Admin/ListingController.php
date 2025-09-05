@@ -184,21 +184,21 @@ class ListingController extends Controller
     {
         $id = $request->get('id');
 
-        // Fetch submission with relations
-        $submission = FormSubmission::with(['form.category', 'customer', 'files'])->findOrFail($id);
+        // Fetch submission with relations, including wallet via customer.wallet
+        $submission = FormSubmission::with(['form.category', 'customer.wallet', 'files'])->findOrFail($id);
 
-        // Fetch the FormData record for the related form to get layout and fields
+        // Fetch FormData for layout and fields
         $formData = \App\Models\FormData::where('form_id', $submission->form_id)->first();
 
-        // Decode layout JSON to array, or set as empty array if missing
         $layout = $formData && !empty($formData->field_layout) ? $formData->field_layout : [];
-
-        // Decode fields JSON to array, or set as empty array if missing
         $fields = $formData && !empty($formData->fields) ? $formData->fields : [];
-        // dd($fields);
-        // Pass submission, layout, and fields to the view
-        return view('front.listing-details', compact('submission', 'layout', 'fields'));
+
+        // Pass wallet balance separately if needed
+        $walletBalance = optional($submission->customer->wallet)->balance ?? 0;
+
+        return view('front.listing-details', compact('submission', 'layout', 'fields', 'walletBalance'));
     }
+
 
 
 

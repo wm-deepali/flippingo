@@ -45,8 +45,8 @@
     }
 
     /* #my-form {
-            height: 100vh;
-            } */
+                      height: 100vh;
+                      } */
 
     /* Modal button styling */
     .modal-footer .btn {
@@ -262,18 +262,17 @@
           </div>
 
           <!-- Right Sidebar: Styles -->
-          <div id="ef-styles" class="col-md-3 d-none">
+          <!-- <div id="ef-styles" class="col-md-3 d-none">
             <div class="ef-sidebar-outer p-2">
               <h5>Design</h5>
               <div id="styles-panel">
-                <!-- Style customization options -->
               </div>
               <div class="mt-2">
                 <a href="#" id="collapse-styles">Collapse All</a> |
                 <a href="#" id="expand-styles">Expand All</a>
               </div>
             </div>
-          </div>
+          </div> -->
 
         </div>
 
@@ -332,50 +331,114 @@
       });
     @endif
 
-    // Helper: add a new field to canvas using FIELD_CONFIGS + configData
-    function addFieldFromConfig(type, configData) {
+
+    function addFieldFromConfig(type, config = {}) {
+      // Generate ID
       const fieldId = generateSimpleFieldId(type);
 
+      // Generate HTML for the field
       const fieldHtml = getFieldHtml(type, fieldId);
-      const $el = $(`<div class="form-group" data-field-id="${fieldId}" data-field-type="${type}">${fieldHtml}</div>`);
 
-      // Merge defaults from FIELD_CONFIGS with backend-provided values
-      const defaultsConfig = (window.FIELD_CONFIGS || {})[type] || {};
-      let data = {};
+      // Create outer field container with required attributes
+      const $field = $(`<div class="form-group" data-field-id="${fieldId}" data-field-type="${type}" draggable="true">${fieldHtml}</div>`);
 
-      Object.entries(defaultsConfig).forEach(([k, v]) => {
-        if (k === 'id') return; // don't override ID with default
-        if (v.type === 'select') data[k] = getSelectedOptionValue(v.value);
-        else data[k] = v.value;
-      });
+      // Merge defaults from FIELD_CONFIGS and passed config
+      const defaults = window.FIELD_CONFIGS?.[type] || {};
+      const data = {};
 
-      // Override with backend initForm values
-      // Override with backend initForm values
-      if (configData) {
-        Object.keys(configData).forEach(k => {
-          let val;
-
-          if (
-            configData[k] &&
-            Array.isArray(configData[k].value) // select field values come as array of options
-          ) {
-            val = getSelectedOptionValue(configData[k].value); // helper to extract selected
-          } else if (configData[k] && configData[k].value !== undefined) {
-            val = configData[k].value;
-          } else {
-            val = configData[k];
-          }
-
-          data[k] = val;
-        });
+      // Get default values (skip 'id' key)
+      for (const [key, fieldConfig] of Object.entries(defaults)) {
+        if (key === 'id') continue;
+        if (fieldConfig.type === 'select') {
+          data[key] = getSelectedOptionValue(fieldConfig.value);
+        } else if (fieldConfig.value !== undefined) {
+          data[key] = fieldConfig.value;
+        }
       }
 
-      setFieldData($el, data);
-      applyConfigToField($el, type, data);
-      $('#my-form').append($el);
+      // Override with provided config values
+      for (const [key, val] of Object.entries(config)) {
+        if (val && val.value !== undefined) {
+          if (Array.isArray(val.value)) {
+            data[key] = getSelectedOptionValue(val.value);
+          } else {
+            data[key] = val.value;
+          }
+        } else {
+          data[key] = val;
+        }
+      }
+
+
+      // Special: For essential fields, mark as non-deletable and disable deletion and dragging
+      const nonDeletableFields = ['title', 'product_title', 'mrp', 'discount', 'offered_price'];
+      // console.log(config, 'config');
+
+      const configId = (config.id && config.id.value) || (config.alias && config.alias.value) || '';
+      if (nonDeletableFields.includes(String(configId).toLowerCase())) {
+        $field.attr('data-non-deletable', 'true');
+        $field.addClass('non-deletable-field');
+        // Remove or disable delete button (adjust selector accordingly)
+        $field.find('.remove-field-btn').remove();
+        // Disable drag
+        $field.removeAttr('draggable');
+      }
+
+      // Save the config data for later use
+      setFieldData($field, data);
+
+      // Apply config to UI elements (labels, inputs, etc)
+      applyConfigToField($field, type, data, fieldId, config);
+
+      // Append field to form canvas
+      $('#my-form').append($field);
     }
 
-  
+
+    // Helper: add a new field to canvas using FIELD_CONFIGS + configData
+    // function addFieldFromConfig(type, configData) {
+    //   const fieldId = generateSimpleFieldId(type);
+
+    //   const fieldHtml = getFieldHtml(type, fieldId);
+    //   const $el = $(`<div class="form-group" data-field-id="${fieldId}" data-field-type="${type}">${fieldHtml}</div>`);
+
+    //   // Merge defaults from FIELD_CONFIGS with backend-provided values
+    //   const defaultsConfig = (window.FIELD_CONFIGS || {})[type] || {};
+    //   let data = {};
+
+    //   Object.entries(defaultsConfig).forEach(([k, v]) => {
+    //     if (k === 'id') return; // don't override ID with default
+    //     if (v.type === 'select') data[k] = getSelectedOptionValue(v.value);
+    //     else data[k] = v.value;
+    //   });
+
+    //   // Override with backend initForm values
+    //   // Override with backend initForm values
+    //   if (configData) {
+    //     Object.keys(configData).forEach(k => {
+    //       let val;
+
+    //       if (
+    //         configData[k] &&
+    //         Array.isArray(configData[k].value) // select field values come as array of options
+    //       ) {
+    //         val = getSelectedOptionValue(configData[k].value); // helper to extract selected
+    //       } else if (configData[k] && configData[k].value !== undefined) {
+    //         val = configData[k].value;
+    //       } else {
+    //         val = configData[k];
+    //       }
+
+    //       data[k] = val;
+    //     });
+    //   }
+
+    //   setFieldData($el, data);
+    //   applyConfigToField($el, type, data);
+    //   $('#my-form').append($el);
+    // }
+
+
 
     $('#save-form-btn').on('click', function () {
       const $btn = $(this);

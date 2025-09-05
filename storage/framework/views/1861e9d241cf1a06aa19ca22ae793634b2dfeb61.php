@@ -283,8 +283,7 @@
                                     </span>
                                 </a>
 
-                                <a class="dropdown-item d-flex align-items-center" href="<?php echo e(Route('account-logout')); ?>"
-                                    onclick="event.preventDefault(); document.getElementById('logout-form').submit();">
+                                <a class="dropdown-item d-flex align-items-center" href="<?php echo e(Route('account-logout')); ?>">
                                     <i data-feather="log-out" class="svg-icon mr-2" style="width: 40px;height: 40px;display: flex;justify-content: center;align-items: center;
                        border-radius: 50%;background-color: rgba(160,23,5,0.116);font-size: 20px;padding: 7px;"></i>
                                     <span class="d-flex justify-content-center flex-column" style="color: red;">

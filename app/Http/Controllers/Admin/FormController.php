@@ -58,16 +58,26 @@ class FormController extends Controller
      */
     public function create()
     {
+        // Fetch categories for select dropdown
+        $categories = Category::all();
 
-        // Fetch categories, for example: ID and Name
-        $categories = Category::all(); // or use pluck('name', 'id') if you want an array
-
+        // Localization strings
         $i18n = [
             'untitledForm' => __('Untitled Form'),
             'thisIsMyForm' => __('This is my form. Please fill it out. Thanks!'),
+            'heading' => __('Heading Text Here'),
+            'paragraphText' => __('Please enter your details below.'),
+            'textField' => __('Text Field'),
+            'numberField' => __('Number Field'),
+            'productTitle' => __('Product Title'),
+            'mrp' => __('MRP'),
+            'discount' => __('Discount'),
+            'offeredPrice' => __('Offered Price'),
         ];
 
+        // Default fields to inject into form builder canvas
         $defaultForm = [
+            'init' => true,   // optional flag if needed
             'initForm' => [
                 [
                     'name' => 'heading',
@@ -75,12 +85,12 @@ class FormController extends Controller
                         'id' => [
                             'label' => 'component.id',
                             'type' => 'input',
-                            'value' => 'heading_0'
+                            'value' => 'heading_0',
                         ],
                         'text' => [
                             'label' => 'component.text',
                             'type' => 'input',
-                            'value' => $i18n['untitledForm']
+                            'value' => $i18n['untitledForm'],
                         ],
                         'type' => [
                             'label' => 'component.type',
@@ -89,24 +99,19 @@ class FormController extends Controller
                                 ['value' => 'h1', 'label' => 'H1', 'selected' => true],
                                 ['value' => 'h2', 'label' => 'H2', 'selected' => false],
                                 ['value' => 'h3', 'label' => 'H3', 'selected' => false],
-                                ['value' => 'h4', 'label' => 'H4', 'selected' => false],
-                                ['value' => 'h5', 'label' => 'H5', 'selected' => false],
-                                ['value' => 'h6', 'label' => 'H6', 'selected' => false],
-                            ]
+                            ],
                         ],
                         'cssClass' => [
                             'label' => 'component.cssClass',
                             'type' => 'input',
                             'value' => '',
-                            'advanced' => true
                         ],
                         'containerClass' => [
                             'label' => 'component.containerClass',
                             'type' => 'input',
-                            'value' => 'col-md-12',
-                            'advanced' => true
-                        ]
-                    ]
+                            'value' => 'col-12',
+                        ],
+                    ],
                 ],
                 [
                     'name' => 'paragraph',
@@ -114,31 +119,97 @@ class FormController extends Controller
                         'id' => [
                             'label' => 'component.id',
                             'type' => 'input',
-                            'value' => 'paragraph_0'
+                            'value' => 'paragraph_0',
                         ],
                         'text' => [
                             'label' => 'component.text',
                             'type' => 'textarea',
-                            'value' => $i18n['thisIsMyForm']
+                            'value' => $i18n['thisIsMyForm'],
                         ],
                         'cssClass' => [
                             'label' => 'component.cssClass',
                             'type' => 'input',
                             'value' => '',
-                            'advanced' => true
                         ],
                         'containerClass' => [
                             'label' => 'component.containerClass',
                             'type' => 'input',
-                            'value' => 'col-md-12',
-                            'advanced' => true
-                        ]
-                    ]
-                ]
-            ]
+                            'value' => 'col-12',
+                        ],
+                    ],
+                ],
+                // Product Title Field
+                [
+                    'name' => 'text',
+                    'fields' => [
+                        'id' => ['label' => 'component.id', 'type' => 'input', 'value' => 'product_title'],
+                        'inputType' => [
+                            'label' => 'component.inputType',
+                            'type' => 'select',
+                            'value' => [['value' => 'text', 'label' => 'Text', 'selected' => true]],
+                        ],
+                        'label' => ['label' => 'component.label', 'type' => 'input', 'value' => $i18n['productTitle']],
+                        'placeholder' => ['label' => 'component.placeholder', 'type' => 'input', 'value' => 'Enter product title'],
+                        'cssClass' => ['label' => 'component.cssClass', 'type' => 'input', 'value' => 'form-control'],
+                        'containerClass' => ['label' => 'component.containerClass', 'type' => 'input', 'value' => 'col-12'],
+                    ],
+                    'nonDeletable' => true
+                ],
+                // MRP Field
+                [
+                    'name' => 'number',
+                    'fields' => [
+                        'id' => ['label' => 'component.id', 'type' => 'input', 'value' => 'mrp'],
+                        'inputType' => [
+                            'label' => 'component.inputType',
+                            'type' => 'select',
+                            'value' => [['value' => 'number', 'label' => 'Number', 'selected' => true]],
+                        ],
+                        'label' => ['label' => 'component.label', 'type' => 'input', 'value' => $i18n['mrp']],
+                        'placeholder' => ['label' => 'component.placeholder', 'type' => 'input', 'value' => 'Enter MRP'],
+                        'cssClass' => ['label' => 'component.cssClass', 'type' => 'input', 'value' => 'form-control'],
+                        'containerClass' => ['label' => 'component.containerClass', 'type' => 'input', 'value' => 'col-12'],
+                    ],
+                    'nonDeletable' => true
+                ],
+                // Discount Field
+                [
+                    'name' => 'number',
+                    'fields' => [
+                        'id' => ['label' => 'component.id', 'type' => 'input', 'value' => 'discount'],
+                        'inputType' => [
+                            'label' => 'component.inputType',
+                            'type' => 'select',
+                            'value' => [['value' => 'number', 'label' => 'Number', 'selected' => true]],
+                        ],
+                        'label' => ['label' => 'component.label', 'type' => 'input', 'value' => $i18n['discount']],
+                        'placeholder' => ['label' => 'component.placeholder', 'type' => 'input', 'value' => 'Enter discount'],
+                        'cssClass' => ['label' => 'component.cssClass', 'type' => 'input', 'value' => 'form-control'],
+                        'containerClass' => ['label' => 'component.containerClass', 'type' => 'input', 'value' => 'col-12'],
+                    ],
+                    'nonDeletable' => true
+                ],
+                // Offered Price Field
+                [
+                    'name' => 'number',
+                    'fields' => [
+                        'id' => ['label' => 'component.id', 'type' => 'input', 'value' => 'offered_price'],
+                        'inputType' => [
+                            'label' => 'component.inputType',
+                            'type' => 'select',
+                            'value' => [['value' => 'number', 'label' => 'Number', 'selected' => true]],
+                        ],
+                        'label' => ['label' => 'component.label', 'type' => 'input', 'value' => $i18n['offeredPrice']],
+                        'placeholder' => ['label' => 'component.placeholder', 'type' => 'input', 'value' => 'Enter offered price'],
+                        'cssClass' => ['label' => 'component.cssClass', 'type' => 'input', 'value' => 'form-control'],
+                        'containerClass' => ['label' => 'component.containerClass', 'type' => 'input', 'value' => 'col-12'],
+                    ],
+                    'nonDeletable' => true
+                ],
+            ],
         ];
 
-        return view('admin.form.create', compact('i18n', 'defaultForm', 'categories'));
+        return view('admin.form.create', compact('categories', 'defaultForm', 'i18n'));
     }
 
 

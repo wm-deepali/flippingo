@@ -75,4 +75,26 @@ class Customer extends Authenticatable
         return $this->submissions()->where('published', true)->count();
     }
 
+    public function kyc()
+    {
+        return $this->hasOne(CustomerKyc::class, 'customer_id', 'id');
+    }
+
+    // One-to-One relationship with Wallet
+    public function wallet()
+    {
+        return $this->hasOne(Wallet::class);
+    }
+
+    protected static function booted()
+    {
+        static::created(function ($customer) {
+            $customer->wallet()->create([
+                'balance' => 0,
+                'currency' => 'INR', // optional
+                'status' => 'active'  // optional
+            ]);
+        });
+    }
+
 }

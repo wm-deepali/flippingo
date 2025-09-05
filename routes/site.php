@@ -44,7 +44,7 @@ Route::get('/', [SiteController::class, 'index'])->name('home');
 
 Route::get('/page/{slug}', [PageController::class, 'show'])->name('page.show');
 Route::get('add-listing', [SiteController::class, 'addListing'])->name('add-listing');
-Route::get('/forms/{id}', [FormController::class, 'showFormHtml']);
+Route::get('/forms/{id}', [FormController::class, 'showFormHtml'])->name('forms');
 Route::get('/form-submissions', [ListingController::class, 'apiIndex'])->name('form-submissions');
 Route::post('/send-enquiry', [ListingController::class, 'sendEnquiry']);
 Route::get('/testimonials', [TestimonialController::class, 'publicIndex'])->name('testimonials');
@@ -128,7 +128,7 @@ Route::middleware(['web'])->group(function () {
         Route::get('account/verify/{token}', 'verifyAccount')->name('customer.verify');
         Route::post('/customer-register', 'register')->name('customer.register');
         Route::post('/authenticate', 'authenticate')->name('customer.authenticate');
-        Route::post('/account/restore',  'restoreAccount')->name('customer.restore');
+        Route::post('/account/restore', 'restoreAccount')->name('customer.restore');
 
         Route::post('first/add-details/store', 'storeRequiredDetails')->name('first.details.store');
         Route::get('authentication-forgot-password', 'showForgetPasswordForm')->name('authentication-forgot-password.get');
@@ -150,8 +150,8 @@ Route::middleware(['web'])->group(function () {
             Route::post('/send-otp-both', [ProfileController::class, 'sendOtpBoth'])->name('send.otp.both');
             Route::post('/verify-otp-both', [ProfileController::class, 'verifyOTPBoth'])->name('verify.otp.both');
             Route::post('/Supdate-password', [ProfileController::class, 'updatePassword'])->name('update.password');
-            Route::post('/delete-account', [ProfileController::class, 'deleteAccount'])
-                ->name('delete.account');
+            Route::post('/delete-account', [ProfileController::class, 'deleteAccount'])->name('delete.account');
+            Route::post('/kyc-update', [ProfileController::class, 'updateKyc'])->name('kyc.update');
 
 
             Route::get('/bank-account', function () {

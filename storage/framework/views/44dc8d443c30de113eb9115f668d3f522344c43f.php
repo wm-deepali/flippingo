@@ -108,8 +108,8 @@
                 href="<?php echo e(route('admin.manage-categories.index')); ?>"><span>Categories</span></a></li>
             <li><a class="dropdown-item d-flex align-items-center" href="<?php echo e(route('admin.form.index')); ?>"><span>Form
                   Builder</span></a></li>
-            <li><a class="dropdown-item d-flex align-items-center"
-                href="<?php echo e(route('admin.form-templates.index')); ?>"><span>Templates</span></a></li>
+            <!-- <li><a class="dropdown-item d-flex align-items-center"
+                href="<?php echo e(route('admin.form-templates.index')); ?>"><span>Templates</span></a></li> -->
           </ul>
         </li>
 

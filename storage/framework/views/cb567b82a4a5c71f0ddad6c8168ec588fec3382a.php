@@ -769,6 +769,17 @@
 
         });
 
+
+
+        // Show or hide Delete button based on 'data-non-deletable' attribute
+        if ($field.attr('data-non-deletable') === 'true') {
+            $('#deleteFieldBtn').hide();
+            $('#copyFieldBtn').hide();
+        } else {
+            $('#deleteFieldBtn').show();
+            $('#copyFieldBtn').show();
+        }
+
         $('#fieldEditFields').html(html);
         $('#fieldEditModal').modal('show');
         $('#fieldEditModal').data('editingField', $field);
@@ -849,7 +860,10 @@
         });
     });
 
-    function applyConfigToField($field, fieldType, data, fieldId) {
+    const criticalFields = ['product_title', 'mrp', 'discount', 'offered_price'];
+
+
+    function applyConfigToField($field, fieldType, data, fieldId, config = {}) {
 
         if (data.containerClass && data.containerClass.trim() !== '') {
             $field.attr('class', `form-group ${escapeHtml(data.containerClass)}`.trim());
@@ -917,14 +931,25 @@
         // Early return if no $input and NOT checkbox/radio (because those have no direct input at root)
         if (!$input.length && fieldType !== 'checkbox' && fieldType !== 'radio') return;
 
-        // Construct unique input id and name
-        const inputId = `${fieldId}`;
-        const inputName = `${fieldId}`;
+        // Instead of using fieldType for critical check, use config.id (or alias)
+        const configId = (config.id && config.id.value) || (config.alias && config.alias.value) || config.id || '';
+        let inputId, inputName;
+
+        if (criticalFields.includes(configId.toLowerCase()) || config.isCritical) {
+            // Use fixed ID and name (backend expects these)
+            inputId = configId.toLowerCase();
+            inputName = configId.toLowerCase();
+        } else {
+            // Use dynamic ID for other fields
+            inputId = fieldId;
+            inputName = fieldId;
+        }
 
         $input.attr('id', inputId);
         $input.attr('name', inputName);
 
-        // Set label text and for attribute if label exists
+
+        // Set label text and 'for' attribute accordingly, unchanged
         if ($label.length && typeof data.label === 'string' && data.label.trim() !== '') {
             $label.text(data.label);
             $label.attr('for', inputId);
@@ -1203,680 +1228,7 @@
         }
     }
 
-    // function applyConfigToField($field, fieldType, data, fieldId) {
 
-
-    //     if (data.containerClass && data.containerClass.trim() !== '') {
-    //         $field.attr('class', `form-group ${escapeHtml(data.containerClass)}`.trim());
-    //     }
-
-    //     if (fieldType === 'heading') {
-    //         const level = (data.type || 'h1').toLowerCase();
-    //         const cls = data.cssClass || '';
-    //         const text = data.text || data.label || 'Heading';
-    //         const current = $field.find('h1,h2,h3,h4,h5,h6').first();
-    //         const newTag = `<${level} class="${cls}">${text}</${level}>`;
-    //         if (current.length) current.replaceWith(newTag);
-    //         else $field.prepend(newTag);
-    //         return;
-    //     }
-    //     if (fieldType === 'paragraph') {
-    //         const cls = data.cssClass || '';
-    //         const text = data.text || '';
-    //         const p = $field.find('p').first();
-    //         p.text(text);
-    //         p.attr('class', cls.trim());
-    //         return;
-    //     }
-
-
-    //     const $label = $field.find('label').first();
-    //     const $input = $field.find('input, textarea, select').first();
-
-    //     if (!$input.length) return;
-
-    //     // Construct unique input id and name
-    //     const inputId = `${fieldId}`;
-    //     const inputName = `${fieldId}`;
-
-    //     $input.attr('id', inputId);
-    //     $input.attr('name', inputName);
-
-    //     // Set label text and for attribute if label exists
-    //     if ($label.length && typeof data.label === 'string' && data.label.trim() !== '') {
-    //         $label.text(data.label);
-    //         $label.attr('for', inputId);
-    //         if (data.required) {
-    //             $label.append(' ').append($('<span>').addClass('text-danger').text('*'));
-    //         }
-    //     } else if ($label.length) {
-    //         $label.text('');
-    //         $label.removeAttr('for');
-    //     }
-
-
-    //     if ($label.length && typeof data.labelClass === 'string' && data.labelClass.trim() !== '') {
-    //         $label.attr('class', data.labelClass);
-    //     }
-
-    //     // Placeholder (only if non-empty)
-    //     if (typeof data.placeholder === 'string' && data.placeholder.trim() !== '') {
-    //         $input.attr('placeholder', data.placeholder);
-    //     } else {
-    //         $input.removeAttr('placeholder');
-    //     }
-
-    //     // Predefined value (skip if null/undefined/empty string)
-    //     if (data.predefinedValue != null && data.predefinedValue !== '') {
-    //         if ($input.is('textarea')) {
-    //             $input.text(data.predefinedValue);
-    //         } else {
-    //             $input.val(data.predefinedValue);
-    //         }
-    //     } else {
-    //         if ($input.is('textarea')) {
-    //             $input.text('');
-    //         } else {
-    //             $input.val('');
-    //         }
-    //     }
-
-    //     // Apply CSS classes if present, else default class
-    //     if (typeof data.cssClass === 'string' && data.cssClass.trim() !== '') {
-    //         $input.attr('class', data.cssClass);
-    //     } else {
-    //         // Default fallback for inputs (ensure form-control presence)
-    //         if (!$input.hasClass('form-control')) {
-    //             $input.addClass('form-control');
-    //         }
-    //     }
-
-    //     // Boolean attributes
-    //     if (data.required) {
-    //         $input.attr('required', 'required');
-    //     } else {
-    //         $input.removeAttr('required');
-    //     }
-
-    //     if (data.readOnly) {
-    //         $input.attr('readonly', 'readonly');
-    //     } else {
-    //         $input.removeAttr('readonly');
-    //     }
-
-    //     if (data.disabled) {
-    //         $input.attr('disabled', 'disabled');
-    //     } else {
-    //         $input.removeAttr('disabled');
-    //     }
-
-    //     // Determine input type for attribute conditioning
-    //     let inputType = $input.attr('type');
-    //     if (!inputType) {
-    //         inputType = $input.prop('tagName').toLowerCase();
-    //         // For select and textarea, inputType is their tag
-    //     }
-
-    //     // Handle min, max, step for suitable input types
-    //     const minMaxStepTypes = ['number', 'range', 'date', 'datetime-local', 'time', 'month', 'week'];
-    //     if (minMaxStepTypes.includes(inputType)) {
-    //         if (data.min != null && data.min !== '') {
-    //             $input.attr('min', data.min);
-    //         } else {
-    //             $input.removeAttr('min');
-    //         }
-    //         if (data.max != null && data.max !== '') {
-    //             $input.attr('max', data.max);
-    //         } else {
-    //             $input.removeAttr('max');
-    //         }
-    //         if (data.step != null && data.step !== '') {
-    //             $input.attr('step', data.step);
-    //         } else {
-    //             $input.removeAttr('step');
-    //         }
-    //     } else {
-    //         $input.removeAttr('min').removeAttr('max').removeAttr('step');
-    //     }
-
-    //     // Handle minlength, maxlength, pattern for text & related types
-    //     const lengthPatternTypes = ['text', 'email', 'password', 'textarea', 'tel', 'url', 'search'];
-    //     if (lengthPatternTypes.includes(inputType)) {
-    //         if (data.minlength != null && data.minlength !== '') {
-    //             $input.attr('minlength', data.minlength);
-    //         } else {
-    //             $input.removeAttr('minlength');
-    //         }
-    //         if (data.maxlength != null && data.maxlength !== '') {
-    //             $input.attr('maxlength', data.maxlength);
-    //         } else {
-    //             $input.removeAttr('maxlength');
-    //         }
-    //         if (data.pattern != null && data.pattern !== '') {
-    //             $input.attr('pattern', data.pattern);
-    //         } else {
-    //             $input.removeAttr('pattern');
-    //         }
-    //     } else {
-    //         $input.removeAttr('minlength').removeAttr('maxlength').removeAttr('pattern');
-    //     }
-
-    //     // Handle select options, only if valid non-empty array present
-    //     if (fieldType === 'selectlist' && Array.isArray(data.options) && data.options.length > 0) {
-    //         const $select = $field.find('select').first();
-    //         if ($select.length) {
-    //             $select.empty().append('<option value="">Select an option</option>');
-    //             data.options.forEach(opt => {
-    //                 const selected = typeof opt === 'string' && opt.includes('|selected') ? 'selected' : '';
-    //                 const val = typeof opt === 'string' ? opt.replace('|selected', '') : opt;
-    //                 $select.append(`<option value="${escapeHtml(val)}" ${selected}>${escapeHtml(val)}</option>`);
-    //             });
-    //         }
-    //     }
-
-    //     // Handle checkbox options when any present
-    //     if (fieldType === 'checkbox' && Array.isArray(data.checkboxes) && data.checkboxes.length > 0) {
-    //         const $container = $field.find('.checkbox-options').first();
-    //         if ($container.length) {
-    //             $container.empty();
-    //             data.checkboxes.forEach((opt, idx) => {
-    //                 const selected = typeof opt === 'string' && opt.includes('|selected');
-    //                 const val = typeof opt === 'string' ? opt.replace('|selected', '') : opt;
-    //                 const id = `${fieldId}_checkbox_${idx}`;
-    //                 $container.append(`
-    //                 <div class="form-check">
-    //                     <input class="form-check-input" type="checkbox" id="${escapeHtml(id)}" name="checkboxes[]" value="${escapeHtml(val)}" ${selected ? 'checked' : ''}>
-    //                     <label class="form-check-label" for="${escapeHtml(id)}">${escapeHtml(val)}</label>
-    //                 </div>`);
-    //             });
-    //         }
-    //     }
-
-    //     // Handle radio options when any present
-    //     if (fieldType === 'radio' && Array.isArray(data.radios) && data.radios.length > 0) {
-    //         const $container = $field.find('.radio-options').first();
-    //         if ($container.length) {
-    //             $container.empty();
-    //             data.radios.forEach((opt, idx) => {
-    //                 const selected = typeof opt === 'string' && opt.includes('|selected');
-    //                 const val = typeof opt === 'string' ? opt.replace('|selected', '') : opt;
-    //                 const id = `${fieldId}_radio_${idx}`;
-    //                 $container.append(`
-    //                 <div class="form-check">
-    //                     <input class="form-check-input" type="radio" id="${escapeHtml(id)}" name="radio-group-${fieldId}" value="${escapeHtml(val)}" ${selected ? 'checked' : ''}>
-    //                     <label class="form-check-label" for="${escapeHtml(id)}">${escapeHtml(val)}</label>
-    //                 </div>`);
-    //             });
-    //         }
-    //     }
-
-    //     // Setup for file input attributes if applicable
-    //     if (fieldType === 'file') {
-    //         const $fileInput = $field.find('input[type="file"]').first();
-    //         if ($fileInput.length) {
-    //             if (data.accept && data.accept.trim() !== '') {
-    //                 $fileInput.attr('accept', data.accept);
-    //             } else {
-    //                 $fileInput.removeAttr('accept');
-    //             }
-    //             if (data.multiple === true) {
-    //                 $fileInput.prop('multiple', true);
-    //             } else {
-    //                 $fileInput.prop('multiple', false);
-    //             }
-    //         }
-    //     }
-
-    //     // Setup NPS (Net Promoter Score) component properties if present
-    //     if (fieldType === 'nps') {
-    //         if (typeof data.question === 'string' && data.question.trim() !== '') {
-    //             $field.find('label').first().text(data.question);
-    //         }
-    //         if (typeof data.buttonClass === 'string' && data.buttonClass.trim() !== '') {
-    //             $field.find('label').first().attr('class', data.buttonClass);
-    //         }
-    //         const $range = $field.find('input[type="range"]').first();
-    //         if ($range.length) {
-    //             if (data.min != null && data.min !== '') {
-    //                 $range.attr('min', data.min);
-    //             } else {
-    //                 $range.removeAttr('min');
-    //             }
-    //             if (data.max != null && data.max !== '') {
-    //                 $range.attr('max', data.max);
-    //             } else {
-    //                 $range.removeAttr('max');
-    //             }
-    //         }
-    //         if (data.value != null && data.value !== '') {
-    //             $field.find(`input[value="${data.value}"]`).prop('checked', true);
-    //         }
-    //     }
-
-    //     // Setup matrix question component, if applicable
-    //     if (fieldType === 'matrix') {
-    //         const $table = $field.find('table').first();
-    //         if (!$table.length) return;
-
-    //         $table.attr('id', `matrix_${fieldId}`);
-    //         $table.attr('class', data.tableClass || "table table-striped table-hover");
-    //         $table.attr('data-matrix-type', data.inputType || 'radio');
-
-    //         const $captionLabel = $table.find('caption label').first();
-    //         if ($captionLabel.length) {
-    //             $captionLabel.text(data.label || 'Answer the following');
-    //             if (data.labelClass && data.labelClass.trim() !== '') {
-    //                 $captionLabel.attr('class', data.labelClass);
-    //             }
-    //         }
-
-    //         // Construct the table headings and rows
-    //         let theadHtml = '<tr><th>&nbsp;</th>';
-    //         (data.answers || []).forEach(answer => {
-    //             theadHtml += `<th>${escapeHtml(answer)}</th>`;
-    //         });
-    //         theadHtml += '</tr>';
-    //         $table.find('thead').html(theadHtml);
-
-    //         // Rows for questions and options
-    //         const $tbody = $table.find('tbody').empty();
-    //         (data.questions || []).forEach((question, qIdx) => {
-    //             let rowHtml = `<tr><th><label for="matrix_${fieldId}_${qIdx}">${escapeHtml(question)}</label></th>`;
-    //             (data.answers || []).forEach((answer, aIdx) => {
-    //                 const inputName = `matrix_${fieldId}_${qIdx}`;
-    //                 const inputId = `matrix_${fieldId}_${qIdx}_${aIdx}`;
-    //                 rowHtml += `
-    //                 <td><div class="${data.inputType || 'radio'}">
-    //                     <input class="form-check-input" type="${data.inputType || 'radio'}" id="${escapeHtml(inputId)}" name="${escapeHtml(inputName)}" value="${escapeHtml(answer)}">
-    //                     <label for="${escapeHtml(inputId)}"></label>
-    //                 </div></td>`;
-    //             });
-    //             rowHtml += '</tr>';
-    //             $tbody.append(rowHtml);
-    //         });
-
-    //         // Apply saved values if any
-    //         if (data.savedValues) {
-    //             Object.entries(data.savedValues).forEach(([key, val]) => {
-    //                 $table.find(`input[name="${escapeHtml(key)}"][value="${escapeHtml(val)}"]`).prop('checked', true);
-    //             });
-    //         }
-    //     }
-
-    //     // Button field setup
-    //     if (fieldType === 'button') {
-    //         const $btn = $field.find('button').first();
-    //         if (!$btn.length) return;
-    //         if (typeof data.buttonText === 'string' && data.buttonText.trim() !== '') {
-    //             $btn.text(data.buttonText);
-    //         } else if (typeof data.text === 'string' && data.text.trim() !== '') {
-    //             $btn.text(data.text);
-    //         } else {
-    //             $btn.text('Button');
-    //         }
-    //         if (typeof data.inputType === 'string' && data.inputType.trim() !== '') {
-    //             $btn.attr('type', data.inputType);
-    //         } else if (typeof data.type === 'string' && data.type.trim() !== '') {
-    //             $btn.attr('type', data.type);
-    //         } else {
-    //             $btn.attr('type', 'button');
-    //         }
-    //         if (typeof data.cssClass === 'string' && data.cssClass.trim() !== '') {
-    //             $btn.attr('class', 'btn ' + data.cssClass);
-    //         }
-    //     }
-
-    //     // Signature field setup (label update only)
-    //     if (fieldType === 'signature') {
-    //         if ($label.length && typeof data.label === 'string' && data.label.trim() !== '') {
-    //             $label.text(data.label);
-    //         }
-    //     }
-
-    //     // Page break setup - set button text attributes
-    //     if (fieldType === 'pagebreak') {
-    //         const $pageBreak = $field.find('.page-break').first();
-    //         if (!$pageBreak.length) return;
-    //         if (typeof data.prev === 'string' && data.prev.trim() !== '') {
-    //             $pageBreak.attr('data-button-previous', data.prev);
-    //         }
-    //         if (typeof data.next === 'string' && data.next.trim() !== '') {
-    //             $pageBreak.attr('data-button-next', data.next);
-    //         }
-    //     }
-
-    //     // Spacer setup
-    //     if (fieldType === 'spacer') {
-    //         const $spacer = $field.find('.spacer').first();
-    //         if ($spacer.length && !isNaN(parseFloat(data.height))) {
-    //             $spacer.css('height', `${parseFloat(data.height)}px`);
-    //         }
-    //         if (data.containerClass && data.containerClass.trim() !== '') {
-    //             $field.removeClass().addClass(`form-group ${data.containerClass}`);
-    //         }
-    //     }
-    // }
-
-    // function applyConfigToField($field, fieldType, data, fieldId) {
-    //     // Container class
-    //     if (data.containerClass !== undefined) {
-    //         const base = 'form-group';
-    //         $field.attr('class', `${base} ${escapeHtml(data.containerClass)}`.trim());
-    //     }
-
-    //     // Heading
-    //     if (fieldType === 'heading') {
-    //         const level = (data.type || 'h1').toLowerCase();
-    //         const text = data.text || data.label || 'Heading';
-    //         const cls = data.cssClass || '';
-    //         const current = $field.find('h1,h2,h3,h4,h5,h6').first();
-    //         const newTag = `<${level} class="${escapeHtml(cls)}">${escapeHtml(text)}</${level}>`;
-    //         if (current.length) current.replaceWith(newTag); else $field.prepend(newTag);
-    //         return;
-    //     }
-
-    //     // Paragraph
-    //     if (fieldType === 'paragraph') {
-    //         const text = data.text || '';
-    //         const cls = data.cssClass || '';
-    //         const p = $field.find('p').first();
-    //         p.text(text);
-    //         p.attr('class', `${cls}`.trim());
-    //         return;
-    //     }
-
-    //     // Generic input-based components
-    //     const label = $field.find('label').first();
-    //     const input = $field.find('input, textarea, select').first();
-    //     if (label.length && data.label !== undefined) {
-    //         label.html(''); // Clear existing label content
-    //         label.text(data.label);
-    //         // Add asterisk only if required
-    //         if (data.required) {
-    //             label.append(' ').append($('<span>').addClass('text-danger').text('*'));
-    //         }
-    //     }
-
-    //     if (label.length && data.labelClass !== undefined) label.attr('class', data.labelClass);
-    //     if (input.length && data.placeholder !== undefined) input.attr('placeholder', data.placeholder);
-    //     if (input.length && data.predefinedValue !== undefined) input.val(data.predefinedValue);
-    //     if (input.length && data.cssClass !== undefined) input.attr('class', `form-control ${data.cssClass}`.trim());
-    //     if (data.required) input.attr('required', ''); else input.removeAttr('required');
-    //     if (data.readOnly) input.attr('readonly', ''); else input.removeAttr('readonly');
-    //     if (data.disabled) input.attr('disabled', ''); else input.removeAttr('disabled');
-
-    //     if (input.length && data.min !== undefined) input.attr('min', data.min);
-    //     if (input.length && data.max !== undefined) input.attr('max', data.max);
-    //     if (input.length && data.minlength !== undefined) input.attr('minlength', data.minlength);
-    //     if (input.length && data.maxlength !== undefined) input.attr('maxlength', data.maxlength);
-    //     if (input.length && data.pattern !== undefined) input.attr('pattern', data.pattern);
-
-
-    //     // Handle specific field types
-    //     if (fieldType === 'selectlist') {
-    //         if (data.options && Array.isArray(data.options)) {
-    //             const select = $field.find('select').first();
-    //             if (select.length) {
-    //                 select.empty();
-    //                 select.append('<option value="">Select an option</option>');
-    //                 data.options.forEach((option, index) => {
-    //                     // Handle the "|selected" format
-    //                     let optionText = option;
-    //                     let isSelected = false;
-
-    //                     if (typeof option === 'string' && option.includes('|selected')) {
-    //                         optionText = option.replace('|selected', '');
-    //                         isSelected = true;
-    //                     }
-
-    //                     const optionEl = $(`<option value="${escapeHtml(optionText)}" ${isSelected ? 'selected' : ''}>${escapeHtml(optionText)}</option>`);
-    //                     select.append(optionEl);
-    //                 });
-    //             }
-    //         }
-    //     }
-
-    //     if (fieldType === 'checkbox') {
-    //         if (data.checkboxes && Array.isArray(data.checkboxes)) {
-    //             const checkboxOptions = $field.find('.checkbox-options');
-    //             if (checkboxOptions.length) {
-    //                 checkboxOptions.empty();
-    //                 const fieldId = $field.attr('data-field-id');
-
-    //                 // Display checkbox options on canvas (read-only)
-    //                 data.checkboxes.forEach((option, index) => {
-    //                     // Handle the "|selected" format
-    //                     let optionText = option;
-    //                     let isSelected = false;
-
-    //                     if (typeof option === 'string' && option.includes('|selected')) {
-    //                         optionText = option.replace('|selected', '');
-    //                         isSelected = true;
-    //                     }
-
-    //                     const checkboxId = `${fieldId}_option_${index}`;
-    //                     const checkboxHtml = `
-    //           <div class="form-check">
-    //           <input class="form-check-input" type="checkbox" id="${checkboxId}" name="checkboxes[]" value="${escapeHtml(optionText)}" ${isSelected ? 'checked' : ''}>
-    //           <label class="form-check-label" for="${checkboxId}">${escapeHtml(optionText)}</label>
-    //           </div>
-    //           `;
-    //                     checkboxOptions.append(checkboxHtml);
-    //                 });
-    //             }
-    //         }
-    //     }
-
-    //     if (fieldType === 'radio') {
-    //         if (data.radios && Array.isArray(data.radios)) {
-    //             const radioOptions = $field.find('.radio-options');
-    //             if (radioOptions.length) {
-    //                 radioOptions.empty();
-    //                 const fieldId = $field.attr('data-field-id');
-
-    //                 // Display radio options on canvas (read-only)
-    //                 data.radios.forEach((option, index) => {
-    //                     // Handle the "|selected" format
-    //                     let optionText = option;
-    //                     let isSelected = false;
-
-    //                     if (typeof option === 'string' && option.includes('|selected')) {
-    //                         optionText = option.replace('|selected', '');
-    //                         isSelected = true;
-    //                     }
-
-    //                     const radioId = `${fieldId}_option_${index}`;
-    //                     const radioHtml = `
-    //           <div class="form-check">
-    //           <input class="form-check-input" type="radio" name="radio-group-${fieldId}" id="${radioId}" value="${escapeHtml(optionText)}" ${isSelected ? 'checked' : ''}>
-    //           <label class="form-check-label" for="${radioId}">${escapeHtml(optionText)}</label>
-    //           </div>
-    //           `;
-    //                     radioOptions.append(radioHtml);
-    //                 });
-    //             }
-    //         }
-    //     }
-
-    //     if (fieldType === 'file') {
-    //         if (data.accept !== undefined) {
-    //             const fileInput = $field.find('input[type="file"]').first();
-    //             if (fileInput.length) {
-    //                 fileInput.attr('accept', data.accept);
-    //             }
-    //         }
-    //         if (data.multiple !== undefined) {
-    //             const fileInput = $field.find('input[type="file"]').first();
-    //             if (fileInput.length) {
-    //                 fileInput.prop('multiple', !!data.multiple);
-    //             }
-    //         }
-    //     }
-
-    //     if (fieldType === 'nps') {
-    //         // Update question text
-    //         if (data.question !== undefined) {
-    //             $field.find('label.form-label').text(data.question);
-    //         }
-
-    //         // Update button classes if changed
-    //         if (data.buttonClass !== undefined) {
-    //             $field.find('label.btn').attr('class', data.buttonClass);
-    //         }
-
-    //         if (data.min !== undefined || data.max !== undefined) {
-    //             const rangeInput = $field.find('input[type="range"]').first();
-    //             if (rangeInput.length) {
-    //                 if (data.min !== undefined) rangeInput.attr('min', data.min);
-    //                 if (data.max !== undefined) rangeInput.attr('max', data.max);
-    //             }
-    //         }
-    //         // Set selected radio based on saved value (if any)
-    //         if (data.value) {
-    //             $field.find(`input[type="radio"][value="${data.value}"]`).prop('checked', true);
-    //         }
-
-    //         return;
-    //     }
-
-    //     if (fieldType === 'matrix') {
-    //         let questions = data?.questions || [];
-    //         let answers = data?.answers || [];
-    //         let inputType = data?.inputType || 'radio';
-    //         let tableClass = data?.tableClass || "table table-striped table-hover";
-    //         let labelText = data?.label || "Answer the following questions";
-    //         let containerClass = data?.containerClass || 'col-12';
-
-    //         const $table = $field.find('table');
-    //         if (!$table.length) return;
-
-
-    //         $table.attr('id', `matrix_${fieldId}`);
-    //         $table.attr('class', `table-matrix ${tableClass}`);
-    //         $table.attr('data-matrix-type', inputType);
-
-    //         // Update caption label and class
-    //         const $captionLabel = $table.find('caption > label');
-    //         if ($captionLabel.length) {
-    //             $captionLabel.text(labelText);
-    //             if (data.labelClass) {
-    //                 $captionLabel.attr('class', data.labelClass);
-    //             }
-    //         }
-
-    //         // Build table thead
-    //         let theadHtml = '<tr><th>&nbsp;</th>';
-    //         answers.forEach(answer => {
-    //             theadHtml += `<th class="text-center">${answer}</th>`;
-    //         });
-    //         theadHtml += '</tr>';
-
-    //         $table.find('thead').html(theadHtml);
-
-    //         // Build tbody rows dynamically
-    //         const $tbody = $table.find('tbody');
-    //         $tbody.empty();
-
-    //         questions.forEach((question, qIndex) => {
-    //             let rowHtml = `<tr><th><label for="matrix_${fieldId}_${qIndex}">${question}</label></th>`;
-
-    //             answers.forEach((answer, aIndex) => {
-    //                 const inputName = `matrix_${fieldId}_${qIndex}`;
-    //                 const inputId = `matrix_${fieldId}_${qIndex}_${aIndex}`;
-    //                 rowHtml += `
-    //   <td class="text-center matrix_${fieldId}_q_${qIndex} matrix_${fieldId}_a_${aIndex}" title="${answer}">
-    //     <div class="${inputType}">
-    //       <input class="form-check-input" type="${inputType}" 
-    //         name="${inputName}" 
-    //         id="${inputId}" 
-    //         data-matrix-id="matrix_${fieldId}" 
-    //         data-matrix-label="${labelText}"
-    //         data-matrix-question="${question}" 
-    //         data-matrix-answer="${answer}"
-    //         value="${answer}">
-    //       <label for="${inputId}"></label>
-    //     </div>
-    //   </td>`;
-    //             });
-    //             rowHtml += '</tr>';
-    //             $tbody.append(rowHtml);
-    //         });
-
-    //         // If saved answers exist (stored in data, e.g. in 'value' or other fields), set checked inputs accordingly
-    //         if (data.savedValues) {
-    //             Object.entries(data.savedValues).forEach(([qName, ansVal]) => {
-    //                 $table.find(`input[name='${qName}'][value='${ansVal}']`).prop('checked', true);
-    //             });
-    //         }
-
-    //         return;
-    //     }
-
-
-    //     if (fieldType === 'button') {
-    //         var btn = $field.find('button').first();
-    //         if (!btn.length) return;
-
-    //         // Set button text from property (match your config key: buttonText or text)
-    //         if ('buttonText' in data) {
-    //             btn.text(data.buttonText);
-    //         } else if ('text' in data) {
-    //             btn.text(data.text);
-    //         } else {
-    //             btn.text('Button'); // fallback label
-    //         }
-
-    //         // Set button type attribute
-    //         if ('inputType' in data) {
-    //             btn.attr('type', data.inputType);
-    //         } else if ('type' in data) {
-    //             btn.attr('type', data.type);
-    //         } else {
-    //             btn.attr('type', 'button'); // default fallback
-    //         }
-
-    //         // Set extra classes
-    //         if ('cssClass' in data) {
-    //             btn.attr('class', 'btn ' + data.cssClass);
-    //         }
-    //     }
-
-    //     if (fieldType === 'signature') {
-    //         // You may apply label or color changes here if needed
-    //         const label = $field.find('label').first();
-    //         if (data.label) {
-    //             label.text(data.label);
-    //         }
-
-    //         return;
-    //     }
-    //     if (fieldType === 'pagebreak') {
-    //         const $pageBreak = $field.find('.page-break').first();
-
-    //         if (!$pageBreak.length) return;
-
-    //         // Set the prev and next button labels as data attributes, if provided
-    //         if (data.prev !== undefined) {
-    //             $pageBreak.attr('data-button-previous', data.prev);
-    //         }
-    //         if (data.next !== undefined) {
-    //             $pageBreak.attr('data-button-next', data.next);
-    //         }
-    //     }
-
-    //     if (fieldType === 'spacer') {
-    //         const spacerDiv = $field.find('.spacer');
-    //         if (spacerDiv.length && data.height) {
-    //             spacerDiv.css('height', data.height + 'px');
-    //         }
-
-    //         // Also set container class if provided
-    //         if (data.containerClass) {
-    //             $field.removeClass().addClass('form-group ' + data.containerClass);
-    //         }
-    //     }
-
-    // }
 
     // On modal save, update field
     $('#saveFieldEditBtn').on('click', function () {
@@ -2041,26 +1393,30 @@
 
         const fieldType = $field.attr('data-field-type');
         const fieldData = getFieldData($field);
-        const fieldId = generateSimpleFieldId(fieldType);
 
         try {
             // Create a copy of the field
+            const fieldId = generateSimpleFieldId(fieldType); // New unique id for the copy
+
             const $fieldCopy = $field.clone();
             $fieldCopy.attr('data-field-id', fieldId);
 
-            // Update any IDs in the copied field to avoid conflicts
-            $fieldCopy.find('[id]').each(function () {
-                const oldId = $(this).attr('id');
-                if (oldId) {
-                    const newId = oldId + '_' + Date.now();
-                    $(this).attr('id', newId);
-                    // Update corresponding label for attribute if it exists
-                    const label = $fieldCopy.find(`label[for="${oldId}"]`);
-                    if (label.length) {
-                        label.attr('for', newId);
-                    }
+            // Update all element IDs inside the copy to follow this new fieldId pattern
+            $fieldCopy.find('[id]').each(function (index) {
+                const $el = $(this);
+                // Create a new ID based on the new fieldId plus index to keep uniqueness and consistency
+                const newId = `${fieldId}`;
+                const oldId = $el.attr('id');
+
+                $el.attr('id', newId);
+
+                // Update matching label's for attribute inside $fieldCopy accordingly
+                const label = $fieldCopy.find(`label[for="${oldId}"]`);
+                if (label.length) {
+                    label.attr('for', newId);
                 }
             });
+
 
             // Set the field data for the copy
             setFieldData($fieldCopy, fieldData);
