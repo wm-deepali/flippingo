@@ -17,7 +17,8 @@ use App\Http\Controllers\Admin\{
     FaqCategoryController,
     ClientReelController,
     AccountDeletionRequestController,
-    CustomerController
+    CustomerController,
+    SettingController
 };
 
 /*
@@ -45,8 +46,8 @@ Route::group(['middleware' => 'auth'], function () {
     Route::get('/profile', [HomeController::class, 'profile'])
         ->name('profile.show');
 
-    Route::get('/settings', [HomeController::class, 'profileSettings'])
-        ->name('profile.setting');
+    Route::get('/account-settings', [HomeController::class, 'profileSettings'])
+        ->name('profile.account-setting');
 
     Route::post('social-form-submission', [HomeController::class, 'socialFormSubmit'])
         ->name('social-form.submit');
@@ -85,6 +86,9 @@ Route::group(['middleware' => 'auth'], function () {
 
         Route::get('/home', [HomeController::class, 'index'])
             ->name('home');
+
+        Route::get('settings', [SettingController::class, 'index'])->name('settings.index');
+        Route::post('settings/update', [SettingController::class, 'update'])->name('settings.update');
 
         // ===== Category route ===== //
         Route::resource('manage-categories', CategoryController::class);
@@ -159,15 +163,15 @@ Route::group(['middleware' => 'auth'], function () {
         Route::resource('deletion_reasons', \App\Http\Controllers\Admin\DeletionReasonController::class);
 
         Route::get('account_deletion_requests', [AccountDeletionRequestController::class, 'index'])
-        ->name('account_deletion_requests.index');
+            ->name('account_deletion_requests.index');
 
-    Route::post('account_deletion_requests/{id}/delete-instant', [AccountDeletionRequestController::class, 'deleteInstant'])
-        ->name('account_deletion_requests.delete_instant');
-        
-    // Customer list
-    Route::get('/customers', [CustomerController::class, 'index'])->name('customers.index');
-    Route::get('/customers/{id}/view', [CustomerController::class, 'view'])->name('customers.view');
-    Route::delete('/customers/{id}', [CustomerController::class, 'destroy'])->name('customers.destroy');
+        Route::post('account_deletion_requests/{id}/delete-instant', [AccountDeletionRequestController::class, 'deleteInstant'])
+            ->name('account_deletion_requests.delete_instant');
+
+        // Customer list
+        Route::get('/customers', [CustomerController::class, 'index'])->name('customers.index');
+        Route::get('/customers/{id}/view', [CustomerController::class, 'view'])->name('customers.view');
+        Route::delete('/customers/{id}', [CustomerController::class, 'destroy'])->name('customers.destroy');
 
     });
 });

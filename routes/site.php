@@ -7,6 +7,7 @@ use App\Http\Controllers\Admin\FormController;
 use App\Http\Controllers\Admin\ListingController;
 use App\Http\Controllers\Admin\PageController;
 use App\Http\Controllers\Admin\TestimonialController;
+use App\Http\Controllers\CheckoutController;
 use App\Http\Controllers\ProfileController;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
@@ -46,15 +47,13 @@ Route::get('/page/{slug}', [PageController::class, 'show'])->name('page.show');
 Route::get('add-listing', [SiteController::class, 'addListing'])->name('add-listing');
 Route::get('/forms/{id}', [FormController::class, 'showFormHtml'])->name('forms');
 Route::get('/form-submissions', [ListingController::class, 'apiIndex'])->name('form-submissions');
-Route::post('/send-enquiry', [ListingController::class, 'sendEnquiry']);
+Route::post('/send-enquiry', [ListingController::class, 'sendEnquiry'])->name('send-enquiry');
 Route::get('/testimonials', [TestimonialController::class, 'publicIndex'])->name('testimonials');
 Route::get('/reels', [ClientReelController::class, 'publicIndex'])->name('reels');
-
 
 Route::post('/listing/store', [ListingController::class, 'store'])->name('listing.store');
 Route::get('listing-details', [ListingController::class, 'apiShow'])->name('listing-details');
 Route::get('listing-list', [SiteController::class, 'FormSubmissionList'])->name('listing-list');
-
 
 Route::get('blogs', [BlogController::class, 'publicIndex'])->name('blogs');
 Route::get('/blog/{slug}', [BlogController::class, 'publicShow'])->name('blogs.show');
@@ -64,6 +63,9 @@ Route::get('/blogs/search', [BlogController::class, 'search'])->name('blogs.sear
 
 Route::get('faq', [FaqController::class, 'publicIndex'])->name('faq');
 Route::get('faq/category/{slug}', [FaqController::class, 'category'])->name('faq.category');
+
+
+Route::get('/checkout', [CheckoutController::class, 'index'])->name('checkout');
 
 
 Route::get('order-tracking', function () {
@@ -143,7 +145,6 @@ Route::middleware(['web'])->group(function () {
         Route::prefix('dashboard')->group(function () {
 
             Route::get('/', [CustomerController::class, 'dashboard'])->name('dashboard.index');
-
             // Profile routes
             Route::get('/profile', [ProfileController::class, 'profile'])->name('dashboard.profile');
             Route::post('/profile/update', [ProfileController::class, 'updateProfile'])->name('dashboard.profile.update');
@@ -205,6 +206,11 @@ Route::middleware(['web'])->group(function () {
                 return view('user.subscriptions');
             })->name('dashboard.subscriptions');
 
+             // Wishlist
+            Route::get('/subscription-plan', function () {
+                return view('user.subscription-plan');
+            })->name('dashboard.subscription-plan');
+
             // Wishlist
             Route::get('/listing', function () {
                 return view('user.listing');
@@ -219,7 +225,6 @@ Route::middleware(['web'])->group(function () {
             })->name('dashboard.analytics');
 
         });
-
 
         Route::get('account-logout', [CustomerController::class, 'logout'])->name('account-logout');
     });

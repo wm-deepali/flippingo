@@ -55,18 +55,7 @@
                   <span class="font-weight-bold">Social</span>
                 </a>
               </li>
-              <li class="nav-item">
-                <a class="nav-link" id="account-pill-notifications" data-toggle="pill" href="#account-vertical-notifications" aria-expanded="false">
-                  <i data-feather="bell" class="font-medium-3 mr-1"></i>
-                  <span class="font-weight-bold">Notifications</span>
-                </a>
-              </li>
-              <li class="nav-item">
-                <a class="nav-link" id="account-pill-activity" data-toggle="pill" href="#account-vertical-activity" aria-expanded="false">
-                  <i data-feather="check-circle" class="font-medium-3 mr-1"></i>
-                  <span class="font-weight-bold">Activity</span>
-                </a>
-              </li>
+            
             </ul>
           </div>
           

@@ -224,4 +224,23 @@
 
 
 <?php $__env->stopSection(); ?>
+
+<?php $__env->startPush('scripts'); ?>
+  <script>
+const cards = document.querySelectorAll(".payment-card");
+const forms = document.querySelectorAll(".form-box");
+
+cards.forEach(card => {
+  card.addEventListener("click", () => {
+    // remove active class
+    cards.forEach(c => c.classList.remove("active"));
+    forms.forEach(f => f.classList.remove("show"));
+
+    // add active class to clicked
+    card.classList.add("active");
+    document.getElementById(card.dataset.tab).classList.add("show");
+  });
+});
+</script>
+<?php $__env->stopPush(); ?>
 <?php echo $__env->make('layouts.user-master', \Illuminate\Support\Arr::except(get_defined_vars(), ['__data', '__path']))->render(); ?><?php /**PATH D:\web-mingo-project\flippingo_admin\resources\views/user/bank-account.blade.php ENDPATH**/ ?>

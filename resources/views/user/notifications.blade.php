@@ -118,7 +118,7 @@
 
 @section('content')
 
-    @include('user.sidebar', ['activeTab' => request('tab', 'buyer')])
+    @include('user.sidebar')
 
     <div class="page-wrapper">
         <div class="notification-section">

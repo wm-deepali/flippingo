@@ -294,49 +294,65 @@
                 <button class="tab-btn" data-tab="refunds">Refunds</button>
             </div>
             <!-- Scrollable Table -->
-            <div class="table-wrapper">
-                <table class="order-table">
-                    <thead>
-                        <tr>
-                            <th>Date & Time</th>
-                            <th>Order ID</th>
-                            <th>Product Detail</th>
-                            <th>Billed Amount</th>
-                            <th>Payment Status</th>
-                            <th>Order Status</th>
-                            <th>Action</th>
-                        </tr>
-                    </thead>
-                    <tbody>
-                        <tr>
-                            <td>04 Sep 2025, 11:30 AM</td>
-                            <td>#ORD12345</td>
-                            <td><span class="product-name">Premium T-Shirt</span></td>
-                            <td>$120</td>
-                            <td>Paid</td>
-                            <td>Delivered</td>
-                            <td class="actions">
-                                <i class="fas fa-eye" title="View Order Detail"></i>
-                                <i class="fas fa-file-invoice" title="View Payment Detail"></i>
-                                <i class="fas fa-undo" title="Request Refund"></i>
-                            </td>
-                        </tr>
-                        <tr>
-                            <td>03 Sep 2025, 05:10 PM</td>
-                            <td>#ORD12344</td>
-                            <td><span class="product-name">Business Mug</span></td>
-                            <td>$45</td>
-                            <td>Pending</td>
-                            <td>Processing</td>
-                            <td class="actions">
-                                <i class="fas fa-eye" title="View Order Detail"></i>
-                                <i class="fas fa-file-invoice" title="View Payment Detail"></i>
-                                <i class="fas fa-undo" title="Request Refund"></i>
-                            </td>
-                        </tr>
-                    </tbody>
-                </table>
+            <div class="tab-content active" id="recent">
+
+                <div class="table-wrapper">
+                    <table class="order-table">
+                        <thead>
+                            <tr>
+                                <th>Date & Time</th>
+                                <th>Order ID</th>
+                                <th>Product Detail</th>
+                                <th>Billed Amount</th>
+                                <th>Payment Status</th>
+                                <th>Order Status</th>
+                                <th>Action</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr>
+                                <td>04 Sep 2025, 11:30 AM</td>
+                                <td>#ORD12345</td>
+                                <td><span class="product-name">Premium T-Shirt</span></td>
+                                <td>$120</td>
+                                <td>Paid</td>
+                                <td>Delivered</td>
+                                <td class="actions">
+                                    <i class="fas fa-eye" title="View Order Detail"></i>
+                                    <i class="fas fa-file-invoice" title="View Payment Detail"></i>
+                                    <i class="fas fa-undo" title="Request Refund"></i>
+                                </td>
+                            </tr>
+                            <tr>
+                                <td>03 Sep 2025, 05:10 PM</td>
+                                <td>#ORD12344</td>
+                                <td><span class="product-name">Business Mug</span></td>
+                                <td>$45</td>
+                                <td>Pending</td>
+                                <td>Processing</td>
+                                <td class="actions">
+                                    <i class="fas fa-eye" title="View Order Detail"></i>
+                                    <i class="fas fa-file-invoice" title="View Payment Detail"></i>
+                                    <i class="fas fa-undo" title="Request Refund"></i>
+                                </td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
             </div>
+
+            <div class="tab-content" id="active">
+                <p>No active orders yet.</p>
+            </div>
+
+            <div class="tab-content" id="cancelled">
+                <p>No cancelled orders.</p>
+            </div>
+
+            <div class="tab-content" id="refunds">
+                <p>No refund requests.</p>
+            </div>
+
         </div>
 
         <!-- Font Awesome -->
@@ -349,18 +365,18 @@
 
 <?php $__env->stopSection(); ?>
 
-<?php $__env->startPush('script'); ?>
-<script>
-    document.querySelectorAll('.tab-btn').forEach(button => {
-  button.addEventListener('click', () => {
-    document.querySelectorAll('.tab-btn').forEach(btn => btn.classList.remove('active'));
-    document.querySelectorAll('.tab-content').forEach(tab => tab.classList.remove('active'));
+<?php $__env->startPush('scripts'); ?>
+    <script>
+        document.querySelectorAll('.tab-btn').forEach(button => {
+            button.addEventListener('click', () => {
+                document.querySelectorAll('.tab-btn').forEach(btn => btn.classList.remove('active'));
+                document.querySelectorAll('.tab-content').forEach(tab => tab.classList.remove('active'));
 
-    button.classList.add('active');
-    document.getElementById(button.dataset.tab).classList.add('active');
-  });
-});
+                button.classList.add('active');
+                document.getElementById(button.dataset.tab).classList.add('active');
+            });
+        });
 
-</script>
+    </script>
 <?php $__env->stopPush(); ?>
 <?php echo $__env->make('layouts.user-master', \Illuminate\Support\Arr::except(get_defined_vars(), ['__data', '__path']))->render(); ?><?php /**PATH D:\web-mingo-project\flippingo_admin\resources\views/user/orders.blade.php ENDPATH**/ ?>

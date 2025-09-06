@@ -110,10 +110,12 @@
                 // Append formId to FormData
                 formData.append('form_id', formId);
 
-                const actionUrl = form.attr('action') || '/listing/store';
+                // const actionUrl = form.attr('action') || '/listing/store';
                 const method = form.attr('method') || 'POST';
+  const Url = "{{ route('listing.store') }}";
 
-                fetch(actionUrl, {
+  
+                fetch(Url, {
                     method: method,
                     headers: {
                         'X-CSRF-TOKEN': '{{ csrf_token() }}',

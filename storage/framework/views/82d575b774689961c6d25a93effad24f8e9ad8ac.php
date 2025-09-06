@@ -7,7 +7,7 @@
 
 
 <?php $__env->startSection('content'); ?>
-    <?php echo $__env->make('user.sidebar', ['activeTab' => request('tab', 'buyer')], \Illuminate\Support\Arr::except(get_defined_vars(), ['__data', '__path']))->render(); ?>
+     <?php echo $__env->make('user.sidebar', \Illuminate\Support\Arr::except(get_defined_vars(), ['__data', '__path']))->render(); ?>
 
     <div class="page-wrapper">
         <div class="second-top-header d-flex justify-content-between">
@@ -546,10 +546,23 @@
 <?php $__env->startPush('scripts'); ?>
 <script>
 document.addEventListener("DOMContentLoaded", function () {
-    console.log('here');
+    // Restore tab from localStorage if available
+    let savedTab = localStorage.getItem("activeDashboardTab");
+    if (savedTab) {
+        let url = new URL(window.location.href);
+        url.searchParams.set('tab', savedTab);
+        window.history.replaceState(null, '', url.toString()); // replace without reload
+    }
+
+    // Add click listeners to tabs
     document.querySelectorAll('.dashboard-tabs .tab-item').forEach(item => {
         item.addEventListener('click', function () {
             let selectedTab = this.getAttribute('data-tab');
+
+            // Save selected tab to localStorage
+            localStorage.setItem("activeDashboardTab", selectedTab);
+
+            // Update URL and reload
             let url = new URL(window.location.href);
             url.searchParams.set('tab', selectedTab);
             window.location.href = url.toString(); 
@@ -558,5 +571,6 @@ document.addEventListener("DOMContentLoaded", function () {
 });
 </script>
 <?php $__env->stopPush(); ?>
+
 
 <?php echo $__env->make('layouts.user-master', \Illuminate\Support\Arr::except(get_defined_vars(), ['__data', '__path']))->render(); ?><?php /**PATH D:\web-mingo-project\flippingo_admin\resources\views/user/dashboard.blade.php ENDPATH**/ ?>

@@ -2,7 +2,10 @@
     "name": "laravel/laravel",
     "type": "project",
     "description": "The Laravel Framework.",
-    "keywords": ["framework", "laravel"],
+    "keywords": [
+        "framework",
+        "laravel"
+    ],
     "license": "MIT",
     "require": {
         "php": "^7.3 || ^8.1 || ^8.2 || ^8.3",
@@ -35,8 +38,9 @@
             "Database\\Factories\\": "database/factories/",
             "Database\\Seeders\\": "database/seeders/"
         },
-        "files" : [
-            "app/Helpers/Common.php"
+        "files": [
+            "app/Helpers/Common.php",
+            "app/Helpers/SettingsHelper.php"
         ]
     },
     "autoload-dev": {

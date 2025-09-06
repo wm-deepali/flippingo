@@ -20041,3 +20041,425 @@ ul.list-style-none li a:hover {
   border-color: #059669;
   box-shadow: 0 0 0 2px #d1fae5;
 }
+.faq-page{
+        width: 93%;
+    margin: auto;
+    margin-top: 30px;
+}
+/* Sidebar */
+.faq-sidebar {
+  border-right: 1px solid #ddd;
+  padding-right: 15px;
+}
+
+.faq-title {
+  font-weight: 600;
+  margin-bottom: 15px;
+}
+
+.faq-category-list {
+  list-style: none;
+  padding: 0;
+  margin: 0;
+}
+
+.faq-category-list li {
+  padding: 10px 15px;
+  margin-bottom: 8px;
+  border-radius: 6px;
+  cursor: pointer;
+  transition: all 0.3s ease;
+}
+
+.faq-category-list li:hover,
+.faq-category-list li.active {
+  background-color: #059669;
+  color: #fff;
+  font-weight: 600;
+}
+
+/* Right Content */
+.faq-category-content {
+  display: none;
+}
+
+.faq-category-content.active {
+  display: block;
+}
+
+.faq-heading {
+  font-weight: 600;
+  margin-bottom: 20px;
+}
+
+/* Accordion */
+.faq-accordion .faq-item {
+  border: 1px solid #e0e0e0;
+  margin-bottom: 10px;
+  border-radius: 8px;
+  overflow: hidden;
+}
+
+.faq-question {
+  padding: 12px 15px;
+  background: #f9f9f9;
+  cursor: pointer;
+  font-weight: 500;
+  transition: background 0.3s ease;
+}
+
+.faq-question:hover {
+  background: #efefef;
+}
+
+.faq-answer {
+  display: none;
+  padding: 12px 15px;
+  background: #fff;
+  color: #555;
+  border-top: 1px solid #eee;
+}
+
+/* Active Question */
+.faq-item.active .faq-answer {
+  display: block;
+}
+/* Sidebar with border */
+/* .faq-sidebar {
+  border: 1px solid #ddd;
+  border-radius: 8px;
+  padding: 15px;
+  background: #fff;
+} */
+
+.faq-category-list li {
+  padding: 10px 15px;
+  margin-bottom: 8px;
+  border-radius: 6px;
+  cursor: pointer;
+  transition: all 0.3s ease;
+}
+
+.faq-category-list li:hover,
+.faq-category-list li.active {
+  background-color: #059669;
+  color: #fff;
+  font-weight: 600;
+}
+
+.raise-ticket{
+     width: 93%;
+    margin: auto;
+    margin-top: 30px;
+}
+.contact-us-page{
+     width: 93%;
+    margin: auto;
+    margin-top: 30px;
+}
+/* .contact-us-page {
+  padding: 40px;
+  font-family: Arial, sans-serif;
+} */
+
+.contact-title {
+  text-align: center;
+  margin-bottom: 30px;
+  font-size: 26px;
+  font-weight: bold;
+  color: #333;
+}
+
+.contact-cards {
+  display: flex;
+  gap: 20px;
+  justify-content: center;
+  flex-wrap: wrap;
+}
+
+.contact-card {
+  flex: 1;
+  min-width: 280px;
+  max-width: 350px;
+  background: #f9fafb;
+  border-radius: 12px;
+  padding: 25px;
+  box-shadow: 0 4px 10px rgba(0,0,0,0.08);
+  transition: transform 0.3s;
+  height: 220px; /* Good height */
+}
+
+.contact-card:hover {
+  transform: translateY(-5px);
+}
+
+/* Pastel Backgrounds */
+.email-card { background: #e0f7fa; }
+.address-card { background: #f3e8ff; }
+.chat-card { background: #e6f4ea; }
+
+.contact-card h3 {
+  font-size: 18px;
+  margin-bottom: 15px;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  color: #111;
+}
+
+.contact-card p {
+  margin: 6px 0;
+  font-size: 14px;
+  color: #444;
+}
+
+/* Chat Button */
+.chat-btn {
+  margin-top: 15px;
+  padding: 10px 15px;
+  background: #059669;
+  color: white;
+  border: none;
+  border-radius: 8px;
+  cursor: pointer;
+  font-size: 14px;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+.chat-btn:hover {
+  background: #047857;
+}
+.subscription{
+     width: 93%;
+    margin: auto;
+    margin-top: 30px;
+}
+.subscription-page {
+  padding: 40px;
+  /* font-family: Arial, sans-serif;
+  text-align: center; */
+}
+
+.subscription-title {
+  font-size: 24px;
+  font-weight: bold;
+  margin-bottom: 30px;
+  color: #333;
+}
+
+.subscription-cards {
+  display: flex;
+  justify-content: center;
+  gap: 20px;
+  flex-wrap: wrap;
+}
+
+.subscription-card {
+  flex: 1;
+  min-width: 49%;
+  /* max-width: 350px; */
+  height: 280px;
+  border-radius: 12px;
+  box-shadow: 0 4px 10px rgba(0,0,0,0.08);
+  transition: transform 0.3s;
+  background: #fff;
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  padding: 25px;
+}
+
+.subscription-card:hover {
+  transform: translateY(-5px);
+}
+
+/* Active Subscription */
+.active-subscription {
+  background: #e6f4ea; /* light green pastel */
+  text-align: left;
+}
+.active-subscription h3 {
+  margin-bottom: 15px;
+  color: #059669;
+}
+.subscription-card-content p{
+    margin-bottom: 5px;
+    padding-left: 30px;
+}
+/* Outline Subscription */
+.outline-subscription {
+  border: 2px dashed #ccc;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  height: 280px;
+}
+
+.subscription-outline-content {
+  text-align: center;
+}
+
+/* Button */
+.subscription-btn {
+  margin-top: 10px;
+  padding: 10px 20px;
+  background: #059669;
+  color: white;
+  border: none;
+  border-radius: 8px;
+  cursor: pointer;
+  font-size: 14px;
+}
+.subscription-btn:hover {
+  background: #047857;
+}
+
+/* Empty Subscription Case */
+.subscription-empty {
+  display: flex;
+  justify-content: center;
+  margin-top: 50px;
+}
+
+/* Modal */
+.subscription-modal-overlay {
+  display: none;
+  position: fixed;
+  top: 0; left: 0;
+  width: 100%; height: 100%;
+  background: rgba(0,0,0,0.5);
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+.subscription-modal-box {
+  background: #fff;
+  width: 400px;
+  padding: 20px;
+  border-radius: 12px;
+  box-shadow: 0 4px 12px rgba(0,0,0,0.2);
+  text-align: center;
+}
+
+.subscription-modal-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  font-weight: bold;
+  margin-bottom: 15px;
+}
+
+.subscription-modal-close {
+  background: none;
+  border: none;
+  font-size: 20px;
+  cursor: pointer;
+}
+
+.subscription-modal-body {
+  font-size: 15px;
+  color: #444;
+}
+
+.subscription-modal-body {
+  padding: 20px;
+}
+
+.packages-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(260px, 1fr));
+  gap: 20px;
+}
+
+.package-card {
+  background: #f9f9ff; /* pastel base */
+  border: 1px solid #e0e0e0;
+  border-radius: 12px;
+  padding: 20px;
+  position: relative;
+  box-shadow: 0 4px 8px rgba(0,0,0,0.05);
+  transition: transform 0.2s ease, box-shadow 0.2s ease;
+}
+
+.package-card:hover {
+  transform: translateY(-5px);
+  box-shadow: 0 6px 14px rgba(0,0,0,0.1);
+}
+
+.package-card h3 {
+  font-size: 18px;
+  margin-bottom: 10px;
+  color: #333;
+}
+
+/* Price styling */
+.package-card .price {
+  font-size: 22px;
+  font-weight: bold;
+  margin-bottom: 15px;
+  color: #444;
+}
+
+/* Features list */
+.package-card ul {
+    min-height: 252px;
+  list-style: none;
+  padding: 0;
+  margin: 0;
+}
+
+.package-card ul li {
+  padding: 10px 0;
+  border-bottom: 1px solid #eee;
+  font-size: 14px;
+  color: #555;
+}
+
+.package-card ul li:last-child {
+  border-bottom: none;
+}
+
+/* Button */
+.subscription-btn {
+  margin-top: 15px;
+  background: #4a6cf7;
+  color: #fff;
+  border: none;
+  padding: 10px 16px;
+  border-radius: 8px;
+  cursor: pointer;
+  font-size: 14px;
+  transition: background 0.2s ease;
+}
+
+.subscription-btn:hover {
+  background: #3653d6;
+}
+
+/* Badge on top */
+.package-card::before {
+  content: attr(data-badge);
+  position: absolute;
+  top: -12px;
+  left: 20px;
+  background: #ff6b6b;
+  color: #fff;
+  font-size: 12px;
+  font-weight: 600;
+  padding: 4px 10px;
+  border-radius: 20px;
+  display: none;
+}
+
+/* Show badge if data-badge is set */
+.package-card[data-badge]:before {
+  display: inline-block;
+}
+
+/* Different background for "popular" */
+.package-card.popular {
+  background: #fff9f0;
+  border: 2px solid #f7a541;
+}

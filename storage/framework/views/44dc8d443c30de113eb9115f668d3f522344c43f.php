@@ -56,14 +56,21 @@
           </span>
         </a>
         <div class="dropdown-menu dropdown-menu-right" aria-labelledby="dropdown-user">
-          <a class="dropdown-item" href="<?php echo e(route('profile.show')); ?>"><i class="mr-50" data-feather="user"></i>
-            Profile</a>
-          <a class="dropdown-item" href="<?php echo e(route('profile.setting')); ?>"><i class="mr-50" data-feather="settings"></i>
-            Settings</a>
-          <a class="dropdown-item" href="<?php echo e(route('logout')); ?>" onclick="event.preventDefault();
-                             document.getElementById('logout-form').submit();"><i class="mr-50"
-              data-feather="power"></i>
-            <?php echo e(__('Logout')); ?>
+          <a class="dropdown-item" href="<?php echo e(route('profile.show')); ?>">
+            <i class="mr-50" data-feather="user"></i> Profile
+          </a>
+
+          <a class="dropdown-item" href="<?php echo e(route('profile.account-setting')); ?>">
+            <i class="mr-50" data-feather="settings"></i> Account Settings
+          </a>
+
+          <a class="dropdown-item" href="<?php echo e(route('admin.settings.index')); ?>">
+            <i class="mr-50" data-feather="sliders"></i> Admin Settings
+          </a>
+
+          <a class="dropdown-item" href="<?php echo e(route('logout')); ?>"
+            onclick="event.preventDefault(); document.getElementById('logout-form').submit();">
+            <i class="mr-50" data-feather="power"></i> <?php echo e(__('Logout')); ?>
 
           </a>
 
@@ -71,6 +78,7 @@
             <?php echo csrf_field(); ?>
           </form>
         </div>
+
       </li>
     </ul>
   </div>
@@ -142,7 +150,8 @@
             <li><a class="dropdown-item d-flex align-items-center"
                 href="<?php echo e(route('admin.testimonials.index')); ?>"><span>Testimonials Content</span></a>
             </li>
-            <li><a class="dropdown-item d-flex align-items-center" href="<?php echo e(route('admin.client-reels.index')); ?>"><span>Client Reels</span></a>
+            <li><a class="dropdown-item d-flex align-items-center"
+                href="<?php echo e(route('admin.client-reels.index')); ?>"><span>Client Reels</span></a>
             </li>
           </ul>
         </li>
@@ -156,17 +165,19 @@
             <li><a class="dropdown-item d-flex align-items-center"
                 href="<?php echo e(route('admin.faq-categories.index')); ?>"><span>FAQ Category</span></a>
             </li>
+            <li><a class="dropdown-item d-flex align-items-center" href="<?php echo e(route('admin.faqs.index')); ?>"><span>Manage
+                  FAQ</span></a>
+            </li>
             <li><a class="dropdown-item d-flex align-items-center"
-                href="<?php echo e(route('admin.faqs.index')); ?>"><span>Manage FAQ</span></a>
+                href="<?php echo e(route('admin.blog-categories.index')); ?>"><span>Blogs Category</span></a>
             </li>
-            <li><a class="dropdown-item d-flex align-items-center" href="<?php echo e(route('admin.blog-categories.index')); ?>"><span>Blogs Category</span></a>
-            </li>
-              <li><a class="dropdown-item d-flex align-items-center" href="<?php echo e(route('admin.blogs.index')); ?>"><span>Manage Blogs</span></a>
+            <li><a class="dropdown-item d-flex align-items-center" href="<?php echo e(route('admin.blogs.index')); ?>"><span>Manage
+                  Blogs</span></a>
             </li>
           </ul>
         </li>
 
-          <li class="dropdown nav-item" data-menu="dropdown">
+        <li class="dropdown nav-item" data-menu="dropdown">
           <a class="dropdown-toggle nav-link d-flex align-items-center" href="#" data-toggle="dropdown">
             <span>Customers & Actions</span>
           </a>
@@ -180,10 +191,10 @@
             <li><a class="dropdown-item d-flex align-items-center"
                 href="<?php echo e(route('admin.account_deletion_requests.index')); ?>"><span>Account Delete Request</span></a>
             </li>
-           
+
           </ul>
         </li>
-        
+
       </ul>
     </div>
   </div>

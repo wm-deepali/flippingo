@@ -96,7 +96,7 @@
 
 @section('content')
 
-    @include('user.sidebar', ['activeTab' => request('tab', 'buyer')])
+    @include('user.sidebar')
 
     <div class="page-wrapper">
         <div class="bank-account">
@@ -223,3 +223,22 @@
 
 
 @endsection
+
+@push('scripts')
+  <script>
+const cards = document.querySelectorAll(".payment-card");
+const forms = document.querySelectorAll(".form-box");
+
+cards.forEach(card => {
+  card.addEventListener("click", () => {
+    // remove active class
+    cards.forEach(c => c.classList.remove("active"));
+    forms.forEach(f => f.classList.remove("show"));
+
+    // add active class to clicked
+    card.classList.add("active");
+    document.getElementById(card.dataset.tab).classList.add("show");
+  });
+});
+</script>
+@endpush
