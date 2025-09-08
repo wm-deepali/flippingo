@@ -261,22 +261,31 @@
     // Optional phrases map, fetched from backend for label translations
     let BUILDER_PHRASES = {};
 
+
+    // Fetch phrases from backend to translate label keys
+    $.getJSON("<?php echo e(route('admin.ajax.builder.phrases')); ?>", function (data) {
+        console.log('BUILDER_PHRASES', data.phrases);
+
+        BUILDER_PHRASES = data.phrases || {};
+        window.BUILDER_PHRASES = BUILDER_PHRASES;
+    });
+
     // fetch component configs
     $.getJSON("<?php echo e(route('admin.ajax.builder.components')); ?>", function (components) {
-        const $fieldsTab = $('#tab-fields');
-        $fieldsTab.empty();
+        const $fieldsWrapper = $('#tab-fields .fields-wrapper');
+        $fieldsWrapper.empty();
 
         components.forEach(function (field) {
             const iconClass = getIconForField(field.name);
-            $fieldsTab.append(`
-            <div class="builder-field-item d-flex align-items-center mb-2 p-2 border rounded bg-white"
-                draggable="true"
-                data-type="${field.name}">
-                <i class="${iconClass} me-2"></i>
-                <span>${field.name}</span>
-            </div>
-        `);
+            const title = humanizeLabelKey(field.title || field.name);
+            $fieldsWrapper.append(`
+  <div class="builder-item col-6 p-2 border rounded" draggable="true" data-type="${field.name}">
+    <i class="${iconClass} me-2"></i>
+    <span>${field.name}</span>
+  </div>
+  `);
         });
+
 
         FIELD_CONFIGS = components.reduce((acc, comp) => {
             acc[comp.name] = comp.fields || {};
@@ -289,16 +298,11 @@
 
 
 
-    // Fetch phrases from backend to translate label keys
-    $.getJSON("<?php echo e(route('admin.ajax.builder.phrases')); ?>", function (phrases) {
-        BUILDER_PHRASES = phrases || {};
-        window.BUILDER_PHRASES = BUILDER_PHRASES;
-    });
 
     // Helper to convert keys like "component.predefinedValue" to "Predefined Value"
     function humanizeLabelKey(key) {
         if (!key) return '';
-        if (BUILDER_PHRASES && BUILDER_PHRASES[key]) return BUILDER_PHRASES[key];
+        if (window.BUILDER_PHRASES && window.BUILDER_PHRASES[key]) return window.BUILDER_PHRASES[key];
         const last = key.includes('.') ? key.split('.').pop() : key;
         if (last.toLowerCase() === 'id') return 'ID / Name';
         const withSpaces = last
@@ -318,10 +322,23 @@
             email: 'fas fa-envelope',
             textarea: 'fas fa-align-justify',
             checkbox: 'fas fa-check-square',
-            radio: 'fas fa-dot-circle'
+            radio: 'fas fa-dot-circle',
+            selectlist: 'fas fa-list-alt',       // Select List
+            hidden: 'fas fa-eye-slash',         // Hidden Field
+            file: 'fas fa-upload',               // File Upload
+            snippet: 'fas fa-code',              // Snippet
+            recaptcha: 'fas fa-shield-alt',      // reCaptcha
+            pagebreak: 'fas fa-file',            // Page Break
+            spacer: 'fas fa-arrows-alt-v',       // Spacer
+            // Net Promoter Score
+            matrix: 'fas fa-th',                 // Matrix Field
+            signature: 'fas fa-pen-nib',         // Signature
+            submit: 'fas fa-check',              // Submit
+            checkboxes: 'fas fa-check-double',   // Checkboxes (if needed!)
         };
-        return icons[type] || 'fas fa-square';
+        return icons[type.toLowerCase()] || '';
     }
+
 
     function generateHTMLCode() {
         const form = document.getElementById('my-form');
@@ -631,12 +648,12 @@
 
 
     // Enhanced drag & drop with visual feedback
-    $(document).on('dragstart', '.builder-field-item', function (e) {
+    $(document).on('dragstart', '.builder-item', function (e) {
         e.originalEvent.dataTransfer.setData('field-type', $(this).data('type'));
         $(this).addClass('dragging');
     });
 
-    $(document).on('dragend', '.builder-field-item', function (e) {
+    $(document).on('dragend', '.builder-item', function (e) {
         $(this).removeClass('dragging');
     });
 
@@ -679,6 +696,9 @@
         return $el.data('fieldData') || {};
     }
 
+    const hiddenKeys = ['cssClass', 'labelClass', 'inputGroupClass', 'append', 'prepend', 'customAttributes', 'alias'];
+
+
     // On field click, open modal (show all fields, visually separate advanced fields)
     $(document).on('click', '[data-field-id]', function (e) {
         if ($(e.target).hasClass('remove-field-btn') || $(e.target).closest('.remove-field-btn').length) return;
@@ -691,8 +711,12 @@
         $('#edit-field-id').val(fieldId);
         let html = '';
         let advancedHtml = '';
+        const isNonDeletable = $field.attr('data-non-deletable') === 'true';
+
         Object.entries(config).forEach(([key, conf]) => {
             if (key === 'id') return; // never show raw id in modal
+            if (hiddenKeys.includes(key)) return; // skip showing in modal
+            if (isNonDeletable && key === 'inputType') return;
             const rawDefault = conf.type === 'select' ? getSelectedOptionValue(conf.value) : conf.value;
             const value = fieldData[key] !== undefined ? fieldData[key] : rawDefault;
 
@@ -928,6 +952,7 @@
         }
 
 
+
         // Early return if no $input and NOT checkbox/radio (because those have no direct input at root)
         if (!$input.length && fieldType !== 'checkbox' && fieldType !== 'radio') return;
 
@@ -970,6 +995,34 @@
             $input.attr('placeholder', data.placeholder);
         } else {
             $input.removeAttr('placeholder');
+        }
+
+
+        // Remove any existing help text element to avoid duplicates
+        $field.find('.help-text, .form-text').remove();
+
+        // Add help text if provided
+        if (data.helpText && data.helpText.trim() !== '') {
+            const helpTextEl = $('<small>').addClass('form-text text-muted help-text').text(data.helpText);
+
+            // Determine placement: default below or 'above'
+            if (data.helpTextPlacement && data.helpTextPlacement.toLowerCase() === 'above') {
+                // Insert help text above input/label
+                if ($field.find('label').length) {
+                    $field.find('label').first().after(helpTextEl);
+                } else {
+                    $field.prepend(helpTextEl);
+                }
+            } else {
+                // Default: insert help text below the input/control
+                const $input = $field.find('input, select, textarea').last();
+                if ($input.length) {
+                    $input.after(helpTextEl);
+                } else {
+                    // Fallback: append to field
+                    $field.append(helpTextEl);
+                }
+            }
         }
 
         // Predefined value (skip if null/undefined/empty string)
@@ -1023,6 +1076,9 @@
             inputType = '';
         }
 
+        if ($input && $input.length && data.inputType) {
+            $input.attr('type', data.inputType);
+        }
 
         // Handle min, max, step for suitable input types
         const minMaxStepTypes = ['number', 'range', 'date', 'datetime-local', 'time', 'month', 'week'];

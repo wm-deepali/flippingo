@@ -26,10 +26,17 @@
       cursor: pointer;
     }
 
-    #tab-fields {
-      max-height: 650px;
-      overflow: hidden scroll;
-      height: 100%;
+    #tab-fields .fields-wrapper {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 10px;
+    }
+
+    #tab-fields .builder-item {
+      flex: 0 0 calc(50% - 10px);
+      box-sizing: border-box;
+      margin-bottom: 10px;
+      text-align: center;
     }
 
     #canvas {
@@ -45,8 +52,8 @@
     }
 
     /* #my-form {
-                      height: 100vh;
-                      } */
+                                                              height: 100vh;
+                                                          } */
 
     /* Modal button styling */
     .modal-footer .btn {
@@ -107,14 +114,6 @@
       page-break-after: always;
     }
 
-    .spacer {
-      background: repeating-linear-gradient(45deg,
-          transparent,
-          transparent 10px,
-          rgba(0, 0, 0, .1) 10px,
-          rgba(0, 0, 0, .1) 20px);
-    }
-
     .form-label {
       font-weight: bold;
     }
@@ -135,6 +134,57 @@
 
     .drag-over-bottom {
       border-bottom: 2px solid #007bff;
+    }
+
+    .steps {
+      display: flex;
+      gap: 10px;
+      margin-bottom: 15px;
+    }
+
+    .step {
+      padding: 5px 10px;
+      background: #f1f1f1;
+      border-radius: 4px;
+      user-select: none;
+    }
+
+    .step.current {
+      background: #0d6efd;
+      color: white;
+      font-weight: bold;
+    }
+
+    .btn-nps {
+      margin: 2px;
+      border-radius: 50%;
+      padding: 10px 15px;
+      width: 38px;
+      height: 38px;
+      text-align: center;
+    }
+
+    .answer-input {
+      padding: 2px;
+    }
+
+    .answer-container table.table {
+      table-layout: fixed;
+      width: 100%;
+    }
+
+
+    /* Show spacer label before the spacer field in builder mode */
+    #canvas .form-group[data-field-type="spacer"] .spacer::before {
+      content: "Spacer";
+      display: inline-block;
+      background-color: #e6e9ed;
+      color: #555;
+      font-size: 10px;
+      padding: 2px 6px;
+      border-radius: 3px;
+      margin-right: 8px;
+      vertical-align: middle;
     }
   </style>
   <?php $__env->startPush('styles'); ?>
@@ -160,10 +210,10 @@
               <!-- Tabs Navigation -->
               <ul class="nav nav-tabs nav-justified">
                 <li class="nav-item">
-                  <a href="#tab-fields" class="nav-link active" data-bs-toggle="tab">Fields</a>
+                  <a href="#tab-settings" class="nav-link active" data-bs-toggle="tab">Settings</a>
                 </li>
                 <li class="nav-item">
-                  <a href="#tab-settings" class="nav-link" data-bs-toggle="tab">Settings</a>
+                  <a href="#tab-fields" class="nav-link" data-bs-toggle="tab">Fields</a>
                 </li>
                 <li class="nav-item">
                   <a href="#tab-code" class="nav-link" data-bs-toggle="tab">Code</a>
@@ -172,11 +222,13 @@
 
               <!-- Tabs Content -->
               <div class="tab-content">
-                <div id="tab-fields" class="tab-pane fade show active card-padding">
-                  <!-- Fields list goes here -->
+                <div id="tab-fields" class="tab-pane fade card-padding">
+                  <div class="fields-wrapper">
+                    <!-- dynamic fields go here -->
+                  </div>
                 </div>
 
-                <div id="tab-settings" class="tab-pane fade card-padding">
+                <div id="tab-settings" class="tab-pane show active fade card-padding">
                   <form id="settings-form">
 
                     <div class="form-group">
@@ -262,17 +314,17 @@
           </div>
 
           <!-- Right Sidebar: Styles -->
-          <div id="ef-styles" class="col-md-3 d-none">
-            <div class="ef-sidebar-outer p-2">
-              <!-- <h5>Design</h5>
-              <div id="styles-panel">
-              </div>
-              <div class="mt-2">
-                <a href="#" id="collapse-styles">Collapse All</a> |
-                <a href="#" id="expand-styles">Expand All</a>
-              </div> -->
-            </div>
-          </div>
+          <!-- <div id="ef-styles" class="col-md-3 d-none">
+                      <div class="ef-sidebar-outer p-2">
+                        <h5>Design</h5>
+                        <div id="styles-panel">
+                        </div>
+                        <div class="mt-2">
+                          <a href="#" id="collapse-styles">Collapse All</a> |
+                          <a href="#" id="expand-styles">Expand All</a>
+                        </div>
+                      </div>
+                    </div> -->
 
         </div>
 

@@ -5,39 +5,171 @@
 
 <?php $__env->stopSection(); ?>
 
+<style>
+    .wishlist-page {
+        width: 93%;
+        margin: auto;
+        margin-top: 30px;
+    }
+
+    .wishlist-card {
+        width: 100%;
+        display: grid;
+        grid-template-columns: 1fr 1fr;
+        gap: 20px;
+        margin-top: 40px;
+        padding-bottom: 50px;
+    }
+
+    .wishlist-product-card {
+        width: 100%;
+        height: 560px;
+        background: white;
+        padding: 10px;
+        border-radius: 10px;
+        box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+    }
+
+    .wishlist-product-card img {
+        width: 100%;
+        height: 270px;
+    }
+
+    .wishlist-budge {
+        position: relative;
+        top: -264px;
+        left: 6px;
+    }
+
+    .budge-active {
+        width: fit-content;
+        padding: 2px 10px;
+        background-color: #0080002b;
+        color: green;
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        border-radius: 4px;
+    }
+
+    .budge-active p {
+        margin: 0;
+    }
+
+    .wishlist-button {
+        width: 100%;
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+
+    }
+
+    .wishlist-button p {
+        width: 50%;
+        margin: 0;
+        padding: 0px 10px;
+        border: 1px solid lightgray;
+        background: #a19f9f33;
+    }
+
+    .wishlist-button .budge-active1 p {
+        width: fit-content;
+        padding: 2px 10px;
+        background-color: #0080002b;
+        color: green;
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        border-radius: 4px;
+    }
+
+    .wishlist-item-card {
+        width: 100%;
+        display: grid;
+        grid-template-columns: 1fr 1fr;
+        gap: 10px;
+        margin-top: 10px;
+    }
+
+    .wishlist-left {
+        width: 100%;
+        height: 60px;
+        background-color: #d3d3d32b;
+        border-radius: 3px;
+        padding: 10px;
+        display: flex;
+        align-items: center;
+        gap: 10px;
+
+    }
+
+    .wishlist-price button {
+        background-color: #000;
+        color: #fff;
+        border: none;
+        border-radius: 3px;
+        padding: 0px 20px;
+    }
+
+    .product-details-hover {
+        padding: 10px;
+        display: block;
+        /* Default visible */
+        transition: opacity 0.3s ease;
+        margin-top: -20px;
+    }
+
+    .wishlist-product-card:hover .product-details-hover {
+        display: none;
+        /* Hide on card hover */
+    }
+
+    .more-info {
+        display: none;
+        padding: 10px;
+        margin-top: -20px;
+        /* position: absolute;
+            bottom: 0;
+            left: 0;
+            width: 100%; */
+        /* background: white;
+            padding: 10px;
+            border-radius: 0 0 10px 10px;
+            box-shadow: 0 -5px 10px rgba(0, 0, 0, 0.1); */
+        text-align: left;
+        z-index: 1;
+        /* Ensure it stays above other content */
+        transition: transform 0.3s ease;
+        transform: translateY(100%);
+    }
+
+    .wishlist-product-card:hover .more-info {
+        display: block;
+        transform: translateY(0);
+    }
+
+    @keyframes  slideUp {
+        from {
+            transform: translateY(100%);
+        }
+
+        to {
+            transform: translateY(0);
+        }
+    }
+</style>
 <?php $__env->startSection('content'); ?>
 
 
     <!-- ================================
-                                START BREADCRUMB AREA
-                            ================================= -->
-    <section class="breadcrumb-area bread-bg" style="margin-top: 40px;">
-        <div class="overlay"></div>
-        <!-- end overlay -->
-        <div class="container">
-            <div class="breadcrumb-content text-center">
-                <h2 class="sec__title text-white mb-3">Listing List</h2>
-                <ul class="bread-list">
-                    <li><a href=<?php echo e(Route('home')); ?>>home</a></li>
-                    <li>listing</li>
-                    <li>listing list</li>
-                </ul>
-            </div>
-            <!-- end breadcrumb-content -->
-        </div>
-        <!-- end container -->
-        <div class="bread-svg">
-            <svg viewBox="0 0 500 150" preserveAspectRatio="none">
-                <path d="M-4.22,89.30 C280.19,26.14 324.21,125.81 511.00,41.94 L500.00,150.00 L0.00,150.00 Z"></path>
-            </svg>
-        </div>
-        <!-- end bread-svg -->
-    </section>
+                                                START BREADCRUMB AREA
+                                            ================================= -->
+
     <!-- end breadcrumb-area -->
     <!-- ================================
-                                END BREADCRUMB AREA
-                            ================================= -->
-    <section class="card-area padding-top-60px padding-bottom-90px">
+                                                END BREADCRUMB AREA
+                                            ================================= -->
+    <section class="card-area " style="padding-top:60px; padding-bottom:90px; margin-top:130px;">
         <div class="container">
             <div class="card">
                 <div class="card-body d-flex flex-wrap align-items-center justify-content-between">
@@ -255,15 +387,16 @@
                             <button class="tab-btn" data-category="<?php echo e($category->slug); ?>"><?php echo e($category->name); ?></button>
                         <?php endforeach; $__env->popLoop(); $loop = $__env->getLastLoop(); ?>
                     </div>
-                    <div class="flippa-card-wrapper" id="submissions-container">
+                    <div class="wishlist-card" id="submissions-container">
 
                         
                         <div class="submission-group" data-group="all">
                             <?php $__currentLoopData = $allSubmissions; $__env->addLoop($__currentLoopData); foreach($__currentLoopData as $submission): $__env->incrementLoopIndices(); $loop = $__env->getLastLoop(); ?>
                                 <?php
                                     $catSlug = $submission->form->category->slug ?? 'uncategorized';
+                                    $catName = $submission->form->category->name ?? '';
                                 ?>
-                                <div class="flippa-card" data-category="<?php echo e($catSlug); ?>">
+                                <div class="wishlist-product-card" data-category="<?php echo e($catSlug); ?>">
                                     <?php
                                         $fields = json_decode($submission->data, true);
                                         $imageFile = $submission->files->firstWhere('show_on_summary', true); // Assuming relation 'files' loaded
@@ -278,68 +411,119 @@
                                             return true;
                                         });
                                       ?>
-                                    <div class="flippa-card-left">
-                                        <div class="flippa-image-wrapper">
-                                            <?php if($imageFile): ?>
-                                                <img src="<?php echo e(asset('storage/' . $imageFile['file_path'])); ?>"
-                                                    alt="<?php echo e($imageFile['label'] ?? 'Image'); ?>"
-                                                    style="height: 230px; object-fit: cover;" />
-                                            <?php else: ?>
-                                                <img src="<?php echo e(asset('assets/images/hero-bg2.jpg')); ?>" alt="Confidential"
-                                                    style="height: 230px;" />
-                                            <?php endif; ?>
-                                            <div class="flippa-overlay">Confidential<br /><span>Sign NDA to view</span></div>
-                                            <div class="flippa-sponsored">Sponsored</div>
+                                    <?php if($imageFile): ?>
+                                        <img
+                                           src="<?php echo e(asset('storage/' . $imageFile['file_path'])); ?>">
+                                    <?php else: ?>
+                                        <img
+                                            src="https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcThez8EsMExS0cJzMTvAM6OlRj9d9SecStl6g&s">
+                                    <?php endif; ?>
+                                    <img
+                                        src="https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcThez8EsMExS0cJzMTvAM6OlRj9d9SecStl6g&s">
+                                    <div class="wishlist-budge">
+                                        <div class="d-flex justify-content-between align-items-center">
+                                            <div class="budge-active">
+                                                <p><i class="fa-solid fa-circle-check"></i> Active</p>
+                                            </div>
+                                            <h4 class="m-0" style="font-size: 24px;padding-right: 15px;"><i
+                                                    class="fa-regular fa-heart"></i></h4>
+
                                         </div>
+
                                     </div>
+                                    <div class="product-details-hover">
 
-                                    <div class="flippa-card-center">
-                                        <div class="flippa-title"><?php echo e($productTitle); ?></div>
-                                        <div class="flippa-badges">
-                                            <span class="flippa-badge blue">Verified Listing</span>
-                                            <span class="flippa-icon"><?php echo e($submission->customer->countryname ?? '-'); ?></span>
+
+                                        <div class="wishlist-button">
+                                            <p><?php echo e($catName); ?></p>
+                                            <div class="budge-active1">
+                                                <p><i class="fa-solid fa-circle-check"></i> Verified</p>
+                                            </div>
+
                                         </div>
-                                        <!-- <div class="flippa-description">
-                                                                                                          <?php echo e($submission->form->description ?? 'No description provided.'); ?>
-
-                                                                                                        </div> -->
-
-                                        <div class="flippa-details">
-                                            <?php if($fields): ?>
-                                                <?php $__currentLoopData = $fields; $__env->addLoop($__currentLoopData); foreach($__currentLoopData as $field): $__env->incrementLoopIndices(); $loop = $__env->getLastLoop(); ?>
-                                                    <?php if(!empty($field['show_on_summary'])): ?>
-                                                        <!-- Skip image field here -->
-                                                        <div>
-                                                            <strong><?php echo e($field['label'] ?? ucfirst($field['field_id'])); ?>:</strong>
-                                                            <?php echo e($field['value']); ?>
-
-                                                        </div>
-                                                    <?php endif; ?>
-                                                <?php endforeach; $__env->popLoop(); $loop = $__env->getLastLoop(); ?>
-                                            <?php endif; ?>
+                                        <h3 class="mt-2 " style="color: #000;"><?php echo e($productTitle); ?></h3>
+                                        <div class="d-flex justify-content-between align-items-center">
+                                            <p class="m-0">By  <?php echo e($submission->customer->first_name ?? " "); ?><?php echo e($submission->customer->last_name ?? ''); ?></p>
+                                            <p class="m-0" style="color: #007bff;"><i class="fa-solid fa-eye"></i> 10</p>
                                         </div>
-                                    </div>
+                                        <div class="wishlist-item-card">
+                                            <div class="wishlist-left">
+                                                <p class="m-0" style="color: green;"><i class="fa-solid fa-dollar-sign"></i></p>
+                                                <div class="d-flex flex-column ">
+                                                    <p class="m-0" style="font-size: 16px;">Revenue</p>
+                                                    <h5 class="m-0" style="color: #000 ;font-size: 16px;">45/mo</h5>
+                                                </div>
 
-                                    <div class="flippa-card-right justify-content-between">
-                                        <div>
-                                            <div class="flippa-price-label">Asking Price</div>
-                                            <div class="flippa-price">₹<?php echo e(number_format($offeredPrice)); ?></div>
+                                            </div>
+                                            <div class="wishlist-left">
+                                                <p class="m-0" style="color: rgb(17, 96, 216);"><i class="fa-solid fa-eye"></i>
+                                                </p>
+                                                <div class="d-flex flex-column ">
+                                                    <p class="m-0" style="font-size: 16px;">Traffic</p>
+                                                    <h5 class="m-0" style="color: #000 ;font-size: 16px;">4597/mo</h5>
+                                                </div>
+
+                                            </div>
+
                                         </div>
-                                        <div class="flippa-buttons">
-                                            <button class="flippa-btn outline">👁 Watch</button>
+                                        <div class="wishlist-price d-flex justify-content-between mt-3">
+                                            <h2 style="color: #000;"><i class="fa-solid fa-indian-rupee-sign"></i><?php echo e($offeredPrice); ?></h2>
                                             <a href="<?php echo e(route('listing-details', ['id' => $submission->id])); ?>">
-                                                <button class="flippa-btn filled">View Listing</button>
-                                            </a>
+                      <button> View Detail</button>
+                    </a>
+
+                                        </div>
+
+                                    </div>
+                                    <div class="more-info" data-aos="fade-up" data-aos-duration="500">
+
+
+                                        <h3 class="mt-2" style="color: #000;">More Information</h3>
+                                        <p style="font-size: 13px;">Free consultation | Fast Approval | 100% Transparent Process
+                                            |
+                                            No Hidden Cost</p>
+                                        <div class="d-flex justify-content-between align-items-center">
+                                            <p class="m-0">By Rohan Wagha</p>
+                                            <p class="m-0" style="color: #007bff;"><i class="fa-solid fa-eye"></i> 10</p>
+                                        </div>
+                                        <div class="wishlist-item-card">
+                                            <div class="wishlist-left">
+                                                <p class="m-0" style="color: green;"><i class="fa-solid fa-dollar-sign"></i></p>
+                                                <div class="d-flex flex-column ">
+                                                    <p class="m-0" style="font-size: 16px;">Revenue</p>
+                                                    <h5 class="m-0" style="color: #000 ;font-size: 16px;">45/mo</h5>
+                                                </div>
+
+                                            </div>
+                                            <div class="wishlist-left">
+                                                <p class="m-0" style="color: rgb(17, 96, 216);"><i class="fa-solid fa-eye"></i>
+                                                </p>
+                                                <div class="d-flex flex-column ">
+                                                    <p class="m-0" style="font-size: 16px;">Traffic</p>
+                                                    <h5 class="m-0" style="color: #000 ;font-size: 16px;">4597/mo</h5>
+                                                </div>
+
+                                            </div>
+
+                                        </div>
+                                        <div class="wishlist-price d-flex justify-content-between mt-3">
+                                            <h2 style="color: #000;"><i class="fa-solid fa-indian-rupee-sign"></i>10,000</h2>
+                                            <button> View Detail</button>
+
                                         </div>
                                     </div>
+                                   
 
+                                    
+
+                                 
                                 </div>
                             <?php endforeach; $__env->popLoop(); $loop = $__env->getLastLoop(); ?>
                         </div>
 
                         
                         <?php $__currentLoopData = $categories; $__env->addLoop($__currentLoopData); foreach($__currentLoopData as $category): $__env->incrementLoopIndices(); $loop = $__env->getLastLoop(); ?>
-                            <div class="submission-group" data-group="<?php echo e($category->slug); ?>" style="display:none;">
+                            <div class="wishlist-product-card" data-group="<?php echo e($category->slug); ?>" style="display:none;">
                                 <?php if(isset($submissionsByCategory[$category->id])): ?>
                                     <?php $__currentLoopData = $submissionsByCategory[$category->id]; $__env->addLoop($__currentLoopData); foreach($__currentLoopData as $submission): $__env->incrementLoopIndices(); $loop = $__env->getLastLoop(); ?>
                                         <div class="flippa-card" data-category="<?php echo e($category->slug); ?>">
@@ -410,6 +594,282 @@
 
 
                     </div>
+                    <div class="wishlist-card">
+                        <div class="wishlist-product-card">
+                            <img
+                                src="https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcThez8EsMExS0cJzMTvAM6OlRj9d9SecStl6g&s">
+                            <div class="wishlist-budge">
+                                <div class="d-flex justify-content-between align-items-center">
+                                    <div class="budge-active">
+                                        <p><i class="fa-solid fa-circle-check"></i> Active</p>
+                                    </div>
+                                    <h4 class="m-0" style="font-size: 24px;padding-right: 15px;"><i
+                                            class="fa-regular fa-heart"></i></h4>
+
+                                </div>
+
+                            </div>
+                            <div class="product-details-hover">
+
+
+                                <div class="wishlist-button">
+                                    <p>Website</p>
+                                    <div class="budge-active1">
+                                        <p><i class="fa-solid fa-circle-check"></i> Verified</p>
+                                    </div>
+
+                                </div>
+                                <h3 class="mt-2 " style="color: #000;">Demo Content</h3>
+                                <div class="d-flex justify-content-between align-items-center">
+                                    <p class="m-0">By Rohan Wagha</p>
+                                    <p class="m-0" style="color: #007bff;"><i class="fa-solid fa-eye"></i> 10</p>
+                                </div>
+                                <div class="wishlist-item-card">
+                                    <div class="wishlist-left">
+                                        <p class="m-0" style="color: green;"><i class="fa-solid fa-dollar-sign"></i></p>
+                                        <div class="d-flex flex-column ">
+                                            <p class="m-0" style="font-size: 16px;">Revenue</p>
+                                            <h5 class="m-0" style="color: #000 ;font-size: 16px;">45/mo</h5>
+                                        </div>
+
+                                    </div>
+                                    <div class="wishlist-left">
+                                        <p class="m-0" style="color: rgb(17, 96, 216);"><i class="fa-solid fa-eye"></i></p>
+                                        <div class="d-flex flex-column ">
+                                            <p class="m-0" style="font-size: 16px;">Traffic</p>
+                                            <h5 class="m-0" style="color: #000 ;font-size: 16px;">4597/mo</h5>
+                                        </div>
+
+                                    </div>
+
+                                </div>
+                                <div class="wishlist-price d-flex justify-content-between mt-3">
+                                    <h2 style="color: #000;"><i class="fa-solid fa-indian-rupee-sign"></i>10,000</h2>
+                                    <button> View Detail</button>
+
+                                </div>
+
+                            </div>
+                            <div class="more-info" data-aos="fade-up" data-aos-duration="500">
+
+
+                                <h3 class="mt-2" style="color: #000;">More Information</h3>
+                                <p style="font-size: 13px;">Free consultation | Fast Approval | 100% Transparent Process |
+                                    No Hidden Cost</p>
+                                <div class="d-flex justify-content-between align-items-center">
+                                    <p class="m-0">By Rohan Wagha</p>
+                                    <p class="m-0" style="color: #007bff;"><i class="fa-solid fa-eye"></i> 10</p>
+                                </div>
+                                <div class="wishlist-item-card">
+                                    <div class="wishlist-left">
+                                        <p class="m-0" style="color: green;"><i class="fa-solid fa-dollar-sign"></i></p>
+                                        <div class="d-flex flex-column ">
+                                            <p class="m-0" style="font-size: 16px;">Revenue</p>
+                                            <h5 class="m-0" style="color: #000 ;font-size: 16px;">45/mo</h5>
+                                        </div>
+
+                                    </div>
+                                    <div class="wishlist-left">
+                                        <p class="m-0" style="color: rgb(17, 96, 216);"><i class="fa-solid fa-eye"></i></p>
+                                        <div class="d-flex flex-column ">
+                                            <p class="m-0" style="font-size: 16px;">Traffic</p>
+                                            <h5 class="m-0" style="color: #000 ;font-size: 16px;">4597/mo</h5>
+                                        </div>
+
+                                    </div>
+
+                                </div>
+                                <div class="wishlist-price d-flex justify-content-between mt-3">
+                                    <h2 style="color: #000;"><i class="fa-solid fa-indian-rupee-sign"></i>10,000</h2>
+                                    <button> View Detail</button>
+
+                                </div>
+                            </div>
+                        </div>
+                        <div class="wishlist-product-card">
+                            <img
+                                src="https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcThez8EsMExS0cJzMTvAM6OlRj9d9SecStl6g&s">
+                            <div class="wishlist-budge">
+                                <div class="d-flex justify-content-between align-items-center">
+                                    <div class="budge-active">
+                                        <p><i class="fa-solid fa-circle-check"></i> Active</p>
+                                    </div>
+                                    <h4 class="m-0" style="font-size: 24px;padding-right: 15px;"><i
+                                            class="fa-regular fa-heart"></i></h4>
+
+                                </div>
+
+                            </div>
+                            <div class="product-details-hover">
+
+
+                                <div class="wishlist-button">
+                                    <p>Website</p>
+                                    <div class="budge-active1">
+                                        <p><i class="fa-solid fa-circle-check"></i> Verified</p>
+                                    </div>
+
+                                </div>
+                                <h3 class="mt-2 " style="color: #000;">Demo Content</h3>
+                                <div class="d-flex justify-content-between align-items-center">
+                                    <p class="m-0">By Rohan Wagha</p>
+                                    <p class="m-0" style="color: #007bff;"><i class="fa-solid fa-eye"></i> 10</p>
+                                </div>
+                                <div class="wishlist-item-card">
+                                    <div class="wishlist-left">
+                                        <p class="m-0" style="color: green;"><i class="fa-solid fa-dollar-sign"></i></p>
+                                        <div class="d-flex flex-column ">
+                                            <p class="m-0" style="font-size: 16px;">Revenue</p>
+                                            <h5 class="m-0" style="color: #000 ;font-size: 16px;">45/mo</h5>
+                                        </div>
+
+                                    </div>
+                                    <div class="wishlist-left">
+                                        <p class="m-0" style="color: rgb(17, 96, 216);"><i class="fa-solid fa-eye"></i></p>
+                                        <div class="d-flex flex-column ">
+                                            <p class="m-0" style="font-size: 16px;">Traffic</p>
+                                            <h5 class="m-0" style="color: #000 ;font-size: 16px;">4597/mo</h5>
+                                        </div>
+
+                                    </div>
+
+                                </div>
+                                <div class="wishlist-price d-flex justify-content-between mt-3">
+                                    <h2 style="color: #000;"><i class="fa-solid fa-indian-rupee-sign"></i>10,000</h2>
+                                    <button> View Detail</button>
+
+                                </div>
+
+                            </div>
+                            <div class="more-info" data-aos="fade-up" data-aos-duration="500">
+
+
+                                <h3 class="mt-2" style="color: #000;">More Information</h3>
+                                <p style="font-size: 13px;">Free consultation | Fast Approval | 100% Transparent Process |
+                                    No Hidden Cost</p>
+                                <div class="d-flex justify-content-between align-items-center">
+                                    <p class="m-0">By Rohan Wagha</p>
+                                    <p class="m-0" style="color: #007bff;"><i class="fa-solid fa-eye"></i> 10</p>
+                                </div>
+                                <div class="wishlist-item-card">
+                                    <div class="wishlist-left">
+                                        <p class="m-0" style="color: green;"><i class="fa-solid fa-dollar-sign"></i></p>
+                                        <div class="d-flex flex-column ">
+                                            <p class="m-0" style="font-size: 16px;">Revenue</p>
+                                            <h5 class="m-0" style="color: #000 ;font-size: 16px;">45/mo</h5>
+                                        </div>
+
+                                    </div>
+                                    <div class="wishlist-left">
+                                        <p class="m-0" style="color: rgb(17, 96, 216);"><i class="fa-solid fa-eye"></i></p>
+                                        <div class="d-flex flex-column ">
+                                            <p class="m-0" style="font-size: 16px;">Traffic</p>
+                                            <h5 class="m-0" style="color: #000 ;font-size: 16px;">4597/mo</h5>
+                                        </div>
+
+                                    </div>
+
+                                </div>
+                                <div class="wishlist-price d-flex justify-content-between mt-3">
+                                    <h2 style="color: #000;"><i class="fa-solid fa-indian-rupee-sign"></i>10,000</h2>
+                                    <button> View Detail</button>
+
+                                </div>
+                            </div>
+                        </div>
+                        <div class="wishlist-product-card">
+                            <img
+                                src="https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcThez8EsMExS0cJzMTvAM6OlRj9d9SecStl6g&s">
+                            <div class="wishlist-budge">
+                                <div class="d-flex justify-content-between align-items-center">
+                                    <div class="budge-active">
+                                        <p><i class="fa-solid fa-circle-check"></i> Active</p>
+                                    </div>
+                                    <h4 class="m-0" style="font-size: 24px;padding-right: 15px;"><i
+                                            class="fa-regular fa-heart"></i></h4>
+
+                                </div>
+
+                            </div>
+                            <div class="product-details-hover">
+
+
+                                <div class="wishlist-button">
+                                    <p>Website</p>
+                                    <div class="budge-active1">
+                                        <p><i class="fa-solid fa-circle-check"></i> Verified</p>
+                                    </div>
+
+                                </div>
+                                <h3 class="mt-2 " style="color: #000;">Demo Content</h3>
+                                <div class="d-flex justify-content-between align-items-center">
+                                    <p class="m-0">By Rohan Wagha</p>
+                                    <p class="m-0" style="color: #007bff;"><i class="fa-solid fa-eye"></i> 10</p>
+                                </div>
+                                <div class="wishlist-item-card">
+                                    <div class="wishlist-left">
+                                        <p class="m-0" style="color: green;"><i class="fa-solid fa-dollar-sign"></i></p>
+                                        <div class="d-flex flex-column ">
+                                            <p class="m-0" style="font-size: 16px;">Revenue</p>
+                                            <h5 class="m-0" style="color: #000 ;font-size: 16px;">45/mo</h5>
+                                        </div>
+
+                                    </div>
+                                    <div class="wishlist-left">
+                                        <p class="m-0" style="color: rgb(17, 96, 216);"><i class="fa-solid fa-eye"></i></p>
+                                        <div class="d-flex flex-column ">
+                                            <p class="m-0" style="font-size: 16px;">Traffic</p>
+                                            <h5 class="m-0" style="color: #000 ;font-size: 16px;">4597/mo</h5>
+                                        </div>
+
+                                    </div>
+
+                                </div>
+                                <div class="wishlist-price d-flex justify-content-between mt-3">
+                                    <h2 style="color: #000;"><i class="fa-solid fa-indian-rupee-sign"></i>10,000</h2>
+                                    <button> View Detail</button>
+
+                                </div>
+
+                            </div>
+                            <div class="more-info" data-aos="fade-up" data-aos-duration="500">
+
+
+                                <h3 class="mt-2" style="color: #000;">More Information</h3>
+                                <p style="font-size: 13px;">Free consultation | Fast Approval | 100% Transparent Process |
+                                    No Hidden Cost</p>
+                                <div class="d-flex justify-content-between align-items-center">
+                                    <p class="m-0">By Rohan Wagha</p>
+                                    <p class="m-0" style="color: #007bff;"><i class="fa-solid fa-eye"></i> 10</p>
+                                </div>
+                                <div class="wishlist-item-card">
+                                    <div class="wishlist-left">
+                                        <p class="m-0" style="color: green;"><i class="fa-solid fa-dollar-sign"></i></p>
+                                        <div class="d-flex flex-column ">
+                                            <p class="m-0" style="font-size: 16px;">Revenue</p>
+                                            <h5 class="m-0" style="color: #000 ;font-size: 16px;">45/mo</h5>
+                                        </div>
+
+                                    </div>
+                                    <div class="wishlist-left">
+                                        <p class="m-0" style="color: rgb(17, 96, 216);"><i class="fa-solid fa-eye"></i></p>
+                                        <div class="d-flex flex-column ">
+                                            <p class="m-0" style="font-size: 16px;">Traffic</p>
+                                            <h5 class="m-0" style="color: #000 ;font-size: 16px;">4597/mo</h5>
+                                        </div>
+
+                                    </div>
+
+                                </div>
+                                <div class="wishlist-price d-flex justify-content-between mt-3">
+                                    <h2 style="color: #000;"><i class="fa-solid fa-indian-rupee-sign"></i>10,000</h2>
+                                    <button> View Detail</button>
+
+                                </div>
+                            </div>
+                        </div>
+
+                    </div>
                 </div>
                 <!-- end col-lg-8 -->
             </div>
@@ -418,17 +878,17 @@
         <!-- end container -->
     </section>
     <!-- ================================
-                                START CARD AREA
-                            ================================= -->
+                                                START CARD AREA
+                                            ================================= -->
 
     <!-- end card-area -->
     <!-- ================================
-                                END CARD AREA
-                            ================================= -->
+                                                END CARD AREA
+                                            ================================= -->
 
     <!-- ================================
-                                START SUBSCRIBER AREA
-                            ================================= -->
+                                                START SUBSCRIBER AREA
+                                            ================================= -->
     <section class="subscriber-area mb-n5 position-relative z-index-2">
         <div class="container">
             <div class="subscriber-box d-flex flex-wrap align-items-center justify-content-between bg-dark overflow-hidden">
@@ -455,8 +915,8 @@
     </section>
     <!-- end subscriber-area -->
     <!-- ================================
-                                END SUBSCRIBER AREA
-                            ================================= -->
+                                                END SUBSCRIBER AREA
+                                            ================================= -->
 
     <script>
         document.querySelectorAll('.tab-btn').forEach(btn => {

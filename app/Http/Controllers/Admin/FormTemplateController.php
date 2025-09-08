@@ -3,6 +3,7 @@
 namespace App\Http\Controllers\Admin;
 
 use App\Http\Controllers\Controller;
+use App\Models\Category;
 use Illuminate\Http\Request;
 use Illuminate\Support\Str;
 use App\Models\FormTemplate;
@@ -23,12 +24,26 @@ class FormTemplateController extends Controller
 
     public function create()
     {
+        // Fetch categories for select dropdown
+        $categories = Category::all();
+
+        // Localization strings
         $i18n = [
             'untitledForm' => __('Untitled Form'),
             'thisIsMyForm' => __('This is my form. Please fill it out. Thanks!'),
+            'heading' => __('Heading Text Here'),
+            'paragraphText' => __('Please enter your details below.'),
+            'textField' => __('Text Field'),
+            'numberField' => __('Number Field'),
+            'productTitle' => __('Product Title'),
+            'mrp' => __('MRP'),
+            'discount' => __('Discount'),
+            'offeredPrice' => __('Offered Price'),
         ];
 
+        // Default fields to inject into form builder canvas
         $defaultForm = [
+            'init' => true,   // optional flag if needed
             'initForm' => [
                 [
                     'name' => 'heading',
@@ -36,38 +51,33 @@ class FormTemplateController extends Controller
                         'id' => [
                             'label' => 'component.id',
                             'type' => 'input',
-                            'value' => 'heading_0'
+                            'value' => 'heading_0',
                         ],
                         'text' => [
                             'label' => 'component.text',
                             'type' => 'input',
-                            'value' => $i18n['untitledForm']
+                            'value' => $i18n['untitledForm'],
                         ],
                         'type' => [
                             'label' => 'component.type',
                             'type' => 'select',
                             'value' => [
-                                ['value' => 'h1', 'label' => 'H1', 'selected' => false],
+                                ['value' => 'h1', 'label' => 'H1', 'selected' => true],
                                 ['value' => 'h2', 'label' => 'H2', 'selected' => false],
-                                ['value' => 'h3', 'label' => 'H3', 'selected' => true],
-                                ['value' => 'h4', 'label' => 'H4', 'selected' => false],
-                                ['value' => 'h5', 'label' => 'H5', 'selected' => false],
-                                ['value' => 'h6', 'label' => 'H6', 'selected' => false],
-                            ]
+                                ['value' => 'h3', 'label' => 'H3', 'selected' => false],
+                            ],
                         ],
                         'cssClass' => [
                             'label' => 'component.cssClass',
                             'type' => 'input',
                             'value' => '',
-                            'advanced' => true
                         ],
                         'containerClass' => [
                             'label' => 'component.containerClass',
                             'type' => 'input',
-                            'value' => 'col-md-12',
-                            'advanced' => true
-                        ]
-                    ]
+                            'value' => 'col-12',
+                        ],
+                    ],
                 ],
                 [
                     'name' => 'paragraph',
@@ -75,32 +85,98 @@ class FormTemplateController extends Controller
                         'id' => [
                             'label' => 'component.id',
                             'type' => 'input',
-                            'value' => 'paragraph_0'
+                            'value' => 'paragraph_0',
                         ],
                         'text' => [
                             'label' => 'component.text',
                             'type' => 'textarea',
-                            'value' => $i18n['thisIsMyForm']
+                            'value' => $i18n['thisIsMyForm'],
                         ],
                         'cssClass' => [
                             'label' => 'component.cssClass',
                             'type' => 'input',
                             'value' => '',
-                            'advanced' => true
                         ],
                         'containerClass' => [
                             'label' => 'component.containerClass',
                             'type' => 'input',
-                            'value' => 'col-md-12',
-                            'advanced' => true
-                        ]
-                    ]
-                ]
-            ]
+                            'value' => 'col-12',
+                        ],
+                    ],
+                ],
+                // Product Title Field
+                [
+                    'name' => 'text',
+                    'fields' => [
+                        'id' => ['label' => 'component.id', 'type' => 'input', 'value' => 'product_title'],
+                        'inputType' => [
+                            'label' => 'component.inputType',
+                            'type' => 'select',
+                            'value' => [['value' => 'text', 'label' => 'Text', 'selected' => true]],
+                        ],
+                        'label' => ['label' => 'component.label', 'type' => 'input', 'value' => $i18n['productTitle']],
+                        'placeholder' => ['label' => 'component.placeholder', 'type' => 'input', 'value' => 'Enter product title'],
+                        'cssClass' => ['label' => 'component.cssClass', 'type' => 'input', 'value' => 'form-control'],
+                        'containerClass' => ['label' => 'component.containerClass', 'type' => 'input', 'value' => 'col-12'],
+                    ],
+                    'nonDeletable' => true
+                ],
+                // MRP Field
+                [
+                    'name' => 'number',
+                    'fields' => [
+                        'id' => ['label' => 'component.id', 'type' => 'input', 'value' => 'mrp'],
+                        'inputType' => [
+                            'label' => 'component.inputType',
+                            'type' => 'select',
+                            'value' => [['value' => 'number', 'label' => 'Number', 'selected' => true]],
+                        ],
+                        'label' => ['label' => 'component.label', 'type' => 'input', 'value' => $i18n['mrp']],
+                        'placeholder' => ['label' => 'component.placeholder', 'type' => 'input', 'value' => 'Enter MRP'],
+                        'cssClass' => ['label' => 'component.cssClass', 'type' => 'input', 'value' => 'form-control'],
+                        'containerClass' => ['label' => 'component.containerClass', 'type' => 'input', 'value' => 'col-12'],
+                    ],
+                    'nonDeletable' => true
+                ],
+                // Discount Field
+                [
+                    'name' => 'number',
+                    'fields' => [
+                        'id' => ['label' => 'component.id', 'type' => 'input', 'value' => 'discount'],
+                        'inputType' => [
+                            'label' => 'component.inputType',
+                            'type' => 'select',
+                            'value' => [['value' => 'number', 'label' => 'Number', 'selected' => true]],
+                        ],
+                        'label' => ['label' => 'component.label', 'type' => 'input', 'value' => $i18n['discount']],
+                        'placeholder' => ['label' => 'component.placeholder', 'type' => 'input', 'value' => 'Enter discount'],
+                        'cssClass' => ['label' => 'component.cssClass', 'type' => 'input', 'value' => 'form-control'],
+                        'containerClass' => ['label' => 'component.containerClass', 'type' => 'input', 'value' => 'col-12'],
+                    ],
+                    'nonDeletable' => true
+                ],
+                // Offered Price Field
+                [
+                    'name' => 'number',
+                    'fields' => [
+                        'id' => ['label' => 'component.id', 'type' => 'input', 'value' => 'offered_price'],
+                        'inputType' => [
+                            'label' => 'component.inputType',
+                            'type' => 'select',
+                            'value' => [['value' => 'number', 'label' => 'Number', 'selected' => true]],
+                        ],
+                        'label' => ['label' => 'component.label', 'type' => 'input', 'value' => $i18n['offeredPrice']],
+                        'placeholder' => ['label' => 'component.placeholder', 'type' => 'input', 'value' => 'Enter offered price'],
+                        'cssClass' => ['label' => 'component.cssClass', 'type' => 'input', 'value' => 'form-control'],
+                        'containerClass' => ['label' => 'component.containerClass', 'type' => 'input', 'value' => 'col-12'],
+                    ],
+                    'nonDeletable' => true
+                ],
+            ],
         ];
 
-        return view('admin.form.create', compact('i18n', 'defaultForm'))
-            ->with('isTemplate', true); // we can use this flag in JS to save as template
+        return view('admin.form.create', compact('categories', 'defaultForm', 'i18n'))->with('isTemplate', true);
+        ;
     }
 
 
@@ -109,12 +185,18 @@ class FormTemplateController extends Controller
         // Find the template
         $template = FormTemplate::findOrFail($template_id);
 
+        $first_category = Category::first();
+        $userId = auth()->id();
+        
         // Create a new form based on the template's data
         $form = Form::create([
             'name' => $template->name . ' (Copy)',
             'slug' => Str::slug($template->name . '-' . time()),
             'status' => true,
             'language' => 'en',
+            'category_id' => $first_category->id,
+            'created_by' => $userId,
+            'updated_by' => $userId,
         ]);
 
         // Store the form data based on template's stored builder and fields JSON

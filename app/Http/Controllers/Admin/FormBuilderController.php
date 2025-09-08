@@ -1237,7 +1237,7 @@ class FormBuilderController extends Controller
                 ]
             ],
             [
-                "name" => "file",
+                "name" => "file Upload",
                 "title" => "file.title",
                 "fields" => [
                     "id" => [
@@ -2198,7 +2198,7 @@ class FormBuilderController extends Controller
                 "radio.title" => __('Radio'),
                 "selectlist.title" => __('Select List'),
                 "hidden.title" => __('Hidden'),
-                "file.title" => __('File'),
+                "file.title" => __('File Upload'),
                 "snippet.title" => __('Snippet'),
                 "recaptcha.title" => __('reCAPTCHA'),
                 "pagebreak.title" => __('Page Break'),
@@ -2389,21 +2389,8 @@ class FormBuilderController extends Controller
                 "style.oldest" => __('Oldest'),
                 "style.popular" => __('Popular'),
                 "style.noResultsFound" => __('No Results Found'),
-                "style.byUnsplash" => __('By {unsplash}', [
-                    'unsplash' => Html::a(
-                        'Unsplash',
-                        'https://unsplash.com/?utm_source=' . str_replace(' ', '+', urldecode(config('app.name'))) . '&utm_medium=referral',
-                        ['target' => '_blank']
-                    ),
-                ]),
-                "style.photoByUnsplash" => __('By {photographer} on {unsplash}', [
-                    'photographer' => '{photographer}',
-                    'unsplash' => Html::a(
-                        'Unsplash',
-                        'https://unsplash.com/?utm_source=' . str_replace(' ', '+', urldecode(config('app.name'))) . '&utm_medium=referral',
-                        ['target' => '_blank']
-                    ),
-                ]),
+               
+               
             ]
         ];
 

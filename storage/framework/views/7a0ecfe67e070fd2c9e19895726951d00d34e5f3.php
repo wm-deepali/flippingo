@@ -1,7 +1,7 @@
 
 
 <?php $__env->startSection('content'); ?>
-    <style>
+     <style>
         #ef-widgets {
             height: 100%;
             max-height: 100%;
@@ -52,8 +52,8 @@
         }
 
         /* #my-form {
-                                                                            height: 100vh;
-                                                                        } */
+                                                                    height: 100vh;
+                                                                } */
 
         /* Modal button styling */
         .modal-footer .btn {
@@ -221,24 +221,14 @@
 
                             <!-- Tabs Content -->
                             <div class="tab-content">
-                                <div id="tab-settings" class="tab-pane fade show active card-padding">
+                                <div id="tab-fields" class="tab-pane fade card-padding">
+                                    <div class="fields-wrapper">
+                                        <!-- dynamic fields go here -->
+                                    </div>
+                                </div>
+
+                                <div id="tab-settings" class="tab-pane fade card-padding active show">
                                     <form id="settings-form">
-                                        <div class="form-group">
-                                            <label for="category_id" class="form-label"><strong>Category</strong></label>
-                                            <select class="form-control" id="category_id" name="category_id">
-                                                <option value="">-- Select --</option>
-                                                <?php $__currentLoopData = $categories; $__env->addLoop($__currentLoopData); foreach($__currentLoopData as $category): $__env->incrementLoopIndices(); $loop = $__env->getLastLoop(); ?>
-                                                    <option value="<?php echo e($category->id); ?>" <?php if(isset($form->category_id) && $form->category_id == $category->id): ?> selected <?php endif; ?>>
-                                                        <?php echo e($category->name); ?>
-
-                                                    </option>
-                                                <?php endforeach; $__env->popLoop(); $loop = $__env->getLastLoop(); ?>
-                                            </select>
-                                            <div id="categoryHelp" class="form-text">
-                                                Select a category for the form.
-                                            </div>
-                                        </div>
-
                                         <div class="form-group">
                                             <label for="form-name" class="form-label"><strong>Form Name</strong></label>
                                             <input type="text" class="form-control" id="form-name" name="form_name"
@@ -266,13 +256,6 @@
                                     </form>
                                 </div>
 
-
-                                <div id="tab-fields" class="tab-pane fade card-padding">
-                                    <div class="fields-wrapper">
-                                        <!-- dynamic fields go here -->
-                                    </div>
-                                </div>
-
                                 <div id="tab-code" class="tab-pane fade card-padding">
                                     <div class="d-flex justify-content-between align-items-center mb-2">
                                         <h6 class="mb-0">Source Code preview</h6>
@@ -283,7 +266,6 @@
                                             style="font-size:12px; max-height:420px; overflow-y:auto;"><code id="code-preview" class="language-markup"></code></pre>
                                     </div>
                                 </div>
-
                             </div>
 
                         </div>
@@ -292,31 +274,31 @@
                     
                     <div id="ef-main" class="col-md-5 d-none">
                         <div id="canvas">
-                            <form id="my-form" class="row">
+                            <form id="my-form">
                                 <?php echo csrf_field(); ?>
                                 <?php echo method_field('PUT'); ?>
-                                <?php echo $formData->html; ?>
+                                <?php echo $template->html; ?>
 
                             </form>
                         </div>
                         <div class="mt-3">
                             <button id="save-form-btn" type="button" class="btn btn-success">
-                                <i class="fas fa-check me-2"></i> Update Form
+                                <i class="fas fa-check me-2"></i> Update Template
                             </button>
                         </div>
                     </div>
 
                     
                     <!-- <div id="ef-styles" class="col-md-3 d-none">
-                                                    <div class="ef-sidebar-outer p-2">
-                                                        <h5>Design</h5>
-                                                        <div id="styles-panel"></div>
-                                                        <div class="mt-2">
-                                                            <a href="#" id="collapse-styles">Collapse All</a> |
-                                                            <a href="#" id="expand-styles">Expand All</a>
-                                                        </div>
-                                                    </div>
-                                                </div> -->
+                        <div class="ef-sidebar-outer p-2">
+                            <h5>Design</h5>
+                            <div id="styles-panel"></div>
+                            <div class="mt-2">
+                                <a href="#" id="collapse-styles">Collapse All</a> |
+                                <a href="#" id="expand-styles">Expand All</a>
+                            </div>
+                        </div>
+                    </div> -->
                 </div>
 
                 
@@ -330,9 +312,9 @@
                             <div class="modal-body">
                                 <p>What do you want to do?</p>
                                 <div class="list-group">
-                                    <a href="<?php echo e(route('admin.form.index')); ?>" class="list-group-item">Back to Form
+                                    <a href="<?php echo e(route('admin.form-templates.index')); ?>" class="list-group-item">Back to templates
                                         Manager</a>
-                                    <a href="<?php echo e(route('admin.form.edit', $form->id)); ?>" id="editFormLink"
+                                    <a href="<?php echo e(route('admin.form-templates.edit', $template->id)); ?>" id="editFormLink"
                                         class="list-group-item">Continue Editing</a>
                                 </div>
                             </div>
@@ -373,59 +355,26 @@
             $('#ef-widgets, #ef-main, #ef-styles').removeClass('d-none');
 
             // Pre-fill Settings panel
-            <?php if(isset($formData) && $formData->builder): ?>
-                let builderSettings = <?php echo json_encode($formData->builder, 15, 512) ?>;
-                $('#form-name').val(builderSettings.form_name || '<?php echo e($form->name); ?>');
+            <?php if(isset($template) && $template->builder): ?>
+                let builderSettings = <?php echo json_encode($template->builder, 15, 512) ?>;
+                $('#form-name').val(builderSettings.form_name || '<?php echo e($template->name); ?>');
                 $('#form-layout').val(builderSettings.form_layout || 'Vertical').trigger('change');
                 $('#disable-elements').prop('checked', builderSettings.disable_elements || false);
             <?php endif; ?>
 
-
                 // Rebuild from JSON fields if required
-                <?php if(isset($formData) && $formData->fields): ?>
-                    let savedFields = <?php echo json_encode($formData->fields, 15, 512) ?>;
-
-                    const criticalFields = ['product_title', 'mrp', 'discount', 'offered_price'];
-
-
+                <?php if(isset($template) && $template->fields): ?>
+                    let savedFields = <?php echo json_encode($template->fields, 15, 512) ?>;
                     $('#my-form').empty();
                     savedFields.forEach(f => {
                         let $fieldElement = $(`<div class="form-group" data-field-id="${f.id}" data-field-type="${f.type}">${getFieldHtml(f.type, f.id)}</div>`);
-
-                        setTimeout(() => {
-                            setFieldData($fieldElement, f.properties || {});
-
-                            // Determine if this field is critical — check id or alias in properties
-                            const isCritical = (f.id && criticalFields.includes(f.id.toLowerCase()))
-                                || (f.properties && f.properties.id && criticalFields.includes(f.properties.id.toLowerCase()));
-
-                            // Pass an extra flag or config object accordingly
-                            let config = {};
-                            if (isCritical) {
-                                config.isCritical = true;
-                                config.id = f.properties.id;
-                                $fieldElement.attr('data-non-deletable', 'true');
-                                $fieldElement.addClass('non-deletable-field');
-                                // Remove or disable delete button (adjust selector accordingly)
-                                $fieldElement.find('.remove-field-btn').remove();
-                                // Disable drag
-                                $fieldElement.removeAttr('draggable');
-                            }
-
-
-                            applyConfigToField($fieldElement, f.type, f.properties || {}, f.id, config);
-                        }, 0);
-
+                        setFieldData($fieldElement, f.properties || {});
+                        applyConfigToField($fieldElement, f.type, f.properties || {});
                         $('#my-form').append($fieldElement);
                     });
-
-                    updateFieldCountersFromExisting();
                 <?php endif; ?>
 
             updateCodePreview();
-
-
-
 
             // Save/Update handler
             $('#save-form-btn').off('click').on('click', function () {
@@ -450,14 +399,11 @@
                 formData.append('name', $('#form-name').val());
                 formData.append('height', $('#canvas').outerHeight());
                 formData.append('_method', 'PUT');
-                // Read the selected category_id from the dropdown
-                let selectedCategory = $('#category_id').val();
-                formData.append('category_id', selectedCategory);
 
                 $btn.prop('disabled', true);
 
                 $.ajax({
-                    url: "<?php echo e(route('admin.form.update', $form->id)); ?>",
+                    url: "<?php echo e(route('admin.form-templates.update', $template->id)); ?>",
                     method: 'POST',
                     data: formData,
                     processData: false,
@@ -466,7 +412,6 @@
                         if (res.success) {
                             $('#savedModal').modal('show');
                             $('#editFormLink').attr('href', res.edit_url);
-
                         } else {
                             showToast('Error', res.message || 'Update failed');
                             $btn.prop('disabled', false);
@@ -479,7 +424,6 @@
                 });
             });
         });
-
     </script>
 <?php $__env->stopPush(); ?>
-<?php echo $__env->make('layouts.master', \Illuminate\Support\Arr::except(get_defined_vars(), ['__data', '__path']))->render(); ?><?php /**PATH D:\web-mingo-project\flippingo_admin\resources\views/admin/form/edit.blade.php ENDPATH**/ ?>
+<?php echo $__env->make('layouts.master', \Illuminate\Support\Arr::except(get_defined_vars(), ['__data', '__path']))->render(); ?><?php /**PATH D:\web-mingo-project\flippingo_admin\resources\views/admin/form_templates/edit.blade.php ENDPATH**/ ?>

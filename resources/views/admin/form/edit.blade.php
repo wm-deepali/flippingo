@@ -26,10 +26,17 @@
             cursor: pointer;
         }
 
-        #tab-fields {
-            max-height: 650px;
-            overflow: hidden scroll;
-            height: 100%;
+        #tab-fields .fields-wrapper {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 10px;
+        }
+
+        #tab-fields .builder-item {
+            flex: 0 0 calc(50% - 10px);
+            box-sizing: border-box;
+            margin-bottom: 10px;
+            text-align: center;
         }
 
         #canvas {
@@ -45,8 +52,8 @@
         }
 
         /* #my-form {
-                                                height: 100vh;
-                                            } */
+                                                                            height: 100vh;
+                                                                        } */
 
         /* Modal button styling */
         .modal-footer .btn {
@@ -202,10 +209,10 @@
                             <!-- Tabs Navigation -->
                             <ul class="nav nav-tabs nav-justified">
                                 <li class="nav-item">
-                                    <a href="#tab-fields" class="nav-link active" data-bs-toggle="tab">Fields</a>
+                                    <a href="#tab-settings" class="nav-link active" data-bs-toggle="tab">Settings</a>
                                 </li>
                                 <li class="nav-item">
-                                    <a href="#tab-settings" class="nav-link" data-bs-toggle="tab">Settings</a>
+                                    <a href="#tab-fields" class="nav-link" data-bs-toggle="tab">Fields</a>
                                 </li>
                                 <li class="nav-item">
                                     <a href="#tab-code" class="nav-link" data-bs-toggle="tab">Code</a>
@@ -214,11 +221,7 @@
 
                             <!-- Tabs Content -->
                             <div class="tab-content">
-                                <div id="tab-fields" class="tab-pane fade show active card-padding">
-                                    <!-- Fields list goes here -->
-                                </div>
-
-                                <div id="tab-settings" class="tab-pane fade card-padding">
+                                <div id="tab-settings" class="tab-pane fade show active card-padding">
                                     <form id="settings-form">
                                         <div class="form-group">
                                             <label for="category_id" class="form-label"><strong>Category</strong></label>
@@ -262,6 +265,13 @@
                                     </form>
                                 </div>
 
+
+                                <div id="tab-fields" class="tab-pane fade card-padding">
+                                    <div class="fields-wrapper">
+                                        <!-- dynamic fields go here -->
+                                    </div>
+                                </div>
+
                                 <div id="tab-code" class="tab-pane fade card-padding">
                                     <div class="d-flex justify-content-between align-items-center mb-2">
                                         <h6 class="mb-0">Source Code preview</h6>
@@ -272,6 +282,7 @@
                                             style="font-size:12px; max-height:420px; overflow-y:auto;"><code id="code-preview" class="language-markup"></code></pre>
                                     </div>
                                 </div>
+
                             </div>
 
                         </div>
@@ -295,15 +306,15 @@
 
                     {{-- Right Sidebar --}}
                     <!-- <div id="ef-styles" class="col-md-3 d-none">
-                        <div class="ef-sidebar-outer p-2">
-                            <h5>Design</h5>
-                            <div id="styles-panel"></div>
-                            <div class="mt-2">
-                                <a href="#" id="collapse-styles">Collapse All</a> |
-                                <a href="#" id="expand-styles">Expand All</a>
-                            </div>
-                        </div>
-                    </div> -->
+                                                    <div class="ef-sidebar-outer p-2">
+                                                        <h5>Design</h5>
+                                                        <div id="styles-panel"></div>
+                                                        <div class="mt-2">
+                                                            <a href="#" id="collapse-styles">Collapse All</a> |
+                                                            <a href="#" id="expand-styles">Expand All</a>
+                                                        </div>
+                                                    </div>
+                                                </div> -->
                 </div>
 
                 {{-- Saved modal --}}
@@ -391,7 +402,14 @@
                             if (isCritical) {
                                 config.isCritical = true;
                                 config.id = f.properties.id;
+                                $fieldElement.attr('data-non-deletable', 'true');
+                                $fieldElement.addClass('non-deletable-field');
+                                // Remove or disable delete button (adjust selector accordingly)
+                                $fieldElement.find('.remove-field-btn').remove();
+                                // Disable drag
+                                $fieldElement.removeAttr('draggable');
                             }
+
 
                             applyConfigToField($fieldElement, f.type, f.properties || {}, f.id, config);
                         }, 0);

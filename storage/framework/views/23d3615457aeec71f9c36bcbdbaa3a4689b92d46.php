@@ -184,7 +184,7 @@
       }
 
       // hide arrows
-      document.querySelectorAll(".arrow-btn").forEach(btn => btn.style.display = "none");
+      // document.querySelectorAll(".arrow-btn").forEach(btn => btn.style.display = "none");
     }
 
 

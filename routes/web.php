@@ -135,7 +135,7 @@ Route::group(['middleware' => 'auth'], function () {
         Route::get('/ajax/builder-components', [FormBuilderController::class, 'builderComponents'])
             ->name('ajax.builder.components');
 
-        Route::get('/ajax/builder-phrases', [FormBuilderController::class, 'builderPhrases'])
+        Route::get('/ajax/builder-phrases', [FormBuilderController::class, 'actionBuilderPhrases'])
             ->name('ajax.builder.phrases');
 
         Route::get('/form-submissions', [ListingController::class, 'index'])->name('form-submissions.index');
