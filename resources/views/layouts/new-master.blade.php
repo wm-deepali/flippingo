@@ -363,7 +363,7 @@
             <div class="stroke-shape mb-4"></div>
             <ul class="list-items list-items-underline">
               <li><a href="{{ Route('listing-list') }}">Browse Listing</a></li>
-              <li><a href="#">Pricing</a></li>
+              <li><a href="{{ Route('pricing') }}">Pricing</a></li>
               <li><a href="{{ Route('add-listing') }}">Sell Assets</a></li>
               <li><a href="#">How it Works</a></li>
               <li><a href="#">Our Services</a></li>

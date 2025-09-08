@@ -9,6 +9,7 @@ use App\Models\Customer;
 use App\Models\CustomerTemp;
 use App\Models\CustomerVerify;
 use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\Config;
 use Illuminate\Support\Facades\Hash;
 use Session;
 use Validator;
@@ -188,8 +189,10 @@ class CustomerController extends Controller
         $otp = rand(100000, 999999);
 
         // Delete old OTP for same value+type
-        OTP::where('value', $value)->where('type', $type)->delete();
-
+        $otp = OTP::where('value', $value)->where('type', $type)->first();
+        if ($otp) {
+            $otp->delete();
+        }
         // Store new OTP
         OTP::create([
             'value' => $value,
@@ -255,7 +258,7 @@ class CustomerController extends Controller
         $isValid = OTP::verifyOTP($value, $otp, $type);
 
         if ($isValid) {
-        
+
             return response()->json([
                 'success' => true,
                 'message' => 'OTP verified successfully!'
@@ -472,8 +475,16 @@ class CustomerController extends Controller
         ]);
 
         $mailData = ['token' => $token];
-        Mail::to($request->email)->send(new MailForgotPassword($mailData));
-
+        // Mail::to($request->email)->send(new MailForgotPassword($mailData));
+        try {
+            Mail::to($request->email)->send(new MailForgotPassword($mailData));
+        } catch (\Exception $e) {
+            dd(Config::get('mail.mailers.smtp'),  $e->getMessage());
+            return response()->json([
+            'status' => 'error',
+            'message' => 'Failed to send password reset email. Please try again later.'
+        ], 500);
+    }
         return response()->json([
             'status' => 'success',
             'message' => 'We have e-mailed your password reset link! Please check your email in inbox, spam and junk folder.'

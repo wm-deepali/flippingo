@@ -86,4 +86,14 @@ class SiteController extends Controller
         return view('front.listing-list', compact('categories', 'submissionsByCategory', 'allSubmissions'));
     }
 
+    public function pricing()
+    {
+        // get all active packages
+        $packages = \App\Models\Package::where('status', 'active')
+            ->orderBy('created_at', 'desc')
+            ->get();
+
+        return view('front.pricing', compact('packages'));
+    }
+
 }

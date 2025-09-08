@@ -43,6 +43,7 @@ Route::get('/stl', function () {
 
 Route::get('/', [SiteController::class, 'index'])->name('home');
 
+Route::get('pricing', [SiteController::class, 'Pricing'])->name('pricing');
 Route::get('/page/{slug}', [PageController::class, 'show'])->name('page.show');
 Route::get('add-listing', [SiteController::class, 'addListing'])->name('add-listing');
 Route::get('/forms/{id}', [FormController::class, 'showFormHtml'])->name('forms');

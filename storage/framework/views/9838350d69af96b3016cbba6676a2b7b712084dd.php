@@ -21,8 +21,7 @@
                 </div>
                 <div class="content-header-right text-md-right col-md-3 col-12 d-md-block d-none">
                     <div class="form-group breadcrumb-right">
-                        <a href="<?php echo e(route('admin.packages.create')); ?>"
-                           class="btn-icon btn btn-primary btn-round btn-sm">
+                        <a href="<?php echo e(route('admin.packages.create')); ?>" class="btn-icon btn btn-primary btn-round btn-sm">
                             Add New Package
                         </a>
                     </div>
@@ -70,10 +69,13 @@
                                                         <?php endif; ?>
                                                     </td>
                                                     <td>
+                                                        <a href="<?php echo e(route('admin.packages.show', $package->id)); ?>"
+                                                            class="btn btn-sm btn-secondary mr-1">View</a>
+
                                                         <a href="<?php echo e(route('admin.packages.edit', $package->id)); ?>"
-                                                           class="btn btn-sm btn-info mr-1">Edit</a>
+                                                            class="btn btn-sm btn-info mr-1">Edit</a>
                                                         <button class="btn btn-danger btn-sm delete-btn"
-                                                                data-id="<?php echo e($package->id); ?>">
+                                                            data-id="<?php echo e($package->id); ?>">
                                                             Delete
                                                         </button>
                                                     </td>
@@ -129,5 +131,4 @@
     </script>
 
 <?php $__env->stopSection(); ?>
-
 <?php echo $__env->make('layouts.master', \Illuminate\Support\Arr::except(get_defined_vars(), ['__data', '__path']))->render(); ?><?php /**PATH D:\web-mingo-project\flippingo_admin\resources\views/admin/packages/index.blade.php ENDPATH**/ ?>

@@ -21,8 +21,7 @@
         </div>
         <div class="content-header-right text-md-right col-md-3 col-12 d-md-block d-none">
           <div class="form-group breadcrumb-right">
-            <a href="{{ route('admin.packages.index') }}" class="btn-icon btn btn-secondary btn-round btn-sm">Back to
-              Packages</a>
+            <a href="{{ route('admin.packages.index') }}" class="btn btn-secondary btn-round btn-sm">Back</a>
           </div>
         </div>
       </div>
@@ -30,145 +29,205 @@
       <div class="content-body">
         <div class="row">
           <div class="col-md-12">
-            <div class="card">
-              <div class="card-header">
-                <h4 class="card-title">Edit Package</h4>
-              </div>
-              <div class="card-body">
-                <form id="packageForm" method="POST">
-                  @csrf
+            <form id="packageForm" method="POST">
+              @csrf
+              @method('PUT')
 
-                  <div class="row">
-                    <!-- Left Column -->
-                    <div class="col-md-6">
-                      <div class="form-group">
-                        <label for="name">Package Name</label>
-                        <input type="text" class="form-control" id="name" name="name" value="{{ $package->name }}" required>
-                      </div>
-
-                      <div class="form-group">
-                        <label for="mrp">MRP</label>
-                        <input type="number" step="0.01" class="form-control" id="mrp" name="mrp"
-                          value="{{ $package->mrp }}" required>
-                      </div>
-
-                      <div class="form-group">
-                        <label for="discount">Discount (%)</label>
-                        <input type="number" step="0.01" class="form-control" id="discount" name="discount"
-                          value="{{ $package->discount }}" required>
-                      </div>
-
-                      <div class="form-group">
-                        <label for="offered_price">Offered Price</label>
-                        <input type="number" step="0.01" class="form-control" id="offered_price" name="offered_price"
-                          value="{{ $package->offered_price }}" required>
-                      </div>
-
-                      <div class="form-group">
-                        <label for="number_of_listings">Number of Listings</label>
-                        <input type="number" class="form-control" id="number_of_listings" name="number_of_listings"
-                          value="{{ $package->number_of_listings }}" required>
-                      </div>
-
-                      <div class="form-group">
-                        <label for="listing_duration">Listing Duration (Days)</label>
-                        <input type="number" class="form-control" id="listing_duration" name="listing_duration"
-                          value="{{ $package->listing_duration }}" required>
-                      </div>
+              <!-- General Info Card -->
+              <div class="card mb-2">
+                <div class="card-header bg-light">
+                  <h5 class="card-title mb-0">General Information</h5>
+                </div>
+                <div class="card-body row mt-2">
+                  <div class="col-md-6">
+                    <div class="form-group">
+                      <label>Package Name</label>
+                      <input type="text" class="form-control" name="name" value="{{ $package->name }}" required>
                     </div>
-
-                    <!-- Right Column -->
-                    <div class="col-md-6">
-                      <div class="form-group">
-                        <label for="package_validity">Package Validity (Days)</label>
-                        <input type="number" class="form-control" id="package_validity" name="package_validity"
-                          value="{{ $package->package_validity }}" required>
-                      </div>
-
-                      <div class="form-group">
-                        <label for="promotions">Promotions (Per Month)</label>
-                        <input type="number" class="form-control" id="promotions" name="promotions"
-                          value="{{ $package->promotions }}">
-                      </div>
-
-                      <div class="form-group">
-                        <label for="sponsors_on_front_page">Sponsors on Front Page (Days)</label>
-                        <input type="number" class="form-control" id="sponsors_on_front_page"
-                          name="sponsors_on_front_page" value="{{ $package->sponsors_on_front_page }}">
-                      </div>
-
-                      <div class="form-group">
-                        <label for="listing_alerts">Listing Alerts</label>
-                        <select class="form-control" id="listing_alerts" name="listing_alerts" required>
-                          <option value="1" {{ $package->listing_alerts ? 'selected' : '' }}>Yes</option>
-                          <option value="0" {{ !$package->listing_alerts ? 'selected' : '' }}>No</option>
-                        </select>
-                      </div>
-
-                      <div class="form-group">
-                        <label for="is_popular">Set as Popular</label><br>
-                        <input type="checkbox" id="is_popular" name="is_popular" {{ $package->is_popular ? 'checked' : '' }}>
-                      </div>
+                    <div class="form-group">
+                      <label>MRP</label>
+                      <input type="number" class="form-control" name="mrp" id="mrp" value="{{ $package->mrp }}" required>
+                    </div>
+                    <div class="form-group">
+                      <label>Discount (%)</label>
+                      <input type="number" class="form-control" name="discount" id="discount"
+                        value="{{ $package->discount }}">
+                    </div>
+                    <div class="form-group">
+                      <label>Offered Price</label>
+                      <input type="number" class="form-control" id="offered_price" name="offered_price"
+                        value="{{ $package->offered_price }}" readonly>
                     </div>
                   </div>
 
-                  <div class="text-right">
-                    <button type="submit" class="btn btn-primary mt-2">Update Package</button>
+                  <div class="col-md-6">
+                    <div class="form-group">
+                      <label>Status</label>
+                      <select class="form-control" name="status" required>
+                        <option value="active" {{ $package->status == 'active' ? 'selected' : '' }}>Active</option>
+                        <option value="inactive" {{ $package->status == 'inactive' ? 'selected' : '' }}>Inactive</option>
+                      </select>
+                    </div>
+
+                    <div class="form-group mt-2">
+                      <label>Set as Popular</label>
+                      <select class="form-control" name="is_popular" required>
+                        <option value="0" {{ $package->is_popular == 0 ? 'selected' : '' }}>No</option>
+                        <option value="1" {{ $package->is_popular == 1 ? 'selected' : '' }}>Yes</option>
+                      </select>
+                    </div>
                   </div>
-                </form>
+                </div>
               </div>
-            </div>
+
+              <!-- Subscription Features -->
+              <div class="card">
+                <div class="card-header bg-light">
+                  <h5 class="card-title mb-0">Subscription Features</h5>
+                </div>
+                <div class="card-body row mt-2">
+                  <!-- Number of Listings -->
+                  <div class="col-md-6">
+                    <label>Number of Listings</label>
+                    <input type="number" class="form-control mb-2" name="listings" value="{{ $package->listings }}">
+                    <input type="text" class="form-control" name="listings_display"
+                      value="{{ $package->listings_display }}">
+                  </div>
+
+                  <!-- Listing Duration -->
+                  <div class="col-md-6">
+                    <label>Listing Duration</label>
+                    <div class="input-group mb-2">
+                      <input type="number" class="form-control" name="listing_duration"
+                        value="{{ $package->listing_duration }}">
+                      <select class="form-control" name="listing_duration_unit">
+                        <option value="days" {{ $package->listing_duration_unit == 'days' ? 'selected' : '' }}>Days</option>
+                        <option value="months" {{ $package->listing_duration_unit == 'months' ? 'selected' : '' }}>Months
+                        </option>
+                      </select>
+                    </div>
+                    <input type="text" class="form-control" name="listing_duration_display"
+                      value="{{ $package->listing_duration_display }}">
+                  </div>
+
+                  <!-- Subscription Validity -->
+                  <div class="col-md-6 mt-2">
+                    <label>Subscription Validity</label>
+                    <div class="input-group mb-2">
+                      <input type="number" class="form-control" name="validity" value="{{ $package->validity }}">
+                      <select class="form-control" name="validity_unit">
+                        <option value="days" {{ $package->validity_unit == 'days' ? 'selected' : '' }}>Days</option>
+                        <option value="months" {{ $package->validity_unit == 'months' ? 'selected' : '' }}>Months</option>
+                      </select>
+                    </div>
+                    <input type="text" class="form-control" name="validity_display"
+                      value="{{ $package->validity_display }}">
+                  </div>
+
+                  <!-- Sponsored -->
+                  <div class="col-md-6 mt-2">
+                    <label>Sponsored on First Page</label>
+                    <div class="input-group mb-2">
+                      <select class="form-control" name="sponsored">
+                        <option value="yes" {{ $package->sponsored == 'yes' ? 'selected' : '' }}>Yes</option>
+                        <option value="no" {{ $package->sponsored == 'no' ? 'selected' : '' }}>No</option>
+                      </select>
+                      <input type="number" class="form-control" name="sponsored_frequency"
+                        value="{{ $package->sponsored_frequency }}">
+                      <select class="form-control" name="sponsored_unit">
+                        <option value="days" {{ $package->sponsored_unit == 'days' ? 'selected' : '' }}>Days</option>
+                        <option value="weeks" {{ $package->sponsored_unit == 'weeks' ? 'selected' : '' }}>Weeks</option>
+                        <option value="months" {{ $package->sponsored_unit == 'months' ? 'selected' : '' }}>Months</option>
+                      </select>
+                    </div>
+                    <input type="text" class="form-control" name="sponsored_display"
+                      value="{{ $package->sponsored_display }}">
+                  </div>
+
+                  <!-- WhatsApp Sharing -->
+                  <div class="col-md-6 mt-2">
+                    <label>WhatsApp Group Sharing</label>
+                    <div class="input-group mb-2">
+                      <select class="form-control" name="whatsapp">
+                        <option value="yes" {{ $package->whatsapp == 'yes' ? 'selected' : '' }}>Yes</option>
+                        <option value="no" {{ $package->whatsapp == 'no' ? 'selected' : '' }}>No</option>
+                      </select>
+                      <input type="number" class="form-control" name="whatsapp_frequency"
+                        value="{{ $package->whatsapp_frequency }}">
+                      <select class="form-control" name="whatsapp_unit">
+                        <option value="days" {{ $package->whatsapp_unit == 'days' ? 'selected' : '' }}>Days</option>
+                        <option value="weeks" {{ $package->whatsapp_unit == 'weeks' ? 'selected' : '' }}>Weeks</option>
+                        <option value="months" {{ $package->whatsapp_unit == 'months' ? 'selected' : '' }}>Months</option>
+                      </select>
+                    </div>
+                    <input type="text" class="form-control" name="whatsapp_display"
+                      value="{{ $package->whatsapp_display }}">
+                  </div>
+
+                  <!-- Alerts -->
+                  <div class="col-md-6 mt-2">
+                    <label>Listing Alerts</label>
+                    <select class="form-control mb-2" name="alerts">
+                      <option value="yes" {{ $package->alerts == 'yes' ? 'selected' : '' }}>Yes</option>
+                      <option value="no" {{ $package->alerts == 'no' ? 'selected' : '' }}>No</option>
+                    </select>
+                    <input type="text" class="form-control" name="alerts_display" value="{{ $package->alerts_display }}">
+                  </div>
+                </div>
+              </div>
+
+              <div class="text-right mt-3">
+                <button type="submit" class="btn btn-primary">💾 Update Package</button>
+              </div>
+            </form>
           </div>
         </div>
       </div>
     </div>
   </div>
-@endsection
 
-@push('scripts')
+  <script src="https://code.jquery.com/jquery-3.5.1.min.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+
   <script>
     $(document).ready(function () {
-      // Auto calculate Offered Price = MRP - (Discount%)
-      $('#mrp, #discount').on('input', function () {
+      // recalculate offered price when mrp or discount changes
+      $('#discount, #mrp').on('input', function () {
         let mrp = parseFloat($('#mrp').val()) || 0;
         let discount = parseFloat($('#discount').val()) || 0;
-        let offeredPrice = mrp - (mrp * discount / 100);
-        $('#offered_price').val(offeredPrice.toFixed(2));
+        let offered = mrp - (mrp * discount / 100);
+        $('#offered_price').val(offered.toFixed(2));
       });
 
-      // Form Submit
+      // submit edit form
       $('#packageForm').on('submit', function (e) {
         e.preventDefault();
-        let formData = new FormData(this);
-
+        let $btn = $(this).find('button[type="submit"]');
+        $btn.prop('disabled', true).text('Updating...');
         $.ajax({
           url: "{{ route('admin.packages.update', $package->id) }}",
           type: "POST",
-          data: formData,
-          contentType: false,
-          processData: false,
-          headers: {
-            'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
-          },
-          success: function (response) {
-            Swal.fire('Success', response.message, 'success');
-            window.location.href = "{{ route('admin.packages.index') }}";
+          data: $(this).serialize(),
+          success: function () {
+            Swal.fire({
+              icon: 'success',
+              title: 'Updated!',
+              text: 'Package updated successfully!',
+              timer: 2000,
+              showConfirmButton: false
+            }).then(() => window.location.href = "{{ route('admin.packages.index') }}");
           },
           error: function (xhr) {
             let errors = xhr.responseJSON?.errors || {};
             let errorMessages = '';
-            $.each(errors, function (key, value) {
-              errorMessages += value[0] + '\n';
-            });
-
-            Swal.fire({
-              icon: 'error',
-              title: 'Validation Error',
-              text: errorMessages.trim(),
-            });
+            $.each(errors, (key, value) => errorMessages += value[0] + '\n');
+            Swal.fire({ icon: 'error', title: 'Validation Error', text: errorMessages.trim() });
+          },
+          complete: function () {
+            $btn.prop('disabled', false).text('💾 Update Package');
           }
         });
       });
     });
   </script>
-@endpush
+@endsection

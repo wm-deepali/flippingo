@@ -13,6 +13,7 @@
     padding: 6px;
     font-size: 14px;
   }
+  
 </style>
 @section('content')
   <!-- ================================
@@ -61,41 +62,21 @@
               <!--  <hr class="border-top-gray flex-grow-1" />-->
               <!--</div>-->
 
-              <!-- Step 1: Username / Email / Mobile -->
-
-              <div class="form-group position-relative mt-4">
-                <label class="label-text">Sign in With E-mail / Username</label>
-                <input class="form-control form--control ps-3" type="text" name="loginEmail" id="loginEmail"
-                  placeholder="Enter E-mail Id / Username" />
-                <button type="button" class="arrow-btn" onclick="showNextField('email')">âžœ</button>
-              </div>
-
-              <!-- Step 2: Hidden initially -->
-              <div class="form-group hidden" id="passwordBoxEmail">
-                <label class="label-text">Enter Password</label>
-                <div class="position-relative">
-                  <input class="form-control form--control ps-3" type="password" name="password"
-                    placeholder="Enter Password / OTP" />
-                </div>
-              </div>
-              <div class="d-flex align-items-center">
-                <hr class="border-top-gray flex-grow-1" />
-                <span class="mx-1 text-uppercase">or</span>
-                <hr class="border-top-gray flex-grow-1" />
-              </div>
-
+             
+              
+              
               <div class="form-group position-relative mt-3">
                 <label class="label-text">Sign in with Mobile</label>
                 <div class="input-group">
                   <select class="form-select country-code col-3" id="countryCode" name="countryCode">
-                    <option value="+91">ðŸ‡®ðŸ‡³ +91</option>
-                    <option value="+1">ðŸ‡ºðŸ‡¸ +1</option>
-                    <option value="+44">ðŸ‡¬ðŸ‡§ +44</option>
-                    <option value="+971">ðŸ‡¦ðŸ‡ª +971</option>
+                    <option value="+91"> +91</option>
+                    <option value="+1"> +1</option>
+                    <option value="+44"> +44</option>
+                    <option value="+971"> +971</option>
                   </select>
                   <input class="form-control form--control" type="text" name="loginPhone" id="loginPhone"
                     placeholder="Enter Mobile Number" />
-                  <button type="button" class="arrow-btn" onclick="showNextField('phone')">âžœ</button>
+                  <button type="button" class="arrow-btn" onclick="showNextField('phone')">→</button>
                 </div>
               </div>
 
@@ -107,6 +88,31 @@
                 </div>
               </div>
 
+              
+              <div class="d-flex align-items-center">
+                <hr class="border-top-gray flex-grow-1" />
+                <span class="mx-1 text-uppercase">or</span>
+                <hr class="border-top-gray flex-grow-1" />
+              </div>
+
+               <!-- Step 1: Username / Email / Mobile -->
+
+              <div class="form-group position-relative mt-4">
+                <label class="label-text">Sign in With E-mail / Username</label>
+                <input class="form-control form--control ps-3" type="text" name="loginEmail" id="loginEmail"
+                  placeholder="Enter E-mail Id / Username" />
+                <button type="button" class="arrow-btn" onclick="showNextField('email')">→</button>
+              </div>
+
+              <!-- Step 2: Hidden initially -->
+              <div class="form-group hidden" id="passwordBoxEmail">
+                <label class="label-text">Enter Password</label>
+                <div class="position-relative">
+                  <input class="form-control form--control ps-3" type="password" name="password"
+                    placeholder="Enter Password / OTP" />
+                </div>
+              </div>
+              
               <!-- Remember + Forgot -->
               <div class="form-group d-flex align-items-center justify-content-between hidden" id="rememberBox">
                 <div class="custom-control custom-checkbox">
@@ -149,6 +155,37 @@
 
 
   <script>
+document.addEventListener("DOMContentLoaded", function () {
+  const emailInput = document.getElementById("loginEmail");
+  const phoneInput = document.getElementById("loginPhone");
+  const countryCode = document.getElementById("countryCode");
+  const emailArrowBtn = document.querySelector("button.arrow-btn[onclick*='email']");
+  const phoneArrowBtn = document.querySelector("button.arrow-btn[onclick*='phone']");
+
+  emailInput.addEventListener("input", function () {
+    if (emailInput.value.trim() !== "") {
+      phoneInput.disabled = true;
+      countryCode.disabled = true;
+      phoneArrowBtn.disabled = true;
+    } else {
+      phoneInput.disabled = false;
+      countryCode.disabled = false;
+      phoneArrowBtn.disabled = false;
+    }
+  });
+
+  phoneInput.addEventListener("input", function () {
+    if (phoneInput.value.trim() !== "") {
+      emailInput.disabled = true;
+      emailArrowBtn.disabled = true;
+    } else {
+      emailInput.disabled = false;
+      emailArrowBtn.disabled = false;
+    }
+  });
+});
+
+
     function showNextField(type) {
       let loginId = "";
 
@@ -183,7 +220,7 @@
       }
 
       // hide arrows
-      document.querySelectorAll(".arrow-btn").forEach(btn => btn.style.display = "none");
+   
     }
 
 
@@ -201,6 +238,7 @@
         .then(data => {
           if (data.success) {
             // turn passwordBox into OTP box
+            //   document.querySelectorAll(".arrow-btn").forEach(btn => btn.style.display = "none");
             document.querySelector("#passwordBoxPhone label").innerText = "Enter OTP";
             document.querySelector("#passwordBoxPhone input").setAttribute("type", "text");
             document.querySelector("#passwordBoxPhone input").setAttribute("placeholder", "Enter OTP");

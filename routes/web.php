@@ -19,7 +19,7 @@ use App\Http\Controllers\Admin\{
     AccountDeletionRequestController,
     CustomerController,
     SettingController,
-    // PackageController
+    PackageController
 };
 
 /*
@@ -166,7 +166,7 @@ Route::group(['middleware' => 'auth'], function () {
         Route::resource('blogs', BlogController::class);
         Route::resource('client-reels', ClientReelController::class);
 
-        // Route::resource('packages', PackageController::class);
+        Route::resource('packages', PackageController::class);
 
         Route::resource('deletion_reasons', \App\Http\Controllers\Admin\DeletionReasonController::class);
 

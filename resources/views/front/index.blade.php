@@ -2052,7 +2052,134 @@
   }
 </style>
 
+<style>
+    .wishlist-page{
+     width: 93%;
+    margin: auto;
+    margin-top: 30px;
+}
+.wishlist-card{
+    width: 100%;
+    display: grid;
+    grid-template-columns: 1fr 1fr 1fr;
+    gap: 20px;
+    margin-top: 40px;
+    padding-bottom: 50px;
+}
+.wishlist-product-card{
+    width: 100%;
+    height: 560px;
+     background: white;
+            padding: 10px;
+            border-radius: 10px;
+            box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+}
+.wishlist-product-card img{
+    width: 100%;
+    height: 270px;
+}
+.wishlist-budge{
+    position: relative;     top: -264px;
+    left: 6px;
+}
+.budge-active{
+    width: fit-content;
+    padding: 2px 10px;
+    background-color: #0080002b;
+    color: green;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    border-radius: 4px;
+}
+.budge-active p{
+    margin: 0;
+}
+.wishlist-button{
+    width: 100%;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+   
+}
+.wishlist-button p{
+    width: 50%;
+    margin: 0;
+     padding: 0px 10px;
+    border: 1px solid lightgray;
+   background: #a19f9f33;
+}
+.wishlist-button .budge-active1 p{
+    width: fit-content;
+    padding: 2px 10px;
+    background-color: #0080002b;
+    color: green;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    border-radius: 4px;
+}
+.wishlist-item-card{
+    width: 100%;
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 10px;
+    margin-top: 10px;
+}
+.wishlist-left{
+    width: 100%;
+    height: 60px;
+    background-color: #d3d3d32b;
+    border-radius: 3px;
+    padding: 10px;
+    display: flex;
+    align-items: center;
+    gap: 10px;
 
+}
+.wishlist-price button{
+    background-color: #000;
+    color: #fff;
+    border: none;
+    border-radius: 3px;
+    padding: 0px 20px;
+}
+ .product-details-hover {
+            padding: 10px;
+            display: block; /* Default visible */
+            transition: opacity 0.3s ease;
+                margin-top: -20px;
+        }
+        .wishlist-product-card:hover .product-details-hover {
+            display: none; /* Hide on card hover */
+        }
+        .more-info {
+            display: none;
+            padding: 10px;
+             margin-top: -20px;
+            /* position: absolute;
+            bottom: 0;
+            left: 0;
+            width: 100%; */
+            /* background: white;
+            padding: 10px;
+            border-radius: 0 0 10px 10px;
+            box-shadow: 0 -5px 10px rgba(0, 0, 0, 0.1); */
+            text-align: left;
+            z-index: 1; /* Ensure it stays above other content */
+            transition: transform 0.3s ease;
+            transform: translateY(100%);
+        }
+        .wishlist-product-card:hover .more-info {
+            display: block;
+            transform: translateY(0);
+        }
+        @keyframes slideUp {
+            from { transform: translateY(100%); }
+            to { transform: translateY(0); }
+        }
+
+</style>
 
 @section('content')
 
@@ -2791,7 +2918,100 @@
             @endif
           </div>
         @endforeach
+<div class="wishlist-card">
+                    <div class="wishlist-product-card">
+                        <img
+                            src="https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcThez8EsMExS0cJzMTvAM6OlRj9d9SecStl6g&s">
+                         <div class="wishlist-budge">
+                                <div class="d-flex justify-content-between align-items-center">
+                                    <div class="budge-active">
+                                        <p><i class="fa-solid fa-circle-check"></i> Active</p>
+                                    </div>
+                                    <h4 class="m-0" style="font-size: 24px;padding-right: 15px;"><i
+                                            class="fa-regular fa-heart"></i></h4>
 
+                                </div>
+
+                            </div>
+                            <div class="product-details-hover">
+                          
+
+                            <div class="wishlist-button">
+                                <p>Website</p>
+                                <div class="budge-active1">
+                                        <p><i class="fa-solid fa-circle-check"></i> Verified</p>
+                                    </div>
+
+                            </div>
+                            <h3 class="mt-2 " style="color: #000;">Demo Content</h3>
+                            <div class="d-flex justify-content-between align-items-center">
+                                <p class="m-0">By Rohan Wagha</p>
+                                <p class="m-0" style="color: #007bff;"><i class="fa-solid fa-eye"></i> 10</p>
+                            </div>
+                            <div class="wishlist-item-card">
+                                <div class="wishlist-left">
+                                    <p class="m-0" style="color: green;"><i class="fa-solid fa-dollar-sign"></i></p>
+                                    <div class="d-flex flex-column ">
+                                        <p class="m-0" style="font-size: 16px;">Revenue</p>
+                                        <h5 class="m-0" style="color: #000 ;font-size: 16px;">45/mo</h5>
+                                    </div>
+
+                                </div>
+                                <div class="wishlist-left">
+                                    <p class="m-0" style="color: rgb(17, 96, 216);"><i class="fa-solid fa-eye"></i></p>
+                                    <div class="d-flex flex-column ">
+                                        <p class="m-0" style="font-size: 16px;">Traffic</p>
+                                        <h5 class="m-0" style="color: #000 ;font-size: 16px;">4597/mo</h5>
+                                    </div>
+
+                                </div>
+
+                            </div>
+                            <div class="wishlist-price d-flex justify-content-between mt-3">
+                                <h2 style="color: #000;"><i class="fa-solid fa-indian-rupee-sign"></i>10,000</h2>
+                                <button> View Detail</button>
+
+                            </div>
+                             
+                        </div>
+                        <div class="more-info" data-aos="fade-up" data-aos-duration="500">
+            
+                           
+                            <h3 class="mt-2" style="color: #000;">More Information</h3>
+                            <p style="font-size: 13px;">Free consultation | Fast Approval | 100% Transparent Process | No Hidden Cost</p>
+                            <div class="d-flex justify-content-between align-items-center">
+                                <p class="m-0">By Rohan Wagha</p>
+                                <p class="m-0" style="color: #007bff;"><i class="fa-solid fa-eye"></i> 10</p>
+                            </div>
+                            <div class="wishlist-item-card">
+                                <div class="wishlist-left">
+                                    <p class="m-0" style="color: green;"><i class="fa-solid fa-dollar-sign"></i></p>
+                                    <div class="d-flex flex-column ">
+                                        <p class="m-0" style="font-size: 16px;">Revenue</p>
+                                        <h5 class="m-0" style="color: #000 ;font-size: 16px;">45/mo</h5>
+                                    </div>
+
+                                </div>
+                                <div class="wishlist-left">
+                                    <p class="m-0" style="color: rgb(17, 96, 216);"><i class="fa-solid fa-eye"></i></p>
+                                    <div class="d-flex flex-column ">
+                                        <p class="m-0" style="font-size: 16px;">Traffic</p>
+                                        <h5 class="m-0" style="color: #000 ;font-size: 16px;">4597/mo</h5>
+                                    </div>
+
+                                </div>
+
+                            </div>
+                             <div class="wishlist-price d-flex justify-content-between mt-3">
+                                <h2 style="color: #000;"><i class="fa-solid fa-indian-rupee-sign"></i>10,000</h2>
+                                <button> View Detail</button>
+
+                            </div>
+            </div>
+                    </div>
+                   
+
+                </div>
         <div class="view-more-button">
           <button href="{{ Route('listing-list') }}" class="flippa-btn filled">View All Listings</button>
         </div>

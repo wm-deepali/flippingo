@@ -4,6 +4,388 @@
   {{ $page->meta_title ?? 'Flippingo' }}
 @endsection
 
+<style>
+    .purchase-card {
+  background: #fff;
+  border-radius: 12px;
+  box-shadow: 0 4px 12px rgba(0,0,0,0.08);
+  padding: 20px;
+  width: 100%;
+  max-width: 360px;
+  font-family: 'Inter', sans-serif;
+}
+
+.purchase-title {
+  font-size: 18px;
+  font-weight: 600;
+  margin-bottom: 15px;
+  color: #333;
+}
+
+/* Price Section */
+.purchase-price-box {
+  background: linear-gradient(135deg, #e0f0ff, #f0f8ff);
+  border-radius: 10px;
+  padding: 16px;
+  margin-bottom: 20px;
+  text-align: center;
+}
+
+.purchase-price {
+  font-size: 28px;
+  font-weight: 700;
+  color: #1a73e8;
+  margin: 0;
+}
+
+.purchase-secure {
+  margin: 6px 0 2px;
+  font-size: 14px;
+  font-weight: 600;
+  color: #444;
+}
+
+.purchase-note {
+  font-size: 12px;
+  color: #666;
+  display: block;
+}
+
+/* Wallet Box */
+.purchase-wallet-box {
+  background: #f0f7ff;
+  border-radius: 8px;
+  padding: 12px;
+  margin-bottom: 15px;
+}
+
+.purchase-wallet-title {
+  font-size: 14px;
+  font-weight: 600;
+  color: #444;
+  margin: 0 0 4px;
+}
+
+.purchase-wallet-amount {
+  font-size: 16px;
+  font-weight: 700;
+  color: #1a73e8;
+}
+
+/* Warning Box */
+.purchase-warning-box {
+  background: #fff7e6;
+  border: 1px solid #ffcd94;
+  border-radius: 8px;
+  padding: 12px;
+  margin-bottom: 15px;
+}
+
+.purchase-warning-title {
+  font-size: 14px;
+  font-weight: 600;
+  color: #d97706;
+  margin: 0 0 6px;
+}
+
+.purchase-warning-text {
+  font-size: 13px;
+  color: #555;
+}
+
+/* Buttons */
+.purchase-btn {
+  width: 100%;
+  background: #1a73e8;
+  color: #fff;
+  border: none;
+  padding: 12px;
+  border-radius: 8px;
+  font-size: 15px;
+  font-weight: 600;
+  cursor: pointer;
+  transition: background 0.3s;
+  margin-bottom: 12px;
+}
+
+.purchase-btn:hover {
+  background: #1557b0;
+}
+
+.purchase-wishlist-btn {
+  width: 100%;
+  background: #f9fafb;
+  border: 1px solid #ddd;
+  padding: 10px;
+  border-radius: 8px;
+  font-size: 14px;
+  font-weight: 500;
+  color: #333;
+  cursor: pointer;
+  transition: background 0.3s;
+}
+
+.purchase-wishlist-btn:hover {
+  background: #f1f1f1;
+}
+
+.performance-card {
+  background: #fff;
+  border: 1px solid #eee;
+  border-radius: 12px;
+  padding: 20px;
+  margin-top: 20px;
+  font-family: 'Inter', sans-serif;
+  box-shadow: 0 3px 8px rgba(0,0,0,0.05);
+}
+
+.performance-title {
+  font-size: 16px;
+  font-weight: 700;
+  color: #333;
+  margin-bottom: 15px;
+  display: inline-block;
+  background: #1a73e8;
+  color: #fff;
+  padding: 6px 14px;
+  border-radius: 6px;
+}
+
+.performance-metrics {
+  display: flex;
+  gap: 16px;
+  margin-bottom: 15px;
+}
+
+.performance-box {
+  flex: 1;
+  text-align: center;
+  border-radius: 10px;
+  padding: 18px 12px;
+  min-height: 120px;
+}
+
+.performance-revenue {
+  background: #eafbf0;
+  color: #166534;
+}
+
+.performance-visitors {
+  background: #eef5ff;
+  color: #1a56db;
+}
+
+.performance-icon {
+  font-size: 28px;
+  margin-bottom: 8px;
+}
+
+.performance-value {
+  font-size: 18px;
+  font-weight: 700;
+  margin: 0;
+}
+
+.performance-label {
+  font-size: 13px;
+  color: #555;
+}
+
+.performance-footer {
+  border-top: 1px solid #eee;
+  padding-top: 10px;
+  font-size: 13px;
+  color: #666;
+}
+
+.performance-footer span {
+  font-weight: 600;
+  display: block;
+  margin-bottom: 5px;
+}
+.seller-card {
+  background: #fff;
+  border: 1px solid #eee;
+  border-radius: 12px;
+  padding: 18px;
+  font-family: 'Inter', sans-serif;
+  box-shadow: 0 3px 8px rgba(0,0,0,0.05);
+  margin-top: 20px;
+}
+
+.seller-title {
+  font-size: 16px;
+  font-weight: 700;
+  color: #333;
+  margin-bottom: 12px;
+}
+
+.seller-box {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  background: #f5f7ff;
+  padding: 12px;
+  border-radius: 10px;
+  margin-bottom: 15px;
+}
+
+.seller-img {
+  width: 50px;
+  height: 50px;
+  border-radius: 50%;
+}
+
+.seller-details {
+  flex: 1;
+}
+
+.seller-name {
+  font-size: 15px;
+  font-weight: 600;
+  margin: 0;
+}
+
+.seller-status {
+  font-size: 13px;
+  padding: 3px 8px;
+  border-radius: 6px;
+  font-weight: 500;
+}
+
+.seller-status.online {
+  background: #e6f7f0;
+  color: #16a34a;
+}
+
+.seller-status.offline {
+  background: #f2f4f7;
+  color: #555;
+}
+
+.seller-rating {
+  background: #fff9f3;
+  border-radius: 10px;
+  padding: 12px;
+}
+
+.seller-rating-header {
+  font-size: 14px;
+  font-weight: 600;
+  margin-bottom: 10px;
+}
+
+.seller-rating-header span {
+  font-weight: 400;
+  color: #555;
+}
+
+.seller-rating-breakdown {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+}
+
+.seller-rating-row {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  font-size: 13px;
+}
+
+.seller-bar {
+  flex: 1;
+  height: 6px;
+  background: #eee;
+  border-radius: 4px;
+  overflow: hidden;
+}
+
+.seller-fill {
+  height: 100%;
+  background: #fbbf24;
+}
+.seller-info-card {
+    border: 1px solid #eee;
+    border-radius: 10px;
+    padding: 15px;
+    background: #fff;
+    box-shadow: 0 2px 6px rgba(0,0,0,0.05);
+    max-width: 350px;
+}
+
+.seller-header {
+    display: flex;
+    align-items: center;
+    gap: 15px;
+}
+
+.seller-photo {
+    width: 70px;
+    height: 70px;
+    border-radius: 50%;
+    object-fit: cover;
+    border: 2px solid #ddd;
+}
+
+.seller-details {
+    flex: 1;
+}
+
+.seller-name {
+    margin: 0;
+    font-size: 18px;
+    font-weight: 600;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+}
+
+.verified-tag {
+    background: #28a745;
+    color: #fff;
+    font-size: 12px;
+    padding: 2px 6px;
+    border-radius: 5px;
+}
+
+.seller-location {
+    margin: 5px 0 0;
+    font-size: 14px;
+    color: #666;
+}
+
+.seller-location i {
+    color: #d33;
+    margin-right: 5px;
+}
+
+.seller-meta {
+    margin-top: 15px;
+}
+
+.meta-box {
+    background: #f8f9fa;
+    border-radius: 8px;
+    padding: 8px 12px;
+    text-align: center;
+    border: 1px solid #eee;
+}
+
+.meta-box small {
+    display: block;
+    font-size: 12px;
+    color: #888;
+}
+
+.meta-box p {
+    margin: 0;
+    font-size: 14px;
+    font-weight: 500;
+}
+
+
+</style>
 @section('content')
   @php
     $isLoggedIn = Auth::guard('customer')->check();
@@ -435,133 +817,212 @@
                                       </div>
                                     </div> -->
             </div>
+            <div class="performance-card">
+  <h3 class="performance-title"> Performance Metrics</h3>
+
+  <div class="performance-metrics">
+    <!-- Revenue Box -->
+    <div class="performance-box performance-revenue">
+      <div class="performance-icon">$</div>
+      <p class="performance-value">Not disclosed</p>
+      <span class="performance-label">Monthly Revenue</span>
+    </div>
+
+    <!-- Visitors Box -->
+    <div class="performance-box performance-visitors">
+      <div class="performance-icon">👥</div>
+      <p class="performance-value">Not disclosed</p>
+      <span class="performance-label">Monthly Visitors</span>
+    </div>
+  </div>
+
+  <!-- Footer Note -->
+  <div class="performance-footer">
+    <span>📊 Performance Data</span>
+    <p>These metrics are self-reported by the seller and represent recent performance. Actual results may vary.</p>
+  </div>
+</div>
+
           </div>
           <div class="col-lg-4">
             <div class="sidebar">
 
-              <div class="card">
-                <div class="card-body">
-                  <h4 class="card-title border-bottom pb-3"
-                    style="font-size: 30px; font-weight: 700; padding-left: 20px;">
-                    ₹{{ number_format($offeredPrice) }}</h4>
+              <!--<div class="card">-->
+              <!--  <div class="card-body">-->
+              <!--    <h4 class="card-title border-bottom pb-3"-->
+              <!--      style="font-size: 30px; font-weight: 700; padding-left: 20px;">-->
+              <!--      ₹{{ number_format($offeredPrice) }}</h4>-->
 
                   <!-- end form-group -->
 
                   <!-- end form-group -->
 
-                  <div class="card-body">
+              <!--    <div class="card-body">-->
 
-                    <div class="media mt-4">
-                      <img src="{{ asset('storage/' . ($submission->customer->profile_pic ?? 'defaults/avatar.png')) }}"
-                        alt="avatar" class="user-avatar flex-shrink-0 me-3" />
-                      <div class="media-body align-self-center">
-                        <h4 class="font-size-18 font-weight-semi-bold mb-1">
-                          <a href="{{ Route('user-profile') }}" class="btn-link text-black">
-                            {{ $submission->customer->first_name ?? '-' }}
-                            {{ $submission->customer->last_name ?? '-' }}</a>
-                        </h4>
-                        <p class="font-size-14">
-                          Member since: {{ $submission->customer->created_at->diffForHumans() }}
-                        </p>
+              <!--      <div class="media mt-4">-->
+              <!--        <img src="{{ asset('storage/' . ($submission->customer->profile_pic ?? 'defaults/avatar.png')) }}"-->
+              <!--          alt="avatar" class="user-avatar flex-shrink-0 me-3" />-->
+              <!--        <div class="media-body align-self-center">-->
+              <!--          <h4 class="font-size-18 font-weight-semi-bold mb-1">-->
+              <!--            <a href="{{ Route('user-profile') }}" class="btn-link text-black">-->
+              <!--              {{ $submission->customer->first_name ?? '-' }}-->
+              <!--              {{ $submission->customer->last_name ?? '-' }}</a>-->
+              <!--          </h4>-->
+              <!--          <p class="font-size-14">-->
+              <!--            Member since: {{ $submission->customer->created_at->diffForHumans() }}-->
+              <!--          </p>-->
 
-                        <p class="font-size-14">Account Type: {{ $submission->customer->account_type }}</p>
-                      </div>
-                    </div>
-                    <!-- <ul class="list-items mt-4">
-                                                                                <li>
-                                                                                  <span
-                                                                                  class="fal fa-envelope icon-element icon-element-sm bg-white shadow-sm text-black me-2 font-size-14"
-                                                                                  ></span
-                                                                                  ><a href="mailto:example@gmail.com">example@gmail.com</a>
-                                                                                </li>
-                                                                                <li>
-                                                                                  <span
-                                                                                  class="fal fa-phone icon-element icon-element-sm bg-white shadow-sm text-black me-2 font-size-14"
-                                                                                  ></span>
-                                                                                  +7(111)123456789
-                                                                                </li>
-                                                                                <li>
-                                                                                  <span
-                                                                                  class="fal fa-external-link icon-element icon-element-sm bg-white shadow-sm text-black me-2 font-size-14"
-                                                                                  ></span
-                                                                                  ><a href="#">www. Flippingo.com</a>
-                                                                                </li>
-                                                                                </ul> -->
-                  </div>
+              <!--          <p class="font-size-14">Account Type: {{ $submission->customer->account_type }}</p>-->
+              <!--        </div>-->
+              <!--      </div>-->
+                  
+              <!--    </div>-->
                   <!-- end card-body -->
 
                   <!-- end quantity-wrap -->
-                  <div class="d-flex gap-3">
-                    <a href="" class="theme-btn w-50" data-bs-toggle="modal" data-bs-target="#shareModal">Chat</a>
-                    <a id="enquireBtn" class="theme-btn w-50" type="button" data-bs-toggle="modal"
-                      data-bs-target="#enquiryModal">Send Enquiry</a>
-                  </div>
-                </div>
+              <!--    <div class="d-flex gap-3">-->
+              <!--      <a href="" class="theme-btn w-50" data-bs-toggle="modal" data-bs-target="#shareModal">Chat</a>-->
+              <!--      <a id="enquireBtn" class="theme-btn w-50" type="button" data-bs-toggle="modal"-->
+              <!--        data-bs-target="#enquiryModal">Send Enquiry</a>-->
+              <!--    </div>-->
+              <!--  </div>-->
                 <!-- end card-body -->
-              </div>
+              <!--</div>-->
               <!-- end card -->
 
               <!-- end card -->
 
 
-              <div class="card">
-                <div class="card-body">
-                  <h4 class="card-title mb-3">Hosted by</h4>
-                  <div class="media mt-4">
-                    <img src="{{ asset('assets') }}/images/small-team1.jpg" alt="avatar"
-                      class="user-avatar flex-shrink-0 me-3" />
-                    <div class="media-body align-self-center">
-                      <h4 class="font-size-18 font-weight-semi-bold mb-1">
-                        <a href="{{ Route('user-profile') }}" class="btn-link text-black">Mark Hardson</a>
-                      </h4>
-                      <p class="font-size-14">20 listing hosted</p>
-                    </div>
-                  </div>
-                  <ul class="list-items mt-4">
-                    <li>
-                      <span
-                        class="fal fa-envelope icon-element icon-element-sm bg-white shadow-sm text-black me-2 font-size-14"></span><a
-                        href="mailto:example@gmail.com">example@gmail.com</a>
-                    </li>
-                    <li>
-                      <span
-                        class="fal fa-phone icon-element icon-element-sm bg-white shadow-sm text-black me-2 font-size-14"></span>
-                      +7(111)123456789
-                    </li>
-                    <li>
-                      <span
-                        class="fal fa-external-link icon-element icon-element-sm bg-white shadow-sm text-black me-2 font-size-14"></span><a
-                        href="#">www. Flippingo.com</a>
-                    </li>
-                  </ul>
-                </div>
+              <!--<div class="card">-->
+              <!--  <div class="card-body">-->
+              <!--    <h4 class="card-title mb-3">Hosted by</h4>-->
+              <!--    <div class="media mt-4">-->
+              <!--      <img src="{{ asset('assets') }}/images/small-team1.jpg" alt="avatar"-->
+              <!--        class="user-avatar flex-shrink-0 me-3" />-->
+              <!--      <div class="media-body align-self-center">-->
+              <!--        <h4 class="font-size-18 font-weight-semi-bold mb-1">-->
+              <!--          <a href="{{ Route('user-profile') }}" class="btn-link text-black">Mark Hardson</a>-->
+              <!--        </h4>-->
+              <!--        <p class="font-size-14">20 listing hosted</p>-->
+              <!--      </div>-->
+              <!--    </div>-->
+              <!--    <ul class="list-items mt-4">-->
+              <!--      <li>-->
+              <!--        <span-->
+              <!--          class="fal fa-envelope icon-element icon-element-sm bg-white shadow-sm text-black me-2 font-size-14"></span><a-->
+              <!--          href="mailto:example@gmail.com">example@gmail.com</a>-->
+              <!--      </li>-->
+              <!--      <li>-->
+              <!--        <span-->
+              <!--          class="fal fa-phone icon-element icon-element-sm bg-white shadow-sm text-black me-2 font-size-14"></span>-->
+              <!--        +7(111)123456789-->
+              <!--      </li>-->
+              <!--      <li>-->
+              <!--        <span-->
+              <!--          class="fal fa-external-link icon-element icon-element-sm bg-white shadow-sm text-black me-2 font-size-14"></span><a-->
+              <!--          href="#">www. Flippingo.com</a>-->
+              <!--      </li>-->
+              <!--    </ul>-->
+              <!--  </div>-->
                 <!-- end card -->
-              </div>
+              <!--</div>-->
 
               @php
                 $offeredPrice = (float) ($submittedValues['offered_price']['value'] ?? 0);
               @endphp
 
-              <div class="card mt-4">
-                <div class="card-body">
-                  <button class="btn btn-primary w-100 mb-2">Add Funds to Wallet</button>
+              <!--<div class="card mt-4">-->
+              <!--  <div class="card-body">-->
+              <!--    <button class="btn btn-primary w-100 mb-2">Add Funds to Wallet</button>-->
 
-                  @if($walletBalance < $offeredPrice)
-                    <div class="alert alert-warning p-3 mb-3 d-flex flex-column align-items-start" role="alert"
-                      style="border-radius: 5px;">
-                      <strong>Insufficient Balance</strong>
-                      <small>Your wallet balance is ₹{{ number_format($walletBalance, 2) }}.</small>
-                      <a href="#" class="btn btn-link p-0 mt-1">Add Balance</a>
-                    </div>
-                  @endif
-                  <a href="{{ route('checkout', ['submission_id' => $submission->id]) }}"
-                    class="btn btn-success w-100 mb-2">Buy Online</a>
-                  <button class="btn btn-outline-secondary w-100">Add to Wishlist</button>
-                </div>
-              </div>
+              <!--    @if($walletBalance < $offeredPrice)-->
+              <!--      <div class="alert alert-warning p-3 mb-3 d-flex flex-column align-items-start" role="alert"-->
+              <!--        style="border-radius: 5px;">-->
+              <!--        <strong>Insufficient Balance</strong>-->
+              <!--        <small>Your wallet balance is ₹{{ number_format($walletBalance, 2) }}.</small>-->
+              <!--        <a href="#" class="btn btn-link p-0 mt-1">Add Balance</a>-->
+              <!--      </div>-->
+              <!--    @endif-->
+              <!--    <a href="{{ route('checkout', ['submission_id' => $submission->id]) }}"-->
+              <!--      class="btn btn-success w-100 mb-2">Buy Online</a>-->
+              <!--    <button class="btn btn-outline-secondary w-100">Add to Wishlist</button>-->
+              <!--  </div>-->
+              <!--</div>-->
 
               <!-- end sidebar -->
             </div>
+            <div class="purchase-card">
+  <h3 class="purchase-title">Purchase Options</h3>
+
+  <!-- Price Box -->
+  <div class="purchase-price-box">
+    <p class="purchase-price">₹{{ number_format($offeredPrice) }}</p>
+    <p class="purchase-secure">🔒 Secure Escrow Transaction</p>
+    <span class="purchase-note">Your payment is held securely by Flippingo until you confirm satisfaction. We take care of your purchase.</span>
+  </div>
+<a href="{{ route('checkout', ['submission_id' => $submission->id]) }}"
+                    class="btn btn-success w-100 mb-2">Buy Online</a>
+                    <div class="d-flex align-items-center">
+                <hr class="border-top-gray flex-grow-1" />
+                <span class="mx-1 text-uppercase">or</span>
+                <hr class="border-top-gray flex-grow-1" />
+              </div>
+  <!-- Wallet Balance -->
+  <div class="purchase-wallet-box">
+    <p class="purchase-wallet-title">💳 Your Wallet Balance</p>
+    <p class="purchase-wallet-amount">₹0</p>
+  </div>
+
+  <!-- Insufficient Balance -->
+  <div class="purchase-warning-box">
+    <p class="purchase-warning-title">⚠️ Insufficient Balance</p>
+    <span class="purchase-warning-text">You need an additional <b>₹1,000</b> to complete this purchase.</span>
+  </div>
+
+  <!-- Add Money Button -->
+  <button class="purchase-btn">+ Add ₹1,000 to Wallet</button>
+
+  <!-- Wishlist -->
+  <button class="purchase-wishlist-btn">♡ Add to Wishlist</button>
+</div>
+<div class="seller-card">
+  <h3 class="seller-title">👤 Seller Information</h3>
+
+  <!-- Seller Box -->
+ <div class="seller-info-card">
+    <div class="seller-header">
+        <img src="{{ asset('assets') }}/images/small-team1.jpg" alt="Seller Photo" class="seller-photo">
+        <div class="seller-details">
+            <h4 class="seller-name">
+                John Doe 
+                <span class="verified-tag">✔ Verified</span>
+            </h4>
+            <p class="seller-location"><i class="fas fa-map-marker-alt"></i> New Delhi, India</p>
+            <span class="seller-status online">Online</span>
+        </div>
+         
+    </div>
+    
+    <div class="seller-meta">
+        <div class="meta-box">
+            <small>Member Since</small>
+            <p>Jan 2021</p>
+        </div>
+    </div>
+</div>
+
+
+
+
+</div>
+    <div class="d-flex flex-column gap-3 mt-4">
+                    <a href="" class="theme-btn w-100" data-bs-toggle="modal" data-bs-target="#shareModal">Chat</a>
+                    <a id="enquireBtn" class="theme-btn w-100" type="button" data-bs-toggle="modal"
+                      data-bs-target="#enquiryModal" style="background:gray;">Send Enquiry</a>
+                  </div>
+
+
+
             <!-- end col-lg-4 -->
           </div>
           <!-- end row -->
