@@ -25,6 +25,7 @@
     crossorigin="anonymous" referrerpolicy="no-referrer" />
 
   <!-- Template CSS Files -->
+  <link rel="stylesheet" href="{{ asset('assets') }}/css/font-awesome.min.css" />
   <link rel="stylesheet" href="{{ asset('assets') }}/css/bootstrap.min.css" />
   <link rel="stylesheet" href="{{ asset('assets') }}/css/select2.min.css" />
   <link rel="stylesheet" href="{{ asset('assets') }}/css/font-awesome.min.css" />
@@ -34,11 +35,29 @@
   <link rel="stylesheet" href="{{ asset('assets') }}/css/jquery.fancybox.css" />
   <link rel="stylesheet" href="{{ asset('assets') }}/css/style.css" />
   <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" rel="stylesheet" />
+
   <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/swiper@10/swiper-bundle.min.css" />
   <script src="https://cdn.jsdelivr.net/npm/swiper@10/swiper-bundle.min.js"></script>
 
   <!-- Optional: Google Fonts -->
   <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600&display=swap" rel="stylesheet">
+  <link href="https://pro.fontawesome.com/releases/v5.15.4/css/all.css" rel="stylesheet">
+
+  <style>
+    .profile-link {
+      text-decoration: none;
+      color: #333;
+      font-weight: 500;
+    }
+
+    .profile-link:hover {
+      color: #007bff;
+    }
+
+    .dropdown-menu {
+      min-width: 150px;
+    }
+  </style>
 
 </head>
 
@@ -107,7 +126,7 @@
               <div class="form-group">
                 <span class="fal fa-search form-icon"></span>
                 <input class="form-control form--control" type="text" placeholder="What are you looking for?"
-                  style="width: 105%;" />
+                  style="width: 105%;height:45px;" />
               </div>
             </div>
             <!-- end col-lg-3 -->
@@ -181,21 +200,70 @@
               </li>
             </ul>
           </nav>  -->
+
+
           <div class="nav-right-content d-flex align-items-center">
-            <div class="author-access-list me-3">
-              <a href="{{ Route('authentication-signin')}}">Login</a>
-              <span class="or-text">or</span>
-              <a href="{{ Route('authentication-signup') }}">Sign Up</a>
-            </div>
-            <a href="{{ Route('add-listing') }}" class="theme-btn" style="padding: 10px 20px;">
-              <!-- <span class="fal fa-plus me-1"></span> -->
-              Sell Now
+
+            @php
+              $customer = Auth::guard('customer')->user();
+            @endphp
+
+            @if($customer)
+              <div class="dropdown">
+                <a href="#" class="d-flex align-items-center profile-link" id="profileDropdown" data-bs-toggle="dropdown"
+                  aria-expanded="false">
+                  <img
+                    src="{{ $customer->profile_pic ? asset('storage/' . $customer->profile_pic) : asset('default-profile.png') }}"
+                    alt="Profile Photo" class="rounded-circle me-2" style="width:43px; height:43px; object-fit:cover;">
+                  <span class="profile-name" style="color:#fff;">{{ $customer->first_name ?? 'User' }}
+                    {{ $customer->last_name ?? '' }}</span>
+                  <i class="fas fa-caret-down ms-2" style="color:#fff;"></i>
+                </a>
+                <ul class="dropdown-menu" aria-labelledby="profileDropdown">
+                  <li><a class="dropdown-item" href="{{ route('dashboard.index') }}">Dashboard</a></li>
+                  <li><a class="dropdown-item" href="{{ route('account-logout') }}">Logout</a></li>
+                </ul>
+              </div>
+            @else
+              <div class="author-access-list me-3">
+                <a href="{{ Route('authentication-signin')}}">Login</a>
+                <span class="or-text">or</span>
+                <a href="{{ Route('authentication-signup') }}">Sign Up</a>
+              </div>
+            @endif
+
+            <!-- Sell Now Button -->
+            <a href="{{ Route('add-listing') }}" class="theme-btn ms-3" style="padding: 8px 35px;">
+              + Sell Now
             </a>
+
+            <!-- Side Menu -->
             <div class="side-menu-open ms-2">
               <i class="fal fa-bars"></i>
             </div>
-            <!-- end side-menu-open -->
           </div>
+
+
+
+          <!--<div class="nav-right-content d-flex align-items-center">-->
+          <!--  <div class="author-access-list me-3">-->
+          <!--    <a href="{{ Route('authentication-signin')}}">Login</a>-->
+          <!--    <span class="or-text">or</span>-->
+          <!--    <a href="{{ Route('authentication-signup') }}">Sign Up</a>-->
+          <!--  </div>-->
+          <!--  <a href="{{ Route('add-listing') }}" class="theme-btn" style="padding: 10px 20px;">-->
+          <!-- <span class="fal fa-plus me-1"></span> -->
+          <!--    Sell Now-->
+          <!--  </a>-->
+          <!--  <div class="side-menu-open ms-2">-->
+          <!--    <i class="fal fa-bars"></i>-->
+          <!--  </div>-->
+          <!-- end side-menu-open -->
+          <!--</div>-->
+
+
+
+
           <!-- end nav-right-content -->
         </div>
         <!-- end main-header-action-wrap -->
@@ -276,94 +344,129 @@
        START FOOTER AREA
 ================================= -->
   <section class="footer-area bg-gray padding-top-80px pattern-bg">
+    @php
+      $address = $footerSettings['footer_address'] ?? 'Old Palasia, Indore, MP, 452001, India';
+      $helpline = $footerSettings['footer_helpline'] ?? '+91 880977278';
+      $email = $footerSettings['footer_email'] ?? 'support@flippingo.com';
+      $whatsapp = $footerSettings['footer_whatsapp'] ?? '+91 880977278';
+      $logo = $footerSettings['footer_logo'] ?? 'assets/images/logo.png';
+    @endphp
+
+
     <div class="container">
       <div class="row">
-        <div class="col-lg-3 col-md-6">
-          <div class="footer-item">
-            <a href={{ Route('home') }} class="footer-logo mb-4 d-inline-block"><img
-                src="{{ asset('assets') }}/images/logo.png" alt="logo"
-                style="background-color: #000; border-radius: 7px; padding: 7px 10px;" /></a>
-            <p class="mb-4">
-              Flippingo is a platform for Posting Free Ads - it only takes a few simple steps! Select the right category
-              and publish your classified ad for free.
-            </p>
-            <div class="social-icons">
-              <a href="#"><i class="fab fa-facebook-f"></i></a>
-              <a href="#"><i class="fab fa-twitter"></i></a>
-              <a href="#"><i class="fab fa-instagram"></i></a>
-              <a href="#"><i class="fab fa-youtube"></i></a>
-            </div>
-          </div>
-          <!-- end footer-item -->
-        </div>
-        <!-- end col-lg-3 -->
+
+        <!-- Column 1: Quick Links -->
         <div class="col-lg-3 col-md-6">
           <div class="footer-item">
             <h4 class="footer__title mb-3">Quick Links</h4>
             <div class="stroke-shape mb-4"></div>
             <ul class="list-items list-items-underline">
-              <li><a href={{ Route('about-us') }}>About us</a></li>
-              <li><a href={{ Route('authentication-signup') }}>Sign up</a></li>
-              <li><a href="{{ Route('authentication-signin') }}">Log in</a></li>
-               <li><a href={{ Route('faq') }}>FAQ</a></li>
-              @php
-                    use App\Models\Page;
-                    $footerPages = Page::where('status', 'published')->get();
-                  @endphp
-                  @foreach($footerPages as $page)
-                    <li><a href="{{ route('page.show', $page->slug) }}">{{ $page->page_name }}</a></li>
-                  @endforeach
-              <!-- <li><a href="#">Help Center</a></li> -->
+              <li><a href="{{ Route('listing-list') }}">Browse Listing</a></li>
+              <li><a href="#">Pricing</a></li>
+              <li><a href="{{ Route('add-listing') }}">Sell Assets</a></li>
+              <li><a href="#">How it Works</a></li>
+              <li><a href="#">Our Services</a></li>
+              <li><a href="#">Resources</a></li>
             </ul>
           </div>
-          <!-- end footer-item -->
         </div>
-        <!-- end col-lg-3 -->
+
+        <!-- Column 2: Know More -->
         <div class="col-lg-3 col-md-6">
           <div class="footer-item">
-            <h4 class="footer__title mb-3">Categories</h4>
+            <h4 class="footer__title mb-3">Know More</h4>
             <div class="stroke-shape mb-4"></div>
             <ul class="list-items list-items-underline">
-              <li><a href="#">Website</a></li>
-              <li><a href="#">YouTube Channel</a></li>
-              <li><a href="#">Instagram Pages</a></li>
-              <li><a href="#">Telegram Account</a></li>
-              <li><a href="#">Facebook Account</a></li>
-
+              <li><a href="{{ Route('about-us') }}">About Us</a></li>
+              <li><a href="{{ Route('meet-our-team') }}">Meet Our Team</a></li>
+              <li><a href="#">Career with Us</a></li>
+              <li><a href="#">Insight</a></li>
+              <li><a href="#">Why Us</a></li>
+              <li><a href="{{ Route('contact-us') }}">Contact Us</a></li>
+              <li><a href="#">Feedback & Testimonials</a></li>
             </ul>
           </div>
-          <!-- end footer-item -->
         </div>
-        <!-- end col-lg-3 -->
+
+        <!-- Column 3: Help & Support -->
         <div class="col-lg-3 col-md-6">
           <div class="footer-item">
-            <h4 class="footer__title mb-3">Contact with Us</h4>
+            <h4 class="footer__title mb-3">Help & Support</h4>
             <div class="stroke-shape mb-4"></div>
-            <ul class="info-list">
-              <li>
-                <span class="fal fa-home icon me-2"></span> Old Palasia, Indore, MP, PIN Code – 452001, India - 2
-              </li>
-              <li>
-                <span class="fal fa-headphones icon me-2"></span>
-                <a href="#">+918809772278</a>
-              </li>
-              <li>
-                <span class="fal fa-envelope icon me-2"></span>
-                <a href="#">support@flippingo.com</a>
-              </li>
+            <ul class="list-items list-items-underline">
+
+              <li><a href="{{ Route('faq') }}">FAQ</a></li>
+              <li><a href="">Raise a Ticket</a></li>
+              <li><a href="{{ Route('blogs') }}">Blogs</a></li>
+              @php
+                use App\Models\Page;
+                $footerPages = Page::where('status', 'published')->get();
+              @endphp
+              @foreach($footerPages as $page)
+                <li><a href="{{ route('page.show', $page->slug) }}">{{ $page->slug }}</a></li>
+              @endforeach
             </ul>
           </div>
-          <!-- end footer-item -->
         </div>
-        <!-- end col-lg-3 -->
+
+        <!-- Column 4: Logo + Contact -->
+        <div class="col-lg-3 col-md-6">
+          <div class="footer-item">
+            <a href="{{ Route('home') }}" class="footer-logo mb-4 d-inline-block">
+              <img src="{{ asset('storage/' . setting('footer_logo', 'assets/images/logo.png')) }}" alt="logo"
+                style="background-color: #000; border-radius: 7px; padding: 7px 10px;" />
+            </a>
+            <ul class="info-list">
+              <li><span class="fas fa-map-marker-alt me-2"></span>
+                {{ setting('footer_address', 'Old Palasia, Indore, MP, 452001, India') }}</li>
+              <li><span class="fas fa-phone-alt me-2"></span> Helpline: <a
+                  href="tel:{{ preg_replace('/\D/', '', setting('footer_helpline', '+91880977278')) }}">{{ setting('footer_helpline', '+91 88097778') }}</a>
+              </li>
+              <li><span class="fas fa-envelope me-2"></span> <a
+                  href="mailto:{{ setting('footer_email', 'support@flippingo.com') }}">{{ setting('footer_email',
+                  'support@flippingo.com') }}</a></li>
+              <li><span class="fab fa-whatsapp me-2"></span> <a
+                  href="https://wa.me/{{ preg_replace('/\D/', '', setting('footer_whatsapp', '+91880977278')) }}"
+                  target="_blank">{{ setting('footer_whatsapp', '+91 88097778') }}</a></li>
+            </ul>
+            @php
+              use App\Models\UserSocialLink;
+              $socialLinks = UserSocialLink::first();
+            @endphp
+
+            <div class="social-icons mt-3">
+              <a href="{{ $socialLinks->facebook ?? "#"}}" target="_blank"><i class="fab fa-facebook-f"
+                  style="margin-top: 10px;"></i></a>
+
+              <a href="{{ $socialLinks->instagram ?? "#"}}" target="_blank"><i class="fab fa-instagram"
+                  style="margin-top: 10px;"></i></a>
+
+              <a href="{{ $socialLinks->linkedin ?? "#"}}" target="_blank"><i class="fab fa-linkedin-in"
+                  style="margin-top: 10px;"></i></a>
+
+              <a href="{{ $socialLinks->twitter ?? "#"}}" target="_blank"><i class="fab fa-twitter"
+                  style="margin-top: 10px;"></i></a>
+
+              <a href="{{ $socialLinks->youtube ?? "#"}}" target="_blank"><i class="fab fa-youtube"
+                  style="margin-top: 10px;"></i></a>
+
+              <a href="{{ $socialLinks->google_plus ?? "#"}}" target="_blank"><i class="fab fa-google-plus-g"
+                  style="margin-top: 10px;"></i></a>
+
+            </div>
+
+          </div>
+        </div>
+
       </div>
       <!-- end row -->
+
       <hr class="border-top-gray" />
       <div class="copy-right d-flex flex-wrap align-items-center justify-content-between pb-4">
         <p class="copy__desc py-2">
-          &copy; Copyright Dirto <span id="copyright-year"></span>. Made with
-          <span class="fas fa-heart bounce-anim"></span> by
-          <a href="https:// Flippingo.com/"> Flippingo</a>
+          &copy; <span id="copyright-year"></span> Flippingo. Made with
+          <span class="fas fa-heart bounce-anim"></span> by <a href="https://flippingo.com/">Flippingo</a>
         </p>
         <select class="select-picker select-picker-sm" data-width="130" data-size="5">
           <option value="1" selected>English</option>
@@ -374,10 +477,9 @@
           <option value="6">Turkish</option>
         </select>
       </div>
-      <!-- end copy-right -->
     </div>
-    <!-- end container -->
   </section>
+
   <!-- end footer-area -->
   <!-- ================================
        START FOOTER AREA

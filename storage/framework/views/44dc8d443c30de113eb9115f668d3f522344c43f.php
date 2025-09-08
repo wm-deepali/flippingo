@@ -121,6 +121,16 @@
           </ul>
         </li>
 
+          <li class="dropdown nav-item" data-menu="dropdown">
+          <a class="dropdown-toggle nav-link d-flex align-items-center" href="#" data-toggle="dropdown">
+            <span>Subscriptions</span>
+          </a>
+          <ul class="dropdown-menu">
+            <li><a class="dropdown-item d-flex align-items-center"
+                href="<?php echo e(route('admin.packages.index')); ?>"><span>Subscriptions Package</span></a></li>
+          </ul>
+        </li>
+
         <li class="dropdown nav-item" data-menu="dropdown">
           <a class="dropdown-toggle nav-link d-flex align-items-center" href="#" data-toggle="dropdown">
             <span>Submissions</span>

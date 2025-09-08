@@ -18,7 +18,8 @@ use App\Http\Controllers\Admin\{
     ClientReelController,
     AccountDeletionRequestController,
     CustomerController,
-    SettingController
+    SettingController,
+    // PackageController
 };
 
 /*
@@ -48,6 +49,11 @@ Route::group(['middleware' => 'auth'], function () {
 
     Route::get('/account-settings', [HomeController::class, 'profileSettings'])
         ->name('profile.account-setting');
+
+    Route::post('/admin/footer-contact/update', [HomeController::class, 'updateFooterContact'])
+        ->name('footer-contact.update')
+        ->middleware('auth');
+
 
     Route::post('social-form-submission', [HomeController::class, 'socialFormSubmit'])
         ->name('social-form.submit');
@@ -159,6 +165,8 @@ Route::group(['middleware' => 'auth'], function () {
         Route::post('blogs/update/{id}', [BlogController::class, 'update'])->name('blog-update');
         Route::resource('blogs', BlogController::class);
         Route::resource('client-reels', ClientReelController::class);
+
+        // Route::resource('packages', PackageController::class);
 
         Route::resource('deletion_reasons', \App\Http\Controllers\Admin\DeletionReasonController::class);
 

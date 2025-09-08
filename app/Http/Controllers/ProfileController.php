@@ -10,6 +10,7 @@ use Illuminate\Support\Facades\Hash;
 use App\Models\OTP;
 use Mail;
 use Storage;
+use App\Helpers\SmsHelper;
 
 class ProfileController extends Controller
 {
@@ -89,33 +90,20 @@ class ProfileController extends Controller
 
         if ($type === 'mobile') {
             // Send via SMS
-            $message = "{$otp} is the OTP to verify your Mobile Number at https://ashtonwell.com. Please do not share this OTP with anyone. Regards Ashton & Well";
-
-            $dlt_id = '1707175291422915659';
-            $pe_id = '1701175290968159932';
-            $request_parameter = [
-                'authkey' => '449195AevVjn7d6813877aP1',
-                'mobiles' => $value,
-                'sender' => 'ASHTWE',
-                'message' => urlencode($message),
-                'route' => '4',
-                'country' => '91',
-            ];
-            $url = "http://sms.webmingo.in/api/sendhttp.php?";
-            foreach ($request_parameter as $key => $val) {
-                $url .= $key . '=' . $val . '&';
-            }
-            $url .= 'DLT_TE_ID=' . $dlt_id . '&PE_ID=' . $pe_id;
-            $url = rtrim($url, "&");
-
             try {
-                $ch = curl_init();
-                curl_setopt($ch, CURLOPT_URL, $url);
-                curl_setopt($ch, CURLOPT_RETURNTRANSFER, 1);
-                curl_setopt($ch, CURLOPT_SSL_VERIFYPEER, false);
-                $output = curl_exec($ch);
-                curl_close($ch);
+                $message = "{$otp} is the OTP to verify your Mobile Number at https://ashtonwell.com. Please do not share this OTP with anyone. Regards Ashton & Well";
+
+                $response = SmsHelper::send($value, $message, 'verify_otp', [
+                    'otp' => $otp,
+                    'mobile' => $value,
+                    'website' => config('app.url'),
+                ]);
+
+                if (!$response) {
+                    return response()->json(['success' => false, 'message' => 'SMS sending failed!'], 500);
+                }
             } catch (\Exception $e) {
+                \Log::error("SMS OTP sending failed: " . $e->getMessage());
                 return response()->json(['success' => false, 'message' => 'SMS sending failed!'], 500);
             }
         } else {

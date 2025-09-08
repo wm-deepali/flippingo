@@ -5,40 +5,30 @@
 
 <?php $__env->stopSection(); ?>
 
+<style>
+  .country-code {
+    max-width: 120px;
+    border-radius: 6px 0 0 6px;
+    border-right: none;
+    background: #f9f9f9;
+    padding: 6px;
+    font-size: 14px;
+  }
+</style>
 <?php $__env->startSection('content'); ?>
   <!-- ================================
-                  START BREADCRUMB AREA
-                ================================= -->
-  <section class="breadcrumb-area bread-bg" style="margin-top: 50px;">
-    <div class="overlay"></div>
-    <!-- end overlay -->
-    <div class="container">
-      <div class="breadcrumb-content text-center">
-        <h2 class="sec__title text-white mb-3">Login</h2>
-        <ul class="bread-list">
-          <li><a href="<?php echo e(Route('home')); ?>">home</a></li>
-          <li>login</li>
-        </ul>
-      </div>
-      <!-- end breadcrumb-content -->
-    </div>
-    <!-- end container -->
-    <div class="bread-svg">
-      <svg viewBox="0 0 500 150" preserveAspectRatio="none">
-        <path d="M-4.22,89.30 C280.19,26.14 324.21,125.81 511.00,41.94 L500.00,150.00 L0.00,150.00 Z"></path>
-      </svg>
-    </div>
-    <!-- end bread-svg -->
-  </section>
+                                  START BREADCRUMB AREA
+                                ================================= -->
+
   <!-- end breadcrumb-area -->
   <!-- ================================
-                  END BREADCRUMB AREA
-                ================================= -->
+                                  END BREADCRUMB AREA
+                                ================================= -->
 
   <!-- ================================
-                  START CONTACT AREA
-                ================================= -->
-  <section class="contact-area padding-top-60px padding-bottom-90px">
+                                  START CONTACT AREA
+                                ================================= -->
+  <section class="contact-area" style="padding-top:220px; padding-bottom:90px;">
     <div class="container ">
       <div class="row align-items-center">
 
@@ -58,29 +48,60 @@
                 <h4 class="font-size-28 font-weight-semi-bold mb-1 mt-4">Login to your account</h4>
                 <p class="card-text">with your social network</p>
                 <div class="d-flex flex-wrap align-items-center justify-content-between my-4 sign-g">
-                  <a href="<?php echo e(route('google.redirect')); ?>" class="theme-btn flex-grow-1 mx-1 my-1  ">
+                  <a href="<?php echo e(route('google.redirect')); ?>" class="theme-btn flex-grow-1 mx-1 my-1  " style="color:#000;">
                     <img src="https://images.icon-icons.com/2699/PNG/512/google_logo_icon_169090.png"> Sign In with Google
                   </a>
                 </div>
               </div>
 
+              <hr>
+
+              <!--<div class="d-flex align-items-center">-->
+              <!--  <hr class="border-top-gray flex-grow-1" />-->
+              <!--  <span class="mx-1 text-uppercase">or</span>-->
+              <!--  <hr class="border-top-gray flex-grow-1" />-->
+              <!--</div>-->
+
+              <!-- Step 1: Username / Email / Mobile -->
+
+              <div class="form-group position-relative mt-4">
+                <label class="label-text">Sign in With E-mail / Username</label>
+                <input class="form-control form--control ps-3" type="text" name="loginEmail" id="loginEmail"
+                  placeholder="Enter E-mail Id / Username" />
+                <button type="button" class="arrow-btn" onclick="showNextField('email')">âžœ</button>
+              </div>
+
+              <!-- Step 2: Hidden initially -->
+              <div class="form-group hidden" id="passwordBoxEmail">
+                <label class="label-text">Enter Password</label>
+                <div class="position-relative">
+                  <input class="form-control form--control ps-3" type="password" name="password"
+                    placeholder="Enter Password / OTP" />
+                </div>
+              </div>
               <div class="d-flex align-items-center">
                 <hr class="border-top-gray flex-grow-1" />
                 <span class="mx-1 text-uppercase">or</span>
                 <hr class="border-top-gray flex-grow-1" />
               </div>
 
-              <!-- Step 1: Username / Email / Mobile -->
-              <div class="form-group position-relative mt-4">
-                <label class="label-text">Sign in with Mobile / Email Id</label>
-                <input class="form-control form--control ps-3" type="text" name="loginId" id="loginId"
-                  placeholder="Enter Mobile / Email" />
-                <button type="button" class="arrow-btn" onclick="showNextField()">➜</button>
+              <div class="form-group position-relative mt-3">
+                <label class="label-text">Sign in with Mobile</label>
+                <div class="input-group">
+                  <select class="form-select country-code col-3" id="countryCode" name="countryCode">
+                    <option value="+91">ðŸ‡®ðŸ‡³ +91</option>
+                    <option value="+1">ðŸ‡ºðŸ‡¸ +1</option>
+                    <option value="+44">ðŸ‡¬ðŸ‡§ +44</option>
+                    <option value="+971">ðŸ‡¦ðŸ‡ª +971</option>
+                  </select>
+                  <input class="form-control form--control" type="text" name="loginPhone" id="loginPhone"
+                    placeholder="Enter Mobile Number" />
+                  <button type="button" class="arrow-btn" onclick="showNextField('phone')">âžœ</button>
+                </div>
               </div>
 
-              <!-- Step 2: Hidden initially -->
-              <div class="form-group hidden" id="passwordBox">
-                <label class="label-text">Password / OTP</label>
+              <div class="form-group hidden" id="passwordBoxPhone">
+                <label class="label-text">Enter OTP</label>
                 <div class="position-relative">
                   <input class="form-control form--control ps-3" type="password" name="password"
                     placeholder="Enter Password / OTP" />
@@ -103,7 +124,7 @@
 
               <p class="mt-5 text-center">
                 Not a member?
-                <a href="<?php echo e(Route('authentication-signup')); ?>" class="btn-link">Register</a>
+                <a href="<?php echo e(Route('authentication-signup')); ?>" class="btn-link" style="color:blue;">Register</a>
               </p>
             </div>
           </form>
@@ -122,77 +143,97 @@
 
   <!-- end contact-area -->
   <!-- ================================
-                  END CONTACT AREA
+                                  END CONTACT AREA
 
-                  ================================= -->
+                                  ================================= -->
   <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
 
 
   <script>
-    function showNextField() {
-      let loginId = document.getElementById("loginId").value.trim();
+    function showNextField(type) {
+      let loginId = "";
+
+      if (type === 'email') {
+        loginId = document.getElementById("loginEmail").value.trim();
+      } else if (type === 'phone') {
+        let code = document.getElementById("countryCode").value;
+        let phone = document.getElementById("loginPhone").value.trim();
+        loginId = phone;
+      }
+
       if (loginId === "") {
         Swal.fire({ icon: "error", title: "Required", text: "Please enter Mobile / Username / Email Id" });
         return;
       }
 
-      // Regex to check if input is a phone number
       let phoneRegex = /^[0-9]{10,15}$/;
+      let emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
 
       if (phoneRegex.test(loginId)) {
-        // Phone detected → Send OTP
-        sendOtp(loginId);
+        // ✅ Mobile → send OTP
+        sendOtp(loginId, 'mobile');
       } else {
-        // Email/username → show password field
-        document.getElementById("passwordBox").classList.remove("hidden");
-        document.getElementById("rememberBox").classList.remove("hidden");
+        // ✅ Email OR Username → normal password
+        document.querySelector("#passwordBoxEmail label").innerText = "Password";
+        document.querySelector("#passwordBoxEmail input").setAttribute("type", "password");
+        document.querySelector("#passwordBoxEmail input").setAttribute("placeholder", "Enter Password");
+
+        document.getElementById("passwordBoxEmail").classList.remove("hidden");
+        document.getElementById("passwordBoxEmail").classList.remove("hidden");
         document.getElementById("submitBtn").style.display = "block";
       }
 
-      // Hide arrow button after step 1
-      document.querySelector(".arrow-btn").style.display = "none";
+      // hide arrows
+      document.querySelectorAll(".arrow-btn").forEach(btn => btn.style.display = "none");
     }
 
-    function sendOtp(phone) {
+
+
+    function sendOtp(mobile, type) {
       fetch("<?php echo e(route('send.otp')); ?>", {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
           "X-CSRF-TOKEN": "<?php echo e(csrf_token()); ?>"
         },
-        body: JSON.stringify({ mobile: phone })
+        body: JSON.stringify({ value: mobile, type: 'mobile' })
       })
         .then(response => response.json())
         .then(data => {
           if (data.success) {
+            // turn passwordBox into OTP box
+            document.querySelector("#passwordBoxPhone label").innerText = "Enter OTP";
+            document.querySelector("#passwordBoxPhone input").setAttribute("type", "text");
+            document.querySelector("#passwordBoxPhone input").setAttribute("placeholder", "Enter OTP");
 
-            // Reuse same password box → make it OTP input
-            document.querySelector("#passwordBox label").innerText = "Enter OTP";
-            document.querySelector("#passwordBox input").setAttribute("type", "text");
-            document.querySelector("#passwordBox input").setAttribute("placeholder", "Enter OTP");
-
-            document.getElementById("passwordBox").classList.remove("hidden");
+            document.getElementById("passwordBoxPhone").classList.remove("hidden");
             document.getElementById("submitBtn").style.display = "block";
           } else {
             Swal.fire({ icon: "error", title: "Failed", text: data.message || "Failed to send OTP" });
-            // show arrow button again for retry
-            document.querySelector(".arrow-btn").style.display = "inline-block";
           }
         })
         .catch(err => {
           console.error(err);
           Swal.fire({ icon: "error", title: "Error", text: "Error sending OTP" });
-          document.querySelector(".arrow-btn").style.display = "inline-block";
         });
     }
 
-    // Final submit via AJAX
+
     // Final submit via AJAX
     document.getElementById("loginForm").addEventListener("submit", function (e) {
       e.preventDefault();
 
-      let loginId = document.getElementById("loginId").value.trim();
-      let passwordOrOtp = document.querySelector("#passwordBox input").value.trim();
+      let loginId = "";
+      let passwordOrOtp = "";
+      if (document.getElementById("loginEmail").value.trim() !== "") {
+        loginId = document.getElementById("loginEmail").value.trim();
+        passwordOrOtp = document.querySelector("#passwordBoxEmail input").value.trim();
+
+      } else {
+        loginId = document.getElementById("loginPhone").value.trim();
+        passwordOrOtp = document.querySelector("#passwordBoxPhone input").value.trim();
+      }
+
 
       fetch("<?php echo e(route('customer.authenticate')); ?>", {
         method: "POST",
@@ -200,60 +241,15 @@
           "Content-Type": "application/json",
           "X-CSRF-TOKEN": "<?php echo e(csrf_token()); ?>"
         },
-        body: JSON.stringify({
-          loginId: loginId,
-          password: passwordOrOtp
-        })
+        body: JSON.stringify({ loginId: loginId, password: passwordOrOtp })
       })
         .then(res => res.json())
         .then(data => {
           if (data.success) {
             window.location.href = data.redirect ?? "<?php echo e(route('dashboard.index')); ?>";
-          } else if (data.pending_deletion) {
-            // Show SweetAlert for pending deletion
-            Swal.fire({
-              title: 'Account Pending Deletion',
-              text: data.message,
-              icon: 'warning',
-              showCancelButton: true,
-              confirmButtonText: 'Yes, restore account',
-              cancelButtonText: 'Cancel'
-            }).then((result) => {
-              if (result.isConfirmed) {
-                // Call route to restore account
-                fetch("<?php echo e(route('customer.restore')); ?>", {
-                  method: "POST",
-                  headers: {
-                    "Content-Type": "application/json",
-                    "X-CSRF-TOKEN": "<?php echo e(csrf_token()); ?>"
-                  },
-                  body: JSON.stringify({ loginId: loginId }) // optional
-                })
-                  .then(res => res.json())
-                  .then(resData => {
-                    if (resData.success) {
-                      Swal.fire('Restored!', resData.message, 'success')
-                        .then(() => {
-                          // After restore, attempt login again
-                          document.getElementById("loginForm").dispatchEvent(new Event('submit'));
-                        });
-                    } else {
-                      Swal.fire('Error!', resData.message, 'error');
-                    }
-                  })
-                  .catch(err => {
-                    console.error(err);
-                    Swal.fire('Error!', 'Something went wrong.', 'error');
-                  });
-              }
-            });
           } else {
             Swal.fire({ icon: "error", title: "Login Failed", text: data.message || "Invalid credentials/OTP" });
           }
-        })
-        .catch(err => {
-          console.error(err);
-          Swal.fire({ icon: "error", title: "Error", text: "Error during login" });
         });
     });
 

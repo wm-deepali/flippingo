@@ -38,7 +38,7 @@
                 Enter the email of your account to reset password. Then you will
                 receive a link to email to reset the password.If you have any
                 issue about reset password
-                <a href="<?php echo e(Route('contact')); ?>" class="btn-link">Contact Us <i class="fal fa-angle-right ms-1"></i></a>
+                <a href="<?php echo e(Route('contact-us')); ?>" class="btn-link">Contact Us <i class="fal fa-angle-right ms-1"></i></a>
               </p>
               <hr class="border-top-gray" />
               <div id="alert-message"></div>

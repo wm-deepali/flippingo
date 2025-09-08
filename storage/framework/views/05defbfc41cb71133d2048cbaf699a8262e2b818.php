@@ -20,7 +20,6 @@
                     <h2 class="sec__title text-white mb-3"><?php echo e($page->page_name); ?></h2>
                     <ul class="bread-list">
                         <li><a href="<?php echo e(route('home')); ?>">Home</a></li>
-                        <li>Blog</li>
                         <li><?php echo e($page->page_name); ?></li>
                     </ul>
                 </div>

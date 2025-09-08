@@ -35,14 +35,14 @@ return [
 
     'mailers' => [
         'smtp' => [
-            'transport' => 'smtp',
-            'host' => env('MAIL_HOST', 'smtp.mailgun.org'),
-            'port' => env('MAIL_PORT', 587),
-            'encryption' => env('MAIL_ENCRYPTION', 'tls'),
-            'username' => env('MAIL_USERNAME'),
-            'password' => env('MAIL_PASSWORD'),
-            'timeout' => null,
-            'auth_mode' => null,
+            'transport'  => 'smtp',
+            'host'       => setting('smtp_host', env('MAIL_HOST', 'smtp.mailgun.org')),
+            'port'       => setting('smtp_port', env('MAIL_PORT', 587)),
+            'encryption' => setting('mail_encryption', env('MAIL_ENCRYPTION', 'tls')),
+            'username'   => setting('smtp_username', env('MAIL_USERNAME')),
+            'password'   => setting('smtp_password', env('MAIL_PASSWORD')),
+            'timeout'    => null,
+            'auth_mode'  => null,
         ],
 
         'ses' => [
@@ -64,7 +64,7 @@ return [
 
         'log' => [
             'transport' => 'log',
-            'channel' => env('MAIL_LOG_CHANNEL'),
+            'channel'   => env('MAIL_LOG_CHANNEL'),
         ],
 
         'array' => [
@@ -73,43 +73,20 @@ return [
 
         'failover' => [
             'transport' => 'failover',
-            'mailers' => [
+            'mailers'   => [
                 'smtp',
                 'log',
             ],
         ],
     ],
 
-    /*
-    |--------------------------------------------------------------------------
-    | Global "From" Address
-    |--------------------------------------------------------------------------
-    |
-    | You may wish for all e-mails sent by your application to be sent from
-    | the same address. Here, you may specify a name and address that is
-    | used globally for all e-mails that are sent by your application.
-    |
-    */
-
     'from' => [
-        'address' => env('MAIL_FROM_ADDRESS', 'hello@example.com'),
-        'name' => env('MAIL_FROM_NAME', 'Example'),
+        'address' => setting('mail_from_address', env('MAIL_FROM_ADDRESS', 'hello@example.com')),
+        'name'    => setting('mail_from_name', env('MAIL_FROM_NAME', 'Example')),
     ],
-
-    /*
-    |--------------------------------------------------------------------------
-    | Markdown Mail Settings
-    |--------------------------------------------------------------------------
-    |
-    | If you are using Markdown based email rendering, you may configure your
-    | theme and component paths here, allowing you to customize the design
-    | of the emails. Or, you may simply stick with the Laravel defaults!
-    |
-    */
 
     'markdown' => [
         'theme' => 'default',
-
         'paths' => [
             resource_path('views/vendor/mail'),
         ],

@@ -94,7 +94,6 @@
                                         </div>
 
                                         
-                                        
                                         <div class="tab-pane fade" id="invoice-setting">
                                             <form method="POST" action="<?php echo e(route('admin.settings.update')); ?>"
                                                 enctype="multipart/form-data">
@@ -186,9 +185,10 @@
 
                                                 <div class="form-group">
                                                     <label>Terms & Conditions</label>
-                                                    <textarea class="form-control"
+                                                    <textarea id="billing_terms" class="form-control"
                                                         name="billing_terms"><?php echo e($settings['billing_terms'] ?? ''); ?></textarea>
                                                 </div>
+
 
                                                 <div class="form-group">
                                                     <label>Upload Logo</label>
@@ -209,38 +209,67 @@
                                         <div class="tab-pane fade" id="smtp-setting">
                                             <form method="POST" action="<?php echo e(route('admin.settings.update')); ?>">
                                                 <?php echo csrf_field(); ?>
+
                                                 <div class="form-group">
                                                     <label>SMTP Host</label>
                                                     <input type="text" class="form-control" name="smtp_host"
                                                         value="<?php echo e($settings['smtp_host'] ?? ''); ?>">
                                                 </div>
+
                                                 <div class="form-group">
                                                     <label>SMTP Port</label>
                                                     <input type="text" class="form-control" name="smtp_port"
                                                         value="<?php echo e($settings['smtp_port'] ?? ''); ?>">
                                                 </div>
+
                                                 <div class="form-group">
                                                     <label>SMTP Username</label>
                                                     <input type="text" class="form-control" name="smtp_username"
                                                         value="<?php echo e($settings['smtp_username'] ?? ''); ?>">
                                                 </div>
+
                                                 <div class="form-group">
                                                     <label>SMTP Password</label>
                                                     <input type="password" class="form-control" name="smtp_password"
                                                         value="<?php echo e($settings['smtp_password'] ?? ''); ?>">
                                                 </div>
+
+                                                <div class="form-group">
+                                                    <label>Encryption</label>
+                                                    <select class="form-control" name="mail_encryption">
+                                                        <option value="" <?php echo e(empty($settings['mail_encryption']) ? 'selected' : ''); ?>>None</option>
+                                                        <option value="tls" <?php echo e(($settings['mail_encryption'] ?? '') == 'tls' ? 'selected' : ''); ?>>TLS</option>
+                                                        <option value="ssl" <?php echo e(($settings['mail_encryption'] ?? '') == 'ssl' ? 'selected' : ''); ?>>SSL</option>
+                                                    </select>
+                                                </div>
+
+                                                <div class="form-group">
+                                                    <label>From Address</label>
+                                                    <input type="email" class="form-control" name="mail_from_address"
+                                                        value="<?php echo e($settings['mail_from_address'] ?? ''); ?>">
+                                                </div>
+
+                                                <div class="form-group">
+                                                    <label>From Name</label>
+                                                    <input type="text" class="form-control" name="mail_from_name"
+                                                        value="<?php echo e($settings['mail_from_name'] ?? ''); ?>">
+                                                </div>
+
                                                 <button type="submit" class="btn btn-primary">Save SMTP</button>
                                             </form>
                                         </div>
+
 
                                         
                                         <div class="tab-pane fade" id="sms-setting">
                                             <form method="POST" action="<?php echo e(route('admin.settings.update')); ?>">
                                                 <?php echo csrf_field(); ?>
+
+                                                
                                                 <div class="form-group">
-                                                    <label>DLT ID</label>
-                                                    <input type="text" class="form-control" name="dlt_id"
-                                                        value="<?php echo e($settings['dlt_id'] ?? ''); ?>">
+                                                    <label>PE ID (Entity Registration ID)</label>
+                                                    <input type="text" class="form-control" name="pe_id"
+                                                        value="<?php echo e($settings['pe_id'] ?? ''); ?>">
                                                 </div>
 
                                                 <div class="form-group">
@@ -249,31 +278,76 @@
                                                         value="<?php echo e($settings['sender_id'] ?? ''); ?>">
                                                 </div>
 
+                                                <div class="form-group">
+                                                    <label>Auth Key</label>
+                                                    <input type="text" class="form-control" name="auth_key"
+                                                        value="<?php echo e($settings['auth_key'] ?? ''); ?>">
+                                                </div>
+
                                                 <?php
-                                                    $templates = !empty($settings['sms_templates']) ? json_decode($settings['sms_templates'], true) : [['id' => '', 'text' => '']];
+                                                    $templates = !empty($settings['sms_templates'])
+                                                        ? json_decode($settings['sms_templates'], true)
+                                                        : [
+                                                            [
+                                                                'type' => 'verify_otp',
+                                                                'id' => '',
+                                                                'text' => '',
+                                                                'variables' => 'otp,mobile,name,website'
+                                                            ]
+                                                        ];
                                                 ?>
 
+                                                
+                                                <h5 class="mt-2 mb-1">Templates</h5>
                                                 <div id="template-wrapper">
-                                                    <?php $__currentLoopData = $templates; $__env->addLoop($__currentLoopData); foreach($__currentLoopData as $template): $__env->incrementLoopIndices(); $loop = $__env->getLastLoop(); ?>
-                                                        <div class="form-group template-row">
-                                                            <label>Template ID</label>
-                                                            <input type="text" class="form-control" name="template_id[]"
-                                                                value="<?php echo e($template['id'] ?? ''); ?>">
+                                                    <?php $__currentLoopData = $templates; $__env->addLoop($__currentLoopData); foreach($__currentLoopData as $i => $template): $__env->incrementLoopIndices(); $loop = $__env->getLastLoop(); ?>
+                                                        <div class="form-group template-row border rounded p-3 mb-2">
+                                                            
+                                                            <label>Template Type</label>
+                                                            <select class="form-control mb-2" name="sms_templates[<?php echo e($i); ?>][type]">
+                                                                <option value="verify_otp" <?php echo e(($template['type'] ?? '') == 'verify_otp' ? 'selected' : ''); ?>>Verify OTP</option>
+                                                                <option value="custom" <?php echo e(($template['type'] ?? '') == 'custom' ? 'selected' : ''); ?>>Custom</option>
+                                                            </select>
 
-                                                            <label>Template</label>
-                                                            <textarea class="form-control"
-                                                                name="template[]"><?php echo e($template['text'] ?? ''); ?></textarea>
+                                                            
+                                                            <label>Template ID</label>
+                                                            <input type="text" class="form-control mb-2" name="sms_templates[<?php echo e($i); ?>][id]"
+                                                                value="<?php echo e($template['id'] ?? ''); ?>"
+                                                                placeholder="DLT Template ID">
+
+                                                            
+                                                            <label>Template Text</label>
+                                                            <textarea class="form-control mb-2" name="sms_templates[<?php echo e($i); ?>][text]"
+                                                                placeholder="Enter Template Message"><?php echo e($template['text'] ?? ''); ?></textarea>
+
+                                                            
+                                                            <label>Available Variables</label>
+                                                            <p class="text-muted mb-1">
+                                                                You can use these placeholders in your template:
+                                                                <code>{otp}</code>, <code>{mobile}</code>, <code>{name}</code>,
+                                                                <code>{website}</code>
+                                                            </p>
+                                                            <input type="hidden" name="sms_templates[<?php echo e($i); ?>][variables]"
+                                                                value="otp,mobile,name,website">
+
+
+                                                            
+                                                            <button type="button"
+                                                                class="btn btn-sm btn-danger mt-2 removeTemplate">Remove</button>
                                                         </div>
+
+
                                                     <?php endforeach; $__env->popLoop(); $loop = $__env->getLastLoop(); ?>
                                                 </div>
 
+                                                <button type="button" class="btn btn-sm btn-secondary" id="addTemplate">
+                                                    + Add More Templates
+                                                </button>
 
-                                                <button type="button" class="btn btn-sm btn-secondary" id="addTemplate">+
-                                                    Add More Templates</button>
-
-                                                <button type="submit" class="btn btn-primary">Save SMS</button>
+                                                <button type="submit" class="btn btn-primary mt-2">Save SMS</button>
                                             </form>
                                         </div>
+
 
                                         
                                         <div class="tab-pane fade" id="payment-setting">
@@ -289,13 +363,6 @@
                                                         Razorpay</label>
                                                 </div>
                                                 <div class="gateway-box border p-2 mb-2">
-                                                    <div class="form-group">
-                                                        <label>Razorpay Merchant ID</label>
-
-                                                        <input type="text" class="form-control" name="razorpay_merchant_id"
-                                                            value="<?php echo e($settings['razorpay_merchant_id'] ?? ''); ?>">
-
-                                                    </div>
                                                     <div class="form-group">
                                                         <label>Razorpay Key ID</label>
                                                         <input type="text" class="form-control" name="razorpay_key_id"
@@ -343,9 +410,9 @@
                                             <form method="POST" action="<?php echo e(route('admin.settings.update')); ?>">
                                                 <?php echo csrf_field(); ?>
                                                 <div class="form-group">
-                                                    <label>Commission (%)</label>
+                                                    <label>Default Commission (%)</label>
                                                     <input type="text" class="form-control" name="commission"
-                                                        value="<?php echo e($settings['commission'] ?? ''); ?>">
+                                                        value="<?php echo e($settings['default_commission'] ?? ''); ?>">
                                                 </div>
                                                 <button type="submit" class="btn btn-primary">Save Commission</button>
                                             </form>
@@ -407,22 +474,70 @@
 
 
         document.addEventListener("DOMContentLoaded", function () {
+            if (document.getElementById('billing_terms')) {
+                CKEDITOR.replace('billing_terms', {
+                    height: 200,
+                    removeButtons: 'PasteFromWord'
+                });
+            }
+
             const checkbox = document.getElementById('useRandomDigits');
             const box = document.getElementById('randomDigitsBox');
 
             checkbox.addEventListener('change', function () {
                 box.style.display = this.checked ? 'block' : 'none';
             });
-        });
 
-        document.addEventListener("DOMContentLoaded", function () {
+            // Add template
             document.getElementById('addTemplate').addEventListener('click', function () {
                 let wrapper = document.getElementById('template-wrapper');
                 let newRow = document.querySelector('.template-row').cloneNode(true);
-                newRow.querySelectorAll('input, textarea').forEach(el => el.value = ''); // reset
+
+                // Reset inputs
+                newRow.querySelectorAll('input, textarea, select').forEach(el => {
+                    if (el.tagName === "SELECT") {
+                        el.selectedIndex = 0;
+                    } else {
+                        el.value = '';
+                    }
+                });
+
                 wrapper.appendChild(newRow);
             });
+
+            // Remove template
+            document.addEventListener('click', function (e) {
+                if (e.target.classList.contains('removeTemplate')) {
+                    let row = e.target.closest('.template-row');
+                    if (row && document.querySelectorAll('.template-row').length > 1) {
+                        row.remove();
+                    } else {
+                        Swal.fire({
+                            icon: 'warning',
+                            title: 'At least one template is required',
+                            showConfirmButton: false,
+                            timer: 2000
+                        });
+                    }
+                }
+            });
+
+            document.addEventListener("change", function (e) {
+                if (e.target.matches('select[name="template_type[]"]')) {
+                    const row = e.target.closest('.template-row');
+                    const varInput = row.querySelector('input[name="template_variables[]"]');
+                    if (e.target.value === 'verify_otp') {
+                        varInput.value = 'otp,mobile,name,website';
+                    } else if (e.target.value === 'custom') {
+                        varInput.value = '';
+                    }
+                }
+            });
+
+
         });
+
+
     </script>
 
 <?php $__env->stopPush(); ?>

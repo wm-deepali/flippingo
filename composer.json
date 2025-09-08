@@ -40,7 +40,8 @@
         },
         "files": [
             "app/Helpers/Common.php",
-            "app/Helpers/SettingsHelper.php"
+            "app/Helpers/SettingsHelper.php",
+            "app/Helpers/SmsHelper.php"
         ]
     },
     "autoload-dev": {

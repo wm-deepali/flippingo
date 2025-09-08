@@ -24,6 +24,17 @@ return [
         'token' => env('POSTMARK_TOKEN'),
     ],
 
+    'stripe' => [
+        'key' => setting('stripe_publishable_key', env('STRIPE_KEY')),
+        'secret' => setting('stripe_secret_key', env('STRIPE_SECRET')),
+    ],
+
+    'razorpay' => [
+        'key' => setting('razorpay_key_id', env('RAZORPAY_KEY')),
+        'secret' => setting('razorpay_key_secret', env('RAZORPAY_SECRET')),
+    ],
+
+
     'ses' => [
         'key' => env('AWS_ACCESS_KEY_ID'),
         'secret' => env('AWS_SECRET_ACCESS_KEY'),
