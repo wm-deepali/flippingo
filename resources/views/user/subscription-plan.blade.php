@@ -1,127 +1,250 @@
 @extends('layouts.user-master')
 
 @section('title')
-    {{ $page->meta_title ?? 'Subscription Plan' }}
+  {{ $page->meta_title ?? 'Subscription Plan' }}
 @endsection
 
+<style>
+  .old-price {
+    text-decoration: line-through;
+    color: #999;
+    font-size: 18px;
+    margin-right: 8px;
+  }
 
+  .new-price {
+    color: #e63946;
+    /* red highlight */
+    font-size: 22px;
+    font-weight: 700;
+  }
+</style>
 
 @section('content')
 
-    @include('user.sidebar')
+  @include('user.sidebar')
 
-    <div class="page-wrapper">
+  <div class="page-wrapper">
 
-        <div class="subscription-page">
-            <h2 class="subscription-title">Subscription Plan</h2>
-            <div class="subscription-modal-body">
-                <div class="packages-grid">
+    <div class="subscription-page">
+      <h2 class="subscription-title">Subscription Plan</h2>
+      <div class="subscription-modal-body">
+        <div class="packages-grid">
 
-                    <!-- Free Plan -->
-                    <div class="package-card" data-badge="Free">
-                        <h3>Temporary Free Option</h3>
-                        <p class="price">₹0</p>
-                        <hr>
-                        <ul>
-                            <li>✅ 1 Listing Free On Signup</li>
-                            <li>✅ Listings Duration - For 30 days</li>
-                        </ul>
-                        <button class="subscription-btn">Get Started</button>
-                    </div>
+          @forelse($packages as $package)
+                <div class="package-card {{ $package->is_popular ? 'popular' : '' }}"
+                  data-badge="{{ $package->is_popular ? 'Popular' : 'Regular' }}">
 
-                    <!-- Basic Plan -->
-                    <div class="package-card" data-badge="Regular">
-                        <h3>Basic Plan</h3>
-                        <p class="price">₹99</p>
-                        <hr>
-                        <ul>
-                            <li>✅ 2X Listings</li>
-                            <li>✅ Listings Duration - 90 days</li>
-                            <li>✅ Promotion - Once in a Month (Whatsapp Group)</li>
-                            <li>❌ Sponsor on Front Page</li>
-                            <li>❌ Email Alerts</li>
-                        </ul>
-                        <button class="subscription-btn">Choose Plan</button>
-                    </div>
+                  <h3>{{ $package->name }}</h3>
 
-                    <!-- Standard Plan -->
-                    <div class="package-card popular" data-badge="Popular">
-                        <h3>Standard Plan</h3>
-                        <p class="price">₹499</p>
-                        <hr>
-                        <ul>
-                            <li>✅ 10X Listings</li>
-                            <li>✅ Listings Duration - 180 days (6 months)</li>
-                            <li>✅ Promotion - Twice a Month (Whatsapp Group)</li>
-                            <li>✅ Sponsor - 24 Hours on Front Page</li>
-                            <li>❌ Email Alerts</li>
-                        </ul>
-                        <button class="subscription-btn">Choose Plan</button>
-                    </div>
+                  {{-- Price & Discount --}}
+                  <p class="price">
+                    @if($package->discount > 0)
+                      <span class="old-price">₹{{ $package->mrp }}</span>
+                      <span class="new-price">
+                        ₹{{ $package->offered_price }}
+                        <span style="font-size:14px; color:green;font-weight:500;">
+                          (You save {{ $package->discount }}%)
+                        </span>
+                      </span>
+                    @else
+                      ₹{{ $package->mrp }}
+                    @endif
+                  </p>
 
-                    <!-- Ultimate Plan -->
-                    <div class="package-card" data-badge="Best Value">
-                        <h3>Ultimate Plan</h3>
-                        <p class="price">₹999</p>
-                        <hr>
-                        <ul>
-                            <li>✅ 20X Listings</li>
-                            <li>✅ Listings Duration - 365 days (1 year)</li>
-                            <li>✅ Weekly Promotion (Whatsapp Group)</li>
-                            <li>✅ Sponsor - 72 Hours on Front Page</li>
-                            <li>✅ Email Alerts to Buyers</li>
-                        </ul>
-                        <button class="subscription-btn">Choose Plan</button>
-                    </div>
+                  <hr>
 
-                    <!-- Custom Plan -->
-                    <div class="package-card" data-badge="Custom">
-                        <h3>Custom Plan</h3>
-                        <p class="price">Contact Sales</p>
-                        <p style="margin:10px 0; font-size:14px;">Get a tailored plan as per your needs</p>
-                        <button class="subscription-btn">Contact Us</button>
-                    </div>
+                  {{-- Features --}}
+                  <ul>
+                    <li>✅ {{ $package->listings ? $package->listings_display : 0 }}</li>
+                    <li>✅ Listings Duration - {{ $package->listing_duration ?
+            $package->listing_duration_display : 0 }}</li>
+                    <li>
+                      @if($package->whatsapp === 'yes' && $package->whatsapp_frequency > 0)
+                        ✅ promotion - {{ $package->whatsapp_display ?? ''}}
+                      @else
+                        ❌ No Promotion
+                      @endif
+                    </li>
+                    <li>
+                      @if($package->sponsored === 'yes' && $package->sponsored_frequency > 0)
+                        ✅ Sponsor - {{ $package->sponsored_display ?? ''}}
+                      @else
+                        ❌ No Sponsor
+                      @endif
+                    </li>
+                    <li>
+                      @if($package->alerts === 'yes')
+                        ✅ {{ $package->alerts_display ?? '' }}
+                      @else
+                        ❌ No Email Alerts
+                      @endif
+                    </li>
+                  </ul>
 
+                  <button class="subscription-btn choose-plan" data-id="{{ $package->id }}" data-name="{{ $package->name }}"
+                    data-amount="{{ $package->offered_price * 100 }}"
+                    data-description="{{ $package->listings_display }} listings for {{ $package->listing_duration_display }}">
+                    Choose Plan
+                  </button>
                 </div>
-
+          @empty
+            <div class="subscription-empty">
+              <p>No active packages available right now.</p>
             </div>
+          @endforelse
+
 
         </div>
-        <!-- Packages Modal -->
+
+      </div>
+
     </div>
+    <!-- Packages Modal -->
+  </div>
 
 @endsection
 
 @push('scripts')
 
   <script>
-let hasSubscription = true; // backend se check karna hoga
+    let hasSubscription = true; // backend se check karna hoga
 
-// Page pe check
-window.onload = function () {
-  if (hasSubscription) {
-    document.getElementById("withSubscription").style.display = "flex";
-    document.getElementById("noSubscription").style.display = "none";
-  } else {
-    document.getElementById("withSubscription").style.display = "none";
-    document.getElementById("noSubscription").style.display = "block";
-  }
-};
+    // Page pe check
+    window.onload = function () {
+      if (hasSubscription) {
+        document.getElementById("withSubscription").style.display = "flex";
+        document.getElementById("noSubscription").style.display = "none";
+      } else {
+        document.getElementById("withSubscription").style.display = "none";
+        document.getElementById("noSubscription").style.display = "block";
+      }
+    };
 
-// Modal Functions
-function openRenewModal() {
-  document.getElementById("renewModal").style.display = "flex";
-}
-function closeRenewModal() {
-  document.getElementById("renewModal").style.display = "none";
-}
+    // Modal Functions
+    function openRenewModal() {
+      document.getElementById("renewModal").style.display = "flex";
+    }
+    function closeRenewModal() {
+      document.getElementById("renewModal").style.display = "none";
+    }
 
-function openPackagesModal() {
-  document.getElementById("packagesModal").style.display = "flex";
-}
-function closePackagesModal() {
-  document.getElementById("packagesModal").style.display = "none";
-}
-</script>
+    function openPackagesModal() {
+      document.getElementById("packagesModal").style.display = "flex";
+    }
+    function closePackagesModal() {
+      document.getElementById("packagesModal").style.display = "none";
+    }
+  </script>
+
+  <script src="https://checkout.razorpay.com/v1/checkout.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+
+  <script>
+    let redirectAfterPayment = "{{request('redirect') ? route(request('redirect')) : route('dashboard.subscriptions') }}";
+
+    document.addEventListener("DOMContentLoaded", function () {
+      document.querySelectorAll(".choose-plan").forEach(button => {
+        button.addEventListener("click", function () {
+          let packageId = this.getAttribute("data-id");
+          let packageName = this.getAttribute("data-name");
+          let packageAmount = this.getAttribute("data-amount");
+          let packageDesc = this.getAttribute("data-description");
+
+          // 🔹 Mock Payment Simulation
+          Swal.fire({
+            icon: 'info',
+            title: `Simulating payment for ${packageName}`,
+            text: 'This is a mock payment. Click "OK" to proceed.',
+            confirmButtonText: 'OK'
+          }).then(() => {
+            // Send mock payment info to backend
+            fetch("{{ route('subscription.store') }}", {
+              method: "POST",
+              headers: {
+                "Content-Type": "application/json",
+                "X-CSRF-TOKEN": "{{ csrf_token() }}"
+              },
+              body: JSON.stringify({
+                razorpay_payment_id: 'MOCK_PAYMENT_ID',
+                package_id: packageId
+              })
+            })
+              .then(res => res.json())
+              .then(data => {
+                if (data.success) {
+                  Swal.fire({
+                    icon: 'success',
+                    title: 'Subscription Activated!',
+                    text: 'Your subscription has been activated successfully.',
+                    confirmButtonText: 'Continue'
+                  }).then(() => {
+                    window.location.href = redirectAfterPayment;
+                  });
+                } else {
+                  Swal.fire({
+                    icon: 'error',
+                    title: 'Oops!',
+                    text: 'There was an error saving your subscription.'
+                  });
+                }
+              });
+          });
+          // let options = {
+          //     key: "{{ config('services.razorpay.key') }}", // from config/services.php
+          //     amount: packageAmount,
+          //     currency: "INR",
+          //     name: "Flippingo",
+          //     description: packageDesc,
+          //     image: "{{ asset('logo.png') }}", // optional
+          //     handler: function (response) {
+          //         fetch("{{ route('subscription.store') }}", {
+          //             method: "POST",
+          //             headers: {
+          //                 "Content-Type": "application/json",
+          //                 "X-CSRF-TOKEN": "{{ csrf_token() }}"
+          //             },
+          //             body: JSON.stringify({
+          //                 razorpay_payment_id: response.razorpay_payment_id,
+          //                 package_id: packageId
+          //             })
+          //         })
+          //             .then(res => res.json())
+          //             .then(data => {
+          //                 if (data.success) {
+          //                     Swal.fire({
+          //                         icon: 'success',
+          //                         title: 'Subscription Activated!',
+          //                         text: 'Your subscription has been activated successfully.',
+          //                         confirmButtonText: 'Continue'
+          //                     }).then(() => {
+          //                         window.location.href = redirectAfterPayment;
+          //                     });
+          //                 } else {
+          //                     Swal.fire({
+          //                         icon: 'error',
+          //                         title: 'Oops!',
+          //                         text: 'Payment was successful but there was an error saving your subscription.'
+          //                     });
+          //                 }
+          //             });
+          //     }
+
+          //         prefill: {
+          //         name: "{{ auth()->user()->name }}",
+          //         email: "{{ auth()->user()->email }}",
+          //         contact: "{{ auth()->user()->phone ?? '' }}"
+          //     },
+          //     theme: {
+          //         color: "#4a6cf7"
+          //     }
+          // };
+
+          // let rzp = new Razorpay(options);
+          // rzp.open();
+        });
+      });
+    });
+  </script>
 
 @endpush

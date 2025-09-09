@@ -167,6 +167,9 @@ Route::group(['middleware' => 'auth'], function () {
         Route::resource('client-reels', ClientReelController::class);
 
         Route::resource('packages', PackageController::class);
+        Route::get('/subscriptions/orders', [PackageController::class, 'orders'])->name('subscriptions.orders');
+
+
 
         Route::resource('deletion_reasons', \App\Http\Controllers\Admin\DeletionReasonController::class);
 

@@ -266,11 +266,6 @@
 </style>
 <?php $__env->startSection('content'); ?>
 
-
-
-
-
-
     <section class="team-area section--padding" style="margin-top:130px;">
         <div class="container">
             <div class="text-center">
@@ -282,6 +277,14 @@
                 </p>
             </div>
 
+            
+            <?php if(request('error')): ?>
+                <div class="alert alert-danger" style="margin:20px 0; padding:12px; border-radius:6px;">
+                    <?php echo e(request('error')); ?>
+
+                </div>
+            <?php endif; ?>
+
 
             <div class="subscription-page">
 
@@ -291,15 +294,15 @@
                         <!-- Free Plan -->
                         <!-- <div class="package-card" data-badge="Free">
 
-                                <h3>Temporary Free Option</h3>
-                                <p class="price">₹0</p>
-                                <hr>
-                                <ul>
-                                    <li>✅ 1 Listing Free On Signup</li>
-                                    <li>✅ Listings Duration - For 30 days</li>
-                                </ul>
-                                <button class="subscription-btn">Get Started</button>
-                            </div> -->
+                                                        <h3>Temporary Free Option</h3>
+                                                        <p class="price">₹0</p>
+                                                        <hr>
+                                                        <ul>
+                                                            <li>✅ 1 Listing Free On Signup</li>
+                                                            <li>✅ Listings Duration - For 30 days</li>
+                                                        </ul>
+                                                        <button class="subscription-btn">Get Started</button>
+                                                    </div> -->
 
                         
                         <?php $__empty_1 = true; $__currentLoopData = $packages; $__env->addLoop($__currentLoopData); foreach($__currentLoopData as $package): $__env->incrementLoopIndices(); $loop = $__env->getLastLoop(); $__empty_1 = false; ?>
@@ -358,7 +361,11 @@
                                                 </li>
                                             </ul>
 
-                                            <button class="subscription-btn">Choose Plan</button>
+                                            <button class="subscription-btn choose-plan" data-id="<?php echo e($package->id); ?>"
+                                                data-name="<?php echo e($package->name); ?>" data-amount="<?php echo e($package->offered_price * 100); ?>"
+                                                data-description="<?php echo e($package->listings_display); ?> listings for <?php echo e($package->listing_duration_display); ?>">
+                                                Choose Plan
+                                            </button>
                                         </div>
                         <?php endforeach; $__env->popLoop(); $loop = $__env->getLastLoop(); if ($__empty_1): ?>
                             <div class="subscription-empty">
@@ -376,10 +383,115 @@
         </div>
         <!-- end container -->
     </section>
+    <script src="https://checkout.razorpay.com/v1/checkout.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
 
+    <script>
+        let redirectAfterPayment = "<?php echo e(request('redirect') ?? route('dashboard.index')); ?>";
 
+        document.addEventListener("DOMContentLoaded", function () {
+            document.querySelectorAll(".choose-plan").forEach(button => {
+                button.addEventListener("click", function () {
+                    let packageId = this.getAttribute("data-id");
+                    let packageName = this.getAttribute("data-name");
+                    let packageAmount = this.getAttribute("data-amount");
+                    let packageDesc = this.getAttribute("data-description");
 
+                      // 🔹 Mock Payment Simulation
+                Swal.fire({
+                    icon: 'info',
+                    title: `Simulating payment for ${packageName}`,
+                    text: 'This is a mock payment. Click "OK" to proceed.',
+                    confirmButtonText: 'OK'
+                }).then(() => {
+                    // Send mock payment info to backend
+                    fetch("<?php echo e(route('subscription.store')); ?>", {
+                        method: "POST",
+                        headers: {
+                            "Content-Type": "application/json",
+                            "X-CSRF-TOKEN": "<?php echo e(csrf_token()); ?>"
+                        },
+                        body: JSON.stringify({
+                            razorpay_payment_id: 'MOCK_PAYMENT_ID',
+                            package_id: packageId
+                        })
+                    })
+                    .then(res => res.json())
+                    .then(data => {
+                        if (data.success) {
+                            Swal.fire({
+                                icon: 'success',
+                                title: 'Subscription Activated!',
+                                text: 'Your subscription has been activated successfully.',
+                                confirmButtonText: 'Continue'
+                            }).then(() => {
+                                window.location.href = redirectAfterPayment;
+                            });
+                        } else {
+                            Swal.fire({
+                                icon: 'error',
+                                title: 'Oops!',
+                                text: 'There was an error saving your subscription.'
+                            });
+                        }
+                    });
+                });
+                    // let options = {
+                    //     key: "<?php echo e(config('services.razorpay.key')); ?>", // from config/services.php
+                    //     amount: packageAmount,
+                    //     currency: "INR",
+                    //     name: "Flippingo",
+                    //     description: packageDesc,
+                    //     image: "<?php echo e(asset('logo.png')); ?>", // optional
+                    //     handler: function (response) {
+                    //         fetch("<?php echo e(route('subscription.store')); ?>", {
+                    //             method: "POST",
+                    //             headers: {
+                    //                 "Content-Type": "application/json",
+                    //                 "X-CSRF-TOKEN": "<?php echo e(csrf_token()); ?>"
+                    //             },
+                    //             body: JSON.stringify({
+                    //                 razorpay_payment_id: response.razorpay_payment_id,
+                    //                 package_id: packageId
+                    //             })
+                    //         })
+                    //             .then(res => res.json())
+                    //             .then(data => {
+                    //                 if (data.success) {
+                    //                     Swal.fire({
+                    //                         icon: 'success',
+                    //                         title: 'Subscription Activated!',
+                    //                         text: 'Your subscription has been activated successfully.',
+                    //                         confirmButtonText: 'Continue'
+                    //                     }).then(() => {
+                    //                         window.location.href = redirectAfterPayment;
+                    //                     });
+                    //                 } else {
+                    //                     Swal.fire({
+                    //                         icon: 'error',
+                    //                         title: 'Oops!',
+                    //                         text: 'Payment was successful but there was an error saving your subscription.'
+                    //                     });
+                    //                 }
+                    //             });
+                    //     }
 
+                    //         prefill: {
+                    //         name: "<?php echo e(auth()->user()->name); ?>",
+                    //         email: "<?php echo e(auth()->user()->email); ?>",
+                    //         contact: "<?php echo e(auth()->user()->phone ?? ''); ?>"
+                    //     },
+                    //     theme: {
+                    //         color: "#4a6cf7"
+                    //     }
+                    // };
+
+                    // let rzp = new Razorpay(options);
+                    // rzp.open();
+                });
+            });
+        });
+    </script>
 
 <?php $__env->stopSection(); ?>
 <?php echo $__env->make('layouts.new-master', \Illuminate\Support\Arr::except(get_defined_vars(), ['__data', '__path']))->render(); ?><?php /**PATH D:\web-mingo-project\flippingo_admin\resources\views/front/pricing.blade.php ENDPATH**/ ?>

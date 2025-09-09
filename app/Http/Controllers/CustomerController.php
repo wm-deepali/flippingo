@@ -189,9 +189,9 @@ class CustomerController extends Controller
         $otp = rand(100000, 999999);
 
         // Delete old OTP for same value+type
-        $otp = OTP::where('value', $value)->where('type', $type)->first();
-        if ($otp) {
-            $otp->delete();
+        $old_otp = OTP::where('value', $value)->where('type', $type)->first();
+        if ($old_otp) {
+            $old_otp->delete();
         }
         // Store new OTP
         OTP::create([

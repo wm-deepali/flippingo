@@ -97,4 +97,17 @@ class Customer extends Authenticatable
         });
     }
 
+    public function subscriptions()
+    {
+        return $this->hasMany(Subscription::class);
+    }
+
+    public function activeSubscription()
+    {
+        return $this->hasOne(Subscription::class)
+            ->where('status', 'active')
+            ->where('end_date', '>=', now())
+            ->latestOfMany(); // always return the latest active subscription
+    }
+
 }

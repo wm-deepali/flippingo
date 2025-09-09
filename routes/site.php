@@ -9,6 +9,8 @@ use App\Http\Controllers\Admin\PageController;
 use App\Http\Controllers\Admin\TestimonialController;
 use App\Http\Controllers\CheckoutController;
 use App\Http\Controllers\ProfileController;
+use App\Http\Controllers\SubscriptionController;
+
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\SiteController;
@@ -43,7 +45,9 @@ Route::get('/stl', function () {
 
 Route::get('/', [SiteController::class, 'index'])->name('home');
 
-Route::get('pricing', [SiteController::class, 'Pricing'])->name('pricing');
+Route::get('pricing', [SubscriptionController::class, 'ListPackage'])->name('pricing');
+Route::post('subscription/store', [SubscriptionController::class, 'Store'])->name('subscription.store');
+
 Route::get('/page/{slug}', [PageController::class, 'show'])->name('page.show');
 Route::get('add-listing', [SiteController::class, 'addListing'])->name('add-listing');
 Route::get('/forms/{id}', [FormController::class, 'showFormHtml'])->name('forms');
@@ -83,6 +87,13 @@ Route::get('meet-our-team', function () {
     return view('front.meet-our-team');
 })->name('meet-our-team');
 
+Route::get('our-services', function () {
+    return view('front.our-services');
+})->name('our-services'); 
+
+Route::get('how-it-works', function () {
+    return view('front.how-it-works');
+})->name('how-it-works');
 
 Route::get('contact-us', function () {
     return view('front.contact-us');
@@ -155,7 +166,6 @@ Route::middleware(['web'])->group(function () {
             Route::post('/delete-account', [ProfileController::class, 'deleteAccount'])->name('delete.account');
             Route::post('/kyc-update', [ProfileController::class, 'updateKyc'])->name('kyc.update');
 
-
             Route::get('/bank-account', function () {
                 return view('user.bank-account');
             })->name('dashboard.bank');
@@ -203,14 +213,14 @@ Route::middleware(['web'])->group(function () {
             })->name('dashboard.wishlist');
 
             // Wishlist
-            Route::get('/subscriptions', function () {
-                return view('user.subscriptions');
-            })->name('dashboard.subscriptions');
+            // Route::get('/subscriptions', function () {
+            //     return view('user.subscriptions');
+            // })->name('dashboard.subscriptions');
 
-             // Wishlist
-            Route::get('/subscription-plan', function () {
-                return view('user.subscription-plan');
-            })->name('dashboard.subscription-plan');
+            Route::get('/subscription', [SubscriptionController::class, 'index'])->name('dashboard.subscriptions');
+            Route::post('/subscription/renew', [SubscriptionController::class, 'renew'])->name('subscription.renew');
+
+            Route::get('/subscription-plan', [SiteController::class, 'SubscriptionPlans'])->name('dashboard.subscription-plan');
 
             // Wishlist
             Route::get('/listing', function () {

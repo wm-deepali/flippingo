@@ -46,7 +46,7 @@ class Package extends Model
 
 
 
-      // Relationship with subscriptions/orders
+    // Relationship with subscriptions/orders
     // public function subscriptions()
     // {
     //     return $this->hasMany(Subscription::class, 'package_id');
@@ -57,4 +57,11 @@ class Package extends Model
     // {
     //     return $this->subscriptions()->count();
     // }
+
+    public function subscriptions()
+    {
+        return $this->hasMany(Subscription::class);
+    }
+
 }
+

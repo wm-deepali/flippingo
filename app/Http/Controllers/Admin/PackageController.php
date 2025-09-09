@@ -4,6 +4,7 @@ namespace App\Http\Controllers\Admin;
 
 use App\Http\Controllers\Controller;
 use App\Models\Package;
+use App\Models\Subscription;
 use Illuminate\Http\Request;
 
 class PackageController extends Controller
@@ -115,5 +116,15 @@ class PackageController extends Controller
         }
         return response()->json(['success' => false, 'message' => 'Package not found'], 404);
 
+    }
+
+    public function orders()
+    {
+        $subscriptions = Subscription::with(['customer', 'package', 'payment'])
+            ->orderBy('created_at', 'desc')
+            ->get();
+
+
+        return view('admin.subscriptions.orders', compact('subscriptions'));
     }
 }
