@@ -118,13 +118,5 @@ class PackageController extends Controller
 
     }
 
-    public function orders()
-    {
-        $subscriptions = Subscription::with(['customer', 'package', 'payment'])
-            ->orderBy('created_at', 'desc')
-            ->get();
-
-
-        return view('admin.subscriptions.orders', compact('subscriptions'));
-    }
+   
 }

@@ -26,63 +26,58 @@
                     <div class="col-md-12">
                         <div class="card">
                             <div class="card-header">
-                                <h4 class="card-title">Orders Listing</h4>
+                                <h4 class="card-title">Subscription Orders</h4>
                             </div>
                             <div class="card-body">
-                                <div class="table-responsive">
-                                    <table class="table table-bordered" id="orders-table">
-                                        <thead>
-                                            <tr>
-                                                <th>Date & Time</th>
-                                                <th>Order ID</th>
-                                                <th>Seller Info</th>
-                                                <th>Transaction ID</th>
-                                                <th>Payment Method</th>
-                                                <th>Payment Status</th>
-                                                <th>Subscription Status</th>
-                                                <th>Subscription Expiry</th>
-                                                <th>Action</th>
-                                            </tr>
-                                        </thead>
-                                        <tbody>
-                                            @foreach($subscriptions as $sub)
-                                                <tr>
-                                                    <td>{{ \Carbon\Carbon::parse($sub->created_at)->format('Y-m-d H:i') }}</td>
-                                                    <td>#ORD{{ $sub->id }}</td>
-                                                    <td>
-                                                        Seller ID: {{ $sub->customer->id ?? '-' }}<br>
-                                                       {{ $sub->customer->first_name ?? '-' }} {{ $sub->customer->last_name ?? '-' }}<br>
-                                                        {{ $sub->customer->email ?? '-' }}
-                                                    </td>
-                                                     <td>{{ $sub->payment->payment_id ?? '-' }}</td>
-                                                     <td>{{ ucfirst($sub->payment->gateway ?? '-') }}</td>
-                                                    <td>
-                                                        @if($sub->payment->status === 'success')
-                    <span class="badge badge-success">Paid</span>
-                @elseif($sub->payment->status === 'pending')
-                    <span class="badge badge-warning">Pending</span>
-                @else
-                    <span class="badge badge-danger">Failed</span>
-                @endif
-                                                    </td>
-                                                    <td>
-                                                        @if($sub->status === 'active')
-                                                            <span class="badge badge-primary">Active</span>
-                                                        @else
-                                                            <span class="badge badge-danger">Inactive</span>
-                                                        @endif
-                                                    </td>
-                                                    <td>{{ \Carbon\Carbon::parse($sub->end_date)->format('Y-m-d') }}</td>
-                                                    <td>
-                                                        <button class="btn btn-sm btn-secondary">View Order Detail</button>
-                                                        <button class="btn btn-sm btn-info">View Seller Detail</button>
-                                                        <button class="btn btn-sm btn-primary">Download Invoice</button>
-                                                    </td>
-                                                </tr>
-                                            @endforeach
-                                        </tbody>
 
-                                    </table>
+                                <!-- Tabs navigation -->
+                                <ul class="nav nav-tabs" id="orderTabs" role="tablist">
+                                    <li class="nav-item" role="presentation">
+                                        <button class="nav-link active" id="all-tab" data-toggle="tab" data-target="#all"
+                                            type="button" role="tab" aria-controls="all" aria-selected="false">All
+                                            Subscriptions</button>
+                                    </li>
+                                    <li class="nav-item" role="presentation">
+                                        <button class="nav-link" id="active-tab" data-toggle="tab"
+                                            data-target="#active" type="button" role="tab" aria-controls="active"
+                                            aria-selected="true">Active Subscriptions</button>
+                                    </li>
+                                    <li class="nav-item" role="presentation">
+                                        <button class="nav-link" id="inactive-tab" data-toggle="tab" data-target="#inactive"
+                                            type="button" role="tab" aria-controls="inactive"
+                                            aria-selected="false">Cancelled Subscriptions</button>
+                                    </li>
+                                    <li class="nav-item" role="presentation">
+                                        <button class="nav-link" id="expired-tab" data-toggle="tab" data-target="#expired"
+                                            type="button" role="tab" aria-controls="expired" aria-selected="false">Expired
+                                            Subscriptions</button>
+                                    </li>
+                                </ul>
+
+                                <!-- Tabs content -->
+                                <div class="tab-content pt-2" id="orderTabsContent">
+                                    <!-- All Subscriptions Tab -->
+                                    <div class="tab-pane fade show active" id="all" role="tabpanel" aria-labelledby="all-tab">
+                                        @include('admin.subscriptions.partials.subscription-table-all', ['subscriptions' => $subscriptions])
+                                    </div>
+
+                                    <!-- Active Subscriptions Tab -->
+                                    <div class="tab-pane fade" id="active" role="tabpanel"
+                                        aria-labelledby="active-tab">
+                                        @include('admin.subscriptions.partials.subscription-table', ['subscriptions' => $subscriptions->where('status', 'active')])
+                                    </div>
+
+                                    <!-- Cancelled Subscriptions Tab -->
+                                    <div class="tab-pane fade" id="inactive" role="tabpanel" aria-labelledby="inactive-tab">
+                                        @include('admin.subscriptions.partials.subscription-table-cancelled', ['subscriptions' => $subscriptions->where('status', 'cancelled')])
+                                    </div>
+
+                                    <!-- Expired Subscriptions Tab -->
+                                    <div class="tab-pane fade" id="expired" role="tabpanel" aria-labelledby="expired-tab">
+                                        @include('admin.subscriptions.partials.subscription-table-expired', ['subscriptions' => $subscriptions->where('status', 'expired')])
+                                    </div>
+
+
                                 </div>
                             </div>
                         </div>
@@ -91,5 +86,7 @@
             </div>
         </div>
     </div>
+
+
 
 @endsection

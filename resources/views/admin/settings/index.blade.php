@@ -61,6 +61,13 @@
                                         <span class="font-weight-bold">Seller Commission</span>
                                     </a>
                                 </li>
+                                <li class="nav-item">
+                                    <a class="nav-link" data-toggle="pill" href="#cancel-subscription-setting">
+                                        <i data-feather="x-circle" class="font-medium-3 mr-1"></i>
+                                        <span class="font-weight-bold">Cancel Subscription</span>
+                                    </a>
+                                </li>
+
                             </ul>
                         </div>
 
@@ -304,20 +311,23 @@
                                                         <div class="form-group template-row border rounded p-3 mb-2">
                                                             {{-- Template Type --}}
                                                             <label>Template Type</label>
-                                                            <select class="form-control mb-2" name="sms_templates[{{ $i }}][type]">
+                                                            <select class="form-control mb-2"
+                                                                name="sms_templates[{{ $i }}][type]">
                                                                 <option value="verify_otp" {{ ($template['type'] ?? '') == 'verify_otp' ? 'selected' : '' }}>Verify OTP</option>
                                                                 <option value="custom" {{ ($template['type'] ?? '') == 'custom' ? 'selected' : '' }}>Custom</option>
                                                             </select>
 
                                                             {{-- Template ID --}}
                                                             <label>Template ID</label>
-                                                            <input type="text" class="form-control mb-2" name="sms_templates[{{ $i }}][id]"
+                                                            <input type="text" class="form-control mb-2"
+                                                                name="sms_templates[{{ $i }}][id]"
                                                                 value="{{ $template['id'] ?? '' }}"
                                                                 placeholder="DLT Template ID">
 
                                                             {{-- Template Text --}}
                                                             <label>Template Text</label>
-                                                            <textarea class="form-control mb-2" name="sms_templates[{{ $i }}][text]"
+                                                            <textarea class="form-control mb-2"
+                                                                name="sms_templates[{{ $i }}][text]"
                                                                 placeholder="Enter Template Message">{{ $template['text'] ?? '' }}</textarea>
 
                                                             {{-- Variables --}}
@@ -415,6 +425,25 @@
                                                         value="{{ $settings['default_commission'] ?? '' }}">
                                                 </div>
                                                 <button type="submit" class="btn btn-primary">Save Commission</button>
+                                            </form>
+                                        </div>
+
+
+                                        {{-- Cancel Subscription --}}
+                                        <div class="tab-pane fade" id="cancel-subscription-setting">
+                                            <form method="POST" action="{{ route('admin.settings.update') }}">
+                                                @csrf
+                                                <div class="form-group">
+                                                    <label>Cancel Subscription Window (Days)</label>
+                                                    <input type="number" class="form-control"
+                                                        name="cancel_subscription_days"
+                                                        value="{{ $settings['cancel_subscription_days'] ?? '' }}" min="0">
+                                                    <small class="text-muted">
+                                                        Enter the number of days within which a user can cancel their
+                                                        subscription if unused.
+                                                    </small>
+                                                </div>
+                                                <button type="submit" class="btn btn-primary">Save Cancel Settings</button>
                                             </form>
                                         </div>
 

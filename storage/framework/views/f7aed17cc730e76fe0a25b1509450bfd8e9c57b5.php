@@ -26,64 +26,58 @@
                     <div class="col-md-12">
                         <div class="card">
                             <div class="card-header">
-                                <h4 class="card-title">Orders Listing</h4>
+                                <h4 class="card-title">Subscription Orders</h4>
                             </div>
                             <div class="card-body">
-                                <div class="table-responsive">
-                                    <table class="table table-bordered" id="orders-table">
-                                        <thead>
-                                            <tr>
-                                                <th>Date & Time</th>
-                                                <th>Order ID</th>
-                                                <th>Seller Info</th>
-                                                <th>Transaction ID</th>
-                                                <th>Payment Method</th>
-                                                <th>Payment Status</th>
-                                                <th>Subscription Status</th>
-                                                <th>Subscription Expiry</th>
-                                                <th>Action</th>
-                                            </tr>
-                                        </thead>
-                                        <tbody>
-                                            <?php $__currentLoopData = $subscriptions; $__env->addLoop($__currentLoopData); foreach($__currentLoopData as $sub): $__env->incrementLoopIndices(); $loop = $__env->getLastLoop(); ?>
-                                                <tr>
-                                                    <td><?php echo e(\Carbon\Carbon::parse($sub->created_at)->format('Y-m-d H:i')); ?></td>
-                                                    <td>#ORD<?php echo e($sub->id); ?></td>
-                                                    <td>
-                                                        Seller ID: <?php echo e($sub->customer->id ?? '-'); ?><br>
-                                                       <?php echo e($sub->customer->first_name ?? '-'); ?> <?php echo e($sub->customer->last_name ?? '-'); ?><br>
-                                                        <?php echo e($sub->customer->email ?? '-'); ?>
 
-                                                    </td>
-                                                     <td><?php echo e($sub->payment->payment_id ?? '-'); ?></td>
-                                                     <td><?php echo e(ucfirst($sub->payment->gateway ?? '-')); ?></td>
-                                                    <td>
-                                                        <?php if($sub->payment->status === 'success'): ?>
-                    <span class="badge badge-success">Paid</span>
-                <?php elseif($sub->payment->status === 'pending'): ?>
-                    <span class="badge badge-warning">Pending</span>
-                <?php else: ?>
-                    <span class="badge badge-danger">Failed</span>
-                <?php endif; ?>
-                                                    </td>
-                                                    <td>
-                                                        <?php if($sub->status === 'active'): ?>
-                                                            <span class="badge badge-primary">Active</span>
-                                                        <?php else: ?>
-                                                            <span class="badge badge-danger">Inactive</span>
-                                                        <?php endif; ?>
-                                                    </td>
-                                                    <td><?php echo e(\Carbon\Carbon::parse($sub->end_date)->format('Y-m-d')); ?></td>
-                                                    <td>
-                                                        <button class="btn btn-sm btn-secondary">View Order Detail</button>
-                                                        <button class="btn btn-sm btn-info">View Seller Detail</button>
-                                                        <button class="btn btn-sm btn-primary">Download Invoice</button>
-                                                    </td>
-                                                </tr>
-                                            <?php endforeach; $__env->popLoop(); $loop = $__env->getLastLoop(); ?>
-                                        </tbody>
+                                <!-- Tabs navigation -->
+                                <ul class="nav nav-tabs" id="orderTabs" role="tablist">
+                                    <li class="nav-item" role="presentation">
+                                        <button class="nav-link active" id="all-tab" data-toggle="tab" data-target="#all"
+                                            type="button" role="tab" aria-controls="all" aria-selected="false">All
+                                            Subscriptions</button>
+                                    </li>
+                                    <li class="nav-item" role="presentation">
+                                        <button class="nav-link" id="active-tab" data-toggle="tab"
+                                            data-target="#active" type="button" role="tab" aria-controls="active"
+                                            aria-selected="true">Active Subscriptions</button>
+                                    </li>
+                                    <li class="nav-item" role="presentation">
+                                        <button class="nav-link" id="inactive-tab" data-toggle="tab" data-target="#inactive"
+                                            type="button" role="tab" aria-controls="inactive"
+                                            aria-selected="false">Cancelled Subscriptions</button>
+                                    </li>
+                                    <li class="nav-item" role="presentation">
+                                        <button class="nav-link" id="expired-tab" data-toggle="tab" data-target="#expired"
+                                            type="button" role="tab" aria-controls="expired" aria-selected="false">Expired
+                                            Subscriptions</button>
+                                    </li>
+                                </ul>
 
-                                    </table>
+                                <!-- Tabs content -->
+                                <div class="tab-content pt-2" id="orderTabsContent">
+                                    <!-- All Subscriptions Tab -->
+                                    <div class="tab-pane fade show active" id="all" role="tabpanel" aria-labelledby="all-tab">
+                                        <?php echo $__env->make('admin.subscriptions.partials.subscription-table-all', ['subscriptions' => $subscriptions], \Illuminate\Support\Arr::except(get_defined_vars(), ['__data', '__path']))->render(); ?>
+                                    </div>
+
+                                    <!-- Active Subscriptions Tab -->
+                                    <div class="tab-pane fade" id="active" role="tabpanel"
+                                        aria-labelledby="active-tab">
+                                        <?php echo $__env->make('admin.subscriptions.partials.subscription-table', ['subscriptions' => $subscriptions->where('status', 'active')], \Illuminate\Support\Arr::except(get_defined_vars(), ['__data', '__path']))->render(); ?>
+                                    </div>
+
+                                    <!-- Cancelled Subscriptions Tab -->
+                                    <div class="tab-pane fade" id="inactive" role="tabpanel" aria-labelledby="inactive-tab">
+                                        <?php echo $__env->make('admin.subscriptions.partials.subscription-table-cancelled', ['subscriptions' => $subscriptions->where('status', 'cancelled')], \Illuminate\Support\Arr::except(get_defined_vars(), ['__data', '__path']))->render(); ?>
+                                    </div>
+
+                                    <!-- Expired Subscriptions Tab -->
+                                    <div class="tab-pane fade" id="expired" role="tabpanel" aria-labelledby="expired-tab">
+                                        <?php echo $__env->make('admin.subscriptions.partials.subscription-table-expired', ['subscriptions' => $subscriptions->where('status', 'expired')], \Illuminate\Support\Arr::except(get_defined_vars(), ['__data', '__path']))->render(); ?>
+                                    </div>
+
+
                                 </div>
                             </div>
                         </div>
@@ -92,6 +86,8 @@
             </div>
         </div>
     </div>
+
+
 
 <?php $__env->stopSection(); ?>
 <?php echo $__env->make('layouts.master', \Illuminate\Support\Arr::except(get_defined_vars(), ['__data', '__path']))->render(); ?><?php /**PATH D:\web-mingo-project\flippingo_admin\resources\views/admin/subscriptions/orders.blade.php ENDPATH**/ ?>

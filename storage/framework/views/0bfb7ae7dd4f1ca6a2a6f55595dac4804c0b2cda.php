@@ -61,6 +61,13 @@
                                         <span class="font-weight-bold">Seller Commission</span>
                                     </a>
                                 </li>
+                                <li class="nav-item">
+                                    <a class="nav-link" data-toggle="pill" href="#cancel-subscription-setting">
+                                        <i data-feather="x-circle" class="font-medium-3 mr-1"></i>
+                                        <span class="font-weight-bold">Cancel Subscription</span>
+                                    </a>
+                                </li>
+
                             </ul>
                         </div>
 
@@ -304,20 +311,23 @@
                                                         <div class="form-group template-row border rounded p-3 mb-2">
                                                             
                                                             <label>Template Type</label>
-                                                            <select class="form-control mb-2" name="sms_templates[<?php echo e($i); ?>][type]">
+                                                            <select class="form-control mb-2"
+                                                                name="sms_templates[<?php echo e($i); ?>][type]">
                                                                 <option value="verify_otp" <?php echo e(($template['type'] ?? '') == 'verify_otp' ? 'selected' : ''); ?>>Verify OTP</option>
                                                                 <option value="custom" <?php echo e(($template['type'] ?? '') == 'custom' ? 'selected' : ''); ?>>Custom</option>
                                                             </select>
 
                                                             
                                                             <label>Template ID</label>
-                                                            <input type="text" class="form-control mb-2" name="sms_templates[<?php echo e($i); ?>][id]"
+                                                            <input type="text" class="form-control mb-2"
+                                                                name="sms_templates[<?php echo e($i); ?>][id]"
                                                                 value="<?php echo e($template['id'] ?? ''); ?>"
                                                                 placeholder="DLT Template ID">
 
                                                             
                                                             <label>Template Text</label>
-                                                            <textarea class="form-control mb-2" name="sms_templates[<?php echo e($i); ?>][text]"
+                                                            <textarea class="form-control mb-2"
+                                                                name="sms_templates[<?php echo e($i); ?>][text]"
                                                                 placeholder="Enter Template Message"><?php echo e($template['text'] ?? ''); ?></textarea>
 
                                                             
@@ -328,7 +338,7 @@
                                                                 <code>{website}</code>
                                                             </p>
                                                             <input type="hidden" name="sms_templates[<?php echo e($i); ?>][variables]"
-                                                                value="otp,mobile,name,website">
+                                                                value="otp,mobile,website">
 
 
                                                             
@@ -415,6 +425,25 @@
                                                         value="<?php echo e($settings['default_commission'] ?? ''); ?>">
                                                 </div>
                                                 <button type="submit" class="btn btn-primary">Save Commission</button>
+                                            </form>
+                                        </div>
+
+
+                                        
+                                        <div class="tab-pane fade" id="cancel-subscription-setting">
+                                            <form method="POST" action="<?php echo e(route('admin.settings.update')); ?>">
+                                                <?php echo csrf_field(); ?>
+                                                <div class="form-group">
+                                                    <label>Cancel Subscription Window (Days)</label>
+                                                    <input type="number" class="form-control"
+                                                        name="cancel_subscription_days"
+                                                        value="<?php echo e($settings['cancel_subscription_days'] ?? ''); ?>" min="0">
+                                                    <small class="text-muted">
+                                                        Enter the number of days within which a user can cancel their
+                                                        subscription if unused.
+                                                    </small>
+                                                </div>
+                                                <button type="submit" class="btn btn-primary">Save Cancel Settings</button>
                                             </form>
                                         </div>
 

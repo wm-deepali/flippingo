@@ -390,97 +390,58 @@
                     let packageAmount = this.getAttribute("data-amount");
                     let packageDesc = this.getAttribute("data-description");
 
-                      // 🔹 Mock Payment Simulation
-                Swal.fire({
-                    icon: 'info',
-                    title: `Simulating payment for ${packageName}`,
-                    text: 'This is a mock payment. Click "OK" to proceed.',
-                    confirmButtonText: 'OK'
-                }).then(() => {
-                    // Send mock payment info to backend
-                    fetch("{{ route('subscription.store') }}", {
-                        method: "POST",
-                        headers: {
-                            "Content-Type": "application/json",
-                            "X-CSRF-TOKEN": "{{ csrf_token() }}"
-                        },
-                        body: JSON.stringify({
-                            razorpay_payment_id: 'MOCK_PAYMENT_ID',
-                            package_id: packageId
-                        })
-                    })
-                    .then(res => res.json())
-                    .then(data => {
-                        if (data.success) {
-                            Swal.fire({
-                                icon: 'success',
-                                title: 'Subscription Activated!',
-                                text: 'Your subscription has been activated successfully.',
-                                confirmButtonText: 'Continue'
-                            }).then(() => {
-                                window.location.href = redirectAfterPayment;
-                            });
-                        } else {
-                            Swal.fire({
-                                icon: 'error',
-                                title: 'Oops!',
-                                text: 'There was an error saving your subscription.'
-                            });
+                    let options = {
+                        key: "{{ config('services.razorpay.key') }}", // from config/services.php
+                        amount: packageAmount,
+                        currency: "INR",
+                        name: "Flippingo",
+                        description: packageDesc,
+                        image: "{{ asset('logo.png') }}", // optional
+                        handler: function (response) {
+                            fetch("{{ route('subscription.store') }}", {
+                                method: "POST",
+                                headers: {
+                                    "Content-Type": "application/json",
+                                    "X-CSRF-TOKEN": "{{ csrf_token() }}"
+                                },
+                                body: JSON.stringify({
+                                    razorpay_payment_id: response.razorpay_payment_id,
+                                    package_id: packageId
+                                })
+                            })
+                                .then(res => res.json())
+                                .then(data => {
+                                    if (data.success) {
+                                        Swal.fire({
+                                            icon: 'success',
+                                            title: 'Subscription Activated!',
+                                            text: 'Your subscription has been activated successfully.',
+                                            confirmButtonText: 'Continue'
+                                        }).then(() => {
+                                            window.location.href = redirectAfterPayment;
+                                        });
+                                    } else {
+                                        Swal.fire({
+                                            icon: 'error',
+                                            title: 'Oops!',
+                                            text: 'Payment was successful but there was an error saving your subscription.'
+                                        });
+                                    }
+                                });
                         }
-                    });
-                });
-                    // let options = {
-                    //     key: "{{ config('services.razorpay.key') }}", // from config/services.php
-                    //     amount: packageAmount,
-                    //     currency: "INR",
-                    //     name: "Flippingo",
-                    //     description: packageDesc,
-                    //     image: "{{ asset('logo.png') }}", // optional
-                    //     handler: function (response) {
-                    //         fetch("{{ route('subscription.store') }}", {
-                    //             method: "POST",
-                    //             headers: {
-                    //                 "Content-Type": "application/json",
-                    //                 "X-CSRF-TOKEN": "{{ csrf_token() }}"
-                    //             },
-                    //             body: JSON.stringify({
-                    //                 razorpay_payment_id: response.razorpay_payment_id,
-                    //                 package_id: packageId
-                    //             })
-                    //         })
-                    //             .then(res => res.json())
-                    //             .then(data => {
-                    //                 if (data.success) {
-                    //                     Swal.fire({
-                    //                         icon: 'success',
-                    //                         title: 'Subscription Activated!',
-                    //                         text: 'Your subscription has been activated successfully.',
-                    //                         confirmButtonText: 'Continue'
-                    //                     }).then(() => {
-                    //                         window.location.href = redirectAfterPayment;
-                    //                     });
-                    //                 } else {
-                    //                     Swal.fire({
-                    //                         icon: 'error',
-                    //                         title: 'Oops!',
-                    //                         text: 'Payment was successful but there was an error saving your subscription.'
-                    //                     });
-                    //                 }
-                    //             });
-                    //     }
 
-                    //         prefill: {
-                    //         name: "{{ auth()->user()->name }}",
-                    //         email: "{{ auth()->user()->email }}",
-                    //         contact: "{{ auth()->user()->phone ?? '' }}"
-                    //     },
-                    //     theme: {
-                    //         color: "#4a6cf7"
-                    //     }
-                    // };
+                        //     prefill: {
+                        //     name: "{{ auth()->user()->name }}",
+                        //     email: "{{ auth()->user()->email }}",
+                        //     contact: "{{ auth()->user()->phone ?? '' }}"
+                        // },
+                        // theme: {
+                        //     color: "#4a6cf7"
+                        // }
+                    };
 
-                    // let rzp = new Razorpay(options);
-                    // rzp.open();
+                    let rzp = new Razorpay(options);
+                    rzp.open();
                 });
             });
         });

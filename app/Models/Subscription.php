@@ -12,7 +12,10 @@ class Subscription extends Model
         'used_listings',
         'start_date',
         'end_date',
-        'status'
+        'status',
+        'order_number',
+        'cancel_reason',
+        'cancel_requested_at',
     ];
 
     public function customer()
@@ -29,5 +32,16 @@ class Subscription extends Model
     {
         return $this->hasOne(Payment::class);
     }
+
+    public function refund()
+    {
+        return $this->hasOne(PaymentRefund::class);
+    }
+
+    public function invoice()
+    {
+        return $this->hasOne(Invoice::class);
+    }
+
 
 }

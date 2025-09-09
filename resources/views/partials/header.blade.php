@@ -122,15 +122,19 @@
         
         <li class="dropdown nav-item" data-menu="dropdown">
           <a class="dropdown-toggle nav-link d-flex align-items-center" href="#" data-toggle="dropdown">
-            <span>Customers & Sellers</span>
+            <span>Buyers & Sellers</span>
           </a>
           <ul class="dropdown-menu">
             <li><a class="dropdown-item d-flex align-items-center"
                 href="{{ route('admin.customers.index') }}"><span>Manage Customer</span></a>
             </li>
             <li><a class="dropdown-item d-flex align-items-center"
-                href="{{ route('admin.deletion_reasons.index') }}"><span>Reasons for Account Deletion</span></a>
+                href="{{ route('admin.customers.index') }}"><span>Seller Income Detail</span></a>
             </li>
+            <li><a class="dropdown-item d-flex align-items-center"
+                href="{{ route('admin.customers.index') }}"><span>Commission & Income</span></a>
+            </li>
+            
             <li><a class="dropdown-item d-flex align-items-center"
                 href="{{ route('admin.account_deletion_requests.index') }}"><span>Account Delete Request</span></a>
             </li>
@@ -143,7 +147,7 @@
           </a>
           <ul class="dropdown-menu">
             <li><a class="dropdown-item d-flex align-items-center"
-                href="{{ route('admin.customers.index') }}"><span>Customer Wallet</span></a>
+                href="{{ route('admin.customers.index') }}"><span>Buyer Wallet</span></a>
             </li>
             <li><a class="dropdown-item d-flex align-items-center"
                 href="{{ route('admin.deletion_reasons.index') }}"><span>Seller Wallet</span></a>
@@ -161,38 +165,37 @@
 
           <li class="dropdown nav-item" data-menu="dropdown">
           <a class="dropdown-toggle nav-link d-flex align-items-center" href="#" data-toggle="dropdown">
-            <span>Subscriptions</span>
+            <span>Subscriptions & Orders</span>
           </a>
           <ul class="dropdown-menu">
             <li><a class="dropdown-item d-flex align-items-center"
-                href="{{ route('admin.packages.index') }}"><span>Subscriptions Package</span></a></li>
+                href="{{ route('admin.packages.index') }}"><span>Manage Subscriptions</span></a></li>
                 <li><a class="dropdown-item d-flex align-items-center"
                 href="{{ route('admin.subscriptions.orders') }}"><span>Subscriptions Orders</span></a></li>
+                <li>
+              <a class="dropdown-item d-flex align-items-center" href="{{ route('admin.form-submissions.index') }}">
+                Sales Orders
+              </a>
+            </li>
+            <li><a class="dropdown-item d-flex align-items-center"
+                href="{{ route('admin.subscriptions.cancellationRequests') }}"><span>Subscription Cancellation Request</span></a></li>
+            <li>
+              <a class="dropdown-item d-flex align-items-center" href="{{ route('admin.payments.index') }}">
+               Manage Order Payments
+              </a>
+            </li>
           </ul>
         </li>
-        <li class="dropdown nav-item" data-menu="dropdown">
+      <!--  <li class="dropdown nav-item" data-menu="dropdown">
           <a class="dropdown-toggle nav-link d-flex align-items-center" href="#" data-toggle="dropdown">
             <span>Orders & Sales</span>
           </a>
           <ul class="dropdown-menu">
-            <li>
-              <a class="dropdown-item d-flex align-items-center" href="{{ route('admin.form-submissions.index') }}">
-                Manage Orders
-              </a>
-            </li>
-            <li>
-              <a class="dropdown-item d-flex align-items-center" href="{{ route('admin.enquiry.index') }}">
-                View Order Detail
-              </a>
-            </li>
-            <li>
-              <a class="dropdown-item d-flex align-items-center" href="{{ route('admin.enquiry.index') }}">
-               Manage Order Payments
-              </a>
-            </li>
+            
+            
             
           </ul>
-        </li>
+        </li> -->
 
         <li class="dropdown nav-item" data-menu="dropdown">
           <a class="dropdown-toggle nav-link d-flex align-items-center" href="#" data-toggle="dropdown">
@@ -218,8 +221,18 @@
           </a>
           <ul class="dropdown-menu">
             <li>
+              <a class="dropdown-item d-flex align-items-center" href="{{ route('admin.subscriptions.reports') }}">
+                Subscription Reports
+              </a>
+            </li>
+            <li>
               <a class="dropdown-item d-flex align-items-center" href="{{ route('admin.form-submissions.index') }}">
-                Analytics & Reports
+                Sales Reports
+              </a>
+            </li>
+            <li>
+              <a class="dropdown-item d-flex align-items-center" href="{{ route('admin.form-submissions.index') }}">
+                Analytics
               </a>
             </li>
            
@@ -266,7 +279,7 @@
                 href="{{ route('admin.client-reels.index') }}"><span>Order Cancellation Reasons</span></a>
             </li>
              <li><a class="dropdown-item d-flex align-items-center"
-                href="{{ route('admin.client-reels.index') }}"><span>Account Delete Reasons</span></a>
+                href="{{ route('admin.deletion_reasons.index') }}"><span> Account Delete Reasons</span></a>
             </li>
           </ul>
         </li>

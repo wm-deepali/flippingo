@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Models\Invoice;
 use App\Models\Package;
 use App\Models\Payment;
 use App\Models\Subscription;
@@ -13,19 +14,39 @@ class SubscriptionController extends Controller
 
     public function index()
     {
-        $user = Auth::user(); // assuming 'Customer' is authenticated user
+        $user = Auth::guard('customer')->user();
 
-        // Get latest active subscription for the user
+        // Get latest subscription for the user that is active or cancel_requested
         $subscription = Subscription::with('package')
             ->where('customer_id', $user->id)
-            ->where('status', 'active')
+            ->whereIn('status', ['active', 'cancel_requested'])
             ->latest()
             ->first();
 
         // Get all active packages
         $packages = Package::where('status', 'active')->get();
 
-        return view('user.subscriptions', compact('subscription', 'packages'));
+        // Determine if the subscription can be canceled
+        $canCancel = false;
+        $cancelDeadline = null;
+        $cancelWindow = setting('cancel_subscription_days') ?? 0;
+
+        if ($subscription && $subscription->status === 'active') {
+            $cancelDeadline = \Carbon\Carbon::parse($subscription->start_date)->addDays($cancelWindow);
+            $isUsed = $subscription->used_listings > 0;
+
+            $canCancel = $cancelWindow > 0
+                && now()->lte($cancelDeadline)
+                && !$isUsed;
+        }
+
+        return view('user.subscriptions', compact(
+            'subscription',
+            'packages',
+            'canCancel',
+            'cancelDeadline',
+            'cancelWindow'
+        ));
     }
 
     public function renew(Request $request)
@@ -42,6 +63,7 @@ class SubscriptionController extends Controller
         return redirect()->back()->with('success', 'Subscription renewed successfully!');
     }
 
+
     public function store(Request $request)
     {
         $request->validate([
@@ -51,17 +73,21 @@ class SubscriptionController extends Controller
 
         $package = Package::findOrFail($request->package_id);
 
+        // Generate unique order number
+        $orderNumber = 'SUB' . mt_rand(100000, 999999);
         // Create subscription
         $subscription = Subscription::create([
-            'customer_id' => Auth::guard('customer')->user()->id, // assuming auth()->user() is Customer
+            'customer_id' => Auth::guard('customer')->user()->id,
             'package_id' => $package->id,
             'used_listings' => 0,
             'start_date' => now(),
             'end_date' => now()->addDays($package->listing_duration ?? 30),
             'status' => 'active',
+            'order_number' => $orderNumber,
         ]);
 
-        // Store payment separately
+        // dd($orderNumber);
+        // Store payment
         Payment::create([
             'subscription_id' => $subscription->id,
             'gateway' => 'razorpay',
@@ -71,8 +97,34 @@ class SubscriptionController extends Controller
             'status' => 'success'
         ]);
 
-        return response()->json(['success' => true]);
+        // Generate invoice number (INV + 6 random digits)
+        $invoiceNumber = $this->generateUniqueInvoiceNumber();
+
+        // Create invoice
+        Invoice::create([
+            'subscription_id' => $subscription->id,
+            'invoice_number' => $invoiceNumber,
+            'amount' => $package->offered_price,
+            'currency' => 'INR',
+            'issued_at' => now(),
+        ]);
+
+        return response()->json([
+            'success' => true,
+            'order_number' => $orderNumber,
+            'invoice_number' => $invoiceNumber
+        ]);
     }
+
+
+    private function generateUniqueInvoiceNumber()
+    {
+        do {
+            $number = 'INV' . mt_rand(100000, 999999);
+        } while (Invoice::where('invoice_number', $number)->exists());
+        return $number;
+    }
+
 
     public function ListPackage()
     {
@@ -82,6 +134,43 @@ class SubscriptionController extends Controller
             ->get();
 
         return view('front.pricing', compact('packages'));
+    }
+
+    public function cancelRequest(Request $request)
+    {
+        $request->validate([
+            'subscription_id' => 'required|exists:subscriptions,id',
+            'reason' => 'required|string|max:500',
+        ]);
+
+        $subscription = Subscription::findOrFail($request->subscription_id);
+
+        // Cancel window setting
+        $cancelWindow = setting('cancel_subscription_days') ?? 0;
+        $cancelDeadline = \Carbon\Carbon::parse($subscription->start_date)->addDays($cancelWindow);
+
+        // Check if eligible for cancellation
+        if ($cancelWindow <= 0 || now()->gt($cancelDeadline)) {
+            return back()->withErrors('Cancellation window has expired.');
+        }
+
+        if ($subscription->used_listings > 0) {
+            return back()->withErrors('You cannot cancel because the subscription has already been used.');
+        }
+
+        if ($subscription->status !== 'active') {
+            return back()->withErrors('Only active subscriptions can be canceled.');
+        }
+
+        // Mark as cancel requested
+        $subscription->update([
+            'status' => 'cancel_requested',
+            'cancel_reason' => $request->reason,
+            'cancel_requested_at' => now(),
+        ]);
+        // dd($subscription);
+
+        return back()->with('success', 'Your cancel request has been sent to the admin.');
     }
 
 

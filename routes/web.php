@@ -19,7 +19,8 @@ use App\Http\Controllers\Admin\{
     AccountDeletionRequestController,
     CustomerController,
     SettingController,
-    PackageController
+    PackageController,
+    SubscriptionController
 };
 
 /*
@@ -167,7 +168,29 @@ Route::group(['middleware' => 'auth'], function () {
         Route::resource('client-reels', ClientReelController::class);
 
         Route::resource('packages', PackageController::class);
-        Route::get('/subscriptions/orders', [PackageController::class, 'orders'])->name('subscriptions.orders');
+
+        Route::get('/subscriptions/orders', [SubscriptionController::class, 'index'])->name('subscriptions.orders');
+        Route::get('/subscriptions/show/{id}', [SubscriptionController::class, 'show'])->name('subscriptions.show');
+        Route::get('subscriptions/cancellation-requests', [SubscriptionController::class, 'cancellationRequests'])->name('subscriptions.cancellationRequests');
+        Route::post('subscriptions/{subscription}/approve-cancellation', [SubscriptionController::class, 'approveCancellation'])
+            ->name('subscriptions.approveCancellation');
+        Route::get('/subscription-reports', [SubscriptionController::class, 'reports'])->name('subscriptions.reports');
+
+
+
+        Route::post('subscriptions/{subscription}/reject-cancellation', [SubscriptionController::class, 'rejectCancellation'])
+            ->name('subscriptions.rejectCancellation');
+
+        Route::get('/orders/invoice/{type}/{id}', [SubscriptionController::class, 'viewInvoice'])->name('orders.invoice');
+        Route::get('invoice/download/{type}/{id}', [SubscriptionController::class, 'download'])
+            ->name('invoice.download');
+
+
+        Route::get('subscription-order-detail', function () {
+            return view('admin.packages.orderlist');
+        })->name('orders.orderlist');
+
+        Route::get('/payments', [SubscriptionController::class, 'payments'])->name('payments.index');
 
 
 

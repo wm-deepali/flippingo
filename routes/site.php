@@ -47,7 +47,10 @@ Route::get('/', [SiteController::class, 'index'])->name('home');
 
 Route::get('pricing', [SubscriptionController::class, 'ListPackage'])->name('pricing');
 Route::post('subscription/store', [SubscriptionController::class, 'Store'])->name('subscription.store');
+Route::post('/subscription/cancel-request', [App\Http\Controllers\SubscriptionController::class, 'cancelRequest'])
+    ->name('subscription.cancelRequest');
 
+    
 Route::get('/page/{slug}', [PageController::class, 'show'])->name('page.show');
 Route::get('add-listing', [SiteController::class, 'addListing'])->name('add-listing');
 Route::get('/forms/{id}', [FormController::class, 'showFormHtml'])->name('forms');
