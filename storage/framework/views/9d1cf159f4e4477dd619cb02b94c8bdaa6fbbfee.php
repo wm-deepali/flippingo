@@ -162,13 +162,13 @@
 
 
     <!-- ================================
-                                                                                        START BREADCRUMB AREA
-                                                                                    ================================= -->
+                                                                                                                                                START BREADCRUMB AREA
+                                                                                                                                            ================================= -->
 
     <!-- end breadcrumb-area -->
     <!-- ================================
-                                                                                        END BREADCRUMB AREA
-                                                                                    ================================= -->
+                                                                                                                                                END BREADCRUMB AREA
+                                                                                                                                            ================================= -->
     <section class="card-area " style="padding-top:60px; padding-bottom:90px; margin-top:130px;">
         <div class="container">
             <div class="card">
@@ -436,36 +436,41 @@
                                         <h3 class="mt-2 " style="color: #000;"><?php echo e($productTitle); ?></h3>
                                         <div class="d-flex justify-content-between align-items-center">
                                             <p class="m-0">By
-                                                <?php echo e($submission->customer->first_name ?? ''); ?><?php echo e($submission->customer->last_name ?? ''); ?>
+                                                <?php echo e(($submission->customer->first_name ?? '') . ' ' . ($submission->customer->last_name ?? '')); ?>
 
                                             </p>
+
                                             <p class="m-0" style="color: #007bff;"><i class="fa-solid fa-eye"></i> 10</p>
                                         </div>
                                         <div class="wishlist-item-card">
-                                            <div class="wishlist-left">
-                                                <p class="m-0" style="color: green;"><i class="fa-solid fa-dollar-sign"></i></p>
-                                                <div class="d-flex flex-column ">
-                                                    <p class="m-0" style="font-size: 16px;">Revenue</p>
-                                                    <h5 class="m-0" style="color: #000 ;font-size: 16px;">45/mo</h5>
-                                                </div>
+                                            <?php if($summaryFields->isNotEmpty()): ?>
+                                                <?php
+                                                    $textFields = $summaryFields->filter(fn($field) => $field['field_id'] && Str::startsWith($field['field_id'], 'text_') && !empty($field['show_on_summary']));
+                                                ?>
 
-                                            </div>
-                                            <div class="wishlist-left">
-                                                <p class="m-0" style="color: rgb(17, 96, 216);"><i class="fa-solid fa-eye"></i>
-                                                </p>
-                                                <div class="d-flex flex-column ">
-                                                    <p class="m-0" style="font-size: 16px;">Traffic</p>
-                                                    <h5 class="m-0" style="color: #000 ;font-size: 16px;">4597/mo</h5>
-                                                </div>
+                                                <?php if($textFields->isNotEmpty()): ?>
+                                                    <?php $__currentLoopData = $textFields; $__env->addLoop($__currentLoopData); foreach($__currentLoopData as $field): $__env->incrementLoopIndices(); $loop = $__env->getLastLoop(); ?>
+                                                        <div class="wishlist-left">
+                                                            <p class="m-0" style="color: green;"><i class="<?php echo e($field['icon']); ?>"></i></p>
+                                                            <div class="d-flex flex-column ">
+                                                                <p class="m-0" style="font-size: 16px;"><?php echo e($field['label']); ?></p>
+                                                                <h5 class="m-0" style="color: #000 ;font-size: 16px;"><?php echo e($field['value']); ?>
 
-                                            </div>
+                                                                </h5>
+                                                            </div>
+                                                        </div>
+                                                    <?php endforeach; $__env->popLoop(); $loop = $__env->getLastLoop(); ?>
+                                                <?php endif; ?>
+                                            <?php endif; ?>
 
                                         </div>
                                         <div class="wishlist-price d-flex justify-content-between mt-3">
                                             <h2 style="color: #000;"><i
                                                     class="fa-solid fa-indian-rupee-sign"></i><?php echo e($offeredPrice); ?></h2>
-                                            <button href="<?php echo e(route('listing-details', ['id' => $submission->id])); ?>">View
-                                                Listing</button>
+                                            <button type="button" class="btn btn-dark"
+                                                onclick="window.location.href='<?php echo e(route('listing-details', ['id' => $submission->id])); ?>'">
+                                                View Listing
+                                            </button>
                                         </div>
 
                                     </div>
@@ -473,9 +478,27 @@
 
 
                                         <h3 class="mt-2" style="color: #000;">More Information</h3>
-                                        <p style="font-size: 13px;">Free consultation | Fast Approval | 100% Transparent Process
-                                            |
-                                            No Hidden Cost</p>
+                                        <?php if($summaryFields->isNotEmpty()): ?>
+                                            <?php
+                                                $textareaFields = $summaryFields->filter(fn($field) => $field['field_id'] && Str::startsWith($field['field_id'], 'textarea') && !empty($field['show_on_summary']));
+                                            ?>
+
+                                            <?php if($textareaFields->isNotEmpty()): ?>
+                                                <p style="font-size: 13px;">
+                                                    <?php $__currentLoopData = $textareaFields; $__env->addLoop($__currentLoopData); foreach($__currentLoopData as $field): $__env->incrementLoopIndices(); $loop = $__env->getLastLoop(); ?>
+                                                        <?php if(!empty($field['icon'])): ?>
+                                                            <i class="<?php echo e($field['icon']); ?>" style="margin-right: 4px;"></i>
+                                                        <?php endif; ?>
+                                                        <?php echo e($field['value']); ?>
+
+
+                                                        <?php if(!$loop->last): ?>
+                                                            &nbsp;|&nbsp;
+                                                        <?php endif; ?>
+                                                    <?php endforeach; $__env->popLoop(); $loop = $__env->getLastLoop(); ?>
+                                                </p>
+                                            <?php endif; ?>
+                                        <?php endif; ?>
                                         <div class="d-flex justify-content-between align-items-center">
                                             <p class="m-0">By
                                                 <?php echo e($submission->customer->first_name ?? ''); ?><?php echo e($submission->customer->last_name ?? ''); ?>
@@ -484,30 +507,33 @@
                                             <p class="m-0" style="color: #007bff;"><i class="fa-solid fa-eye"></i> 10</p>
                                         </div>
                                         <div class="wishlist-item-card">
-                                            <div class="wishlist-left">
-                                                <p class="m-0" style="color: green;"><i class="fa-solid fa-dollar-sign"></i></p>
-                                                <div class="d-flex flex-column ">
-                                                    <p class="m-0" style="font-size: 16px;">Revenue</p>
-                                                    <h5 class="m-0" style="color: #000 ;font-size: 16px;">45/mo</h5>
-                                                </div>
+                                            <?php if($summaryFields->isNotEmpty()): ?>
+                                                <?php
+                                                    $textFields = $summaryFields->filter(fn($field) => $field['field_id'] && Str::startsWith($field['field_id'], 'text_') && !empty($field['show_on_summary']));
+                                                ?>
 
-                                            </div>
-                                            <div class="wishlist-left">
-                                                <p class="m-0" style="color: rgb(17, 96, 216);"><i class="fa-solid fa-eye"></i>
-                                                </p>
-                                                <div class="d-flex flex-column ">
-                                                    <p class="m-0" style="font-size: 16px;">Traffic</p>
-                                                    <h5 class="m-0" style="color: #000 ;font-size: 16px;">4597/mo</h5>
-                                                </div>
+                                                <?php if($textFields->isNotEmpty()): ?>
+                                                    <?php $__currentLoopData = $textFields; $__env->addLoop($__currentLoopData); foreach($__currentLoopData as $field): $__env->incrementLoopIndices(); $loop = $__env->getLastLoop(); ?>
+                                                        <div class="wishlist-left">
+                                                            <p class="m-0" style="color: green;"><i class="<?php echo e($field['icon']); ?>"></i></p>
+                                                            <div class="d-flex flex-column ">
+                                                                <p class="m-0" style="font-size: 16px;"><?php echo e($field['label']); ?></p>
+                                                                <h5 class="m-0" style="color: #000 ;font-size: 16px;"><?php echo e($field['value']); ?>
 
-                                            </div>
-
+                                                                </h5>
+                                                            </div>
+                                                        </div>
+                                                    <?php endforeach; $__env->popLoop(); $loop = $__env->getLastLoop(); ?>
+                                                <?php endif; ?>
+                                            <?php endif; ?>
                                         </div>
                                         <div class="wishlist-price d-flex justify-content-between mt-3">
                                             <h2 style="color: #000;"><i
                                                     class="fa-solid fa-indian-rupee-sign"></i><?php echo e($offeredPrice); ?></h2>
-                                            <button href="<?php echo e(route('listing-details', ['id' => $submission->id])); ?>">View
-                                                Listing</button>
+                                            <button type="button" class="btn btn-dark"
+                                                onclick="window.location.href='<?php echo e(route('listing-details', ['id' => $submission->id])); ?>'">
+                                                View Listing
+                                            </button>
                                         </div>
                                     </div>
                                 </div>
@@ -561,30 +587,34 @@
                                                     <p class="m-0" style="color: #007bff;"><i class="fa-solid fa-eye"></i> 10</p>
                                                 </div>
                                                 <div class="wishlist-item-card">
-                                                    <div class="wishlist-left">
-                                                        <p class="m-0" style="color: green;"><i class="fa-solid fa-dollar-sign"></i></p>
-                                                        <div class="d-flex flex-column ">
-                                                            <p class="m-0" style="font-size: 16px;">Revenue</p>
-                                                            <h5 class="m-0" style="color: #000 ;font-size: 16px;">45/mo</h5>
-                                                        </div>
+                                                    <?php if($summaryFields->isNotEmpty()): ?>
+                                                        <?php
+                                                            $textFields = $summaryFields->filter(fn($field) => $field['field_id'] && Str::startsWith($field['field_id'], 'text_') && !empty($field['show_on_summary']));
+                                                        ?>
 
-                                                    </div>
-                                                    <div class="wishlist-left">
-                                                        <p class="m-0" style="color: rgb(17, 96, 216);"><i class="fa-solid fa-eye"></i>
-                                                        </p>
-                                                        <div class="d-flex flex-column ">
-                                                            <p class="m-0" style="font-size: 16px;">Traffic</p>
-                                                            <h5 class="m-0" style="color: #000 ;font-size: 16px;">4597/mo</h5>
-                                                        </div>
+                                                        <?php if($textFields->isNotEmpty()): ?>
+                                                            <?php $__currentLoopData = $textFields; $__env->addLoop($__currentLoopData); foreach($__currentLoopData as $field): $__env->incrementLoopIndices(); $loop = $__env->getLastLoop(); ?>
+                                                                <div class="wishlist-left">
+                                                                    <p class="m-0" style="color: green;"><i class="<?php echo e($field['icon']); ?>"></i></p>
+                                                                    <div class="d-flex flex-column ">
+                                                                        <p class="m-0" style="font-size: 16px;"><?php echo e($field['label']); ?></p>
+                                                                        <h5 class="m-0" style="color: #000 ;font-size: 16px;"><?php echo e($field['value']); ?>
 
-                                                    </div>
+                                                                        </h5>
+                                                                    </div>
+                                                                </div>
+                                                            <?php endforeach; $__env->popLoop(); $loop = $__env->getLastLoop(); ?>
+                                                        <?php endif; ?>
+                                                    <?php endif; ?>
 
                                                 </div>
                                                 <div class="wishlist-price d-flex justify-content-between mt-3">
                                                     <h2 style="color: #000;"><i
                                                             class="fa-solid fa-indian-rupee-sign"></i><?php echo e($offeredPrice); ?></h2>
-                                                    <button href="<?php echo e(route('listing-details', ['id' => $submission->id])); ?>">View
-                                                        Listing</button>
+                                                    <button type="button" class="btn btn-dark"
+                                                        onclick="window.location.href='<?php echo e(route('listing-details', ['id' => $submission->id])); ?>'">
+                                                        View Listing
+                                                    </button>
                                                 </div>
 
                                             </div>
@@ -592,9 +622,27 @@
 
 
                                                 <h3 class="mt-2" style="color: #000;">More Information</h3>
-                                                <p style="font-size: 13px;">Free consultation | Fast Approval | 100% Transparent Process
-                                                    |
-                                                    No Hidden Cost</p>
+                                                <?php if($summaryFields->isNotEmpty()): ?>
+                                                    <?php
+                                                        $textareaFields = $summaryFields->filter(fn($field) => $field['field_id'] && Str::startsWith($field['field_id'], 'textarea') && !empty($field['show_on_summary']));
+                                                    ?>
+
+                                                    <?php if($textareaFields->isNotEmpty()): ?>
+                                                        <p style="font-size: 13px;">
+                                                            <?php $__currentLoopData = $textareaFields; $__env->addLoop($__currentLoopData); foreach($__currentLoopData as $field): $__env->incrementLoopIndices(); $loop = $__env->getLastLoop(); ?>
+                                                                <?php if(!empty($field['icon'])): ?>
+                                                                    <i class="<?php echo e($field['icon']); ?>" style="margin-right: 4px;"></i>
+                                                                <?php endif; ?>
+                                                                <?php echo e(\Illuminate\Support\Str::limit($field['value'], 100, '...')); ?>
+
+
+                                                                <?php if(!$loop->last): ?>
+                                                                    &nbsp;|&nbsp;
+                                                                <?php endif; ?>
+                                                            <?php endforeach; $__env->popLoop(); $loop = $__env->getLastLoop(); ?>
+                                                        </p>
+                                                    <?php endif; ?>
+                                                <?php endif; ?>
                                                 <div class="d-flex justify-content-between align-items-center">
                                                     <p class="m-0">By
                                                         <?php echo e($submission->customer->first_name ?? ''); ?><?php echo e($submission->customer->last_name ?? ''); ?>
@@ -603,30 +651,34 @@
                                                     <p class="m-0" style="color: #007bff;"><i class="fa-solid fa-eye"></i> 10</p>
                                                 </div>
                                                 <div class="wishlist-item-card">
-                                                    <div class="wishlist-left">
-                                                        <p class="m-0" style="color: green;"><i class="fa-solid fa-dollar-sign"></i></p>
-                                                        <div class="d-flex flex-column ">
-                                                            <p class="m-0" style="font-size: 16px;">Revenue</p>
-                                                            <h5 class="m-0" style="color: #000 ;font-size: 16px;">45/mo</h5>
-                                                        </div>
+                                                    <?php if($summaryFields->isNotEmpty()): ?>
+                                                        <?php
+                                                            $textFields = $summaryFields->filter(fn($field) => $field['field_id'] && Str::startsWith($field['field_id'], 'text_') && !empty($field['show_on_summary']));
+                                                        ?>
 
-                                                    </div>
-                                                    <div class="wishlist-left">
-                                                        <p class="m-0" style="color: rgb(17, 96, 216);"><i class="fa-solid fa-eye"></i>
-                                                        </p>
-                                                        <div class="d-flex flex-column ">
-                                                            <p class="m-0" style="font-size: 16px;">Traffic</p>
-                                                            <h5 class="m-0" style="color: #000 ;font-size: 16px;">4597/mo</h5>
-                                                        </div>
+                                                        <?php if($textFields->isNotEmpty()): ?>
+                                                            <?php $__currentLoopData = $textFields; $__env->addLoop($__currentLoopData); foreach($__currentLoopData as $field): $__env->incrementLoopIndices(); $loop = $__env->getLastLoop(); ?>
+                                                                <div class="wishlist-left">
+                                                                    <p class="m-0" style="color: green;"><i class="<?php echo e($field['icon']); ?>"></i></p>
+                                                                    <div class="d-flex flex-column ">
+                                                                        <p class="m-0" style="font-size: 16px;"><?php echo e($field['label']); ?></p>
+                                                                        <h5 class="m-0" style="color: #000 ;font-size: 16px;"><?php echo e($field['value']); ?>
 
-                                                    </div>
+                                                                        </h5>
+                                                                    </div>
+                                                                </div>
+                                                            <?php endforeach; $__env->popLoop(); $loop = $__env->getLastLoop(); ?>
+                                                        <?php endif; ?>
+                                                    <?php endif; ?>
 
                                                 </div>
                                                 <div class="wishlist-price d-flex justify-content-between mt-3">
                                                     <h2 style="color: #000;"><i
                                                             class="fa-solid fa-indian-rupee-sign"></i><?php echo e($offeredPrice); ?></h2>
-                                                    <button href="<?php echo e(route('listing-details', ['id' => $submission->id])); ?>">View
-                                                        Listing</button>
+                                                    <button type="button" class="btn btn-dark"
+                                                        onclick="window.location.href='<?php echo e(route('listing-details', ['id' => $submission->id])); ?>'">
+                                                        View Listing
+                                                    </button>
 
                                                 </div>
                                             </div>
@@ -647,17 +699,17 @@
         <!-- end container -->
     </section>
     <!-- ================================
-                                                                                        START CARD AREA
-                                                                                    ================================= -->
+                                                                                                                                                START CARD AREA
+                                                                                                                                            ================================= -->
 
     <!-- end card-area -->
     <!-- ================================
-                                                                                        END CARD AREA
-                                                                                    ================================= -->
+                                                                                                                                                END CARD AREA
+                                                                                                                                            ================================= -->
 
     <!-- ================================
-                                                                                        START SUBSCRIBER AREA
-                                                                                    ================================= -->
+                                                                                                                                                START SUBSCRIBER AREA
+                                                                                                                                            ================================= -->
     <section class="subscriber-area mb-n5 position-relative z-index-2">
         <div class="container">
             <div class="subscriber-box d-flex flex-wrap align-items-center justify-content-between bg-dark overflow-hidden">
@@ -684,8 +736,8 @@
     </section>
     <!-- end subscriber-area -->
     <!-- ================================
-                                                                                        END SUBSCRIBER AREA
-                                                                                    ================================= -->
+                                                                                                                                                END SUBSCRIBER AREA
+                                                                                                                                            ================================= -->
 
     <script>
         document.querySelectorAll('.tab-btn').forEach(btn => {

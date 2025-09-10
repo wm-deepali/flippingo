@@ -47,16 +47,82 @@ class ListingController extends Controller
     public function publish(FormSubmission $submission)
     {
         try {
-            // Implement your publishing logic here
-            // For example, set a 'published' flag and save:
+            $customerId = $submission->customer_id;
 
+            // Find active subscription
+            $subscription = \App\Models\Subscription::where('customer_id', $customerId)
+                ->where('status', 'active')
+                ->first();
+
+            if (!$subscription) {
+                return response()->json([
+                    'success' => false,
+                    'message' => 'No active subscription found for this customer.'
+                ], 400);
+            }
+
+            $package = $subscription->package;
+
+            // ✅ Check subscription validity
+            $validUntil = null;
+            if ($package && $package->validity && $package->validity_unit) {
+                $validUntil = \Carbon\Carbon::parse($subscription->start_date)
+                    ->add($package->validity, $package->validity_unit);
+            }
+
+            if ($validUntil && now()->greaterThan($validUntil)) {
+                return response()->json([
+                    'success' => false,
+                    'message' => 'Your subscription validity has expired.'
+                ], 400);
+            }
+
+            // ✅ Fallback: check end_date
+            if ($subscription->end_date && now()->greaterThan($subscription->end_date)) {
+                return response()->json([
+                    'success' => false,
+                    'message' => 'Your subscription has expired.'
+                ], 400);
+            }
+
+            // ✅ Check listing quota
+            $maxListings = $package->listings ?? 0;
+            if ($subscription->used_listings >= $maxListings) {
+                return response()->json([
+                    'success' => false,
+                    'message' => 'You have reached the maximum number of listings allowed by your package.'
+                ], 400);
+            }
+
+            // ✅ Increment used listings
+            $subscription->increment('used_listings');
+
+            // ✅ Calculate listing expiry for this submission
+            $listingExpiry = null;
+            if ($package && $package->listing_duration && $package->listing_duration_unit) {
+                $listingExpiry = now()->add(
+                    $package->listing_duration,
+                    $package->listing_duration_unit
+                );
+            }
+
+            // ✅ Publish submission with expiry
             $submission->published = true;
             $submission->published_at = now();
+            $submission->expires_at = $listingExpiry; // make sure FormSubmission has this column
             $submission->save();
 
-            return response()->json(['success' => true, 'message' => 'Submission published successfully.']);
+            return response()->json([
+                'success' => true,
+                'message' => 'Submission published successfully.',
+                'expires_at' => $listingExpiry ? $listingExpiry->toDateTimeString() : null
+            ]);
         } catch (\Exception $e) {
-            return response()->json(['success' => false, 'message' => 'Failed to publish submission.'], 500);
+            return response()->json([
+                'success' => false,
+                'message' => 'Failed to publish submission.',
+                'error' => $e->getMessage()
+            ], 500);
         }
     }
 
@@ -78,12 +144,14 @@ class ListingController extends Controller
             $fieldDef = collect($fieldsDefinition)->firstWhere('id', $fieldId);
             $fieldLabel = $fieldDef['properties']['label'] ?? $fieldId;
             $showOnSummary = $fieldDef['properties']['show_on_summary'] ?? false;
+            $icon = $fieldDef['properties']['icon'] ?? '';  // fetch icon here
 
             $inputDataWithMeta[$fieldId] = [
                 'field_id' => $fieldId,
                 'label' => $fieldLabel,
                 'value' => $value,
                 'show_on_summary' => $showOnSummary,
+                'icon' => $icon,
             ];
         }
 

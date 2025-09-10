@@ -1237,7 +1237,7 @@ class FormBuilderController extends Controller
                 ]
             ],
             [
-                "name" => "file Upload",
+                "name" => "file",
                 "title" => "file.title",
                 "fields" => [
                     "id" => [
@@ -1302,6 +1302,7 @@ class FormBuilderController extends Controller
                         "value" => "",
                         "advanced" => true
                     ],
+
                     "minSize" => [
                         "label" => "component.minSize",
                         "type" => "input",
@@ -1351,6 +1352,12 @@ class FormBuilderController extends Controller
                             ""
                         ],
                         "advanced" => true
+                    ],
+                    "multiple" => [
+                        "label" => "Allow Multiple Files",
+                        "type" => "checkbox",
+                        "value" => false,
+                        "advanced" => true,
                     ],
                     "required" => [
                         "label" => "component.required",
@@ -2093,14 +2100,25 @@ class FormBuilderController extends Controller
 
         // After defining $components array
         foreach ($components as &$component) {
-            // Add show_on_summary field to each component's fields
-            $component['fields']['show_on_summary'] = [
-                'label' => __('Show on Summary Card'),
-                'type' => 'checkbox',
-                'value' => false,
+            if (in_array($component['name'], ['textarea', 'text'])) {
+                // Add show_on_summary field only for textarea and text components
+                $component['fields']['show_on_summary'] = [
+                    'label' => __('Show on Summary Card'),
+                    'type' => 'checkbox',
+                    'value' => false,
+                    'advanced' => true,
+                ];
+            }
+
+            // Add icon input to all components
+            $component['fields']['icon'] = [
+                'label' => __('Icon (FontAwesome class)'),
+                'type' => 'input',
+                'value' => '',       // default empty, can prefill if desired
                 'advanced' => true,
             ];
         }
+
         // Unset reference
         unset($component);
 
@@ -2389,8 +2407,8 @@ class FormBuilderController extends Controller
                 "style.oldest" => __('Oldest'),
                 "style.popular" => __('Popular'),
                 "style.noResultsFound" => __('No Results Found'),
-               
-               
+
+
             ]
         ];
 

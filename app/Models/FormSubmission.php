@@ -17,6 +17,7 @@ class FormSubmission extends Model
         'customer_id',
         'data',
         'published',
+        'expires_at',
         'published_at',
     ];
 
@@ -25,6 +26,7 @@ class FormSubmission extends Model
         'data' => 'array',
         'published' => 'boolean',
         'published_at' => 'datetime',
+        'expires_at' => 'datetime'
     ];
 
     // Relationships:

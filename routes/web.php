@@ -176,6 +176,8 @@ Route::group(['middleware' => 'auth'], function () {
             ->name('subscriptions.approveCancellation');
         Route::get('/subscription-reports', [SubscriptionController::class, 'reports'])->name('subscriptions.reports');
 
+        Route::get('reports/subscriptions/custom-date', [SubscriptionController::class, 'customDate'])
+            ->name('reports.subscriptions.customDate');
 
 
         Route::post('subscriptions/{subscription}/reject-cancellation', [SubscriptionController::class, 'rejectCancellation'])

@@ -14,9 +14,14 @@
                     <div class="card-body">
 
                         {{-- Company Logo --}}
-                        <div class="text-center mb-3">
-                            <img src="{{ asset('admin_assets/images/logo.png') }}" alt="Logo"
-                                style="height: 60px;padding:10px;background:#000;border-radius:4px;">
+                         <div class="text-center mb-3">
+                            @if(setting('billing_logo'))
+                                <img src="{{ asset('storage/' . setting('billing_logo')) }}" alt="Logo"
+                                    style="height: 60px; padding:10px; background:#000; border-radius:4px;">
+                            @else
+                                <img src="{{ asset('admin_assets/images/logo.png') }}" alt="Logo"
+                                    style="height: 60px; padding:10px; background:#000; border-radius:4px;">
+                            @endif
                         </div>
 
                         {{-- Order ID + Status --}}
@@ -60,13 +65,14 @@
                                 <p><strong>Email:</strong>{{ $subscription->customer->email ?? '' }}</p>
                                 <p><strong>Delivery Address:</strong>{{  $subscription->customer->full_address ?? ''  }}</p>
                             </div>
+                           {{-- Company (from settings) --}}
                             <div class="col-md-6 text-right">
                                 <h5><strong>Company Info</strong></h5>
-                                <p><strong>Name:</strong> My Company Name</p>
-                                <p><strong>Contact:</strong> 0-00-000-000</p>
-                                <p><strong>Email:</strong> yourcompany@gmail.com</p>
-                                <p><strong>Address:</strong> Company Street, NY 1001-234</p>
-                                <p><strong>Website:</strong> www.company.com</p>
+                                <p><strong>Name:</strong> {{ setting('billing_website', 'Flippingo Private Limited') }}</p>
+                                <p><strong>Contact:</strong> {{ setting('billing_contact', '+91 8809772278') }}</p>
+                                <p><strong>Email:</strong> {{ setting('billing_email', 'support@flippingo.com') }}</p>
+                                <p><strong>Address:</strong> {{ setting('billing_address', 'Old Palasia, Indore, MP, 452001, India') }}</p>
+                                <p><strong>Website:</strong> {{ setting('billing_website', 'www.company.com') }}</p>
                             </div>
                         </div>
 
@@ -78,7 +84,7 @@
                                     <tr>
                                         <th style="width: 60%;">Detail</th>
                                         <th style="width: 20%;">Quantity</th>
-                                        <th style="width: 20%;">Price (£)</th>
+                                        <th style="width: 20%;">Price (<i class="fa-solid fa-indian-rupee-sign"></i> )</th>
                                     </tr>
                                 </thead>
                                 <tbody>
@@ -98,19 +104,19 @@
                                 <table class="table table-borderless">
                                     <tr>
                                         <th>Subtotal:</th>
-                                        <td class="text-right">£{{ number_format($subscription->package->offered_price ?? 0, 2) }}</td>
+                                        <td class="text-right"><i class="fa-solid fa-indian-rupee-sign"></i> {{ number_format($subscription->package->offered_price ?? 0, 2) }}</td>
                                     </tr>
                                     <!-- <tr>
                                         <th>Delivery Charge:</th>
-                                        <td class="text-right">£10.00</td>
+                                        <td class="text-right"><i class="fa-solid fa-indian-rupee-sign"></i> 10.00</td>
                                     </tr>
                                     <tr>
                                         <th>VAT (20%):</th>
-                                        <td class="text-right">£23.00</td>
+                                        <td class="text-right"><i class="fa-solid fa-indian-rupee-sign"></i> 23.00</td>
                                     </tr> -->
                                     <tr class="border-top">
                                         <th><strong>Grand Total:</strong></th>
-                                        <td class="text-right"><strong>£{{ number_format($subscription->package->offered_price ?? 0, 2) }}</strong></td>
+                                        <td class="text-right"><strong><i class="fa-solid fa-indian-rupee-sign"></i> {{ number_format($subscription->package->offered_price ?? 0, 2) }}</strong></td>
                                     </tr>
                                 </table>
                             </div>

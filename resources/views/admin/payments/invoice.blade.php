@@ -14,9 +14,14 @@
                                 {{ $order->invoice->invoice_number ?? '#INV-1001' }}
                             </small>
                         </div>
-                        <div>
-                            <img src="{{ asset('admin_assets/images/logo.png') }}" alt="Logo"
-                                style="height: 60px; padding:10px; background:#000; border-radius:4px;">
+                         <div>
+                            @if(setting('billing_logo'))
+                                <img src="{{ asset('storage/' . setting('billing_logo')) }}" alt="Logo"
+                                    style="height: 60px; padding:10px; background:#000; border-radius:4px;">
+                            @else
+                                <img src="{{ asset('admin_assets/images/logo.png') }}" alt="Logo"
+                                    style="height: 60px; padding:10px; background:#000; border-radius:4px;">
+                            @endif
                         </div>
                     </div>
 
@@ -45,13 +50,18 @@
                             <p style="margin-bottom:4px;">{{   $order->customer->mobile ?? '' }}</p>
                             <p style="margin-bottom:6px; color:blue;">{{ $order->customer->email ?? '' }}</p>
                         </div>
+                        {{-- From (Invoice Settings via helper) --}}
                         <div class="col-md-4 p-2">
                             <strong class="mb-1">From</strong>
                             <hr>
-                            <p style="margin-bottom:6px; font-weight:600;">Nuvem Print</p>
-                            <p style="margin-bottom:6px;">Unit 7 Lotherton Way Garforth Leeds LS252JY</p>
-                            <p style="margin-bottom:4px;">01132 874724</p>
-                            <p style="color:blue;">andy@nuvemprint.com</p>
+                            <p style="margin-bottom:6px; font-weight:600;">
+                                {{ setting('billing_website', 'Flippingo Private Limited') }}
+                            </p>
+                            <p style="margin-bottom:6px;">
+                                {{ setting('billing_address', 'Old Palasia, Indore, MP, 452001, India') }}
+                            </p>
+                            <p style="margin-bottom:4px;">{{ setting('billing_contact', '+91 8809772278') }}</p>
+                            <p style="color:blue;">{{ setting('billing_email', 'support@flippingo.com') }}</p>
                         </div>
                     </div>
 
@@ -63,8 +73,8 @@
                                 <tr>
                                     <th>Description</th>
                                     <th>Qty</th>
-                                    <th>Rate (£)</th>
-                                    <th>Total (£)</th>
+                                    <th>Rate (<i class="fa-solid fa-indian-rupee-sign"></i> )</th>
+                                    <th>Total (<i class="fa-solid fa-indian-rupee-sign"></i> )</th>
                                 </tr>
                             </thead>
                             <tbody>
@@ -95,24 +105,24 @@
                             <table class="table table-borderless">
                                 <tr>
                                     <th>Subtotal:</th>
-                                    <td class="text-right">£{{ number_format($order->subtotal ?? 0, 2) }}</td>
+                                    <td class="text-right"><i class="fa-solid fa-indian-rupee-sign"></i> {{ number_format($order->subtotal ?? 0, 2) }}</td>
                                 </tr>
                                 <!-- <tr>
-                                        <th>Delivery Charge:</th>
-                                        <td class="text-right">£{{ number_format($order->delivery_charge ?? 0, 2) }}</td>
-                                    </tr>
-                                    <tr>
-                                        <th>Proof Reading:</th>
-                                        <td class="text-right">£{{ number_format($order->proof_reading_charge ?? 0, 2) }}</td>
-                                    </tr>
-                                    <tr>
-                                        <th>VAT (20%):</th>
-                                        <td class="text-right">£{{ number_format($order->vat ?? 0, 2) }}</td>
-                                    </tr> -->
+                                            <th>Delivery Charge:</th>
+                                            <td class="text-right"><i class="fa-solid fa-indian-rupee-sign"></i> {{ number_format($order->delivery_charge ?? 0, 2) }}</td>
+                                        </tr>
+                                        <tr>
+                                            <th>Proof Reading:</th>
+                                            <td class="text-right"><i class="fa-solid fa-indian-rupee-sign"></i> {{ number_format($order->proof_reading_charge ?? 0, 2) }}</td>
+                                        </tr>
+                                        <tr>
+                                            <th>VAT (20%):</th>
+                                            <td class="text-right"><i class="fa-solid fa-indian-rupee-sign"></i> {{ number_format($order->vat ?? 0, 2) }}</td>
+                                        </tr> -->
                                 <tr class="font-weight-bold"
                                     style="font-size: 18px; color: #6B3DF4; border-top:2px solid #6B3DF4; border-bottom:2px solid #6B3DF4;">
                                     <th><strong>Total</strong></th>
-                                    <td class="text-right"><strong>£{{ number_format($order->total ?? 0, 2) }}</strong></td>
+                                    <td class="text-right"><strong><i class="fa-solid fa-indian-rupee-sign"></i> {{ number_format($order->total ?? 0, 2) }}</strong></td>
                                 </tr>
                             </table>
                         </div>

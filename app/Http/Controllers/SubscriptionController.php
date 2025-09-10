@@ -8,6 +8,8 @@ use App\Models\Payment;
 use App\Models\Subscription;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
+use Carbon\Carbon;
+
 
 class SubscriptionController extends Controller
 {
@@ -75,18 +77,26 @@ class SubscriptionController extends Controller
 
         // Generate unique order number
         $orderNumber = 'SUB' . mt_rand(100000, 999999);
+
         // Create subscription
+        $endDate = match ($package->validity_unit) {
+            'days' => now()->addDays($package->validity),
+            'weeks' => now()->addWeeks($package->validity),
+            'months' => now()->addMonths($package->validity),
+            'years' => now()->addYears($package->validity),
+            default => now()->addDays(30), // fallback
+        };
+
         $subscription = Subscription::create([
-            'customer_id' => Auth::guard('customer')->user()->id,
+            'customer_id' => Auth::guard('customer')->id(),
             'package_id' => $package->id,
             'used_listings' => 0,
             'start_date' => now(),
-            'end_date' => now()->addDays($package->listing_duration ?? 30),
+            'end_date' => $endDate,
             'status' => 'active',
             'order_number' => $orderNumber,
         ]);
 
-        // dd($orderNumber);
         // Store payment
         Payment::create([
             'subscription_id' => $subscription->id,

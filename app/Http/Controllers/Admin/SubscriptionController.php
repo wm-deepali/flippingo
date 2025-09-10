@@ -161,6 +161,26 @@ class SubscriptionController extends Controller
         return view('admin.reports.subscriptions', compact('reports'));
     }
 
-    
+    public function customDate(Request $request)
+    {
+        $request->validate([
+            'start_date' => 'required|date',
+            'end_date' => 'required|date|after_or_equal:start_date',
+        ]);
+
+        $subscriptions = Subscription::whereBetween('end_date', [
+            $request->start_date,
+            $request->end_date
+        ])->get();
+
+        if ($subscriptions->count() > 0) {
+            return view('admin.reports.sub-table', [
+                'subscriptions' => $subscriptions
+            ]);
+        } else {
+            return '<p class="text-center text-muted mt-4">No Subscription records found for this range.</p>';
+        }
+    }
+
 }
 

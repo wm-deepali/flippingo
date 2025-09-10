@@ -161,13 +161,13 @@
 
 
     <!-- ================================
-                                                                                                    START BREADCRUMB AREA
-                                                                                                ================================= -->
+                                                                                                                                                START BREADCRUMB AREA
+                                                                                                                                            ================================= -->
 
     <!-- end breadcrumb-area -->
     <!-- ================================
-                                                                                                    END BREADCRUMB AREA
-                                                                                                ================================= -->
+                                                                                                                                                END BREADCRUMB AREA
+                                                                                                                                            ================================= -->
     <section class="card-area " style="padding-top:60px; padding-bottom:90px; margin-top:130px;">
         <div class="container">
             <div class="card">
@@ -435,28 +435,30 @@
                                         <h3 class="mt-2 " style="color: #000;">{{ $productTitle }}</h3>
                                         <div class="d-flex justify-content-between align-items-center">
                                             <p class="m-0">By
-                                                {{ $submission->customer->first_name ?? '' }}{{ $submission->customer->last_name ?? ''}}
+                                                {{ ($submission->customer->first_name ?? '') . ' ' . ($submission->customer->last_name ?? '') }}
                                             </p>
+
                                             <p class="m-0" style="color: #007bff;"><i class="fa-solid fa-eye"></i> 10</p>
                                         </div>
                                         <div class="wishlist-item-card">
-                                            <div class="wishlist-left">
-                                                <p class="m-0" style="color: green;"><i class="fa-solid fa-dollar-sign"></i></p>
-                                                <div class="d-flex flex-column ">
-                                                    <p class="m-0" style="font-size: 16px;">Revenue</p>
-                                                    <h5 class="m-0" style="color: #000 ;font-size: 16px;">45/mo</h5>
-                                                </div>
+                                            @if($summaryFields->isNotEmpty())
+                                                @php
+                                                    $textFields = $summaryFields->filter(fn($field) => $field['field_id'] && Str::startsWith($field['field_id'], 'text_') && !empty($field['show_on_summary']));
+                                                @endphp
 
-                                            </div>
-                                            <div class="wishlist-left">
-                                                <p class="m-0" style="color: rgb(17, 96, 216);"><i class="fa-solid fa-eye"></i>
-                                                </p>
-                                                <div class="d-flex flex-column ">
-                                                    <p class="m-0" style="font-size: 16px;">Traffic</p>
-                                                    <h5 class="m-0" style="color: #000 ;font-size: 16px;">4597/mo</h5>
-                                                </div>
-
-                                            </div>
+                                                @if($textFields->isNotEmpty())
+                                                    @foreach($textFields as $field)
+                                                        <div class="wishlist-left">
+                                                            <p class="m-0" style="color: green;"><i class="{{ $field['icon'] }}"></i></p>
+                                                            <div class="d-flex flex-column ">
+                                                                <p class="m-0" style="font-size: 16px;">{{$field['label']}}</p>
+                                                                <h5 class="m-0" style="color: #000 ;font-size: 16px;">{{$field['value']}}
+                                                                </h5>
+                                                            </div>
+                                                        </div>
+                                                    @endforeach
+                                                @endif
+                                            @endif
 
                                         </div>
                                         <div class="wishlist-price d-flex justify-content-between mt-3">
@@ -473,9 +475,26 @@
 
 
                                         <h3 class="mt-2" style="color: #000;">More Information</h3>
-                                        <p style="font-size: 13px;">Free consultation | Fast Approval | 100% Transparent Process
-                                            |
-                                            No Hidden Cost</p>
+                                        @if($summaryFields->isNotEmpty())
+                                            @php
+                                                $textareaFields = $summaryFields->filter(fn($field) => $field['field_id'] && Str::startsWith($field['field_id'], 'textarea') && !empty($field['show_on_summary']));
+                                            @endphp
+
+                                            @if($textareaFields->isNotEmpty())
+                                                <p style="font-size: 13px;">
+                                                    @foreach($textareaFields as $field)
+                                                        @if(!empty($field['icon']))
+                                                            <i class="{{ $field['icon'] }}" style="margin-right: 4px;"></i>
+                                                        @endif
+                                                        {{ $field['value'] }}
+
+                                                        @if(!$loop->last)
+                                                            &nbsp;|&nbsp;
+                                                        @endif
+                                                    @endforeach
+                                                </p>
+                                            @endif
+                                        @endif
                                         <div class="d-flex justify-content-between align-items-center">
                                             <p class="m-0">By
                                                 {{ $submission->customer->first_name ?? '' }}{{ $submission->customer->last_name ?? ''}}
@@ -483,24 +502,24 @@
                                             <p class="m-0" style="color: #007bff;"><i class="fa-solid fa-eye"></i> 10</p>
                                         </div>
                                         <div class="wishlist-item-card">
-                                            <div class="wishlist-left">
-                                                <p class="m-0" style="color: green;"><i class="fa-solid fa-dollar-sign"></i></p>
-                                                <div class="d-flex flex-column ">
-                                                    <p class="m-0" style="font-size: 16px;">Revenue</p>
-                                                    <h5 class="m-0" style="color: #000 ;font-size: 16px;">45/mo</h5>
-                                                </div>
+                                            @if($summaryFields->isNotEmpty())
+                                                @php
+                                                    $textFields = $summaryFields->filter(fn($field) => $field['field_id'] && Str::startsWith($field['field_id'], 'text_') && !empty($field['show_on_summary']));
+                                                @endphp
 
-                                            </div>
-                                            <div class="wishlist-left">
-                                                <p class="m-0" style="color: rgb(17, 96, 216);"><i class="fa-solid fa-eye"></i>
-                                                </p>
-                                                <div class="d-flex flex-column ">
-                                                    <p class="m-0" style="font-size: 16px;">Traffic</p>
-                                                    <h5 class="m-0" style="color: #000 ;font-size: 16px;">4597/mo</h5>
-                                                </div>
-
-                                            </div>
-
+                                                @if($textFields->isNotEmpty())
+                                                    @foreach($textFields as $field)
+                                                        <div class="wishlist-left">
+                                                            <p class="m-0" style="color: green;"><i class="{{ $field['icon'] }}"></i></p>
+                                                            <div class="d-flex flex-column ">
+                                                                <p class="m-0" style="font-size: 16px;">{{$field['label']}}</p>
+                                                                <h5 class="m-0" style="color: #000 ;font-size: 16px;">{{$field['value']}}
+                                                                </h5>
+                                                            </div>
+                                                        </div>
+                                                    @endforeach
+                                                @endif
+                                            @endif
                                         </div>
                                         <div class="wishlist-price d-flex justify-content-between mt-3">
                                             <h2 style="color: #000;"><i
@@ -561,23 +580,24 @@
                                                     <p class="m-0" style="color: #007bff;"><i class="fa-solid fa-eye"></i> 10</p>
                                                 </div>
                                                 <div class="wishlist-item-card">
-                                                    <div class="wishlist-left">
-                                                        <p class="m-0" style="color: green;"><i class="fa-solid fa-dollar-sign"></i></p>
-                                                        <div class="d-flex flex-column ">
-                                                            <p class="m-0" style="font-size: 16px;">Revenue</p>
-                                                            <h5 class="m-0" style="color: #000 ;font-size: 16px;">45/mo</h5>
-                                                        </div>
+                                                    @if($summaryFields->isNotEmpty())
+                                                        @php
+                                                            $textFields = $summaryFields->filter(fn($field) => $field['field_id'] && Str::startsWith($field['field_id'], 'text_') && !empty($field['show_on_summary']));
+                                                        @endphp
 
-                                                    </div>
-                                                    <div class="wishlist-left">
-                                                        <p class="m-0" style="color: rgb(17, 96, 216);"><i class="fa-solid fa-eye"></i>
-                                                        </p>
-                                                        <div class="d-flex flex-column ">
-                                                            <p class="m-0" style="font-size: 16px;">Traffic</p>
-                                                            <h5 class="m-0" style="color: #000 ;font-size: 16px;">4597/mo</h5>
-                                                        </div>
-
-                                                    </div>
+                                                        @if($textFields->isNotEmpty())
+                                                            @foreach($textFields as $field)
+                                                                <div class="wishlist-left">
+                                                                    <p class="m-0" style="color: green;"><i class="{{ $field['icon'] }}"></i></p>
+                                                                    <div class="d-flex flex-column ">
+                                                                        <p class="m-0" style="font-size: 16px;">{{$field['label']}}</p>
+                                                                        <h5 class="m-0" style="color: #000 ;font-size: 16px;">{{$field['value']}}
+                                                                        </h5>
+                                                                    </div>
+                                                                </div>
+                                                            @endforeach
+                                                        @endif
+                                                    @endif
 
                                                 </div>
                                                 <div class="wishlist-price d-flex justify-content-between mt-3">
@@ -594,9 +614,26 @@
 
 
                                                 <h3 class="mt-2" style="color: #000;">More Information</h3>
-                                                <p style="font-size: 13px;">Free consultation | Fast Approval | 100% Transparent Process
-                                                    |
-                                                    No Hidden Cost</p>
+                                                @if($summaryFields->isNotEmpty())
+                                                    @php
+                                                        $textareaFields = $summaryFields->filter(fn($field) => $field['field_id'] && Str::startsWith($field['field_id'], 'textarea') && !empty($field['show_on_summary']));
+                                                    @endphp
+
+                                                    @if($textareaFields->isNotEmpty())
+                                                        <p style="font-size: 13px;">
+                                                            @foreach($textareaFields as $field)
+                                                                @if(!empty($field['icon']))
+                                                                    <i class="{{ $field['icon'] }}" style="margin-right: 4px;"></i>
+                                                                @endif
+                                                                {{ \Illuminate\Support\Str::limit($field['value'], 100, '...') }}
+
+                                                                @if(!$loop->last)
+                                                                    &nbsp;|&nbsp;
+                                                                @endif
+                                                            @endforeach
+                                                        </p>
+                                                    @endif
+                                                @endif
                                                 <div class="d-flex justify-content-between align-items-center">
                                                     <p class="m-0">By
                                                         {{ $submission->customer->first_name ?? '' }}{{ $submission->customer->last_name ?? ''}}
@@ -604,23 +641,24 @@
                                                     <p class="m-0" style="color: #007bff;"><i class="fa-solid fa-eye"></i> 10</p>
                                                 </div>
                                                 <div class="wishlist-item-card">
-                                                    <div class="wishlist-left">
-                                                        <p class="m-0" style="color: green;"><i class="fa-solid fa-dollar-sign"></i></p>
-                                                        <div class="d-flex flex-column ">
-                                                            <p class="m-0" style="font-size: 16px;">Revenue</p>
-                                                            <h5 class="m-0" style="color: #000 ;font-size: 16px;">45/mo</h5>
-                                                        </div>
+                                                    @if($summaryFields->isNotEmpty())
+                                                        @php
+                                                            $textFields = $summaryFields->filter(fn($field) => $field['field_id'] && Str::startsWith($field['field_id'], 'text_') && !empty($field['show_on_summary']));
+                                                        @endphp
 
-                                                    </div>
-                                                    <div class="wishlist-left">
-                                                        <p class="m-0" style="color: rgb(17, 96, 216);"><i class="fa-solid fa-eye"></i>
-                                                        </p>
-                                                        <div class="d-flex flex-column ">
-                                                            <p class="m-0" style="font-size: 16px;">Traffic</p>
-                                                            <h5 class="m-0" style="color: #000 ;font-size: 16px;">4597/mo</h5>
-                                                        </div>
-
-                                                    </div>
+                                                        @if($textFields->isNotEmpty())
+                                                            @foreach($textFields as $field)
+                                                                <div class="wishlist-left">
+                                                                    <p class="m-0" style="color: green;"><i class="{{ $field['icon'] }}"></i></p>
+                                                                    <div class="d-flex flex-column ">
+                                                                        <p class="m-0" style="font-size: 16px;">{{$field['label']}}</p>
+                                                                        <h5 class="m-0" style="color: #000 ;font-size: 16px;">{{$field['value']}}
+                                                                        </h5>
+                                                                    </div>
+                                                                </div>
+                                                            @endforeach
+                                                        @endif
+                                                    @endif
 
                                                 </div>
                                                 <div class="wishlist-price d-flex justify-content-between mt-3">
@@ -650,17 +688,17 @@
         <!-- end container -->
     </section>
     <!-- ================================
-                                                                                                    START CARD AREA
-                                                                                                ================================= -->
+                                                                                                                                                START CARD AREA
+                                                                                                                                            ================================= -->
 
     <!-- end card-area -->
     <!-- ================================
-                                                                                                    END CARD AREA
-                                                                                                ================================= -->
+                                                                                                                                                END CARD AREA
+                                                                                                                                            ================================= -->
 
     <!-- ================================
-                                                                                                    START SUBSCRIBER AREA
-                                                                                                ================================= -->
+                                                                                                                                                START SUBSCRIBER AREA
+                                                                                                                                            ================================= -->
     <section class="subscriber-area mb-n5 position-relative z-index-2">
         <div class="container">
             <div class="subscriber-box d-flex flex-wrap align-items-center justify-content-between bg-dark overflow-hidden">
@@ -687,8 +725,8 @@
     </section>
     <!-- end subscriber-area -->
     <!-- ================================
-                                                                                                    END SUBSCRIBER AREA
-                                                                                                ================================= -->
+                                                                                                                                                END SUBSCRIBER AREA
+                                                                                                                                            ================================= -->
 
     <script>
         document.querySelectorAll('.tab-btn').forEach(btn => {

@@ -1139,22 +1139,59 @@
 
         // Setup for file input attributes
         if (fieldType === 'file') {
-            // console.log('here');
-
             const $fileInput = $field.find('input[type="file"]').first();
             if ($fileInput.length) {
+                // Set accept attribute
                 if (data.accept && data.accept.trim() !== '') {
                     $fileInput.attr('accept', data.accept);
                 } else {
                     $fileInput.removeAttr('accept');
                 }
-                if (data.multiple === true) {
+
+                // Multiple files
+                if (data.multiple === true || data.multiple === 'true') {
                     $fileInput.prop('multiple', true);
+
+                    // Update name attribute to be an array: example: 'file_1[]'
+                    let fileInputName = $fileInput.attr('name') || '';
+                    if (!fileInputName.endsWith('[]')) {
+                        fileInputName += '[]';
+                    }
+                    $fileInput.attr('name', fileInputName);
                 } else {
                     $fileInput.prop('multiple', false);
+                    // Remove [] if present
+                    let fileInputName = $fileInput.attr('name') || '';
+                    if (fileInputName.endsWith('[]')) {
+                        fileInputName = fileInputName.slice(0, -2);
+                    }
+                    $fileInput.attr('name', fileInputName);
+                }
+
+                // Also set data attributes for validation (optional)
+                if (data.minFiles) {
+                    $fileInput.attr('data-min-files', data.minFiles);
+                } else {
+                    $fileInput.removeAttr('data-min-files');
+                }
+                if (data.maxFiles) {
+                    $fileInput.attr('data-max-files', data.maxFiles);
+                } else {
+                    $fileInput.removeAttr('data-max-files');
+                }
+                if (data.minSize) {
+                    $fileInput.attr('data-min-size', data.minSize);
+                } else {
+                    $fileInput.removeAttr('data-min-size');
+                }
+                if (data.maxSize) {
+                    $fileInput.attr('data-max-size', data.maxSize);
+                } else {
+                    $fileInput.removeAttr('data-max-size');
                 }
             }
         }
+
 
         // Setup NPS field properties
         if (fieldType === 'nps') {
