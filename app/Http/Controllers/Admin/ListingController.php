@@ -247,10 +247,10 @@ class ListingController extends Controller
     }
 
 
-
     public function apiShow(Request $request)
     {
         $id = $request->get('id');
+        $user = auth('customer')->user();
 
         // Fetch submission with relations, including wallet via customer.wallet
         $submission = FormSubmission::with(['form.category', 'customer.wallet', 'files'])->findOrFail($id);
@@ -261,13 +261,36 @@ class ListingController extends Controller
         $layout = $formData && !empty($formData->field_layout) ? $formData->field_layout : [];
         $fields = $formData && !empty($formData->fields) ? $formData->fields : [];
 
+        // Prepare summaryFields with latest form field meta for the submission
+        $submittedData = json_decode($submission->data, true) ?? [];
+        $formFields = collect($fields);
+
+        $summaryFields = [];
+        foreach ($submittedData as $field_id => $field) {
+            $meta = $formFields->firstWhere('field_id', $field_id);
+            if (($meta && !empty($meta['show_on_summary'])) || (!empty($field['show_on_summary']))) {
+                $summaryFields[] = [
+                    'field_id' => $field_id,
+                    'label' => $meta['label'] ?? $field['label'] ?? '',
+                    'icon' => $meta['icon'] ?? $field['icon'] ?? '',
+                    'value' => $field['value'] ?? '',
+                ];
+            }
+        }
+
         // Pass wallet balance separately if needed
         $walletBalance = optional($submission->customer->wallet)->balance ?? 0;
 
-        return view('front.listing-details', compact('submission', 'layout', 'fields', 'walletBalance'));
+        // Check wishlist status if customer logged in
+        $isInWishlist = false;
+        if ($user) {
+            $isInWishlist = \App\Models\Wishlist::where('customer_id', $user->id)
+                ->where('submission_id', $submission->id)
+                ->exists();
+        }
+
+        return view('front.listing-details', compact('submission', 'layout', 'fields', 'walletBalance', 'summaryFields', 'isInWishlist'));
     }
-
-
 
 
     public function sendEnquiry(Request $request)

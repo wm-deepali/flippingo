@@ -20,7 +20,7 @@
                         <td><?php echo e(\Carbon\Carbon::parse($sub->created_at)->format('Y-m-d H:i')); ?>
 
                         </td>
-                        <td>#ORD<?php echo e($sub->id); ?></td>
+                        <td><?php echo e($sub->order_number); ?></td>
                         <td>
                             Seller ID: <?php echo e($sub->customer->id ?? '-'); ?><br>
                             <?php echo e($sub->customer->first_name ?? '-'); ?>

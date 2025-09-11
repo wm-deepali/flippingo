@@ -21,13 +21,13 @@
                     $orderType = $payment->subscription_id ? 'Subscription Order' : 'Product Order';
                     // Seller info and Buyer info based on order type
                     $seller = $orderType == 'Subscription Order' ? $payment->subscription->customer ?? null : $payment->product->seller ?? null;
-                    $buyer = $orderType == 'Product Order' ? $payment->product->buyer ?? null : null;
-                    $invoice = $payment->subscription->invoice ?? null;
+                    $buyer = $orderType == 'Product Order' ? $payment->product->customer ?? null : null;
+                    $invoice = $orderType == 'Subscription Order' ?  $payment->subscription->invoice : $payment->product->invoice;
                 ?>
                 <tr>
                     <td><?php echo e(\Carbon\Carbon::parse($payment->created_at)->format('Y-m-d H:i')); ?></td>
                     <td><?php echo e($orderType); ?></td>
-                    <td><?php echo e($orderType == 'Subscription Order' ? ($payment->subscription->order_number ?? '-') : ($payment->product_order_id ?? '-')); ?>
+                    <td><?php echo e($orderType == 'Subscription Order' ? ($payment->subscription->order_number ?? '-') : ($payment->product->order_number ?? '-')); ?>
 
                     </td>
                     <td><?php echo e($invoice->invoice_number ?? '-'); ?></td>
@@ -63,15 +63,7 @@
                         <?php endif; ?>
                     </td>
                     <td>
-                       
-                        <a href="<?php echo e(route('admin.subscriptions.show', $payment->subscription->id ?? '')); ?>" class="btn btn-sm btn-secondary">
-                            View Order Detail
-                        </a>
-                        <a href="<?php echo e(route('admin.customers.view', ['id' => $payment->subscription->customer->id ?? ''])); ?>" target="_blank"
-                            class="btn btn-sm btn-info">
-                            View Seller Detail
-                        </a>
-                         <a href="<?php echo e(route('admin.orders.invoice', ['type' => $payment->subscription_id ? 'subscription' : 'product', 'id' => $payment->subscription_id ?? $payment->product_order_id])); ?>"
+                        <a href="<?php echo e(route('admin.orders.invoice', ['type' => $payment->subscription_id ? 'subscription' : 'product', 'id' => $payment->subscription_id ?? $payment->product_order_id])); ?>"
                             target="_blank" class="btn btn-sm btn-primary">
                             View Invoice
                         </a>

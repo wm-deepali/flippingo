@@ -161,13 +161,13 @@
 
 
     <!-- ================================
-                                                                                                                                                START BREADCRUMB AREA
-                                                                                                                                            ================================= -->
+                                                                                                                                                            START BREADCRUMB AREA
+                                                                                                                                                        ================================= -->
 
     <!-- end breadcrumb-area -->
     <!-- ================================
-                                                                                                                                                END BREADCRUMB AREA
-                                                                                                                                            ================================= -->
+                                                                                                                                                            END BREADCRUMB AREA
+                                                                                                                                                        ================================= -->
     <section class="card-area " style="padding-top:60px; padding-bottom:90px; margin-top:130px;">
         <div class="container">
             <div class="card">
@@ -392,21 +392,15 @@
                         <div class="submission-group wishlist-card" data-group="all">
                             @foreach($allSubmissions as $submission)
                                 @php
-                                    $catSlug = $submission->form->category->slug ?? 'uncategorized';
-                                    $catName = $submission->form->category->name ?? '';
+                                    $catSlug = $submission['category']->slug ?? 'uncategorized';
+                                    $catName = $submission['category']->name ?? '';
 
-                                    $fields = json_decode($submission->data, true);
-                                    $imageFile = $submission->files->firstWhere('show_on_summary', true); // Assuming relation 'files' loaded
-
+                                    $fields = json_decode($submission['data'], true);
                                     $productTitle = $fields['product_title']['value'] ?? 'No Title';
                                     $offeredPrice = $fields['offered_price']['value'] ?? '0';
-                                    // Filter fields that show on summary and are not image files
-                                    $summaryFields = collect($fields)->filter(function ($field) use ($imageFile) {
-                                        if (empty($field['show_on_summary'])) {
-                                            return false;
-                                        }
-                                        return true;
-                                    });
+
+                                   $imageFile = $submission['imageFile'] ?? null; 
+                                    $summaryFields = $submission['summaryFields'] ?? null;
                                   @endphp
                                 <div class="wishlist-product-card" data-category="{{ $catSlug }}">
                                     @if($imageFile)
@@ -435,97 +429,122 @@
                                         <h3 class="mt-2 " style="color: #000;">{{ $productTitle }}</h3>
                                         <div class="d-flex justify-content-between align-items-center">
                                             <p class="m-0">By
-                                                {{ ($submission->customer->first_name ?? '') . ' ' . ($submission->customer->last_name ?? '') }}
+                                                {{ ($submission['customer']['first_name'] ?? '') . ' ' . ($submission['customer']['last_name'] ?? '') }}
                                             </p>
 
                                             <p class="m-0" style="color: #007bff;"><i class="fa-solid fa-eye"></i> 10</p>
                                         </div>
                                         <div class="wishlist-item-card">
-                                            @if($summaryFields->isNotEmpty())
-                                                @php
-                                                    $textFields = $summaryFields->filter(fn($field) => $field['field_id'] && Str::startsWith($field['field_id'], 'text_') && !empty($field['show_on_summary']));
-                                                @endphp
+                                  @if(!empty($summaryFields))
+    @php
+        // Use array_filter when summaryFields is a plain array
+        $textFields = array_filter($summaryFields, function ($field) {
+            return
+                isset($field['field_id']) &&
+                Str::startsWith($field['field_id'], 'text_');
+        });
+    @endphp
 
-                                                @if($textFields->isNotEmpty())
-                                                    @foreach($textFields as $field)
-                                                        <div class="wishlist-left">
-                                                            <p class="m-0" style="color: green;"><i class="{{ $field['icon'] }}"></i></p>
-                                                            <div class="d-flex flex-column ">
-                                                                <p class="m-0" style="font-size: 16px;">{{$field['label']}}</p>
-                                                                <h5 class="m-0" style="color: #000 ;font-size: 16px;">{{$field['value']}}
-                                                                </h5>
-                                                            </div>
-                                                        </div>
-                                                    @endforeach
-                                                @endif
-                                            @endif
+    @if(!empty($textFields))
+        @foreach($textFields as $field)
+            <div class="wishlist-left">
+                <p class="m-0" style="color: green;">
+                    <i class="{{ $field['icon'] ?? '' }}"></i>
+                </p>
+                <div class="d-flex flex-column">
+                    <p class="m-0" style="font-size: 16px;">{{ $field['label'] ?? '' }}</p>
+                    <h5 class="m-0" style="color: #000; font-size: 16px;">{{ $field['value'] ?? '' }}</h5>
+                </div>
+            </div>
+        @endforeach
+    @endif
+@endif
+
 
                                         </div>
                                         <div class="wishlist-price d-flex justify-content-between mt-3">
                                             <h2 style="color: #000;"><i
                                                     class="fa-solid fa-indian-rupee-sign"></i>{{ $offeredPrice }}</h2>
                                             <button type="button" class="btn btn-dark"
-                                                onclick="window.location.href='{{ route('listing-details', ['id' => $submission->id]) }}'">
+                                                onclick="window.location.href='{{ route('listing-details', ['id' => $submission['id']]) }}'">
                                                 View Listing
                                             </button>
                                         </div>
 
                                     </div>
                                     <div class="more-info" data-aos="fade-up" data-aos-duration="500">
+                                        <div class="wishlist-button">
+                                            <p>{{ $catName }}</p>
+                                            <div class="budge-active1">
+                                                <p><i class="fa-solid fa-circle-check"></i> Verified</p>
+                                            </div>
 
+                                        </div>
+                                        <h3 class="mt-2" style="color: #000;">{{ $productTitle ?? '' }}</h3>
+                                       @if(!empty($summaryFields))
+    @php
+        // Filter textarea fields using array_filter
+        $textareaFields = array_filter($summaryFields, function($field) {
+            return
+                isset($field['field_id']) &&
+                Str::startsWith($field['field_id'], 'textarea');
+        });
+    @endphp
 
-                                        <h3 class="mt-2" style="color: #000;">More Information</h3>
-                                        @if($summaryFields->isNotEmpty())
-                                            @php
-                                                $textareaFields = $summaryFields->filter(fn($field) => $field['field_id'] && Str::startsWith($field['field_id'], 'textarea') && !empty($field['show_on_summary']));
-                                            @endphp
+    @if(!empty($textareaFields))
+        <p style="font-size: 13px;">
+            @foreach($textareaFields as $index => $field)
+                @if(!empty($field['icon']))
+                    <i class="{{ $field['icon'] }}" style="margin-right: 4px;"></i>
+                @endif
+                {{ \Illuminate\Support\Str::limit($field['value'], 100, '...') }}
 
-                                            @if($textareaFields->isNotEmpty())
-                                                <p style="font-size: 13px;">
-                                                    @foreach($textareaFields as $field)
-                                                        @if(!empty($field['icon']))
-                                                            <i class="{{ $field['icon'] }}" style="margin-right: 4px;"></i>
-                                                        @endif
-                                                        {{ $field['value'] }}
+                {{-- Separator except for last item --}}
+                @if($index !== array_key_last($textareaFields))
+                    &nbsp;|&nbsp;
+                @endif
+            @endforeach
+        </p>
+    @endif
+@endif
 
-                                                        @if(!$loop->last)
-                                                            &nbsp;|&nbsp;
-                                                        @endif
-                                                    @endforeach
-                                                </p>
-                                            @endif
-                                        @endif
                                         <div class="d-flex justify-content-between align-items-center">
                                             <p class="m-0">By
-                                                {{ $submission->customer->first_name ?? '' }}{{ $submission->customer->last_name ?? ''}}
-                                            </p>
+                                                {{ ($submission['customer']['first_name'] ?? '') . ' ' . ($submission['customer']['last_name'] ?? '') }}
+                                            </pre>
                                             <p class="m-0" style="color: #007bff;"><i class="fa-solid fa-eye"></i> 10</p>
                                         </div>
                                         <div class="wishlist-item-card">
-                                            @if($summaryFields->isNotEmpty())
-                                                @php
-                                                    $textFields = $summaryFields->filter(fn($field) => $field['field_id'] && Str::startsWith($field['field_id'], 'text_') && !empty($field['show_on_summary']));
-                                                @endphp
+                                              @if(!empty($summaryFields))
+    @php
+        // Use array_filter when summaryFields is a plain array
+        $textFields = array_filter($summaryFields, function ($field) {
+            return
+                isset($field['field_id']) &&
+                Str::startsWith($field['field_id'], 'text_');
+        });
+    @endphp
 
-                                                @if($textFields->isNotEmpty())
-                                                    @foreach($textFields as $field)
-                                                        <div class="wishlist-left">
-                                                            <p class="m-0" style="color: green;"><i class="{{ $field['icon'] }}"></i></p>
-                                                            <div class="d-flex flex-column ">
-                                                                <p class="m-0" style="font-size: 16px;">{{$field['label']}}</p>
-                                                                <h5 class="m-0" style="color: #000 ;font-size: 16px;">{{$field['value']}}
-                                                                </h5>
-                                                            </div>
-                                                        </div>
-                                                    @endforeach
-                                                @endif
-                                            @endif
+    @if(!empty($textFields))
+        @foreach($textFields as $field)
+            <div class="wishlist-left">
+                <p class="m-0" style="color: green;">
+                    <i class="{{ $field['icon'] ?? '' }}"></i>
+                </p>
+                <div class="d-flex flex-column">
+                    <p class="m-0" style="font-size: 16px;">{{ $field['label'] ?? '' }}</p>
+                    <h5 class="m-0" style="color: #000; font-size: 16px;">{{ $field['value'] ?? '' }}</h5>
+                </div>
+            </div>
+        @endforeach
+    @endif
+@endif
                                         </div>
                                         <div class="wishlist-price d-flex justify-content-between mt-3">
                                             <h2 style="color: #000;"><i
                                                     class="fa-solid fa-indian-rupee-sign"></i>{{ $offeredPrice }}</h2>
                                             <button type="button" class="btn btn-dark"
-                                                onclick="window.location.href='{{ route('listing-details', ['id' => $submission->id]) }}'">
+                                                onclick="window.location.href='{{ route('listing-details', ['id' => $submission['id']]) }}'">
                                                 View Listing
                                             </button>
                                         </div>
@@ -543,12 +562,14 @@
                                     @foreach($submissionsByCategory[$category->id] as $submission)
                                         @php
                                             $fields = json_decode($submission->data, true);
-                                            $imageFile = $submission->files->firstWhere('show_on_summary', true);
                                             $productTitle = $fields['product_title']['value'] ?? 'No Title';
                                             $offeredPrice = $fields['offered_price']['value'] ?? '0';
-                                            $summaryFields = collect($fields)->filter(fn($field) => !empty($field['show_on_summary']));
+
+                                    $imageFile = $submission->imageFile ?? null; 
+                                    $summaryFields = $submission->summaryFields ?? null;
+
                                         @endphp
-                                        <div class="wishlist-product-card" data-category="{{ $catSlug }}">
+                                        <div class="wishlist-product-card" data-category="{{ $category->slug }}">
                                             @if($imageFile)
                                                 <img src="{{ asset('storage/' . $imageFile['file_path']) }}" />
                                             @else
@@ -566,106 +587,128 @@
                                             </div>
                                             <div class="product-details-hover">
                                                 <div class="wishlist-button">
-                                                    <p>{{ $catName }}</p>
+                                                    <p>{{ $category->name }}</p>
                                                     <div class="budge-active1">
                                                         <p><i class="fa-solid fa-circle-check"></i> Verified</p>
                                                     </div>
-
                                                 </div>
                                                 <h3 class="mt-2 " style="color: #000;">{{ $productTitle }}</h3>
                                                 <div class="d-flex justify-content-between align-items-center">
                                                     <p class="m-0">By
-                                                        {{ $submission->customer->first_name ?? '' }}{{ $submission->customer->last_name ?? ''}}
+                                                        {{ ($submission['customer']->first_name ?? '') . ' ' . ($submission['customer']->last_name ?? '') }}
                                                     </p>
                                                     <p class="m-0" style="color: #007bff;"><i class="fa-solid fa-eye"></i> 10</p>
                                                 </div>
                                                 <div class="wishlist-item-card">
-                                                    @if($summaryFields->isNotEmpty())
-                                                        @php
-                                                            $textFields = $summaryFields->filter(fn($field) => $field['field_id'] && Str::startsWith($field['field_id'], 'text_') && !empty($field['show_on_summary']));
-                                                        @endphp
+                                                    @if(!empty($summaryFields))
+                                                    @php
+        // Use array_filter when summaryFields is a plain array
+        $textFields = array_filter($summaryFields, function ($field) {
+            return
+                isset($field['field_id']) &&
+                Str::startsWith($field['field_id'], 'text_');
+        });
+    @endphp
 
-                                                        @if($textFields->isNotEmpty())
-                                                            @foreach($textFields as $field)
-                                                                <div class="wishlist-left">
-                                                                    <p class="m-0" style="color: green;"><i class="{{ $field['icon'] }}"></i></p>
-                                                                    <div class="d-flex flex-column ">
-                                                                        <p class="m-0" style="font-size: 16px;">{{$field['label']}}</p>
-                                                                        <h5 class="m-0" style="color: #000 ;font-size: 16px;">{{$field['value']}}
-                                                                        </h5>
-                                                                    </div>
-                                                                </div>
-                                                            @endforeach
-                                                        @endif
-                                                    @endif
-
+    @if(!empty($textFields))
+        @foreach($textFields as $field)
+            <div class="wishlist-left">
+                <p class="m-0" style="color: green;">
+                    <i class="{{ $field['icon'] ?? '' }}"></i>
+                </p>
+                <div class="d-flex flex-column">
+                    <p class="m-0" style="font-size: 16px;">{{ $field['label'] ?? '' }}</p>
+                    <h5 class="m-0" style="color: #000; font-size: 16px;">{{ $field['value'] ?? '' }}</h5>
+                </div>
+            </div>
+        @endforeach
+   @endif
+@endif
                                                 </div>
                                                 <div class="wishlist-price d-flex justify-content-between mt-3">
                                                     <h2 style="color: #000;"><i
                                                             class="fa-solid fa-indian-rupee-sign"></i>{{ $offeredPrice }}</h2>
                                                     <button type="button" class="btn btn-dark"
-                                                        onclick="window.location.href='{{ route('listing-details', ['id' => $submission->id]) }}'">
+                                                        onclick="window.location.href='{{ route('listing-details', ['id' => $submission['id']]) }}'">
                                                         View Listing
                                                     </button>
                                                 </div>
 
                                             </div>
                                             <div class="more-info" data-aos="fade-up" data-aos-duration="500">
+                                                <div class="wishlist-button">
+                                                    <p>{{ $category->name }}</p>
+                                                    <div class="budge-active1">
+                                                        <p><i class="fa-solid fa-circle-check"></i> Verified</p>
+                                                    </div>
 
+                                                </div>
+                                                <h3 class="mt-2" style="color: #000;">{{ $productTitle ?? '' }}</h3>
+                                                @if(!empty($summaryFields))
+    @php
+        // Filter textarea fields using array_filter
+        $textareaFields = array_filter($summaryFields, function($field) {
+            return
+                isset($field['field_id']) &&
+                Str::startsWith($field['field_id'], 'textarea');
+        });
+    @endphp
 
-                                                <h3 class="mt-2" style="color: #000;">More Information</h3>
-                                                @if($summaryFields->isNotEmpty())
-                                                    @php
-                                                        $textareaFields = $summaryFields->filter(fn($field) => $field['field_id'] && Str::startsWith($field['field_id'], 'textarea') && !empty($field['show_on_summary']));
-                                                    @endphp
+    @if(!empty($textareaFields))
+        <p style="font-size: 13px;">
+            @foreach($textareaFields as $index => $field)
+                @if(!empty($field['icon']))
+                    <i class="{{ $field['icon'] }}" style="margin-right: 4px;"></i>
+                @endif
+                {{ \Illuminate\Support\Str::limit($field['value'], 100, '...') }}
 
-                                                    @if($textareaFields->isNotEmpty())
-                                                        <p style="font-size: 13px;">
-                                                            @foreach($textareaFields as $field)
-                                                                @if(!empty($field['icon']))
-                                                                    <i class="{{ $field['icon'] }}" style="margin-right: 4px;"></i>
-                                                                @endif
-                                                                {{ \Illuminate\Support\Str::limit($field['value'], 100, '...') }}
+                {{-- Separator except for last item --}}
+                @if($index !== array_key_last($textareaFields))
+                    &nbsp;|&nbsp;
+                @endif
+            @endforeach
+        </p>
+    @endif
+@endif
 
-                                                                @if(!$loop->last)
-                                                                    &nbsp;|&nbsp;
-                                                                @endif
-                                                            @endforeach
-                                                        </p>
-                                                    @endif
-                                                @endif
                                                 <div class="d-flex justify-content-between align-items-center">
                                                     <p class="m-0">By
-                                                        {{ $submission->customer->first_name ?? '' }}{{ $submission->customer->last_name ?? ''}}
+                                                        {{ ($submission['customer']->first_name ?? '') . ' ' . ($submission['customer']->last_name ?? '') }}
                                                     </p>
                                                     <p class="m-0" style="color: #007bff;"><i class="fa-solid fa-eye"></i> 10</p>
                                                 </div>
                                                 <div class="wishlist-item-card">
-                                                    @if($summaryFields->isNotEmpty())
-                                                        @php
-                                                            $textFields = $summaryFields->filter(fn($field) => $field['field_id'] && Str::startsWith($field['field_id'], 'text_') && !empty($field['show_on_summary']));
-                                                        @endphp
+                                               @if(!empty($summaryFields))
+    @php
+        // Use array_filter when summaryFields is a plain array
+        $textFields = array_filter($summaryFields, function ($field) {
+            return
+                isset($field['field_id']) &&
+                Str::startsWith($field['field_id'], 'text_');
+        });
+    @endphp
 
-                                                        @if($textFields->isNotEmpty())
-                                                            @foreach($textFields as $field)
-                                                                <div class="wishlist-left">
-                                                                    <p class="m-0" style="color: green;"><i class="{{ $field['icon'] }}"></i></p>
-                                                                    <div class="d-flex flex-column ">
-                                                                        <p class="m-0" style="font-size: 16px;">{{$field['label']}}</p>
-                                                                        <h5 class="m-0" style="color: #000 ;font-size: 16px;">{{$field['value']}}
-                                                                        </h5>
-                                                                    </div>
-                                                                </div>
-                                                            @endforeach
-                                                        @endif
-                                                    @endif
+    @if(!empty($textFields))
+        @foreach($textFields as $field)
+            <div class="wishlist-left">
+                <p class="m-0" style="color: green;">
+                    <i class="{{ $field['icon'] ?? '' }}"></i>
+                </p>
+                <div class="d-flex flex-column">
+                    <p class="m-0" style="font-size: 16px;">{{ $field['label'] ?? '' }}</p>
+                    <h5 class="m-0" style="color: #000; font-size: 16px;">{{ $field['value'] ?? '' }}</h5>
+                </div>
+            </div>
+        @endforeach
+           @endif
+@endif
 
                                                 </div>
                                                 <div class="wishlist-price d-flex justify-content-between mt-3">
                                                     <h2 style="color: #000;"><i
                                                             class="fa-solid fa-indian-rupee-sign"></i>{{ $offeredPrice }}</h2>
                                                     <button type="button" class="btn btn-dark"
-                                                        onclick="window.location.href='{{ route('listing-details', ['id' => $submission->id]) }}'">
+                                                        onclick="window.location.href='{{ route('listing-details', ['id' => $submission['id']]) }}'">
                                                         View Listing
                                                     </button>
 
@@ -688,17 +731,17 @@
         <!-- end container -->
     </section>
     <!-- ================================
-                                                                                                                                                START CARD AREA
-                                                                                                                                            ================================= -->
+                                                                                                                                                            START CARD AREA
+                                                                                                                                                        ================================= -->
 
     <!-- end card-area -->
     <!-- ================================
-                                                                                                                                                END CARD AREA
-                                                                                                                                            ================================= -->
+                                                                                                                                                            END CARD AREA
+                                                                                                                                                        ================================= -->
 
     <!-- ================================
-                                                                                                                                                START SUBSCRIBER AREA
-                                                                                                                                            ================================= -->
+                                                                                                                                                            START SUBSCRIBER AREA
+                                                                                                                                                        ================================= -->
     <section class="subscriber-area mb-n5 position-relative z-index-2">
         <div class="container">
             <div class="subscriber-box d-flex flex-wrap align-items-center justify-content-between bg-dark overflow-hidden">
@@ -725,8 +768,8 @@
     </section>
     <!-- end subscriber-area -->
     <!-- ================================
-                                                                                                                                                END SUBSCRIBER AREA
-                                                                                                                                            ================================= -->
+                                                                                                                                                            END SUBSCRIBER AREA
+                                                                                                                                                        ================================= -->
 
     <script>
         document.querySelectorAll('.tab-btn').forEach(btn => {

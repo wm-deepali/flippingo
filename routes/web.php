@@ -20,7 +20,8 @@ use App\Http\Controllers\Admin\{
     CustomerController,
     SettingController,
     PackageController,
-    SubscriptionController
+    SubscriptionController,
+    ProductOrderController
 };
 
 /*
@@ -179,7 +180,6 @@ Route::group(['middleware' => 'auth'], function () {
         Route::get('reports/subscriptions/custom-date', [SubscriptionController::class, 'customDate'])
             ->name('reports.subscriptions.customDate');
 
-
         Route::post('subscriptions/{subscription}/reject-cancellation', [SubscriptionController::class, 'rejectCancellation'])
             ->name('subscriptions.rejectCancellation');
 
@@ -188,9 +188,10 @@ Route::group(['middleware' => 'auth'], function () {
             ->name('invoice.download');
 
 
-        Route::get('subscription-order-detail', function () {
-            return view('admin.packages.orderlist');
-        })->name('orders.orderlist');
+        Route::resource('product-orders', ProductOrderController::class);
+        Route::patch('/product-orders/{id}/update-status', [ProductOrderController::class, 'updateStatus'])->name('product-orders.update-status');
+        Route::get('/product-orders/{id}/invoice', [ProductOrderController::class, 'viewInvoice'])->name('product-orders.invoice');
+
 
         Route::get('/payments', [SubscriptionController::class, 'payments'])->name('payments.index');
 

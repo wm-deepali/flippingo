@@ -5,6 +5,7 @@ namespace App\Http\Controllers\Admin;
 use App\Http\Controllers\Controller;
 use App\Models\Payment;
 use App\Models\PaymentRefund;
+use App\Models\ProductOrder;
 use App\Models\Subscription;
 use App\Models\Wallet;
 use Illuminate\Http\Request;
@@ -111,7 +112,7 @@ class SubscriptionController extends Controller
     public function payments()
     {
         // Fetch payment data with relationships if needed (e.g., subscription, customer)
-        $payments = Payment::with(['subscription.customer', 'subscription.invoice'])->orderByDesc('created_at')->get();
+        $payments = Payment::with(['subscription.customer', 'subscription.invoice', 'product.customer', 'product.seller', 'product.invoice'])->orderByDesc('created_at')->get();
         // dd($payments->toArray());
         return view('admin.payments.index', compact('payments'));
     }
@@ -123,7 +124,25 @@ class SubscriptionController extends Controller
         if ($type == 'subscription') {
             $order = Subscription::with(['package', 'customer', 'payment', 'invoice'])->findOrFail($orderId);
         } else {
-            // $order = ProductOrder::with(['products', 'buyer', 'seller', 'payment'])->findOrFail($orderId);
+            $order = ProductOrder::with([
+                'customer',
+                'seller',
+                'payment',
+                'statuses',
+                'submission.form.category',
+                'submission.files'
+            ])->findOrFail($orderId);
+
+            // Decode submission data
+            $submittedValues = $order->submission ? json_decode($order->submission->data, true) : [];
+
+
+            $order->product = [
+                "productTitle" => $submittedValues['product_title']['value'] ?? '-',
+                "offeredPrice" => $submittedValues['offered_price']['value'] ?? 0,
+                "category" => optional($order->submission->form->category)->name ?? '-',
+                "productPhoto" => optional($order->submission->files()->where('show_on_summary', true)->first())->file_path ?? null,
+            ];
         }
         return view('admin.payments.invoice', compact('order', 'type'));
     }

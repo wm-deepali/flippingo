@@ -21,13 +21,13 @@
                     $orderType = $payment->subscription_id ? 'Subscription Order' : 'Product Order';
                     // Seller info and Buyer info based on order type
                     $seller = $orderType == 'Subscription Order' ? $payment->subscription->customer ?? null : $payment->product->seller ?? null;
-                    $buyer = $orderType == 'Product Order' ? $payment->product->buyer ?? null : null;
-                    $invoice = $payment->subscription->invoice ?? null;
+                    $buyer = $orderType == 'Product Order' ? $payment->product->customer ?? null : null;
+                    $invoice = $orderType == 'Subscription Order' ?  $payment->subscription->invoice : $payment->product->invoice;
                 @endphp
                 <tr>
                     <td>{{ \Carbon\Carbon::parse($payment->created_at)->format('Y-m-d H:i') }}</td>
                     <td>{{ $orderType }}</td>
-                    <td>{{ $orderType == 'Subscription Order' ? ($payment->subscription->order_number ?? '-') : ($payment->product_order_id ?? '-') }}
+                    <td>{{ $orderType == 'Subscription Order' ? ($payment->subscription->order_number ?? '-') : ($payment->product->order_number ?? '-') }}
                     </td>
                     <td>{{ $invoice->invoice_number ?? '-' }}</td>
                     <td>

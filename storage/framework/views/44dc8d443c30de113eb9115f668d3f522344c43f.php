@@ -127,7 +127,7 @@
           </a>
           <ul class="dropdown-menu">
             <li><a class="dropdown-item d-flex align-items-center"
-                href="<?php echo e(route('admin.customers.index')); ?>"><span>Manage Customer</span></a>
+                href="<?php echo e(route('admin.customers.index')); ?>"><span>Manage Users</span></a>
             </li>
             <li><a class="dropdown-item d-flex align-items-center"
                 href="<?php echo e(route('admin.customers.index')); ?>"><span>Seller Income Detail</span></a>
@@ -148,16 +148,13 @@
           </a>
           <ul class="dropdown-menu">
             <li><a class="dropdown-item d-flex align-items-center"
-                href="<?php echo e(route('admin.customers.index')); ?>"><span>Buyer Wallet</span></a>
-            </li>
-            <li><a class="dropdown-item d-flex align-items-center"
-                href="<?php echo e(route('admin.deletion_reasons.index')); ?>"><span>Seller Wallet</span></a>
+                href="<?php echo e(route('admin.deletion_reasons.index')); ?>"><span>Manage User Wallet</span></a>
             </li>
             <li><a class="dropdown-item d-flex align-items-center"
                 href="<?php echo e(route('admin.account_deletion_requests.index')); ?>"><span>Withdrawal Request</span></a>
             </li>
             <li><a class="dropdown-item d-flex align-items-center"
-                href="<?php echo e(route('admin.account_deletion_requests.index')); ?>"><span>Payout</span></a>
+                href="<?php echo e(route('admin.account_deletion_requests.index')); ?>"><span>Seller Payout</span></a>
             </li>
 
           </ul>
@@ -174,7 +171,7 @@
                 <li><a class="dropdown-item d-flex align-items-center"
                 href="<?php echo e(route('admin.subscriptions.orders')); ?>"><span>Subscriptions Orders</span></a></li>
                 <li>
-              <a class="dropdown-item d-flex align-items-center" href="<?php echo e(route('admin.form-submissions.index')); ?>">
+              <a class="dropdown-item d-flex align-items-center" href="<?php echo e(route('admin.product-orders.index')); ?>">
                 Sales Orders
               </a>
             </li>

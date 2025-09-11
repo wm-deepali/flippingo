@@ -17,7 +17,7 @@ class FormController extends Controller
      */
     public function index()
     {
-        $forms = Form::all(); // fetch all saved forms
+        $forms = Form::with('category')->get(); // fetch all saved forms
         return view('admin.form.index', compact('forms'));
     }
 

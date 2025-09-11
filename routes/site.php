@@ -11,6 +11,8 @@ use App\Http\Controllers\CheckoutController;
 use App\Http\Controllers\ProfileController;
 use App\Http\Controllers\SubscriptionController;
 
+use App\Http\Controllers\WalletController;
+use App\Http\Controllers\WishlistController;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\SiteController;
@@ -50,7 +52,7 @@ Route::post('subscription/store', [SubscriptionController::class, 'Store'])->nam
 Route::post('/subscription/cancel-request', [App\Http\Controllers\SubscriptionController::class, 'cancelRequest'])
     ->name('subscription.cancelRequest');
 
-    
+
 Route::get('/page/{slug}', [PageController::class, 'show'])->name('page.show');
 Route::get('add-listing', [SiteController::class, 'addListing'])->name('add-listing');
 Route::get('/forms/{id}', [FormController::class, 'showFormHtml'])->name('forms');
@@ -73,7 +75,7 @@ Route::get('faq', [FaqController::class, 'publicIndex'])->name('faq');
 Route::get('faq/category/{slug}', [FaqController::class, 'category'])->name('faq.category');
 
 
-Route::get('/checkout', [CheckoutController::class, 'index'])->name('checkout');
+
 
 
 Route::get('order-tracking', function () {
@@ -92,7 +94,7 @@ Route::get('meet-our-team', function () {
 
 Route::get('our-services', function () {
     return view('front.our-services');
-})->name('our-services'); 
+})->name('our-services');
 
 Route::get('how-it-works', function () {
     return view('front.how-it-works');
@@ -157,6 +159,12 @@ Route::middleware(['web'])->group(function () {
 
     // Update front routes and functions start
     Route::middleware(['auth:customer'])->group(function () {
+        Route::post('/wallet/add-funds', [WalletController::class, 'addFunds'])->name('wallet.add_funds');
+        Route::post('/wishlist/toggle', [WishlistController::class, 'toggle'])->name('wishlist.toggle');
+        Route::get('/checkout', [CheckoutController::class, 'index'])->name('checkout');
+        Route::post('/checkout/place-order', [CheckoutController::class, 'placeOrder'])->name('checkout.place-order');
+        Route::get('/orders/thank-you/{order?}', [CheckoutController::class, 'thankYou'])->name('orders.thank-you');
+
         Route::prefix('dashboard')->group(function () {
 
             Route::get('/', [CustomerController::class, 'dashboard'])->name('dashboard.index');

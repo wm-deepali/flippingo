@@ -162,13 +162,13 @@
 
 
     <!-- ================================
-                                                                                                                                                START BREADCRUMB AREA
-                                                                                                                                            ================================= -->
+                                                                                                                                                            START BREADCRUMB AREA
+                                                                                                                                                        ================================= -->
 
     <!-- end breadcrumb-area -->
     <!-- ================================
-                                                                                                                                                END BREADCRUMB AREA
-                                                                                                                                            ================================= -->
+                                                                                                                                                            END BREADCRUMB AREA
+                                                                                                                                                        ================================= -->
     <section class="card-area " style="padding-top:60px; padding-bottom:90px; margin-top:130px;">
         <div class="container">
             <div class="card">
@@ -393,21 +393,15 @@
                         <div class="submission-group wishlist-card" data-group="all">
                             <?php $__currentLoopData = $allSubmissions; $__env->addLoop($__currentLoopData); foreach($__currentLoopData as $submission): $__env->incrementLoopIndices(); $loop = $__env->getLastLoop(); ?>
                                 <?php
-                                    $catSlug = $submission->form->category->slug ?? 'uncategorized';
-                                    $catName = $submission->form->category->name ?? '';
+                                    $catSlug = $submission['category']->slug ?? 'uncategorized';
+                                    $catName = $submission['category']->name ?? '';
 
-                                    $fields = json_decode($submission->data, true);
-                                    $imageFile = $submission->files->firstWhere('show_on_summary', true); // Assuming relation 'files' loaded
-
+                                    $fields = json_decode($submission['data'], true);
                                     $productTitle = $fields['product_title']['value'] ?? 'No Title';
                                     $offeredPrice = $fields['offered_price']['value'] ?? '0';
-                                    // Filter fields that show on summary and are not image files
-                                    $summaryFields = collect($fields)->filter(function ($field) use ($imageFile) {
-                                        if (empty($field['show_on_summary'])) {
-                                            return false;
-                                        }
-                                        return true;
-                                    });
+
+                                   $imageFile = $submission['imageFile'] ?? null; 
+                                    $summaryFields = $submission['summaryFields'] ?? null;
                                   ?>
                                 <div class="wishlist-product-card" data-category="<?php echo e($catSlug); ?>">
                                     <?php if($imageFile): ?>
@@ -436,102 +430,125 @@
                                         <h3 class="mt-2 " style="color: #000;"><?php echo e($productTitle); ?></h3>
                                         <div class="d-flex justify-content-between align-items-center">
                                             <p class="m-0">By
-                                                <?php echo e(($submission->customer->first_name ?? '') . ' ' . ($submission->customer->last_name ?? '')); ?>
+                                                <?php echo e(($submission['customer']['first_name'] ?? '') . ' ' . ($submission['customer']['last_name'] ?? '')); ?>
 
                                             </p>
 
                                             <p class="m-0" style="color: #007bff;"><i class="fa-solid fa-eye"></i> 10</p>
                                         </div>
                                         <div class="wishlist-item-card">
-                                            <?php if($summaryFields->isNotEmpty()): ?>
-                                                <?php
-                                                    $textFields = $summaryFields->filter(fn($field) => $field['field_id'] && Str::startsWith($field['field_id'], 'text_') && !empty($field['show_on_summary']));
-                                                ?>
+                                  <?php if(!empty($summaryFields)): ?>
+    <?php
+        // Use array_filter when summaryFields is a plain array
+        $textFields = array_filter($summaryFields, function ($field) {
+            return
+                isset($field['field_id']) &&
+                Str::startsWith($field['field_id'], 'text_');
+        });
+    ?>
 
-                                                <?php if($textFields->isNotEmpty()): ?>
-                                                    <?php $__currentLoopData = $textFields; $__env->addLoop($__currentLoopData); foreach($__currentLoopData as $field): $__env->incrementLoopIndices(); $loop = $__env->getLastLoop(); ?>
-                                                        <div class="wishlist-left">
-                                                            <p class="m-0" style="color: green;"><i class="<?php echo e($field['icon']); ?>"></i></p>
-                                                            <div class="d-flex flex-column ">
-                                                                <p class="m-0" style="font-size: 16px;"><?php echo e($field['label']); ?></p>
-                                                                <h5 class="m-0" style="color: #000 ;font-size: 16px;"><?php echo e($field['value']); ?>
+    <?php if(!empty($textFields)): ?>
+        <?php $__currentLoopData = $textFields; $__env->addLoop($__currentLoopData); foreach($__currentLoopData as $field): $__env->incrementLoopIndices(); $loop = $__env->getLastLoop(); ?>
+            <div class="wishlist-left">
+                <p class="m-0" style="color: green;">
+                    <i class="<?php echo e($field['icon'] ?? ''); ?>"></i>
+                </p>
+                <div class="d-flex flex-column">
+                    <p class="m-0" style="font-size: 16px;"><?php echo e($field['label'] ?? ''); ?></p>
+                    <h5 class="m-0" style="color: #000; font-size: 16px;"><?php echo e($field['value'] ?? ''); ?></h5>
+                </div>
+            </div>
+        <?php endforeach; $__env->popLoop(); $loop = $__env->getLastLoop(); ?>
+    <?php endif; ?>
+<?php endif; ?>
 
-                                                                </h5>
-                                                            </div>
-                                                        </div>
-                                                    <?php endforeach; $__env->popLoop(); $loop = $__env->getLastLoop(); ?>
-                                                <?php endif; ?>
-                                            <?php endif; ?>
 
                                         </div>
                                         <div class="wishlist-price d-flex justify-content-between mt-3">
                                             <h2 style="color: #000;"><i
                                                     class="fa-solid fa-indian-rupee-sign"></i><?php echo e($offeredPrice); ?></h2>
                                             <button type="button" class="btn btn-dark"
-                                                onclick="window.location.href='<?php echo e(route('listing-details', ['id' => $submission->id])); ?>'">
+                                                onclick="window.location.href='<?php echo e(route('listing-details', ['id' => $submission['id']])); ?>'">
                                                 View Listing
                                             </button>
                                         </div>
 
                                     </div>
                                     <div class="more-info" data-aos="fade-up" data-aos-duration="500">
+                                        <div class="wishlist-button">
+                                            <p><?php echo e($catName); ?></p>
+                                            <div class="budge-active1">
+                                                <p><i class="fa-solid fa-circle-check"></i> Verified</p>
+                                            </div>
+
+                                        </div>
+                                        <h3 class="mt-2" style="color: #000;"><?php echo e($productTitle ?? ''); ?></h3>
+                                       <?php if(!empty($summaryFields)): ?>
+    <?php
+        // Filter textarea fields using array_filter
+        $textareaFields = array_filter($summaryFields, function($field) {
+            return
+                isset($field['field_id']) &&
+                Str::startsWith($field['field_id'], 'textarea');
+        });
+    ?>
+
+    <?php if(!empty($textareaFields)): ?>
+        <p style="font-size: 13px;">
+            <?php $__currentLoopData = $textareaFields; $__env->addLoop($__currentLoopData); foreach($__currentLoopData as $index => $field): $__env->incrementLoopIndices(); $loop = $__env->getLastLoop(); ?>
+                <?php if(!empty($field['icon'])): ?>
+                    <i class="<?php echo e($field['icon']); ?>" style="margin-right: 4px;"></i>
+                <?php endif; ?>
+                <?php echo e(\Illuminate\Support\Str::limit($field['value'], 100, '...')); ?>
 
 
-                                        <h3 class="mt-2" style="color: #000;">More Information</h3>
-                                        <?php if($summaryFields->isNotEmpty()): ?>
-                                            <?php
-                                                $textareaFields = $summaryFields->filter(fn($field) => $field['field_id'] && Str::startsWith($field['field_id'], 'textarea') && !empty($field['show_on_summary']));
-                                            ?>
+                
+                <?php if($index !== array_key_last($textareaFields)): ?>
+                    &nbsp;|&nbsp;
+                <?php endif; ?>
+            <?php endforeach; $__env->popLoop(); $loop = $__env->getLastLoop(); ?>
+        </p>
+    <?php endif; ?>
+<?php endif; ?>
 
-                                            <?php if($textareaFields->isNotEmpty()): ?>
-                                                <p style="font-size: 13px;">
-                                                    <?php $__currentLoopData = $textareaFields; $__env->addLoop($__currentLoopData); foreach($__currentLoopData as $field): $__env->incrementLoopIndices(); $loop = $__env->getLastLoop(); ?>
-                                                        <?php if(!empty($field['icon'])): ?>
-                                                            <i class="<?php echo e($field['icon']); ?>" style="margin-right: 4px;"></i>
-                                                        <?php endif; ?>
-                                                        <?php echo e($field['value']); ?>
-
-
-                                                        <?php if(!$loop->last): ?>
-                                                            &nbsp;|&nbsp;
-                                                        <?php endif; ?>
-                                                    <?php endforeach; $__env->popLoop(); $loop = $__env->getLastLoop(); ?>
-                                                </p>
-                                            <?php endif; ?>
-                                        <?php endif; ?>
                                         <div class="d-flex justify-content-between align-items-center">
                                             <p class="m-0">By
-                                                <?php echo e($submission->customer->first_name ?? ''); ?><?php echo e($submission->customer->last_name ?? ''); ?>
+                                                <?php echo e(($submission['customer']['first_name'] ?? '') . ' ' . ($submission['customer']['last_name'] ?? '')); ?>
 
-                                            </p>
+                                            </pre>
                                             <p class="m-0" style="color: #007bff;"><i class="fa-solid fa-eye"></i> 10</p>
                                         </div>
                                         <div class="wishlist-item-card">
-                                            <?php if($summaryFields->isNotEmpty()): ?>
-                                                <?php
-                                                    $textFields = $summaryFields->filter(fn($field) => $field['field_id'] && Str::startsWith($field['field_id'], 'text_') && !empty($field['show_on_summary']));
-                                                ?>
+                                              <?php if(!empty($summaryFields)): ?>
+    <?php
+        // Use array_filter when summaryFields is a plain array
+        $textFields = array_filter($summaryFields, function ($field) {
+            return
+                isset($field['field_id']) &&
+                Str::startsWith($field['field_id'], 'text_');
+        });
+    ?>
 
-                                                <?php if($textFields->isNotEmpty()): ?>
-                                                    <?php $__currentLoopData = $textFields; $__env->addLoop($__currentLoopData); foreach($__currentLoopData as $field): $__env->incrementLoopIndices(); $loop = $__env->getLastLoop(); ?>
-                                                        <div class="wishlist-left">
-                                                            <p class="m-0" style="color: green;"><i class="<?php echo e($field['icon']); ?>"></i></p>
-                                                            <div class="d-flex flex-column ">
-                                                                <p class="m-0" style="font-size: 16px;"><?php echo e($field['label']); ?></p>
-                                                                <h5 class="m-0" style="color: #000 ;font-size: 16px;"><?php echo e($field['value']); ?>
-
-                                                                </h5>
-                                                            </div>
-                                                        </div>
-                                                    <?php endforeach; $__env->popLoop(); $loop = $__env->getLastLoop(); ?>
-                                                <?php endif; ?>
-                                            <?php endif; ?>
+    <?php if(!empty($textFields)): ?>
+        <?php $__currentLoopData = $textFields; $__env->addLoop($__currentLoopData); foreach($__currentLoopData as $field): $__env->incrementLoopIndices(); $loop = $__env->getLastLoop(); ?>
+            <div class="wishlist-left">
+                <p class="m-0" style="color: green;">
+                    <i class="<?php echo e($field['icon'] ?? ''); ?>"></i>
+                </p>
+                <div class="d-flex flex-column">
+                    <p class="m-0" style="font-size: 16px;"><?php echo e($field['label'] ?? ''); ?></p>
+                    <h5 class="m-0" style="color: #000; font-size: 16px;"><?php echo e($field['value'] ?? ''); ?></h5>
+                </div>
+            </div>
+        <?php endforeach; $__env->popLoop(); $loop = $__env->getLastLoop(); ?>
+    <?php endif; ?>
+<?php endif; ?>
                                         </div>
                                         <div class="wishlist-price d-flex justify-content-between mt-3">
                                             <h2 style="color: #000;"><i
                                                     class="fa-solid fa-indian-rupee-sign"></i><?php echo e($offeredPrice); ?></h2>
                                             <button type="button" class="btn btn-dark"
-                                                onclick="window.location.href='<?php echo e(route('listing-details', ['id' => $submission->id])); ?>'">
+                                                onclick="window.location.href='<?php echo e(route('listing-details', ['id' => $submission['id']])); ?>'">
                                                 View Listing
                                             </button>
                                         </div>
@@ -549,12 +566,14 @@
                                     <?php $__currentLoopData = $submissionsByCategory[$category->id]; $__env->addLoop($__currentLoopData); foreach($__currentLoopData as $submission): $__env->incrementLoopIndices(); $loop = $__env->getLastLoop(); ?>
                                         <?php
                                             $fields = json_decode($submission->data, true);
-                                            $imageFile = $submission->files->firstWhere('show_on_summary', true);
                                             $productTitle = $fields['product_title']['value'] ?? 'No Title';
                                             $offeredPrice = $fields['offered_price']['value'] ?? '0';
-                                            $summaryFields = collect($fields)->filter(fn($field) => !empty($field['show_on_summary']));
+
+                                    $imageFile = $submission->imageFile ?? null; 
+                                    $summaryFields = $submission->summaryFields ?? null;
+
                                         ?>
-                                        <div class="wishlist-product-card" data-category="<?php echo e($catSlug); ?>">
+                                        <div class="wishlist-product-card" data-category="<?php echo e($category->slug); ?>">
                                             <?php if($imageFile): ?>
                                                 <img src="<?php echo e(asset('storage/' . $imageFile['file_path'])); ?>" />
                                             <?php else: ?>
@@ -572,111 +591,131 @@
                                             </div>
                                             <div class="product-details-hover">
                                                 <div class="wishlist-button">
-                                                    <p><?php echo e($catName); ?></p>
+                                                    <p><?php echo e($category->name); ?></p>
                                                     <div class="budge-active1">
                                                         <p><i class="fa-solid fa-circle-check"></i> Verified</p>
                                                     </div>
-
                                                 </div>
                                                 <h3 class="mt-2 " style="color: #000;"><?php echo e($productTitle); ?></h3>
                                                 <div class="d-flex justify-content-between align-items-center">
                                                     <p class="m-0">By
-                                                        <?php echo e($submission->customer->first_name ?? ''); ?><?php echo e($submission->customer->last_name ?? ''); ?>
+                                                        <?php echo e(($submission['customer']->first_name ?? '') . ' ' . ($submission['customer']->last_name ?? '')); ?>
 
                                                     </p>
                                                     <p class="m-0" style="color: #007bff;"><i class="fa-solid fa-eye"></i> 10</p>
                                                 </div>
                                                 <div class="wishlist-item-card">
-                                                    <?php if($summaryFields->isNotEmpty()): ?>
-                                                        <?php
-                                                            $textFields = $summaryFields->filter(fn($field) => $field['field_id'] && Str::startsWith($field['field_id'], 'text_') && !empty($field['show_on_summary']));
-                                                        ?>
+                                                    <?php if(!empty($summaryFields)): ?>
+                                                    <?php
+        // Use array_filter when summaryFields is a plain array
+        $textFields = array_filter($summaryFields, function ($field) {
+            return
+                isset($field['field_id']) &&
+                Str::startsWith($field['field_id'], 'text_');
+        });
+    ?>
 
-                                                        <?php if($textFields->isNotEmpty()): ?>
-                                                            <?php $__currentLoopData = $textFields; $__env->addLoop($__currentLoopData); foreach($__currentLoopData as $field): $__env->incrementLoopIndices(); $loop = $__env->getLastLoop(); ?>
-                                                                <div class="wishlist-left">
-                                                                    <p class="m-0" style="color: green;"><i class="<?php echo e($field['icon']); ?>"></i></p>
-                                                                    <div class="d-flex flex-column ">
-                                                                        <p class="m-0" style="font-size: 16px;"><?php echo e($field['label']); ?></p>
-                                                                        <h5 class="m-0" style="color: #000 ;font-size: 16px;"><?php echo e($field['value']); ?>
-
-                                                                        </h5>
-                                                                    </div>
-                                                                </div>
-                                                            <?php endforeach; $__env->popLoop(); $loop = $__env->getLastLoop(); ?>
-                                                        <?php endif; ?>
-                                                    <?php endif; ?>
-
+    <?php if(!empty($textFields)): ?>
+        <?php $__currentLoopData = $textFields; $__env->addLoop($__currentLoopData); foreach($__currentLoopData as $field): $__env->incrementLoopIndices(); $loop = $__env->getLastLoop(); ?>
+            <div class="wishlist-left">
+                <p class="m-0" style="color: green;">
+                    <i class="<?php echo e($field['icon'] ?? ''); ?>"></i>
+                </p>
+                <div class="d-flex flex-column">
+                    <p class="m-0" style="font-size: 16px;"><?php echo e($field['label'] ?? ''); ?></p>
+                    <h5 class="m-0" style="color: #000; font-size: 16px;"><?php echo e($field['value'] ?? ''); ?></h5>
+                </div>
+            </div>
+        <?php endforeach; $__env->popLoop(); $loop = $__env->getLastLoop(); ?>
+   <?php endif; ?>
+<?php endif; ?>
                                                 </div>
                                                 <div class="wishlist-price d-flex justify-content-between mt-3">
                                                     <h2 style="color: #000;"><i
                                                             class="fa-solid fa-indian-rupee-sign"></i><?php echo e($offeredPrice); ?></h2>
                                                     <button type="button" class="btn btn-dark"
-                                                        onclick="window.location.href='<?php echo e(route('listing-details', ['id' => $submission->id])); ?>'">
+                                                        onclick="window.location.href='<?php echo e(route('listing-details', ['id' => $submission['id']])); ?>'">
                                                         View Listing
                                                     </button>
                                                 </div>
 
                                             </div>
                                             <div class="more-info" data-aos="fade-up" data-aos-duration="500">
+                                                <div class="wishlist-button">
+                                                    <p><?php echo e($category->name); ?></p>
+                                                    <div class="budge-active1">
+                                                        <p><i class="fa-solid fa-circle-check"></i> Verified</p>
+                                                    </div>
+
+                                                </div>
+                                                <h3 class="mt-2" style="color: #000;"><?php echo e($productTitle ?? ''); ?></h3>
+                                                <?php if(!empty($summaryFields)): ?>
+    <?php
+        // Filter textarea fields using array_filter
+        $textareaFields = array_filter($summaryFields, function($field) {
+            return
+                isset($field['field_id']) &&
+                Str::startsWith($field['field_id'], 'textarea');
+        });
+    ?>
+
+    <?php if(!empty($textareaFields)): ?>
+        <p style="font-size: 13px;">
+            <?php $__currentLoopData = $textareaFields; $__env->addLoop($__currentLoopData); foreach($__currentLoopData as $index => $field): $__env->incrementLoopIndices(); $loop = $__env->getLastLoop(); ?>
+                <?php if(!empty($field['icon'])): ?>
+                    <i class="<?php echo e($field['icon']); ?>" style="margin-right: 4px;"></i>
+                <?php endif; ?>
+                <?php echo e(\Illuminate\Support\Str::limit($field['value'], 100, '...')); ?>
 
 
-                                                <h3 class="mt-2" style="color: #000;">More Information</h3>
-                                                <?php if($summaryFields->isNotEmpty()): ?>
-                                                    <?php
-                                                        $textareaFields = $summaryFields->filter(fn($field) => $field['field_id'] && Str::startsWith($field['field_id'], 'textarea') && !empty($field['show_on_summary']));
-                                                    ?>
+                
+                <?php if($index !== array_key_last($textareaFields)): ?>
+                    &nbsp;|&nbsp;
+                <?php endif; ?>
+            <?php endforeach; $__env->popLoop(); $loop = $__env->getLastLoop(); ?>
+        </p>
+    <?php endif; ?>
+<?php endif; ?>
 
-                                                    <?php if($textareaFields->isNotEmpty()): ?>
-                                                        <p style="font-size: 13px;">
-                                                            <?php $__currentLoopData = $textareaFields; $__env->addLoop($__currentLoopData); foreach($__currentLoopData as $field): $__env->incrementLoopIndices(); $loop = $__env->getLastLoop(); ?>
-                                                                <?php if(!empty($field['icon'])): ?>
-                                                                    <i class="<?php echo e($field['icon']); ?>" style="margin-right: 4px;"></i>
-                                                                <?php endif; ?>
-                                                                <?php echo e(\Illuminate\Support\Str::limit($field['value'], 100, '...')); ?>
-
-
-                                                                <?php if(!$loop->last): ?>
-                                                                    &nbsp;|&nbsp;
-                                                                <?php endif; ?>
-                                                            <?php endforeach; $__env->popLoop(); $loop = $__env->getLastLoop(); ?>
-                                                        </p>
-                                                    <?php endif; ?>
-                                                <?php endif; ?>
                                                 <div class="d-flex justify-content-between align-items-center">
                                                     <p class="m-0">By
-                                                        <?php echo e($submission->customer->first_name ?? ''); ?><?php echo e($submission->customer->last_name ?? ''); ?>
+                                                        <?php echo e(($submission['customer']->first_name ?? '') . ' ' . ($submission['customer']->last_name ?? '')); ?>
 
                                                     </p>
                                                     <p class="m-0" style="color: #007bff;"><i class="fa-solid fa-eye"></i> 10</p>
                                                 </div>
                                                 <div class="wishlist-item-card">
-                                                    <?php if($summaryFields->isNotEmpty()): ?>
-                                                        <?php
-                                                            $textFields = $summaryFields->filter(fn($field) => $field['field_id'] && Str::startsWith($field['field_id'], 'text_') && !empty($field['show_on_summary']));
-                                                        ?>
+                                               <?php if(!empty($summaryFields)): ?>
+    <?php
+        // Use array_filter when summaryFields is a plain array
+        $textFields = array_filter($summaryFields, function ($field) {
+            return
+                isset($field['field_id']) &&
+                Str::startsWith($field['field_id'], 'text_');
+        });
+    ?>
 
-                                                        <?php if($textFields->isNotEmpty()): ?>
-                                                            <?php $__currentLoopData = $textFields; $__env->addLoop($__currentLoopData); foreach($__currentLoopData as $field): $__env->incrementLoopIndices(); $loop = $__env->getLastLoop(); ?>
-                                                                <div class="wishlist-left">
-                                                                    <p class="m-0" style="color: green;"><i class="<?php echo e($field['icon']); ?>"></i></p>
-                                                                    <div class="d-flex flex-column ">
-                                                                        <p class="m-0" style="font-size: 16px;"><?php echo e($field['label']); ?></p>
-                                                                        <h5 class="m-0" style="color: #000 ;font-size: 16px;"><?php echo e($field['value']); ?>
-
-                                                                        </h5>
-                                                                    </div>
-                                                                </div>
-                                                            <?php endforeach; $__env->popLoop(); $loop = $__env->getLastLoop(); ?>
-                                                        <?php endif; ?>
-                                                    <?php endif; ?>
+    <?php if(!empty($textFields)): ?>
+        <?php $__currentLoopData = $textFields; $__env->addLoop($__currentLoopData); foreach($__currentLoopData as $field): $__env->incrementLoopIndices(); $loop = $__env->getLastLoop(); ?>
+            <div class="wishlist-left">
+                <p class="m-0" style="color: green;">
+                    <i class="<?php echo e($field['icon'] ?? ''); ?>"></i>
+                </p>
+                <div class="d-flex flex-column">
+                    <p class="m-0" style="font-size: 16px;"><?php echo e($field['label'] ?? ''); ?></p>
+                    <h5 class="m-0" style="color: #000; font-size: 16px;"><?php echo e($field['value'] ?? ''); ?></h5>
+                </div>
+            </div>
+        <?php endforeach; $__env->popLoop(); $loop = $__env->getLastLoop(); ?>
+           <?php endif; ?>
+<?php endif; ?>
 
                                                 </div>
                                                 <div class="wishlist-price d-flex justify-content-between mt-3">
                                                     <h2 style="color: #000;"><i
                                                             class="fa-solid fa-indian-rupee-sign"></i><?php echo e($offeredPrice); ?></h2>
                                                     <button type="button" class="btn btn-dark"
-                                                        onclick="window.location.href='<?php echo e(route('listing-details', ['id' => $submission->id])); ?>'">
+                                                        onclick="window.location.href='<?php echo e(route('listing-details', ['id' => $submission['id']])); ?>'">
                                                         View Listing
                                                     </button>
 
@@ -699,17 +738,17 @@
         <!-- end container -->
     </section>
     <!-- ================================
-                                                                                                                                                START CARD AREA
-                                                                                                                                            ================================= -->
+                                                                                                                                                            START CARD AREA
+                                                                                                                                                        ================================= -->
 
     <!-- end card-area -->
     <!-- ================================
-                                                                                                                                                END CARD AREA
-                                                                                                                                            ================================= -->
+                                                                                                                                                            END CARD AREA
+                                                                                                                                                        ================================= -->
 
     <!-- ================================
-                                                                                                                                                START SUBSCRIBER AREA
-                                                                                                                                            ================================= -->
+                                                                                                                                                            START SUBSCRIBER AREA
+                                                                                                                                                        ================================= -->
     <section class="subscriber-area mb-n5 position-relative z-index-2">
         <div class="container">
             <div class="subscriber-box d-flex flex-wrap align-items-center justify-content-between bg-dark overflow-hidden">
@@ -736,8 +775,8 @@
     </section>
     <!-- end subscriber-area -->
     <!-- ================================
-                                                                                                                                                END SUBSCRIBER AREA
-                                                                                                                                            ================================= -->
+                                                                                                                                                            END SUBSCRIBER AREA
+                                                                                                                                                        ================================= -->
 
     <script>
         document.querySelectorAll('.tab-btn').forEach(btn => {

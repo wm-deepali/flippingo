@@ -1,17 +1,17 @@
-@extends('layouts.new-master')
 
-@section('title')
+
+<?php $__env->startSection('title'); ?>
     Thank You | Flippingo
-@endsection
+<?php $__env->stopSection(); ?>
 
-@section('content')
+<?php $__env->startSection('content'); ?>
     <section class="breadcrumb-area bread-bg" style="margin-top: 40px;">
         <div class="overlay"></div>
         <div class="container">
             <div class="breadcrumb-content text-center">
                 <h2 class="sec__title text-white mb-3">Thank You</h2>
                 <ul class="bread-list">
-                    <li><a href={{ Route('home') }}>home</a></li>
+                    <li><a href=<?php echo e(Route('home')); ?>>home</a></li>
                     <li>Thank You</li>
                 </ul>
             </div>
@@ -30,12 +30,12 @@
             <h1 class="text-success">🎉 Thank You!</h1>
             <p>Your order has been placed successfully.</p>
 
-            @if($order)
-                <p><strong>Order Number:</strong> {{ $order->order_number }}</p>
-                <p><strong>Invoice Number:</strong> {{ $order->invoice->invoice_number ?? 'Pending' }}</p>
-            @endif
+            <?php if($order): ?>
+                <p><strong>Order Number:</strong> <?php echo e($order->order_number); ?></p>
+                <p><strong>Invoice Number:</strong> <?php echo e($order->invoice->invoice_number ?? 'Pending'); ?></p>
+            <?php endif; ?>
 
-            <a href="{{ route('home') }}" class="btn btn-primary mt-3">Home</a>
+            <a href="<?php echo e(route('home')); ?>" class="btn btn-primary mt-3">Home</a>
         </div>
     </section>
 
@@ -43,4 +43,5 @@
 
 
 
-@endsection
+<?php $__env->stopSection(); ?>
+<?php echo $__env->make('layouts.new-master', \Illuminate\Support\Arr::except(get_defined_vars(), ['__data', '__path']))->render(); ?><?php /**PATH D:\web-mingo-project\flippingo_admin\resources\views/front/thank-you.blade.php ENDPATH**/ ?>
