@@ -28,6 +28,7 @@ class Kernel extends ConsoleKernel
 
         // Run daily at midnight
         $schedule->command('accounts:delete-pending')->daily();
+        $schedule->command('submissions:expire')->hourly();
 
     }
 

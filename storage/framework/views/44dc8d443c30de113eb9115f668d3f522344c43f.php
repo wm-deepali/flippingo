@@ -120,7 +120,7 @@
                 href="<?php echo e(route('admin.form-templates.index')); ?>"><span>Templates</span></a></li>
           </ul>
         </li>
-        
+
         <li class="dropdown nav-item" data-menu="dropdown">
           <a class="dropdown-toggle nav-link d-flex align-items-center" href="#" data-toggle="dropdown">
             <span>Buyers & Sellers</span>
@@ -135,56 +135,63 @@
             <li><a class="dropdown-item d-flex align-items-center"
                 href="<?php echo e(route('admin.customers.index')); ?>"><span>Commission & Income</span></a>
             </li>
-            
+
             <li><a class="dropdown-item d-flex align-items-center"
                 href="<?php echo e(route('admin.account_deletion_requests.index')); ?>"><span>Account Delete Request</span></a>
             </li>
 
           </ul>
         </li>
-         <li class="dropdown nav-item" data-menu="dropdown">
+        <li class="dropdown nav-item" data-menu="dropdown">
           <a class="dropdown-toggle nav-link d-flex align-items-center" href="#" data-toggle="dropdown">
             <span>Wallet</span>
           </a>
           <ul class="dropdown-menu">
-            <li><a class="dropdown-item d-flex align-items-center"
-                href="<?php echo e(route('admin.deletion_reasons.index')); ?>"><span>Manage User Wallet</span></a>
+            <li>
+              <a class="dropdown-item d-flex align-items-center" href="<?php echo e(route('admin.wallets.index')); ?>">
+                <span>Manage User Wallet</span>
+              </a>
             </li>
-            <li><a class="dropdown-item d-flex align-items-center"
-                href="<?php echo e(route('admin.account_deletion_requests.index')); ?>"><span>Withdrawal Request</span></a>
+            <li>
+              <a class="dropdown-item d-flex align-items-center"
+                href="<?php echo e(route('admin.withdrawal-requests.index')); ?>">
+                <span>Withdrawal Request</span>
+              </a>
             </li>
-            <li><a class="dropdown-item d-flex align-items-center"
-                href="<?php echo e(route('admin.account_deletion_requests.index')); ?>"><span>Seller Payout</span></a>
+            <li>
+              <a class="dropdown-item d-flex align-items-center" href="<?php echo e(route('admin.seller_payouts.index')); ?>">
+                <span>Seller Payout</span>
+              </a>
             </li>
-
           </ul>
         </li>
-        
 
-          <li class="dropdown nav-item" data-menu="dropdown">
+
+        <li class="dropdown nav-item" data-menu="dropdown">
           <a class="dropdown-toggle nav-link d-flex align-items-center" href="#" data-toggle="dropdown">
             <span>Subscriptions & Orders</span>
           </a>
           <ul class="dropdown-menu">
             <li><a class="dropdown-item d-flex align-items-center"
                 href="<?php echo e(route('admin.packages.index')); ?>"><span>Manage Subscriptions</span></a></li>
-                <li><a class="dropdown-item d-flex align-items-center"
+            <li><a class="dropdown-item d-flex align-items-center"
                 href="<?php echo e(route('admin.subscriptions.orders')); ?>"><span>Subscriptions Orders</span></a></li>
-                <li>
+            <li>
               <a class="dropdown-item d-flex align-items-center" href="<?php echo e(route('admin.product-orders.index')); ?>">
                 Sales Orders
               </a>
             </li>
             <li><a class="dropdown-item d-flex align-items-center"
-                href="<?php echo e(route('admin.subscriptions.cancellationRequests')); ?>"><span>Subscription Cancellation Request</span></a></li>
+                href="<?php echo e(route('admin.subscriptions.cancellationRequests')); ?>"><span>Subscription Cancellation
+                  Request</span></a></li>
             <li>
               <a class="dropdown-item d-flex align-items-center" href="<?php echo e(route('admin.payments.index')); ?>">
-               Manage Order Payments
+                Manage Order Payments
               </a>
             </li>
           </ul>
         </li>
-      <!--  <li class="dropdown nav-item" data-menu="dropdown">
+        <!--  <li class="dropdown nav-item" data-menu="dropdown">
           <a class="dropdown-toggle nav-link d-flex align-items-center" href="#" data-toggle="dropdown">
             <span>Orders & Sales</span>
           </a>
@@ -212,7 +219,7 @@
             </li>
           </ul>
         </li>
-        
+
         <li class="dropdown nav-item" data-menu="dropdown">
           <a class="dropdown-toggle nav-link d-flex align-items-center" href="#" data-toggle="dropdown">
             <span>Analytics & Reports</span>
@@ -233,11 +240,11 @@
                 Analytics
               </a>
             </li>
-           
+
           </ul>
         </li>
-        
-         <li class="dropdown nav-item" data-menu="dropdown">
+
+        <li class="dropdown nav-item" data-menu="dropdown">
           <a class="dropdown-toggle nav-link d-flex align-items-center" href="#" data-toggle="dropdown">
             <span>Tickets</span>
           </a>
@@ -247,12 +254,12 @@
                 Buyer Tickets
               </a>
             </li>
-             <li>
+            <li>
               <a class="dropdown-item d-flex align-items-center" href="<?php echo e(route('admin.form-submissions.index')); ?>">
                 Seller Tickets
               </a>
             </li>
-           
+
           </ul>
         </li>
 
@@ -270,13 +277,13 @@
             <li><a class="dropdown-item d-flex align-items-center"
                 href="<?php echo e(route('admin.client-reels.index')); ?>"><span>Client Reels</span></a>
             </li>
-             <li><a class="dropdown-item d-flex align-items-center"
+            <li><a class="dropdown-item d-flex align-items-center"
                 href="<?php echo e(route('admin.client-reels.index')); ?>"><span>Listing Rejection Reasons</span></a>
             </li>
-             <li><a class="dropdown-item d-flex align-items-center"
+            <li><a class="dropdown-item d-flex align-items-center"
                 href="<?php echo e(route('admin.client-reels.index')); ?>"><span>Order Cancellation Reasons</span></a>
             </li>
-             <li><a class="dropdown-item d-flex align-items-center"
+            <li><a class="dropdown-item d-flex align-items-center"
                 href="<?php echo e(route('admin.deletion_reasons.index')); ?>"><span> Account Delete Reasons</span></a>
             </li>
           </ul>
@@ -303,7 +310,7 @@
           </ul>
         </li>
 
-        
+
       </ul>
     </div>
   </div>

@@ -24,6 +24,11 @@ use App\Http\Controllers\Admin\{
     ProductOrderController
 };
 
+
+use App\Http\Controllers\{
+    WalletController,
+};
+
 /*
 |--------------------------------------------------------------------------
 | Web Routes
@@ -144,12 +149,24 @@ Route::group(['middleware' => 'auth'], function () {
         // Show submission details
         Route::get('form-submissions/{submission}', action: [ListingController::class, 'show'])->name('form-submissions.show');
         // Publish submission (POST)
-        Route::post('form-submissions/{submission}/publish', [ListingController::class, 'publish'])->name('form-submissions.publish');
+        Route::patch('form-submissions/{submission}/update-status', [ListingController::class, 'updateStatus'])->name('form-submissions.update-status');
+        // Show all sales for a specific submission
+        Route::get('form-submissions/{submission}/sales', [ListingController::class, 'viewAllSales'])
+            ->name('form-submissions.sales');
+
         Route::get('enquiry', [ListingController::class, 'enquiryIndex'])->name('enquiry.index');
 
         // In routes file
         Route::get('form-layout/{id}/edit', [FormLayoutController::class, 'edit'])->name('form-layout.edit');
         Route::post('form-layout/{id}', [FormLayoutController::class, 'update'])->name('form-layout.update');
+
+
+    Route::get('wallets', [WalletController::class, 'index'])->name('wallets.index');
+        Route::get('wallets/{wallet}/transactions', [WalletController::class, 'transactions'])->name('wallet.transactions');
+
+    Route::get('seller-payouts', [WalletController::class, 'sellerPayout'])->name('seller_payouts.index');
+    Route::get('withdrawal-requests', [WalletController::class, 'withdrawalRequests'])->name('withdrawal-requests.index');
+
 
 
         // content managemnent

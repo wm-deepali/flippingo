@@ -105,97 +105,223 @@
 
 @endsection
 
+<!-- Payment Choice Modal -->
+<div class="modal fade" id="paymentChoiceModal" tabindex="-1" aria-labelledby="paymentChoiceModalLabel"
+  aria-hidden="true">
+  <div class="modal-dialog modal-dialog-centered">
+    <div class="modal-content" style="border-radius:12px;">
+      <div class="modal-header">
+        <h5 class="modal-title" id="paymentChoiceModalLabel">Choose Payment Method</h5>
+        <button type="button" class="btn-close" data-dismiss="modal" aria-label="Close"></button>
+
+      </div>
+
+      <div class="modal-body text-center">
+        <p>
+          <strong>Wallet Balance:</strong> ₹{{ number_format($walletBalance, 2) }}
+          <br>
+          <a class="text-primary" id="addMoneyButton" data-amount="0"
+            style="text-decoration: underline; cursor: pointer; display:none;">
+            ➕ Add Funds
+          </a>
+        </p>
+
+        <hr>
+        <button class="btn btn-success w-100 mb-2" id="payFromWalletBtn">💰 Pay from Wallet</button>
+        <button class="btn btn-primary w-100" id="payOnlineBtn">💳 Pay Online</button>
+      </div>
+    </div>
+  </div>
+</div>
+
 @push('scripts')
-
-  <script>
-    let hasSubscription = true; // backend se check karna hoga
-
-    // Page pe check
-    window.onload = function () {
-      if (hasSubscription) {
-        document.getElementById("withSubscription").style.display = "flex";
-        document.getElementById("noSubscription").style.display = "none";
-      } else {
-        document.getElementById("withSubscription").style.display = "none";
-        document.getElementById("noSubscription").style.display = "block";
-      }
-    };
-
-    // Modal Functions
-    function openRenewModal() {
-      document.getElementById("renewModal").style.display = "flex";
-    }
-    function closeRenewModal() {
-      document.getElementById("renewModal").style.display = "none";
-    }
-
-    function openPackagesModal() {
-      document.getElementById("packagesModal").style.display = "flex";
-    }
-    function closePackagesModal() {
-      document.getElementById("packagesModal").style.display = "none";
-    }
-  </script>
 
   <script src="https://checkout.razorpay.com/v1/checkout.js"></script>
   <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
 
   <script>
+
     let redirectAfterPayment = "{{request('redirect') ? route(request('redirect')) : route('dashboard.subscriptions') }}";
 
     document.addEventListener("DOMContentLoaded", function () {
       document.querySelectorAll(".choose-plan").forEach(button => {
         button.addEventListener("click", function () {
-          let packageId = this.getAttribute("data-id");
-          let packageName = this.getAttribute("data-name");
-          let packageAmount = this.getAttribute("data-amount");
-          let packageDesc = this.getAttribute("data-description");
+          selectedPackage = {
+            id: this.getAttribute("data-id"),
+            name: this.getAttribute("data-name"),
+            amount: this.getAttribute("data-amount"),
+            description: this.getAttribute("data-description"),
+          };
+
+          // Show modal
+          let modal = new bootstrap.Modal(document.getElementById('paymentChoiceModal'));
+          modal.show();
+        });
+      });
+
+      // Wallet Payment
+      document.getElementById("payFromWalletBtn").addEventListener("click", function () {
+        fetch("{{ route('subscription.store') }}", {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json",
+            "X-CSRF-TOKEN": "{{ csrf_token() }}"
+          },
+          body: JSON.stringify({
+            package_id: selectedPackage.id,
+            payment_method: "wallet"
+          })
+        })
+          .then(res => res.json())
+          .then(data => {
+            if (data.success) {
+              Swal.fire({
+                icon: 'success',
+                title: 'Subscription Activated!',
+                text: 'Paid via Wallet successfully.'
+              }).then(() => {
+                window.location.href = redirectAfterPayment;
+              });
+            } else {
+              Swal.fire({
+                icon: 'error',
+                title: 'Wallet Payment Failed',
+                text: data.message || 'Insufficient balance.'
+              });
+            }
+          });
+      });
+
+      // Online Payment
+      document.getElementById("payOnlineBtn").addEventListener("click", function () {
+        let options = {
+          key: "{{ config('services.razorpay.key') }}",
+          amount: selectedPackage.amount,
+          currency: "INR",
+          name: "Flippingo",
+          description: selectedPackage.description,
+          image: "{{ asset('logo.png') }}",
+          handler: function (response) {
+            fetch("{{ route('subscription.store') }}", {
+              method: "POST",
+              headers: {
+                "Content-Type": "application/json",
+                "X-CSRF-TOKEN": "{{ csrf_token() }}"
+              },
+              body: JSON.stringify({
+                razorpay_payment_id: response.razorpay_payment_id,
+                package_id: selectedPackage.id,
+                payment_method: "razorpay"
+              })
+            })
+              .then(res => res.json())
+              .then(data => {
+                if (data.success) {
+                  Swal.fire({
+                    icon: 'success',
+                    title: 'Subscription Activated!',
+                    text: 'Your subscription has been activated successfully.'
+                  }).then(() => {
+                    window.location.href = redirectAfterPayment;
+                  });
+                } else {
+                  Swal.fire({
+                    icon: 'error',
+                    title: 'Oops!',
+                    text: 'Payment was successful but saving subscription failed.'
+                  });
+                }
+              });
+          }
+        };
+
+        let rzp = new Razorpay(options);
+        rzp.open();
+      });
+
+
+      let walletBalance = parseFloat("{{ $walletBalance }}");
+
+      document.querySelectorAll(".choose-plan").forEach(button => {
+        button.addEventListener("click", function () {
+          selectedPackage = {
+            id: this.getAttribute("data-id"),
+            name: this.getAttribute("data-name"),
+            amount: parseFloat(this.getAttribute("data-amount")), // in paise
+            description: this.getAttribute("data-description"),
+          };
+
+          let packagePrice = selectedPackage.amount / 100; // convert back to INR
+          let requiredAmount = Math.max(0, packagePrice - walletBalance);
+
+          let addBtn = document.getElementById("addMoneyButton");
+
+          if (requiredAmount > 0) {
+            addBtn.style.display = "inline";
+            addBtn.setAttribute("data-amount", requiredAmount * 100); // paise
+            addBtn.textContent = "➕ Add ₹" + requiredAmount.toFixed(2) + " to Wallet";
+          } else {
+            addBtn.style.display = "none";
+          }
+
+          // Show modal
+          let modal = new bootstrap.Modal(document.getElementById('paymentChoiceModal'));
+          modal.show();
+        });
+      });
+
+
+      let addMoneyButton = document.getElementById("addMoneyButton");
+
+      if (addMoneyButton) {
+        addMoneyButton.addEventListener("click", function () {
+          let amount = this.getAttribute("data-amount");
 
           let options = {
-            key: "{{ config('services.razorpay.key') }}", // from config/services.php
-            amount: packageAmount,
+            key: "{{ config('services.razorpay.key') }}",
+            amount: amount,
             currency: "INR",
-            name: "Flippingo",
-            description: packageDesc,
-            image: "{{ asset('logo.png') }}", // optional
+            name: "Flippingo Wallet",
+            description: "Add funds to wallet",
+            image: "{{ asset('logo.png') }}",
             handler: function (response) {
-              fetch("{{ route('subscription.store') }}", {
-                method: "POST",
+              fetch("{{ route('wallet.add_funds') }}", {
+                method: 'POST',
                 headers: {
-                  "Content-Type": "application/json",
-                  "X-CSRF-TOKEN": "{{ csrf_token() }}"
+                  'Content-Type': 'application/json',
+                  'X-CSRF-TOKEN': '{{ csrf_token() }}'
                 },
                 body: JSON.stringify({
                   razorpay_payment_id: response.razorpay_payment_id,
-                  package_id: packageId
+                  amount: amount
                 })
               })
                 .then(res => res.json())
                 .then(data => {
                   if (data.success) {
-                    Swal.fire({
-                      icon: 'success',
-                      title: 'Subscription Activated!',
-                      text: 'Your subscription has been activated successfully.',
-                      confirmButtonText: 'Continue'
-                    }).then(() => {
-                      window.location.href = redirectAfterPayment;
-                    });
+                    Swal.fire('Success', 'Wallet funded successfully.', 'success')
+                      .then(() => location.reload());
                   } else {
-                    Swal.fire({
-                      icon: 'error',
-                      title: 'Oops!',
-                      text: 'Payment was successful but there was an error saving your subscription.'
-                    });
+                    Swal.fire('Error', data.message || 'Funding failed.', 'error');
                   }
+                })
+                .catch(() => {
+                  Swal.fire('Error', 'Server error occurred.', 'error');
                 });
-            }
+            },
+            prefill: {
+              name: "{{ auth()->user()->name }}",
+              email: "{{ auth()->user()->email }}",
+              contact: "{{ auth()->user()->phone ?? '' }}"
+            },
+            theme: { color: "#2979ff" }
           };
 
           let rzp = new Razorpay(options);
           rzp.open();
         });
-      });
+      }
+
     });
   </script>
 

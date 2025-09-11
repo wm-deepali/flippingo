@@ -14,12 +14,35 @@ class ListingController extends Controller
 
     public function index()
     {
-        // Fetch all submissions with related form and user (customize as per your models)
-        $submissions = FormSubmission::with(['form', 'customer'])->latest()->paginate(20);
+        $submissions = FormSubmission::with(['customer', 'form.category', 'orders'])
+            ->latest()
+            ->get();
+
+        // Automatically expire submissions if past expires_at
+        $submissions->each(function ($submission) {
+            if ($submission->expires_at && \Carbon\Carbon::parse($submission->expires_at)->isPast()) {
+                if ($submission->status !== 'expired') {
+                    $submission->update(['status' => 'expired']);
+                    $submission->addHistory('expired', 'Auto-updated due to expiry', $submission->customer_id);
+                }
+            }
+        });
+
+        // Map for front-end
+        $submissions = $submissions->map(function ($submission) {
+            $submittedValues = $submission ? json_decode($submission->data, true) : [];
+
+            $submission->offered_price = $submittedValues['offered_price']['value'] ?? 0;
+            $submission->product_title = $submittedValues['product_title']['value'] ?? '';
+            $submission->category_name = optional($submission->form->category)->name ?? '';
+            $submission->total_sales = $submission->orders->count();
+            $submission->is_expired = $submission->status === 'expired';
+
+            return $submission;
+        });
 
         return view('admin.form_submissions.index', compact('submissions'));
     }
-
 
     public function show(FormSubmission $submission)
     {
@@ -43,88 +66,27 @@ class ListingController extends Controller
     }
 
 
-    // Publish the submission
-    public function publish(FormSubmission $submission)
+    public function updateStatus(Request $request, $id)
     {
-        try {
-            $customerId = $submission->customer_id;
+        $submission = FormSubmission::findOrFail($id);
 
-            // Find active subscription
-            $subscription = \App\Models\Subscription::where('customer_id', $customerId)
-                ->where('status', 'active')
-                ->first();
+        $status = $request->input('status');
 
-            if (!$subscription) {
-                return response()->json([
-                    'success' => false,
-                    'message' => 'No active subscription found for this customer.'
-                ], 400);
-            }
+        $submission->status = $status;
 
-            $package = $subscription->package;
-
-            // ✅ Check subscription validity
-            $validUntil = null;
-            if ($package && $package->validity && $package->validity_unit) {
-                $validUntil = \Carbon\Carbon::parse($subscription->start_date)
-                    ->add($package->validity, $package->validity_unit);
-            }
-
-            if ($validUntil && now()->greaterThan($validUntil)) {
-                return response()->json([
-                    'success' => false,
-                    'message' => 'Your subscription validity has expired.'
-                ], 400);
-            }
-
-            // ✅ Fallback: check end_date
-            if ($subscription->end_date && now()->greaterThan($subscription->end_date)) {
-                return response()->json([
-                    'success' => false,
-                    'message' => 'Your subscription has expired.'
-                ], 400);
-            }
-
-            // ✅ Check listing quota
-            $maxListings = $package->listings ?? 0;
-            if ($subscription->used_listings >= $maxListings) {
-                return response()->json([
-                    'success' => false,
-                    'message' => 'You have reached the maximum number of listings allowed by your package.'
-                ], 400);
-            }
-
-            // ✅ Increment used listings
-            $subscription->increment('used_listings');
-
-            // ✅ Calculate listing expiry for this submission
-            $listingExpiry = null;
-            if ($package && $package->listing_duration && $package->listing_duration_unit) {
-                $listingExpiry = now()->add(
-                    $package->listing_duration,
-                    $package->listing_duration_unit
-                );
-            }
-
-            // ✅ Publish submission with expiry
-            $submission->published = true;
-            $submission->published_at = now();
-            $submission->expires_at = $listingExpiry; // make sure FormSubmission has this column
-            $submission->save();
-
-            return response()->json([
-                'success' => true,
-                'message' => 'Submission published successfully.',
-                'expires_at' => $listingExpiry ? $listingExpiry->toDateTimeString() : null
-            ]);
-        } catch (\Exception $e) {
-            return response()->json([
-                'success' => false,
-                'message' => 'Failed to publish submission.',
-                'error' => $e->getMessage()
-            ], 500);
+        if ($status === 'rejected') {
+            $submission->remarks = $request->input('remarks'); // Save remarks
         }
+
+        $submission->save();
+
+        // Optional: add history entry
+        $submission->addHistory($status, $request->input('remarks'));
+
+        return response()->json(['message' => 'Status updated successfully']);
     }
+
+
 
     public function store(Request $request)
     {
@@ -205,13 +167,42 @@ class ListingController extends Controller
             unset($inputDataWithMeta[$fieldName]);
         }
 
-        // dd($uploadedFiles);
-        // Save submission with metadata-enriched non-file data
-        $submission = \App\Models\FormSubmission::create([
+        $customer = Auth::guard('customer')->user();
+        $subscription = $customer->activeSubscription;
+
+        $expiresAt = null;
+
+        if ($subscription && $subscription->package) {
+            $package = $subscription->package;
+
+            $expiresAt = now();
+            switch ($package->listing_duration_unit) {
+                case 'days':
+                    $expiresAt = $expiresAt->addDays($package->listing_duration);
+                    break;
+                case 'months':
+                    $expiresAt = $expiresAt->addMonths($package->listing_duration);
+                    break;
+                case 'years':
+                    $expiresAt = $expiresAt->addYears($package->listing_duration);
+                    break;
+                default:
+                    $expiresAt = $expiresAt->addDays($package->listing_duration);
+            }
+
+        }
+
+        $submission = FormSubmission::create([
             'form_id' => $formId,
             'customer_id' => $customerId,
             'data' => json_encode($inputDataWithMeta),
+            'status' => 'pending', // initial status
+            'expires_at' => $expiresAt,
         ]);
+
+
+        // Log initial history
+        $submission->addHistory('pending', 'Submission created', $customerId);
 
         // Save uploaded files details associated with this submission
         foreach ($uploadedFiles as $fileData) {
@@ -322,6 +313,21 @@ class ListingController extends Controller
         $enquiries = Enquiry::with('customer', 'submission')->paginate(20);
         return view('admin.enquiry.index', compact('enquiries'));
     }
+
+    public function viewAllSales($submissionId)
+    {
+        $submission = FormSubmission::with(['customer', 'form.category', 'orders.customer', 'orders.seller', 'orders.payment', 'orders.currentStatus'])->findOrFail($submissionId);
+$submittedValues = $submission ? json_decode($submission->data, true) : [];
+
+        $submission->offered_price = optional($submittedValues['offered_price'])['value'] ?? 0;
+        $submission->product_title = optional($submittedValues['product_title'])['value'] ?? '';
+        $submission->category_name = optional($submission->form->category)->name ?? '';
+        $submission->total_sales = $submission->orders->count();
+
+        $orders = $submission->orders;
+        return view('admin.form_submissions.sales', compact('submission', 'orders'));
+    }
+
 
 
 }

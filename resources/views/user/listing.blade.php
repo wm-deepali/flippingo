@@ -253,27 +253,3 @@
 
     </div>
 @endsection
-
-@push('scripts')
-
-    <script>
-        // Example: Toggle subscription condition
-        let hasSubscription = true; // backend se check karna hoga
-
-        if (hasSubscription) {
-            document.getElementById("withSubscription").style.display = "flex";
-            document.getElementById("noSubscription").style.display = "none";
-        } else {
-            document.getElementById("withSubscription").style.display = "none";
-            document.getElementById("noSubscription").style.display = "block";
-        }
-        function openRenewModal() {
-            document.getElementById("renewModal").style.display = "flex";
-        }
-        function closeRenewModal() {
-            document.getElementById("renewModal").style.display = "none";
-        }
-
-    </script>
-
-@endpush

@@ -8,6 +8,15 @@ class Wallet extends Model
 {
     protected $fillable = ['customer_id', 'balance', 'currency', 'status'];
 
+      /**
+     * Wallet belongs to a Customer
+     */
+    public function customer()
+    {
+        return $this->belongsTo(Customer::class, 'customer_id');
+    }
+
+    
     public function transactions()
     {
         return $this->hasMany(WalletTransaction::class);

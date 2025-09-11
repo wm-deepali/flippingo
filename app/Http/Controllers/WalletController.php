@@ -2,11 +2,37 @@
 
 namespace App\Http\Controllers;
 
+use App\Models\Wallet;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 
 class WalletController extends Controller
 {
+
+   public function index()
+    {
+        $wallets = Wallet::with('customer')->get();
+        return view('admin.wallets.index', compact('wallets'));
+    }
+
+    // Show transactions of a specific wallet
+    public function transactions(Wallet $wallet)
+    {
+        $transactions = $wallet->transactions()->latest()->get();
+        return view('admin.wallets.transactions', compact('wallet', 'transactions'));
+    }
+    
+    public function sellerPayout()
+    {
+        // Fetch seller payouts logic
+    }
+
+    public function withdrawalRequests()
+    {
+        // Fetch withdrawal requests logic
+    }
+
+
     public function addFunds(Request $request)
     {
         $request->validate([
@@ -25,7 +51,7 @@ class WalletController extends Controller
                 'status' => 'active',
             ]);
         }
-        
+
         // Record credit transaction and update balance
         $transaction = $wallet->addTransaction(
             'credit',

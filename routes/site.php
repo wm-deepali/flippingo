@@ -47,8 +47,7 @@ Route::get('/stl', function () {
 
 Route::get('/', [SiteController::class, 'index'])->name('home');
 
-Route::get('pricing', [SubscriptionController::class, 'ListPackage'])->name('pricing');
-Route::post('subscription/store', [SubscriptionController::class, 'Store'])->name('subscription.store');
+
 Route::post('/subscription/cancel-request', [App\Http\Controllers\SubscriptionController::class, 'cancelRequest'])
     ->name('subscription.cancelRequest');
 
@@ -164,6 +163,10 @@ Route::middleware(['web'])->group(function () {
         Route::get('/checkout', [CheckoutController::class, 'index'])->name('checkout');
         Route::post('/checkout/place-order', [CheckoutController::class, 'placeOrder'])->name('checkout.place-order');
         Route::get('/orders/thank-you/{order?}', [CheckoutController::class, 'thankYou'])->name('orders.thank-you');
+        Route::get('pricing', [SubscriptionController::class, 'ListPackage'])->name('pricing');
+        Route::post('subscription/store', [SubscriptionController::class, 'Store'])->name('subscription.store');
+
+
 
         Route::prefix('dashboard')->group(function () {
 
@@ -176,6 +179,11 @@ Route::middleware(['web'])->group(function () {
             Route::post('/Supdate-password', [ProfileController::class, 'updatePassword'])->name('update.password');
             Route::post('/delete-account', [ProfileController::class, 'deleteAccount'])->name('delete.account');
             Route::post('/kyc-update', [ProfileController::class, 'updateKyc'])->name('kyc.update');
+
+            // subscriptions
+            Route::get('/subscription', [SubscriptionController::class, 'index'])->name('dashboard.subscriptions');
+            Route::post('/subscription/renew', [SubscriptionController::class, 'renew'])->name('subscription.renew');
+            Route::get('/subscription-plan', [SubscriptionController::class, 'SubscriptionPlans'])->name('dashboard.subscription-plan');
 
             Route::get('/bank-account', function () {
                 return view('user.bank-account');
@@ -222,16 +230,6 @@ Route::middleware(['web'])->group(function () {
             Route::get('/wishlist', function () {
                 return view('user.wishlist');
             })->name('dashboard.wishlist');
-
-            // Wishlist
-            // Route::get('/subscriptions', function () {
-            //     return view('user.subscriptions');
-            // })->name('dashboard.subscriptions');
-
-            Route::get('/subscription', [SubscriptionController::class, 'index'])->name('dashboard.subscriptions');
-            Route::post('/subscription/renew', [SubscriptionController::class, 'renew'])->name('subscription.renew');
-
-            Route::get('/subscription-plan', [SiteController::class, 'SubscriptionPlans'])->name('dashboard.subscription-plan');
 
             // Wishlist
             Route::get('/listing', function () {

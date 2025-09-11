@@ -210,7 +210,7 @@
                     
                     <div class="row justify-content-center">
                         <div class="col-md-2">
-                            <a href="#" class="btn btn-primary btn-block">Download PDF</a>
+                        <a href="#" class="btn btn-primary btn-block">Download PDF</a>
                         </div>
                         <div class="col-md-2">
                             <button class="btn btn-success btn-block">Send Email</button>

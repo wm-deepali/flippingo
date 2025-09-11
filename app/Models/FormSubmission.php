@@ -16,18 +16,19 @@ class FormSubmission extends Model
         'form_id',
         'customer_id',
         'data',
-        'published',
+        'published', // keep for backward compatibility
+        'status',
         'expires_at',
         'published_at',
     ];
 
-    // Cast 'data' JSON column to array automatically
     protected $casts = [
         'data' => 'array',
         'published' => 'boolean',
+        'expires_at' => 'datetime',
         'published_at' => 'datetime',
-        'expires_at' => 'datetime'
     ];
+
 
     // Relationships:
 
@@ -48,4 +49,31 @@ class FormSubmission extends Model
     {
         return $this->hasMany(FormSubmissionFile::class);
     }
+
+    // New: Histories relationship
+    public function histories()
+    {
+        return $this->hasMany(FormSubmissionHistory::class, 'form_submission_id')->orderBy('created_at', 'desc');
+    }
+
+    // Optional helper to add a history entry
+    public function addHistory(string $status, ?string $adminRemarks = null, ?int $changedBy = null)
+    {
+        return $this->histories()->create([
+            'status' => $status,
+            'admin_remarks' => $adminRemarks,
+            'changed_by' => $changedBy,
+        ]);
+    }
+
+    public function currentStatus()
+    {
+        return $this->hasOne(FormSubmissionHistory::class, 'form_submission_id')->latestOfMany();
+    }
+
+    public function orders()
+    {
+        return $this->hasMany(ProductOrder::class, 'submission_id');
+    }
+
 }

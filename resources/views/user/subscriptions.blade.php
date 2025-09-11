@@ -17,6 +17,11 @@
         z-index: 1000;
     }
 
+    /* visible state */
+.subscription-modal-overlay.active {
+    display: flex !important;
+}
+
     .subscription-modal-box {
         background: #fff;
         padding: 20px;
@@ -64,7 +69,8 @@
                                 @endif
                             @elseif($subscription->status === 'cancel_requested')
                                 <p class="text-warning">Cancellation requested on
-                                    {{ \Carbon\Carbon::parse($subscription->cancel_requested_at)->format('d-M-Y') }}</p>
+                                    {{ \Carbon\Carbon::parse($subscription->cancel_requested_at)->format('d-M-Y') }}
+                                </p>
                             @endif
                         </div>
                     </div>
@@ -152,18 +158,24 @@
 
 @push('scripts')
     <script>
-        function openCancelModal() {
-            document.getElementById("cancelModal").style.display = "flex";
-        }
-        function closeCancelModal() {
+        document.addEventListener("DOMContentLoaded", function () {
             document.getElementById("cancelModal").style.display = "none";
-        }
-
-        function openRenewModal() {
-            document.getElementById("renewModal").style.display = "flex";
-        }
-        function closeRenewModal() {
             document.getElementById("renewModal").style.display = "none";
-        }
+        });
+
+     function openCancelModal() {
+    document.getElementById("cancelModal").classList.add("active");
+}
+function closeCancelModal() {
+    document.getElementById("cancelModal").classList.remove("active");
+}
+
+function openRenewModal() {
+    document.getElementById("renewModal").classList.add("active");
+}
+function closeRenewModal() {
+    document.getElementById("renewModal").classList.remove("active");
+}
+
     </script>
 @endpush

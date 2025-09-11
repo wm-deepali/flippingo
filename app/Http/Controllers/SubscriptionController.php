@@ -34,7 +34,7 @@ class SubscriptionController extends Controller
         $cancelWindow = setting('cancel_subscription_days') ?? 0;
 
         if ($subscription && $subscription->status === 'active') {
-            $cancelDeadline = \Carbon\Carbon::parse($subscription->start_date)->addDays($cancelWindow);
+            $cancelDeadline = Carbon::parse($subscription->start_date)->addDays($cancelWindow);
             $isUsed = $subscription->used_listings > 0;
 
             $canCancel = $cancelWindow > 0
@@ -47,48 +47,90 @@ class SubscriptionController extends Controller
             'packages',
             'canCancel',
             'cancelDeadline',
-            'cancelWindow'
+            'cancelWindow',
         ));
     }
 
-    public function renew(Request $request)
+
+    public function SubscriptionPlans()
     {
-        $subscription = Subscription::findOrFail($request->subscription_id);
-        $package = $subscription->package;
+        $user = Auth::guard('customer')->user();
 
-        // Example: Extend subscription by package validity
-        $subscription->start_date = now();
-        $subscription->end_date = now()->addDays($package->validity); // adjust for unit if needed
-        $subscription->status = 'active';
-        $subscription->save();
+        // get all active packages
+        $packages = Package::where('status', 'active')
+            ->orderBy('created_at', 'desc')
+            ->get();
 
-        return redirect()->back()->with('success', 'Subscription renewed successfully!');
+        // Get wallet balance (default 0 if no wallet yet)
+        $walletBalance = optional($user->wallet)->balance ?? 0;
+
+        return view('user.subscription-plan', compact('packages', 'walletBalance'));
+    }
+
+    
+    public function ListPackage()
+    {
+        $user = Auth::guard('customer')->user();
+
+        // get all active packages
+        $packages = Package::where('status', 'active')
+            ->orderBy('created_at', 'desc')
+            ->get();
+
+        // ✅ get wallet balance (default 0 if no wallet exists yet)
+        $walletBalance = optional($user->wallet)->balance ?? 0;
+
+        return view('front.pricing', compact('packages', 'walletBalance'));
     }
 
 
     public function store(Request $request)
     {
         $request->validate([
-            'razorpay_payment_id' => 'required|string',
             'package_id' => 'required|exists:packages,id',
+            'payment_method' => 'required|in:razorpay,wallet',
+            'razorpay_payment_id' => 'required_if:payment_method,razorpay'
         ]);
 
         $package = Package::findOrFail($request->package_id);
+        $customer = Auth::guard('customer')->user();
+
+        //  Wallet balance check if wallet selected
+        if ($request->payment_method === 'wallet') {
+            $wallet = $customer->wallet;
+
+            if (!$wallet || $wallet->balance < $package->offered_price) {
+                return response()->json([
+                    'success' => false,
+                    'message' => 'Insufficient wallet balance.'
+                ]);
+            }
+
+            // Deduct and record transaction
+            $wallet->addTransaction(
+                'debit',
+                $package->offered_price,
+                'Purchase Subscription',
+                "Purchased {$package->name} plan",
+                $package->id
+            );
+        }
 
         // Generate unique order number
         $orderNumber = 'SUB' . mt_rand(100000, 999999);
 
-        // Create subscription
+        // Subscription validity calculation
         $endDate = match ($package->validity_unit) {
             'days' => now()->addDays($package->validity),
             'weeks' => now()->addWeeks($package->validity),
             'months' => now()->addMonths($package->validity),
             'years' => now()->addYears($package->validity),
-            default => now()->addDays(30), // fallback
+            default => now()->addDays(30),
         };
 
+        // Create subscription
         $subscription = Subscription::create([
-            'customer_id' => Auth::guard('customer')->id(),
+            'customer_id' => $customer->id,
             'package_id' => $package->id,
             'used_listings' => 0,
             'start_date' => now(),
@@ -97,11 +139,13 @@ class SubscriptionController extends Controller
             'order_number' => $orderNumber,
         ]);
 
-        // Store payment
+        // Store payment (Wallet or Razorpay)
         Payment::create([
             'subscription_id' => $subscription->id,
-            'gateway' => 'razorpay',
-            'payment_id' => $request->razorpay_payment_id,
+            'gateway' => $request->payment_method,
+            'payment_id' => $request->payment_method === 'razorpay'
+                ? $request->razorpay_payment_id
+                : 'WALLET-' . strtoupper(uniqid()),
             'amount' => $package->offered_price,
             'currency' => 'INR',
             'status' => 'success'
@@ -127,23 +171,18 @@ class SubscriptionController extends Controller
     }
 
 
-    private function generateUniqueInvoiceNumber()
+    public function renew(Request $request)
     {
-        do {
-            $number = 'INV' . mt_rand(100000, 999999);
-        } while (Invoice::where('invoice_number', $number)->exists());
-        return $number;
-    }
+        $subscription = Subscription::findOrFail($request->subscription_id);
+        $package = $subscription->package;
 
+        // Example: Extend subscription by package validity
+        $subscription->start_date = now();
+        $subscription->end_date = now()->addDays($package->validity); // adjust for unit if needed
+        $subscription->status = 'active';
+        $subscription->save();
 
-    public function ListPackage()
-    {
-        // get all active packages
-        $packages = Package::where('status', 'active')
-            ->orderBy('created_at', 'desc')
-            ->get();
-
-        return view('front.pricing', compact('packages'));
+        return redirect()->back()->with('success', 'Subscription renewed successfully!');
     }
 
     public function cancelRequest(Request $request)
@@ -183,5 +222,64 @@ class SubscriptionController extends Controller
         return back()->with('success', 'Your cancel request has been sent to the admin.');
     }
 
+    private function generateUniqueInvoiceNumber()
+    {
+        // Get prefix
+        $prefix = setting('invoice_prefix', 'INV');
+
+        // Case 1: Serial Numbering (if not using random digits)
+        if (setting('invoice_serial') && !setting('use_random_digits')) {
+            $serial = (int) setting('invoice_serial');
+
+            do {
+                $number = $prefix . str_pad($serial, 6, '0', STR_PAD_LEFT);
+
+                // Add financial year if enabled
+                if (setting('include_financial_year')) {
+                    $number .= '/' . $this->getFinancialYear();
+                }
+
+                $serial++;
+            } while (Invoice::where('invoice_number', $number)->exists());
+
+            // Save updated serial back to DB
+            Setting::updateOrCreate(
+                ['key' => 'invoice_serial'],
+                ['value' => $serial]
+            );
+
+            return $number;
+        }
+
+        // Case 2: Random Digits
+        $digits = (int) setting('invoice_random_digits', 6);
+
+        do {
+            $randomPart = str_pad(mt_rand(0, pow(10, $digits) - 1), $digits, '0', STR_PAD_LEFT);
+            $number = $prefix . $randomPart;
+
+            if (setting('include_financial_year')) {
+                $number .= '/' . $this->getFinancialYear();
+            }
+
+        } while (Invoice::where('invoice_number', $number)->exists());
+
+        return $number;
+    }
+
+    /**
+     * Get current financial year in format 24-25
+     */
+    private function getFinancialYear()
+    {
+        $year = (int) date('y');
+        $month = (int) date('m');
+
+        if ($month >= 4) {
+            return $year . '-' . sprintf("%02d", $year + 1);
+        }
+
+        return sprintf("%02d", $year - 1) . '-' . $year;
+    }
 
 }
