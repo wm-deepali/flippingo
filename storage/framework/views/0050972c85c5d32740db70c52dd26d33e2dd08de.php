@@ -1,5 +1,5 @@
 <div class="table-responsive">
-    <table class="table table-bordered" id="orders-table-active">
+    <table class="table table-bordered">
         <thead>
             <tr>
                 <th>Date & Time</th>
@@ -7,29 +7,13 @@
                 <th>Buyer Info</th>
                 <th>Seller Info</th>
                 <th>Product Cost</th>
-                <th>Transaction ID</th>
-                <th>Payment Method</th>
                 <th>Order Status</th>
-
-                
-                <?php if($orders->first()?->currentStatus->status === 'delivered'): ?>
-                    <th>Delivery Date</th>
-                    <th>Delivery Method</th>
-                <?php endif; ?>
-
-                
-                <?php if($orders->first()?->currentStatus->status === 'cancelled'): ?>
-                    <th>Cancelled By</th>
-                    <th>Cancellation Reason</th>
-                    <th>Cancellation Date</th>
-                <?php endif; ?>
-
                 <th>Action</th>
             </tr>
         </thead>
         <tbody>
             <?php $__currentLoopData = $orders; $__env->addLoop($__currentLoopData); foreach($__currentLoopData as $order): $__env->incrementLoopIndices(); $loop = $__env->getLastLoop(); ?>
-                <?php $status = $order->currentStatus->status ?? 'N/A'; ?>
+              <?php $status = $order->currentStatus->status ?? 'N/A'; ?>
                 <tr>
                     <td><?php echo e(\Carbon\Carbon::parse($order->created_at)->format('Y-m-d H:i')); ?></td>
                     <td><?php echo e($order->order_number); ?></td>
@@ -53,12 +37,7 @@
                     <!-- Product Cost -->
                     <td><?php echo e($order->total ?? '-'); ?></td>
 
-                    <!-- Transaction ID -->
-                    <td><?php echo e($order->payment->payment_id ?? '-'); ?></td>
-
-                    <!-- Payment Method -->
-                    <td><?php echo e(ucfirst($order->payment->gateway ?? '-')); ?></td>
-
+                  
                     <!-- Order Status -->
                     <td>
                         <?php switch($status):
@@ -129,30 +108,9 @@
                         <a href="<?php echo e(route('admin.customers.show',  $order->seller_id)); ?>" target="_blank" class="btn btn-sm btn-primary">
                             View Customer Info
                         </a>
-
-                          <a href="<?php echo e(route('admin.product-orders.invoice', ['id' => $order->id])); ?>" target="_blank" class="btn btn-sm btn-primary">
-                            View Invoice
-                        </a>
-
-                        <button class="btn btn-sm btn-warning changeStatusBtn"
-                            data-id="<?php echo e($order->id); ?>"
-                            data-status="<?php echo e($order->currentStatus->status ?? ''); ?>"
-                            data-remarks="<?php echo e($order->currentStatus->remarks ?? ''); ?>"
-                            data-delivery-date="<?php echo e($order->currentStatus->delivery_date ?? ''); ?>"
-                            data-delivery-method="<?php echo e($order->currentStatus->delivery_method ?? ''); ?>"
-                            data-cancellation-reason="<?php echo e($order->currentStatus->cancellation_reason ?? ''); ?>">
-                            Change Order Status
-                        </button>
-
-                       <button class="btn btn-sm btn-danger deleteOrderBtn" 
-        data-id="<?php echo e($order->id); ?>">
-    Delete
-</button>
-
                     </td>
                 </tr>
             <?php endforeach; $__env->popLoop(); $loop = $__env->getLastLoop(); ?>
         </tbody>
     </table>
-</div>
-<?php /**PATH D:\web-mingo-project\flippingo_admin\resources\views/admin/product-orders/table.blade.php ENDPATH**/ ?>
+</div><?php /**PATH D:\web-mingo-project\flippingo_admin\resources\views/admin/reports/sale-table.blade.php ENDPATH**/ ?>

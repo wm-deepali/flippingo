@@ -39,7 +39,7 @@
                         <a href="{{ route('admin.subscriptions.show', $sub->id) }}" class="btn btn-primary btn-sm">View 
                             Order Details</a>
                         <a href="#" class="btn btn-info btn-sm">View Ads</a>
-                        <a href="{{ route('admin.customers.view', $sub->customer_id) }}"
+                        <a href="{{ route('admin.customers.show', $sub->customer_id) }}"
                             class="btn btn-secondary btn-sm">View Seller Details</a>
                     </td>
                 </tr>

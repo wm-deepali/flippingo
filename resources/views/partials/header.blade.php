@@ -128,12 +128,19 @@
             <li><a class="dropdown-item d-flex align-items-center"
                 href="{{ route('admin.customers.index') }}"><span>Manage Users</span></a>
             </li>
-            <li><a class="dropdown-item d-flex align-items-center"
-                href="{{ route('admin.customers.index') }}"><span>Seller Income Detail</span></a>
+            <li>
+              <a class="dropdown-item d-flex align-items-center"
+                href="{{ route('admin.seller-income') }}">
+                <span>Seller Income Detail</span>
+              </a>
             </li>
-            <li><a class="dropdown-item d-flex align-items-center"
-                href="{{ route('admin.customers.index') }}"><span>Commission & Income</span></a>
+            <li>
+              <a class="dropdown-item d-flex align-items-center"
+                href="{{ route('admin.admin-commission') }}">
+                <span>Commission & Income</span>
+              </a>
             </li>
+
 
             <li><a class="dropdown-item d-flex align-items-center"
                 href="{{ route('admin.account_deletion_requests.index') }}"><span>Account Delete Request</span></a>
@@ -152,8 +159,7 @@
               </a>
             </li>
             <li>
-              <a class="dropdown-item d-flex align-items-center"
-                href="{{ route('admin.withdrawal-requests.index') }}">
+              <a class="dropdown-item d-flex align-items-center" href="{{ route('admin.withdrawal-requests.index') }}">
                 <span>Withdrawal Request</span>
               </a>
             </li>
@@ -230,7 +236,7 @@
               </a>
             </li>
             <li>
-              <a class="dropdown-item d-flex align-items-center" href="{{ route('admin.form-submissions.index') }}">
+              <a class="dropdown-item d-flex align-items-center" href="{{ route('admin.sales.reports') }}">
                 Sales Reports
               </a>
             </li>

@@ -20,7 +20,7 @@
                     </td>
                     <td>{{ $sub->order_number }}</td>
                     <td>
-                        Seller ID: {{ $sub->customer->id ?? '-' }}<br>
+                        ID: {{ $sub->customer->customer_id ?? '-' }}<br>
                         {{ $sub->customer->first_name ?? '-' }}
                         {{ $sub->customer->last_name ?? '-' }}<br>
                         {{ $sub->customer->email ?? '-' }}
@@ -62,7 +62,7 @@
                                 class="btn btn-sm btn-secondary">
                                 View Order Detail
                             </a>
-                             <a href="{{ route('admin.customers.view', [ 'id' => $sub->customer->id ]) }}"
+                             <a href="{{ route('admin.customers.show', $sub->customer->id ) }}"
                             target="_blank" class="btn btn-sm btn-info">
                             View Seller Detail
                         </a>

@@ -13,6 +13,7 @@ class FormSubmissionFile extends Model
 
     // Mass assignable fields
     protected $fillable = [
+        'field_id',
         'form_submission_id',
         'field_name',
         'file_path',

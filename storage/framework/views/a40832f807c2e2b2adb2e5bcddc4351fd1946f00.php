@@ -65,7 +65,7 @@
                                                                 Delete Instant
                                                             </button>
                                                         <?php endif; ?>
-                                                        <a href="<?php echo e(route('admin.customers.view', $request->customer_id)); ?>"
+                                                        <a href="<?php echo e(route('admin.customers.show', $request->customer_id)); ?>"
                                                             class="btn btn-info btn-sm"
                                                             data-id="<?php echo e($request->customer_id); ?>">
                                                             View Customer Detail

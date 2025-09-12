@@ -6,6 +6,7 @@ use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
 use App\Models\ProductOrder;
 use Barryvdh\DomPDF\Facade\Pdf;
+use Illuminate\Support\Carbon;
 
 
 class ProductOrderController extends Controller
@@ -15,6 +16,18 @@ class ProductOrderController extends Controller
         $orders = ProductOrder::with(['customer', 'seller'])->latest()->paginate(20);
         return view('admin.product-orders.index', compact('orders'));
     }
+
+    public function sellerOrders($sellerId)
+    {
+        // Fetch orders of this seller only
+        $orders = ProductOrder::with(['customer', 'seller'])
+            ->where('seller_id', $sellerId)
+            ->latest()
+            ->paginate(20);
+
+        return view('admin.product-orders.index', compact('orders'));
+    }
+
 
     public function show($id)
     {
@@ -167,5 +180,50 @@ class ProductOrderController extends Controller
         ));
     }
 
+    public function reports(Request $request)
+    {
+        $reports = [
+            'recent' => ProductOrder::with('customer', 'seller')->orderByDesc('created_at')->get(),
+
+            'seven-day' => ProductOrder::with('customer', 'seller')
+                ->whereBetween('created_at', [now()->subDays(7)->startOfDay(), now()->endOfDay()])
+                ->get(),
+
+            'fifteen-day' => ProductOrder::with('customer', 'seller')
+                ->whereBetween('created_at', [now()->subDays(15)->startOfDay(), now()->endOfDay()])
+                ->get(),
+
+            'thirty-day' => ProductOrder::with('customer', 'seller')
+                ->whereBetween('created_at', [now()->subDays(30)->startOfDay(), now()->endOfDay()])
+                ->get(),
+
+            'custom-date' => collect(), // handle custom date filter separately
+        ];
+
+        // dd($reports);
+
+        return view('admin.reports.sales', compact('reports'));
+    }
+
+     public function customDate(Request $request)
+    {
+        $request->validate([
+            'start_date' => 'required|date',
+            'end_date' => 'required|date|after_or_equal:start_date',
+        ]);
+
+        $reports = ProductOrder::whereBetween('created_at', [
+            $request->start_date,
+            $request->end_date
+        ])->get();
+
+        if ($reports->count() > 0) {
+            return view('admin.reports.sale-table', [
+                'orders' => $reports
+            ]);
+        } else {
+            return '<p class="text-center text-muted mt-4">No Subscription records found for this range.</p>';
+        }
+    }
 
 }

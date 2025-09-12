@@ -82,8 +82,8 @@
                         </td>
                         <td><?php echo e($sub->order_number); ?></td>
                         <td>
-                            Seller ID:
-                            <?php echo e($sub->customer->id ?? '-'); ?><br>
+                            ID:
+                            <?php echo e($sub->customer->customer_id ?? '-'); ?><br>
                             <?php echo e($sub->customer->first_name ?? '-'); ?>
 
                             <?php echo e($sub->customer->last_name ?? '-'); ?><br>
@@ -115,7 +115,7 @@
                                 class="btn btn-sm btn-secondary">
                                 View Order Detail
                             </a>
-                            <a href="<?php echo e(route('admin.customers.view', ['id' => $sub->customer->id])); ?>" target="_blank"
+                            <a href="<?php echo e(route('admin.customers.show', $sub->customer->id)); ?>" target="_blank"
                                 class="btn btn-sm btn-info">
                                 View Seller Detail
                             </a>

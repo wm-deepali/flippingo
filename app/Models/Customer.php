@@ -30,7 +30,8 @@ class Customer extends Authenticatable
         'full_address',
         'state',
         'city',
-        'zip_code'
+        'zip_code',
+        'commission_rate'
     ];
 
     protected $hidden = [

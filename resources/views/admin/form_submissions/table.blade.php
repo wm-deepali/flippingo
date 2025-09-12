@@ -26,7 +26,7 @@
                        <td>{{ $submission['category_name'] }}</td>
                     <!-- Seller Info -->
                     <td>
-                        Seller ID: {{ $submission->customer->id ?? '-' }}<br>
+                        ID: {{ $submission->customer->customer_id ?? '-' }}<br>
                         {{ $submission->customer->first_name ?? '-' }} {{ $submission->customer->last_name ?? '-' }}<br>
                         {{ $submission->customer->email ?? '-' }}
                     </td>
@@ -74,10 +74,10 @@
                              >
                             Change Status
                         </button>
-                        <a href="{{ route('admin.customers.view', ['id' => $submission->customer->id ?? '']) }}" target="_blank" class="btn btn-sm btn-info">
+                        <a href="{{ route('admin.customers.show',  $submission->customer->id ?? '') }}" target="_blank" class="btn btn-sm btn-info">
                             View Seller Info
                         </a>
-                        <a href="#" target="_blank" class="btn btn-sm btn-primary">
+                        <a href="{{ route('admin.form-submissions.edit', $submission->id) }}" target="_blank" class="btn btn-sm btn-primary">
                             Edit Listing
                         </a>
                           <a href="{{ route('admin.form-submissions.sales',$submission->id ) }}" target="_blank" class="btn btn-sm btn-primary">

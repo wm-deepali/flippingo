@@ -1,6 +1,6 @@
 @extends('layouts.master')
 
-@section('title', 'Subscription Analytics & Reports')
+@section('title', 'Sales Analytics & Reports')
 
 @section('content')
 
@@ -15,7 +15,7 @@
                             <div class="breadcrumb-wrapper">
                                 <ol class="breadcrumb">
                                     <li class="breadcrumb-item"><a href="{{ route('home') }}">Home</a></li>
-                                    <li class="breadcrumb-item active">Manage Subscription Reports</li>
+                                    <li class="breadcrumb-item active">Manage Sales Reports</li>
                                 </ol>
                             </div>
                         </div>
@@ -28,24 +28,19 @@
                     <div class="col-md-12">
                         <div class="card">
                             <div class="card-header">
-                                <h4 class="card-title">Subscription Reports</h4>
+                                <h4 class="card-title">Sales Reports</h4>
                             </div>
                             <div class="card-body">
 
 
                                 <ul class="nav nav-tabs" id="reportTabs" role="tablist">
                                     <li class="nav-item">
-                                        <a class="nav-link active" id="active-tab" data-toggle="tab" href="#active"
+                                        <a class="nav-link active" id="active-tab" data-toggle="tab" href="#recent"
                                             role="tab" aria-controls="active" aria-selected="true">
-                                            Active Subscriptions
+                                            Recent 
                                         </a>
                                     </li>
-                                    <li class="nav-item">
-                                        <a class="nav-link" id="expiring-today-tab" data-toggle="tab" href="#expiring-today"
-                                            role="tab" aria-controls="expiring-today" aria-selected="false">
-                                            Expiring Today
-                                        </a>
-                                    </li>
+                                    
                                     <li class="nav-item">
                                         <a class="nav-link" id="7day-tab" data-toggle="tab" href="#seven-day" role="tab"
                                             aria-controls="seven-day" aria-selected="false">
@@ -74,7 +69,7 @@
 
                                 <div class="tab-content" id="reportTabsContent">
 
-                                    @foreach (['active', 'expiring-today', 'seven-day', 'fifteen-day', 'thirty-day', 'custom-date'] as $key)
+                                    @foreach (['recent', 'seven-day', 'fifteen-day', 'thirty-day', 'custom-date'] as $key)
                                         <div class="tab-pane fade @if($loop->first) show active @endif" id="{{ $key }}"
                                             role="tabpanel" aria-labelledby="{{ $key }}-tab">
 
@@ -100,9 +95,9 @@
                                             @else
                                                 {{-- Normal predefined tab --}}
                                                 @if(isset($reports[$key]) && $reports[$key]->count() > 0)
-                                                    @include('admin.reports.sub-table', ['subscriptions' => $reports[$key]])
+                                                    @include('admin.reports.sale-table', ['orders' => $reports[$key]])
                                                 @else
-                                                    <p class="text-center text-muted mt-4">No Subscription Expiring in this period.</p>
+                                                    <p class="text-center text-muted mt-4">No Sales records in this period.</p>
                                                 @endif
                                             @endif
                                         </div>
@@ -130,7 +125,7 @@
                 let endDate = $('input[name="end_date"]').val();
 
                 $.ajax({
-                    url: '{{ route("admin.reports.subscriptions.customDate") }}',
+                    url: '{{ route("admin.reports.sales.customDate") }}',
                     method: 'GET',
                     data: { start_date: startDate, end_date: endDate },
                     beforeSend: function () {

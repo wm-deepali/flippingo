@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Models\Customer;
 use App\Models\FormSubmission;
 use App\Models\OrderStatus;
 use App\Models\ProductOrder;
@@ -119,9 +120,15 @@ class CheckoutController extends Controller
                 $orderNumber = 'PRO' . mt_rand(100000, 999999);
             } while (ProductOrder::where('order_number', $orderNumber)->exists());
 
-            $commissionRate = Setting::where('key', 'default_commission')->value('value') ?? 10;
+
+            // ✅ Commission handling
+            $customer = Customer::find($submission->customer_id);
+            $commissionRate = $customer->commission_rate
+                ?? setting('default_commission', 10);
+
             $commissionAmount = ($offeredPrice * $commissionRate) / 100;
-            $sellerEarning = $offeredPrice - $commissionAmount; // excluding GST (usually seller doesn’t earn tax)
+            $sellerEarning = $offeredPrice - $commissionAmount; // excluding GST
+
 
             // ✅ Create Product Order
             $order = ProductOrder::create([

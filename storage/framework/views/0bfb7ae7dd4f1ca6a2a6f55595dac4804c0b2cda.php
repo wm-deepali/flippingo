@@ -421,7 +421,7 @@
                                                 <?php echo csrf_field(); ?>
                                                 <div class="form-group">
                                                     <label>Default Commission (%)</label>
-                                                    <input type="text" class="form-control" name="commission"
+                                                    <input type="text" class="form-control" name="default_commission"
                                                         value="<?php echo e($settings['default_commission'] ?? ''); ?>">
                                                 </div>
                                                 <button type="submit" class="btn btn-primary">Save Commission</button>

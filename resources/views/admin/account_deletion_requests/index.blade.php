@@ -62,7 +62,7 @@
                                                                 Delete Instant
                                                             </button>
                                                         @endif
-                                                        <a href="{{ route('admin.customers.view', $request->customer_id) }}"
+                                                        <a href="{{ route('admin.customers.show', $request->customer_id) }}"
                                                             class="btn btn-info btn-sm"
                                                             data-id="{{ $request->customer_id }}">
                                                             View Customer Detail

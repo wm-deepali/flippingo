@@ -1,5 +1,5 @@
 <div class="table-responsive">
-    <table class="table table-bordered" id="orders-table-active">
+    <table class="table table-bordered">
         <thead>
             <tr>
                 <th>Date & Time</th>
@@ -7,29 +7,13 @@
                 <th>Buyer Info</th>
                 <th>Seller Info</th>
                 <th>Product Cost</th>
-                <th>Transaction ID</th>
-                <th>Payment Method</th>
                 <th>Order Status</th>
-
-                {{-- Delivered-specific columns --}}
-                @if($orders->first()?->currentStatus->status === 'delivered')
-                    <th>Delivery Date</th>
-                    <th>Delivery Method</th>
-                @endif
-
-                {{-- Cancelled-specific columns --}}
-                @if($orders->first()?->currentStatus->status === 'cancelled')
-                    <th>Cancelled By</th>
-                    <th>Cancellation Reason</th>
-                    <th>Cancellation Date</th>
-                @endif
-
                 <th>Action</th>
             </tr>
         </thead>
         <tbody>
             @foreach($orders as $order)
-                @php $status = $order->currentStatus->status ?? 'N/A'; @endphp
+              @php $status = $order->currentStatus->status ?? 'N/A'; @endphp
                 <tr>
                     <td>{{ \Carbon\Carbon::parse($order->created_at)->format('Y-m-d H:i') }}</td>
                     <td>{{ $order->order_number }}</td>
@@ -51,12 +35,7 @@
                     <!-- Product Cost -->
                     <td>{{ $order->total ?? '-' }}</td>
 
-                    <!-- Transaction ID -->
-                    <td>{{ $order->payment->payment_id ?? '-' }}</td>
-
-                    <!-- Payment Method -->
-                    <td>{{ ucfirst($order->payment->gateway ?? '-') }}</td>
-
+                  
                     <!-- Order Status -->
                     <td>
                         @switch($status)
@@ -125,26 +104,6 @@
                         <a href="{{ route('admin.customers.show',  $order->seller_id) }}" target="_blank" class="btn btn-sm btn-primary">
                             View Customer Info
                         </a>
-
-                          <a href="{{ route('admin.product-orders.invoice', ['id' => $order->id]) }}" target="_blank" class="btn btn-sm btn-primary">
-                            View Invoice
-                        </a>
-
-                        <button class="btn btn-sm btn-warning changeStatusBtn"
-                            data-id="{{ $order->id }}"
-                            data-status="{{ $order->currentStatus->status ?? '' }}"
-                            data-remarks="{{ $order->currentStatus->remarks ?? '' }}"
-                            data-delivery-date="{{ $order->currentStatus->delivery_date ?? '' }}"
-                            data-delivery-method="{{ $order->currentStatus->delivery_method ?? '' }}"
-                            data-cancellation-reason="{{ $order->currentStatus->cancellation_reason ?? '' }}">
-                            Change Order Status
-                        </button>
-
-                       <button class="btn btn-sm btn-danger deleteOrderBtn" 
-        data-id="{{ $order->id }}">
-    Delete
-</button>
-
                     </td>
                 </tr>
             @endforeach

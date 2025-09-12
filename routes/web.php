@@ -21,7 +21,7 @@ use App\Http\Controllers\Admin\{
     SettingController,
     PackageController,
     SubscriptionController,
-    ProductOrderController
+    ProductOrderController,
 };
 
 
@@ -108,30 +108,14 @@ Route::group(['middleware' => 'auth'], function () {
 
         // RESTful resource for forms (index, create, store, show, edit, update, destroy)
         Route::resource('form', FormController::class);
-
-        // Extra routes for your dropdown actions
+        Route::get('form-layout/{id}/edit', [FormLayoutController::class, 'edit'])->name('form-layout.edit');
+        Route::post('form-layout/{id}', [FormLayoutController::class, 'update'])->name('form-layout.update');
         Route::get('form/{id}/settings', [FormController::class, 'settings'])
             ->name('form.settings');
         Route::post('form/{id}/settings', [FormController::class, 'updateSettings'])
             ->name('form.settings.update');
 
-        Route::get('form/{id}/conditional-rules', [FormController::class, 'conditionalRules'])
-            ->name('form.conditionalRules');
 
-        Route::get('form/{id}/copy', [FormController::class, 'copy'])
-            ->name('form.copy');
-
-        Route::get('form/{id}/publish-share', [FormController::class, 'publishShare'])
-            ->name('form.publishShare');
-
-        Route::get('form/{id}/submissions', [FormController::class, 'submissions'])
-            ->name('form.submissions');
-
-        Route::get('form/{id}/addons', [FormController::class, 'addons'])
-            ->name('form.addons');
-
-        Route::get('form/{id}/submissions-report', [FormController::class, 'submissionsReport'])
-            ->name('form.submissionsReport');
 
         // for template route
         Route::resource('/form-templates', FormTemplateController::class);
@@ -141,49 +125,43 @@ Route::group(['middleware' => 'auth'], function () {
         // get form components and phrases
         Route::get('/ajax/builder-components', [FormBuilderController::class, 'builderComponents'])
             ->name('ajax.builder.components');
-
         Route::get('/ajax/builder-phrases', [FormBuilderController::class, 'actionBuilderPhrases'])
             ->name('ajax.builder.phrases');
 
-        Route::get('/form-submissions', [ListingController::class, 'index'])->name('form-submissions.index');
-        // Show submission details
-        Route::get('form-submissions/{submission}', action: [ListingController::class, 'show'])->name('form-submissions.show');
-        // Publish submission (POST)
+
+        // form submissios routes
+        Route::resource('form-submissions', ListingController::class);
         Route::patch('form-submissions/{submission}/update-status', [ListingController::class, 'updateStatus'])->name('form-submissions.update-status');
-        // Show all sales for a specific submission
         Route::get('form-submissions/{submission}/sales', [ListingController::class, 'viewAllSales'])
             ->name('form-submissions.sales');
 
+        // enquiry about listing 
         Route::get('enquiry', [ListingController::class, 'enquiryIndex'])->name('enquiry.index');
 
-        // In routes file
-        Route::get('form-layout/{id}/edit', [FormLayoutController::class, 'edit'])->name('form-layout.edit');
-        Route::post('form-layout/{id}', [FormLayoutController::class, 'update'])->name('form-layout.update');
+
+        // Customers route
+        Route::resource('customers', CustomerController::class);
+        Route::put('/customers/{customer}/commission', [CustomerController::class, 'updateCommission'])
+            ->name('customers.updateCommission');
+        Route::put('/customers/{customer}/update-password', [CustomerController::class, 'updatePassword'])
+            ->name('customers.updatePassword');
+        // Seller income detail
+        Route::get('/seller-income', [CustomerController::class, 'allSellersIncomeDetail'])
+            ->name('seller-income');
+        // Admin commission income
+        Route::get('/admin-commission', [CustomerController::class, 'allAdminCommissionIncome'])
+            ->name('admin-commission');
+        Route::get('/seller-orders/{sellerId}', [ProductOrderController::class, 'sellerOrders'])
+            ->name('seller-orders');
 
 
-    Route::get('wallets', [WalletController::class, 'index'])->name('wallets.index');
+
+        Route::get('wallets', [WalletController::class, 'index'])->name('wallets.index');
         Route::get('wallets/{wallet}/transactions', [WalletController::class, 'transactions'])->name('wallet.transactions');
 
-    Route::get('seller-payouts', [WalletController::class, 'sellerPayout'])->name('seller_payouts.index');
-    Route::get('withdrawal-requests', [WalletController::class, 'withdrawalRequests'])->name('withdrawal-requests.index');
+        Route::get('seller-payouts', [WalletController::class, 'sellerPayout'])->name('seller_payouts.index');
+        Route::get('withdrawal-requests', [WalletController::class, 'withdrawalRequests'])->name('withdrawal-requests.index');
 
-
-
-        // content managemnent
-        Route::get('content/dynamic-pages', [PageController::class, 'index'])->name('content.dynamic.pages');
-        Route::prefix('pages')->name('pages.')->group(function () {
-            Route::post('/store', [PageController::class, 'store'])->name('store');
-            Route::get('/{id}/edit', [PageController::class, 'edit'])->name('edit');
-            Route::post('/{id}/update', [PageController::class, 'update'])->name('update');
-            Route::delete('/{id}', [PageController::class, 'destroy'])->name('destroy');
-        });
-        Route::resource('testimonials', TestimonialController::class);
-        Route::resource('faq-categories', FaqCategoryController::class);
-        Route::resource('faqs', FaqController::class);
-        Route::resource('blog-categories', BlogCategoryController::class);
-        Route::post('blogs/update/{id}', [BlogController::class, 'update'])->name('blog-update');
-        Route::resource('blogs', BlogController::class);
-        Route::resource('client-reels', ClientReelController::class);
 
         Route::resource('packages', PackageController::class);
 
@@ -208,6 +186,9 @@ Route::group(['middleware' => 'auth'], function () {
         Route::resource('product-orders', ProductOrderController::class);
         Route::patch('/product-orders/{id}/update-status', [ProductOrderController::class, 'updateStatus'])->name('product-orders.update-status');
         Route::get('/product-orders/{id}/invoice', [ProductOrderController::class, 'viewInvoice'])->name('product-orders.invoice');
+        Route::get('/sales-reports', [ProductOrderController::class, 'reports'])->name('sales.reports');
+        Route::get('reports/sales/custom-date', [ProductOrderController::class, 'customDate'])
+            ->name('reports.sales.customDate');
 
 
         Route::get('/payments', [SubscriptionController::class, 'payments'])->name('payments.index');
@@ -222,10 +203,23 @@ Route::group(['middleware' => 'auth'], function () {
         Route::post('account_deletion_requests/{id}/delete-instant', [AccountDeletionRequestController::class, 'deleteInstant'])
             ->name('account_deletion_requests.delete_instant');
 
-        // Customer list
-        Route::get('/customers', [CustomerController::class, 'index'])->name('customers.index');
-        Route::get('/customers/{id}/view', [CustomerController::class, 'view'])->name('customers.view');
-        Route::delete('/customers/{id}', [CustomerController::class, 'destroy'])->name('customers.destroy');
+
+        // Content managemnent
+        Route::get('content/dynamic-pages', [PageController::class, 'index'])->name('content.dynamic.pages');
+        Route::prefix('pages')->name('pages.')->group(function () {
+            Route::post('/store', [PageController::class, 'store'])->name('store');
+            Route::get('/{id}/edit', [PageController::class, 'edit'])->name('edit');
+            Route::post('/{id}/update', [PageController::class, 'update'])->name('update');
+            Route::delete('/{id}', [PageController::class, 'destroy'])->name('destroy');
+        });
+        Route::resource('testimonials', TestimonialController::class);
+        Route::resource('faq-categories', FaqCategoryController::class);
+        Route::resource('faqs', FaqController::class);
+        Route::resource('blog-categories', BlogCategoryController::class);
+        Route::post('blogs/update/{id}', [BlogController::class, 'update'])->name('blog-update');
+        Route::resource('blogs', BlogController::class);
+        Route::resource('client-reels', ClientReelController::class);
+
 
     });
 });

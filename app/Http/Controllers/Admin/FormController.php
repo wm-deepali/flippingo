@@ -376,36 +376,6 @@ class FormController extends Controller
 
 
 
-    public function conditionalRules($id)
-    {
-        // Show conditional rules management
-    }
-
-    public function copy($id)
-    {
-        // Duplicate form logic
-    }
-
-    public function publishShare($id)
-    {
-        // Show publish & share options
-    }
-
-    public function submissions($id)
-    {
-        // List form submissions
-    }
-
-    public function addons($id)
-    {
-        // Show addons integration
-    }
-
-    public function submissionsReport($id)
-    {
-        // Generate submissions report
-    }
-
     public function destroy($id)
     {
         $form = Form::find($id);

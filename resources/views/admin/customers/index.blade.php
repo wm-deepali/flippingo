@@ -1,7 +1,6 @@
 @extends('layouts.master')
 
 @section('content')
-
     <div class="app-content content">
         <div class="content-overlay"></div>
         <div class="header-navbar-shadow"></div>
@@ -34,11 +33,11 @@
                                     <table class="table" id="customer-table">
                                         <thead>
                                             <tr>
-                                                <th>First Name</th>
-                                                <th>Last Name</th>
-                                                <th>Email</th>
-                                                <th>Phone</th>
-                                                <th>Created At</th>
+                                                <th>Date & Time</th>
+                                                <th>Customer / Seller Info</th>
+                                                <th>Wallet Balance</th>
+                                                <th>Account Type</th>
+                                                <th>Active Subscription</th>
                                                 <th>Status</th>
                                                 <th>Action</th>
                                             </tr>
@@ -46,22 +45,74 @@
                                         <tbody>
                                             @forelse($customers as $customer)
                                                 <tr>
-                                                    <td>{{ $customer->first_name }}</td>
-                                                    <td>{{ $customer->email }}</td>
-                                                    <td>{{ $customer->mobile ?? '-' }}</td>
+                                                    <!-- Date & Time -->
                                                     <td>{{ $customer->created_at->format('Y-m-d H:i') }}</td>
-                                                    <td>{{ ucfirst($customer->status ?? 'active') }}</td>
-                                                    <td>
-                                                        <a href="{{ route('admin.customers.view', $customer->id) }}"
-                                                            class="btn btn-info btn-sm">View</a>
 
-                                                        <button class="btn btn-danger btn-sm delete-customer"
+                                                    <!-- Customer / Seller Info -->
+                                                    <td>
+                                                        <small>{{ $customer->customer_id }}</small><br>
+                                                        <small>{{ $customer->display_name ?? $customer->first_name . ' ' . $customer->last_name }}</small><br>
+                                                        <small>{{ $customer->email }}</small><br>
+                                                        <small>{{ $customer->mobile ?? '-' }}</small>
+                                                    </td>
+
+                                                    <!-- Wallet Balance -->
+                                                    <td>
+                                                        ₹{{ number_format($customer->wallet->balance ?? 0, 2) }}
+                                                    </td>
+
+                                                    <!-- Account Type -->
+                                                    <td>
+                                                        {{ ucfirst($customer->account_type ?? 'customer') }}
+                                                    </td>
+
+                                                    <!-- Active Subscription -->
+                                                    <td>
+                                                        @if($customer->activeSubscription)
+                                                            <span class="badge badge-success">
+                                                                {{ $customer->activeSubscription->package->name ?? '' }}
+                                                            </span>
+                                                        @else
+                                                            <span class="badge badge-secondary">No Active</span>
+                                                        @endif
+                                                    </td>
+
+                                                    <!-- Status -->
+                                                    <td>
+                                                        <span
+                                                            class="badge {{ $customer->status == 'active' ? 'badge-success' : 'badge-danger' }}">
+                                                            {{ ucfirst($customer->status ?? 'inactive') }}
+                                                        </span>
+                                                    </td>
+
+                                                    <!-- Actions -->
+                                                    <td>
+                                                        <a href="{{ route('admin.customers.show', $customer->id) }}"
+                                                            class="btn btn-sm btn-info">View</a>
+                                                        <a href="{{ route('admin.customers.edit', $customer->id) }}"
+                                                            class="btn btn-sm btn-warning">Edit</a>
+                                                        <button class="btn btn-sm btn-danger delete-customer"
                                                             data-id="{{ $customer->id }}">Delete</button>
+
+                                                        <a href="#" class="btn btn-sm btn-primary">Wallet</a>
+                                                        <a href="{{ route('admin.seller-orders', $customer->id) }}"
+                                                            class="btn btn-sm btn-info">
+                                                            View Orders
+                                                        </a>
+                                                        <a href="#" class="btn btn-sm btn-success">Subscriptions</a>
+                                                        <a href="#" class="btn btn-sm btn-secondary">Enquiries</a>
+                                                        <a href="#" class="btn btn-sm btn-info">Chats</a>
+                                                        <a href="#" class="btn btn-sm btn-danger">Tickets</a>
+                                                        <button class="btn btn-sm btn-outline-primary" data-toggle="modal"
+                                                            data-target="#changePasswordModal{{ $customer->id }}">
+                                                            Change Password
+                                                        </button>
+
                                                     </td>
                                                 </tr>
                                             @empty
                                                 <tr>
-                                                    <td colspan="6" class="text-center">No customers found.</td>
+                                                    <td colspan="7" class="text-center">No customers found.</td>
                                                 </tr>
                                             @endforelse
                                         </tbody>
@@ -72,18 +123,44 @@
                     </div>
                 </div>
             </div>
-
         </div>
     </div>
 
-    <div class="modal fade" id="customer-modal" tabindex="-1" role="dialog" aria-hidden="true"></div>
-    <script src="https://code.jquery.com/jquery-3.5.1.slim.min.js"></script>
+    <!-- Modal -->
+    <div class="modal fade" id="changePasswordModal{{ $customer->id }}" tabindex="-1" aria-hidden="true">
+        <div class="modal-dialog">
+            <form action="{{ route('admin.customers.updatePassword', $customer->id) }}" method="POST" class="modal-content">
+                @csrf
+                @method('PUT')
+                <div class="modal-header">
+                    <h5 class="modal-title">Change Password for {{ $customer->display_name ?? $customer->first_name }}</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+                </div>
+                <div class="modal-body">
+                    <div class="mb-3">
+                        <label>New Password</label>
+                        <input type="password" name="password" class="form-control" required>
+                    </div>
+                    <div class="mb-3">
+                        <label>Confirm Password</label>
+                        <input type="password" name="password_confirmation" class="form-control" required>
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancel</button>
+                    <button type="submit" class="btn btn-primary">Update Password</button>
+                </div>
+            </form>
+        </div>
+    </div>
+
+@endsection
+@push('scripts')
+    {{-- Delete Script --}}
     <script>
         $(document).ready(function () {
-            // Delete customer
             $(document).on('click', '.delete-customer', function () {
                 const customerId = $(this).data('id');
-
                 Swal.fire({
                     title: 'Are you sure?',
                     text: 'This customer will be permanently deleted!',
@@ -106,8 +183,7 @@
                     }
                 });
             });
-
         });
     </script>
 
-@endsection
+@endpush

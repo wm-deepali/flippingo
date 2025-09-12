@@ -33,23 +33,40 @@
                                     <table class="table table-bordered">
                                         <thead>
                                             <tr>
-                                                <th>Customer</th>
-                                                <th>Email</th>
+                                                <th>Customer Info</th>
                                                 <th>Balance</th>
                                                 <th>Currency</th>
+                                                <th>Total Credit (₹)</th>
+                                                <th>Total Debit (₹)</th>
+                                                <th>Last Transaction</th>
                                                 <th>Status</th>
                                                 <th>Action</th>
                                             </tr>
                                         </thead>
                                         <tbody>
                                             <?php $__currentLoopData = $wallets; $__env->addLoop($__currentLoopData); foreach($__currentLoopData as $wallet): $__env->incrementLoopIndices(); $loop = $__env->getLastLoop(); ?>
+                                                <?php
+                                                    $totalCredit = $wallet->transactions->where('type', 'credit')->sum('amount');
+                                                    $totalDebit = $wallet->transactions->where('type', 'debit')->sum('amount');
+                                                    $lastTransaction = $wallet->transactions->sortByDesc('created_at')->first();
+                                                ?>
                                                 <tr>
-                                                    <td><?php echo e($wallet->customer->first_name ?? '-'); ?>
+                                                    <td>
+                                                        <?php echo e($wallet->customer->customer_id ?? '-'); ?><br>
+                                                        <?php echo e($wallet->customer->first_name ?? '-'); ?>
 
-                                                        <?php echo e($wallet->customer->last_name ?? ''); ?></td>
-                                                    <td><?php echo e($wallet->customer->email ?? '-'); ?></td>
+                                                        <?php echo e($wallet->customer->last_name ?? '-'); ?><br>
+                                                        <?php echo e($wallet->customer->email ?? '-'); ?>
+
+                                                    </td>
+
                                                     <td><?php echo e(number_format($wallet->balance, 2)); ?></td>
                                                     <td><?php echo e(strtoupper($wallet->currency ?? 'USD')); ?></td>
+                                                    <td>₹<?php echo e(number_format($totalCredit, 2)); ?></td>
+                                                    <td>₹<?php echo e(number_format($totalDebit, 2)); ?></td>
+                                                    <td><?php echo e($lastTransaction ? $lastTransaction->created_at->format('Y-m-d H:i') : '-'); ?>
+
+                                                    </td>
                                                     <td><?php echo e(ucfirst($wallet->status)); ?></td>
                                                     <td>
                                                         <a href="<?php echo e(route('admin.wallet.transactions', $wallet->id)); ?>"
