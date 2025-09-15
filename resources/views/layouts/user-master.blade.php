@@ -264,7 +264,8 @@
                                     </span>
                                 </a>
 
-                                <a class="dropdown-item d-flex align-items-center" href="{{ route('dashboard.wallet') }}">
+                                <a class="dropdown-item d-flex align-items-center"
+                                    href="{{ route('dashboard.wallet') }}">
                                     <i data-feather="credit-card" class="svg-icon mr-2" style="width: 40px;height: 40px;display: flex;justify-content: center;align-items: center;
                        border-radius: 50%;background-color: #036b081e;font-size: 20px;padding: 7px;"></i>
                                     <span class="d-flex justify-content-center flex-column" style="color: green;">
@@ -273,7 +274,8 @@
                                     </span>
                                 </a>
 
-                                <a class="dropdown-item d-flex align-items-center" href="{{ route('dashboard.contact') }}">
+                                <a class="dropdown-item d-flex align-items-center"
+                                    href="{{ route('dashboard.contact') }}">
                                     <i data-feather="help-circle" class="svg-icon mr-2" style="width: 40px;height: 40px;display: flex;justify-content: center;align-items: center;
                        border-radius: 50%;background-color: rgba(0,255,255,0.116);font-size: 20px;padding: 7px;"></i>
                                     <span class="d-flex justify-content-center flex-column">
@@ -330,6 +332,8 @@
     <script src="{{ asset('user_assets') }}/libs/jquery/dist/jquery.min.js"></script>
     <script src="{{ asset('user_assets') }}/libs/popper.js/dist/umd/popper.min.js"></script>
     <script src="{{ asset('user_assets') }}/libs/bootstrap/dist/js/bootstrap.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+    <script src="https://checkout.razorpay.com/v1/checkout.js"></script>
 
     <!-- apps -->
     <!-- apps -->

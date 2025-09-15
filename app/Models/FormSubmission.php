@@ -30,6 +30,12 @@ class FormSubmission extends Model
     ];
 
 
+    protected $appends = [
+        'product_title',
+        'category_name',
+        'product_photo',
+    ];
+
     // Relationships:
 
     // A submission belongs to a form
@@ -76,4 +82,23 @@ class FormSubmission extends Model
         return $this->hasMany(ProductOrder::class, 'submission_id');
     }
 
+    public function getProductTitleAttribute()
+    {
+        $data = $this->data ? json_decode($this->data, true) : [];
+        return $data['product_title']['value'] ?? '-';
+    }
+
+    public function getCategoryNameAttribute()
+    {
+        return optional($this->form->category)->name ?? '-';
+    }
+
+    public function getProductPhotoAttribute()
+    {
+        $file = $this->files()
+            ? $this->files()->where('show_on_summary', true)->first()
+            : null;
+
+        return $file ? $file->file_path : null;
+    }
 }

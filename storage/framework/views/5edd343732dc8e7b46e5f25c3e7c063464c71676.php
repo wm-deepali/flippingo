@@ -1,7 +1,7 @@
 
 
 <?php $__env->startSection('title'); ?>
-    <?php echo e($page->meta_title ?? 'Orders'); ?>
+    <?php echo e($page->meta_title ?? 'Bank Accounts'); ?>
 
 <?php $__env->stopSection(); ?>
 
@@ -97,7 +97,7 @@
 
 <?php $__env->startSection('content'); ?>
 
-    <?php echo $__env->make('user.sidebar', ['activeTab' => request('tab', 'buyer')], \Illuminate\Support\Arr::except(get_defined_vars(), ['__data', '__path']))->render(); ?>
+    <?php echo $__env->make('user.sidebar', \Illuminate\Support\Arr::except(get_defined_vars(), ['__data', '__path']))->render(); ?>
 
     <div class="page-wrapper">
         <div class="bank-account">
@@ -123,93 +123,94 @@
 
             <!-- Payment Forms -->
             <div class="payment-forms" style="width: 60%;">
+
                 <!-- Bank Transfer -->
                 <div class="form-box show" id="bank">
                     <h3>Bank Transfer</h3>
                     <hr>
-                    <label>Account Holder Name</label>
-                    <input type="text" placeholder="Enter Account Holder Name">
+                    <form action="<?php echo e(route('payment-method.save.bank')); ?>" method="POST">
+                        <?php echo csrf_field(); ?>
+                        <label>Account Holder Name</label>
+                        <input type="text" value="<?php echo e(old('account_holder_name', $bank->account_holder_name ?? '')); ?>"
+                            name="account_holder_name" placeholder="Enter Account Holder Name" required>
 
-                    <label>Account Number</label>
-                    <input type="text" placeholder="Enter Account Number">
+                        <label>Account Number</label>
+                        <input type="text" name="account_number" value="<?php echo e(old('account_number', $bank->account_number ?? '')); ?>" placeholder="Enter Account Number" required>
 
-                    <label>IFSC Code</label>
-                    <input type="text" placeholder="Enter IFSC Code">
+                        <label>IFSC Code</label>
+                        <input type="text" name="ifsc_code" value="<?php echo e(old('ifsc_code', default: $bank->ifsc_code ?? '')); ?>" placeholder="Enter IFSC Code">
 
-                    <label>Bank Name</label>
-                    <input type="text" placeholder="Enter Bank Name">
+                        <label>Bank Name</label>
+                        <input type="text" name="bank_name" value="<?php echo e(old('bank_name', default: $bank->bank_name ?? '')); ?>" placeholder="Enter Bank Name">
 
-                    <label>Branch Name</label>
-                    <input type="text" placeholder="Enter Branch Name">
-
-                    <button class="btn-submit">Add</button>
-                </div>
-
-                <!-- UPI -->
-                <div class="form-box" id="upi">
-
-
-                    <p class="small-note">Please make sure that you have entered the correct UPI payment details.</p>
-
-                    <label>Amount Receiver Name</label>
-                    <input type="text" placeholder="Enter Receiver Name">
-
-                    <label>UPI Id</label>
-                    <input type="text" placeholder="Enter your UPI ID">
-
-                    <button class="btn-submit">Add</button>
-                </div>
-
-                <!-- Wire Transfer -->
-                <div class="form-box" id="wire">
-                    <p>Please make sure that you have entered the correct <strong>WIRE</strong> payment details.</p>
-
-                    <form class="wire-form">
-                        <div class="form-group">
-                            <label for="wireAccountNumber">Account Number</label>
-                            <input type="text" id="wireAccountNumber" placeholder="Enter Account Number">
-                        </div>
-
-                        <div class="form-group">
-                            <label for="wireAccountOwner">Account Owner</label>
-                            <input type="text" id="wireAccountOwner" placeholder="Enter Account Owner Name">
-                        </div>
-
-                        <div class="form-group">
-                            <label for="wireBankName">Bank Name</label>
-                            <input type="text" id="wireBankName" placeholder="Enter Bank Name">
-                        </div>
-
-                        <div class="form-group">
-                            <label for="wireBankAddress">Bank Address</label>
-                            <input type="text" id="wireBankAddress" placeholder="Enter Bank Branch Address">
-                        </div>
-
-                        <div class="form-group">
-                            <label for="wireSwiftCode">Bank Swift Code</label>
-                            <input type="text" id="wireSwiftCode" placeholder="Enter SWIFT/BIC Code">
-                        </div>
-
-                        <div class="form-group">
-                            <label for="wireIban">IBAN Number</label>
-                            <input type="text" id="wireIban" placeholder="Enter IBAN Number">
-                        </div>
+                        <label>Branch Name</label>
+                        <input type="text" name="branch_name" value="<?php echo e(old('branch_name', $bank->branch_name ?? '')); ?>" placeholder="Enter Branch Name">
 
                         <button type="submit" class="btn-submit">Add</button>
                     </form>
                 </div>
 
+                <!-- UPI -->
+                <div class="form-box" id="upi">
+                    <form action="<?php echo e(route('payment-method.save.upi')); ?>" method="POST">
+                        <?php echo csrf_field(); ?>
+                        <p class="small-note">Please make sure that you have entered the correct UPI payment details.</p>
+
+                        <label>Amount Receiver Name</label>
+                        <input type="text" name="receiver_name" value="<?php echo e(old('receiver_name', $upi->receiver_name ?? '')); ?>" placeholder="Enter Receiver Name" required>
+
+                        <label>UPI Id</label>
+                        <input type="text" name="upi_id" value="<?php echo e(old('upi_id', $upi->upi_id ?? '')); ?>" placeholder="Enter your UPI ID" required>
+
+                        <button type="submit" class="btn-submit">Add</button>
+                    </form>
+
+                </div>
+
+                <!-- Wire Transfer -->
+                <div class="form-box" id="wire">
+                    <form action="<?php echo e(route('payment-method.save.wire')); ?>" method="POST">
+                        <?php echo csrf_field(); ?>
+                        <p>Please make sure that you have entered the correct <strong>WIRE</strong> payment details.</p>
+
+                        <label>Account Number</label>
+                        <input type="text" name="account_number" value="<?php echo e(old('account_number', $wire->account_number ?? '')); ?>" placeholder="Enter Account Number" required>
+
+                        <label>Account Owner</label>
+                        <input type="text" name="account_owner" value="<?php echo e(old('account_owner', $wire->account_owner ?? '')); ?>" placeholder="Enter Account Owner Name" required>
+
+                        <label>Bank Name</label>
+                        <input type="text" name="bank_name" value="<?php echo e(old('bank_name', $wire->bank_name ?? '')); ?>" placeholder="Enter Bank Name" required>
+
+                        <label>Bank Address</label>
+                        <input type="text" name="bank_address"  value="<?php echo e(old('bank_address', $wire->bank_address ?? '')); ?>" placeholder="Enter Bank Branch Address" required>
+
+                        <label>Bank Swift Code</label>
+                        <input type="text" name="swift_code" value="<?php echo e(old('swift_code', $wire->swift_code ?? '')); ?>" placeholder="Enter SWIFT/BIC Code">
+
+                        <label>IBAN Number</label>
+                        <input type="text" name="iban_number" value="<?php echo e(old('iban_number', $wire->iban_number ?? '')); ?>"  placeholder="Enter IBAN Number">
+
+                        <button type="submit" class="btn-submit">Add</button>
+                    </form>
+
+                </div>
+
                 <!-- Paypal -->
                 <div class="form-box" id="paypal">
-                    <p class="small-note">Please make sure that you have entered the correct UPI payment details.</p>
+                    <form action="<?php echo e(route('payment-method.save.paypal')); ?>" method="POST">
+                        <?php echo csrf_field(); ?>
+                        <p class="small-note">Please make sure that you have entered the correct Paypal payment details.</p>
 
-                    <label>Amount Receiver Name</label>
-                    <input type="text" placeholder="Enter Receiver Name">
+                        <label>Amount Receiver Name</label>
+                        <input type="text" name="receiver_name" value="<?php echo e(old('receiver_name', $paypal->receiver_name ?? '')); ?>"  placeholder="Enter Receiver Name" required>
 
-                    <label>UPI Id</label>
-                    <input type="email" placeholder="Enter Paypal Email">
+                        <label>Paypal Email</label>
+                        <input type="email" name="paypal_email" value="<?php echo e(old('paypal_email', $paypal->paypal_email ?? '')); ?>"  placeholder="Enter Paypal Email" required>
 
-                    <button class="btn-submit">Add</button>
+                        <button type="submit" class="btn-submit">Add</button>
+                    </form>
+
                 </div>
             </div>
         </div>
@@ -226,21 +227,21 @@
 <?php $__env->stopSection(); ?>
 
 <?php $__env->startPush('scripts'); ?>
-  <script>
-const cards = document.querySelectorAll(".payment-card");
-const forms = document.querySelectorAll(".form-box");
+    <script>
+        const cards = document.querySelectorAll(".payment-card");
+        const forms = document.querySelectorAll(".form-box");
 
-cards.forEach(card => {
-  card.addEventListener("click", () => {
-    // remove active class
-    cards.forEach(c => c.classList.remove("active"));
-    forms.forEach(f => f.classList.remove("show"));
+        cards.forEach(card => {
+            card.addEventListener("click", () => {
+                // remove active class
+                cards.forEach(c => c.classList.remove("active"));
+                forms.forEach(f => f.classList.remove("show"));
 
-    // add active class to clicked
-    card.classList.add("active");
-    document.getElementById(card.dataset.tab).classList.add("show");
-  });
-});
-</script>
+                // add active class to clicked
+                card.classList.add("active");
+                document.getElementById(card.dataset.tab).classList.add("show");
+            });
+        });
+    </script>
 <?php $__env->stopPush(); ?>
 <?php echo $__env->make('layouts.user-master', \Illuminate\Support\Arr::except(get_defined_vars(), ['__data', '__path']))->render(); ?><?php /**PATH D:\web-mingo-project\flippingo_admin\resources\views/user/bank-account.blade.php ENDPATH**/ ?>

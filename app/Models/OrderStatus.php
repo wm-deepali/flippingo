@@ -15,8 +15,10 @@ class OrderStatus extends Model
         'delivery_date',
         'delivery_method',
         'cancelled_by',
-        'cancellation_reason',
         'cancelled_at',
+        'cancellation_reason',
+        'requested_by',
+        'requested_at'
     ];
 
     protected $dates = [

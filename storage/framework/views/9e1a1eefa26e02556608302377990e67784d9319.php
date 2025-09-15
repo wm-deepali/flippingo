@@ -1,8 +1,9 @@
-@extends('layouts.user-master')
 
-@section('title')
-    {{ $page->meta_title ?? 'Orders' }}
-@endsection
+
+<?php $__env->startSection('title'); ?>
+    <?php echo e($page->meta_title ?? 'Orders'); ?>
+
+<?php $__env->stopSection(); ?>
 
 <style>
     .order-invoice {
@@ -260,98 +261,55 @@
     }
 </style>
 
-@section('content')
+<?php $__env->startSection('content'); ?>
 
-    @include('user.sidebar')
+    <?php echo $__env->make('user.sidebar', \Illuminate\Support\Arr::except(get_defined_vars(), ['__data', '__path']))->render(); ?>
 
     <div class="page-wrapper">
         <div class="order-invoice">
             <!-- Order Tabs -->
 
-            <div class="order-tabs">
+           <div class="order-tabs">
                 <div class="order-card recent">
                     <h4>Recent Orders</h4>
-                    <p>25</p>
+                    <p><?php echo e($counts['recent']); ?></p>
                 </div>
                 <div class="order-card active">
-                    <h4>Active Orders</h4>
-                    <p>12</p>
+                    <h4>Delivered Orders</h4>
+                    <p><?php echo e($counts['delivered']); ?></p>
                 </div>
                 <div class="order-card cancelled">
-                    <h4>Cancelled Orders</h4>
-                    <p>5</p>
+                    <h4>Cancellation Requested Orders</h4>
+                    <p><?php echo e($counts['cancel_requested']); ?></p>
                 </div>
                 <div class="order-card refund">
-                    <h4>Refunds</h4>
-                    <p>3</p>
+                    <h4>Cancelled & Refunds Orders</h4>
+                    <p><?php echo e($counts['refunds']); ?></p>
                 </div>
             </div>
+
+
             <div class="order-tabs">
                 <button class="tab-btn active" data-tab="recent">Recent Orders</button>
-                <button class="tab-btn" data-tab="active">Active Orders</button>
-                <button class="tab-btn" data-tab="cancelled">Cancelled Orders</button>
-                <button class="tab-btn" data-tab="refunds">Refunds</button>
+                <button class="tab-btn" data-tab="delivered">Delivered Orders</button>
+                <button class="tab-btn" data-tab="cancelled">Cancellation Requested Orders</button>
+                <button class="tab-btn" data-tab="refunds">Cancelled & Refunds</button>
             </div>
-            <!-- Scrollable Table -->
             <div class="tab-content active" id="recent">
-
-                <div class="table-wrapper">
-                    <table class="order-table">
-                        <thead>
-                            <tr>
-                                <th>Date & Time</th>
-                                <th>Order ID</th>
-                                <th>Product Detail</th>
-                                <th>Billed Amount</th>
-                                <th>Payment Status</th>
-                                <th>Order Status</th>
-                                <th>Action</th>
-                            </tr>
-                        </thead>
-                        <tbody>
-                            <tr>
-                                <td>04 Sep 2025, 11:30 AM</td>
-                                <td>#ORD12345</td>
-                                <td><span class="product-name">Premium T-Shirt</span></td>
-                                <td>$120</td>
-                                <td>Paid</td>
-                                <td>Delivered</td>
-                                <td class="actions">
-                                    <i class="fas fa-eye" title="View Order Detail"></i>
-                                    <i class="fas fa-file-invoice" title="View Payment Detail"></i>
-                                    <i class="fas fa-undo" title="Request Refund"></i>
-                                </td>
-                            </tr>
-                            <tr>
-                                <td>03 Sep 2025, 05:10 PM</td>
-                                <td>#ORD12344</td>
-                                <td><span class="product-name">Business Mug</span></td>
-                                <td>$45</td>
-                                <td>Pending</td>
-                                <td>Processing</td>
-                                <td class="actions">
-                                    <i class="fas fa-eye" title="View Order Detail"></i>
-                                    <i class="fas fa-file-invoice" title="View Payment Detail"></i>
-                                    <i class="fas fa-undo" title="Request Refund"></i>
-                                </td>
-                            </tr>
-                        </tbody>
-                    </table>
-                </div>
+                <?php echo $__env->make('user.orders.buyer-table', ['orders' => $recentOrders], \Illuminate\Support\Arr::except(get_defined_vars(), ['__data', '__path']))->render(); ?>
             </div>
 
-            <div class="tab-content" id="active">
-                <p>No active orders yet.</p>
+            <div class="tab-content" id="delivered">
+                <?php echo $__env->make('user.orders.buyer-table', ['orders' => $deliveredOrders], \Illuminate\Support\Arr::except(get_defined_vars(), ['__data', '__path']))->render(); ?>
             </div>
 
             <div class="tab-content" id="cancelled">
-                <p>No cancelled orders.</p>
+                <?php echo $__env->make('user.orders.buyer-table', ['orders' => $cancelRequestedOrders], \Illuminate\Support\Arr::except(get_defined_vars(), ['__data', '__path']))->render(); ?>
             </div>
 
             <div class="tab-content" id="refunds">
-                <p>No refund requests.</p>
+                <?php echo $__env->make('user.orders.buyer-table', ['orders' => $refundOrders], \Illuminate\Support\Arr::except(get_defined_vars(), ['__data', '__path']))->render(); ?>
             </div>
-
         </div>
 
         <!-- Font Awesome -->
@@ -362,10 +320,67 @@
     </div>
 
 
-@endsection
+    <!-- Cancel Order Modal -->
+    <div id="cancelOrderModal" class="modal" style="display:none;">
+        <div class="modal-content"
+            style="padding:20px; border-radius:8px; width:400px; background:#fff; margin:auto; margin-top:100px;">
+            <h4>Cancel Order</h4>
+            <form id="cancelOrderForm">
+                <?php echo csrf_field(); ?>
+                <input type="hidden" name="order_id" id="cancelOrderId">
 
-@push('scripts')
+                <div class="form-group">
+                    <label>Reason</label>
+                    <select name="reason" class="form-control" required>
+                        <option value="">Select reason</option>
+                        <option value="wrong_item">Ordered wrong item</option>
+                        <option value="delay">Delay in delivery</option>
+                        <option value="other">Other</option>
+                    </select>
+                </div>
+
+                <div class="form-group">
+                    <label>Remarks</label>
+                    <textarea name="remarks" class="form-control"></textarea>
+                </div>
+
+                <button type="submit" class="btn btn-danger">Submit</button>
+                <button type="button" class="btn btn-secondary close-modal">Close</button>
+            </form>
+        </div>
+    </div>
+
+
+<?php $__env->stopSection(); ?>
+
+<?php $__env->startPush('scripts'); ?>
     <script>
+        document.addEventListener("DOMContentLoaded", () => {
+            // Open modal
+            document.querySelectorAll('.cancel-order-btn').forEach(btn => {
+                btn.addEventListener('click', function () {
+                    const orderId = this.dataset.orderId;
+                    document.getElementById('cancelOrderId').value = orderId;
+                    document.getElementById('cancelOrderModal').style.display = 'block';
+                });
+            });
+
+            // Close modal
+            document.querySelectorAll('.close-modal').forEach(btn => {
+                btn.addEventListener('click', function () {
+                    document.getElementById('cancelOrderModal').style.display = 'none';
+                });
+            });
+
+            // Optional: close on outside click
+            window.addEventListener('click', function (e) {
+                if (e.target.id === 'cancelOrderModal') {
+                    document.getElementById('cancelOrderModal').style.display = 'none';
+                }
+            });
+        });
+
+
         document.querySelectorAll('.tab-btn').forEach(button => {
             button.addEventListener('click', () => {
                 document.querySelectorAll('.tab-btn').forEach(btn => btn.classList.remove('active'));
@@ -376,5 +391,43 @@
             });
         });
 
+        // Submit cancel form
+        document.getElementById('cancelOrderForm').addEventListener('submit', function (e) {
+            e.preventDefault();
+
+            fetch("<?php echo e(route('orders.cancel')); ?>", {
+                method: "POST",
+                headers: {
+                    "X-CSRF-TOKEN": "<?php echo e(csrf_token()); ?>",
+                    "Content-Type": "application/json"
+                },
+                body: JSON.stringify({
+                    order_id: document.getElementById('cancelOrderId').value,
+                    reason: this.reason.value,
+                    remarks: this.remarks.value,
+                })
+            })
+                .then(res => res.json())
+                .then(data => {
+                    Swal.fire({
+                        title: 'Success!',
+                        text: data.message,
+                        icon: 'success',
+                        confirmButtonText: 'OK'
+                    }).then(() => {
+                        location.reload();
+                    });
+                })
+                .catch(() => {
+                    Swal.fire({
+                        title: 'Error!',
+                        text: 'Something went wrong. Please try again.',
+                        icon: 'error',
+                        confirmButtonText: 'OK'
+                    });
+                });
+        });
+
     </script>
-@endpush
+<?php $__env->stopPush(); ?>
+<?php echo $__env->make('layouts.user-master', \Illuminate\Support\Arr::except(get_defined_vars(), ['__data', '__path']))->render(); ?><?php /**PATH D:\web-mingo-project\flippingo_admin\resources\views/user/orders/buyer.blade.php ENDPATH**/ ?>

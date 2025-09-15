@@ -129,14 +129,12 @@
                 href="{{ route('admin.customers.index') }}"><span>Manage Users</span></a>
             </li>
             <li>
-              <a class="dropdown-item d-flex align-items-center"
-                href="{{ route('admin.seller-income') }}">
+              <a class="dropdown-item d-flex align-items-center" href="{{ route('admin.seller-income') }}">
                 <span>Seller Income Detail</span>
               </a>
             </li>
             <li>
-              <a class="dropdown-item d-flex align-items-center"
-                href="{{ route('admin.admin-commission') }}">
+              <a class="dropdown-item d-flex align-items-center" href="{{ route('admin.admin-commission') }}">
                 <span>Commission & Income</span>
               </a>
             </li>
@@ -178,17 +176,25 @@
           </a>
           <ul class="dropdown-menu">
             <li><a class="dropdown-item d-flex align-items-center"
-                href="{{ route('admin.packages.index') }}"><span>Manage Subscriptions</span></a></li>
+                href="{{ route('admin.packages.index') }}"><span>Manage Subscriptions</span></a>
+            </li>
             <li><a class="dropdown-item d-flex align-items-center"
-                href="{{ route('admin.subscriptions.orders') }}"><span>Subscriptions Orders</span></a></li>
+                href="{{ route('admin.subscriptions.orders') }}"><span>Subscriptions Orders</span></a>
+            </li>
+            <li><a class="dropdown-item d-flex align-items-center"
+                href="{{ route('admin.subscriptions.cancellationRequests') }}"><span>Subscription Cancellation
+                  Request</span></a>
+            </li>
             <li>
               <a class="dropdown-item d-flex align-items-center" href="{{ route('admin.product-orders.index') }}">
                 Sales Orders
               </a>
             </li>
-            <li><a class="dropdown-item d-flex align-items-center"
-                href="{{ route('admin.subscriptions.cancellationRequests') }}"><span>Subscription Cancellation
-                  Request</span></a></li>
+            <li>
+              <a class="dropdown-item d-flex align-items-center" href="{{ route('admin.product-orders.cancellationRequests') }}">
+                Sales Order Cancellation Request
+              </a>
+            </li>
             <li>
               <a class="dropdown-item d-flex align-items-center" href="{{ route('admin.payments.index') }}">
                 Manage Order Payments

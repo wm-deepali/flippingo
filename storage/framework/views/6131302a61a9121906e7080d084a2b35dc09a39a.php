@@ -36,10 +36,8 @@
                             <span class="hide-menu">Orders & Invoice</span>
                         </a>
                         <ul class="collapse first-level base-level-line">
-                            <li class="sidebar-item"><a href="<?php echo e(Route('dashboard.orders')); ?>"
+                            <li class="sidebar-item"><a href="<?php echo e(route('dashboard.buyer-orders')); ?>"
                                     class="sidebar-link">Orders</a></li>
-                            <li class="sidebar-item"><a href="<?php echo e(Route('dashboard.invoices')); ?>"
-                                    class="sidebar-link">Invoice</a></li>
                         </ul>
                     </li>
                     <li class="sidebar-item"> <a class="sidebar-link sidebar-link"
@@ -66,10 +64,8 @@
                             <span class="hide-menu">Orders & Invoice</span>
                         </a>
                         <ul class="collapse first-level base-level-line">
-                            <li class="sidebar-item"><a href="<?php echo e(Route('dashboard.orders')); ?>"
+                            <li class="sidebar-item"><a href="<?php echo e(route('dashboard.seller-orders')); ?>"
                                     class="sidebar-link">Orders</a></li>
-                            <li class="sidebar-item"><a href="<?php echo e(Route('dashboard.invoices')); ?>"
-                                    class="sidebar-link">Invoice</a></li>
                         </ul>
                     </li>
                     <li class="sidebar-item"> <a class="sidebar-link sidebar-link"
@@ -79,7 +75,7 @@
                     </li>
                     <li class="sidebar-item"> <a class="sidebar-link sidebar-link"
                             href="<?php echo e(Route('dashboard.enquiries')); ?>" aria-expanded="false"><i data-feather="sidebar"
-                                class="feather-icon"></i><span class="hide-menu">Business Enqurie
+                                class="feather-icon"></i><span class="hide-menu">Business Enquries
                             </span></a>
                     </li>
                     <li class="sidebar-item has-arrow">

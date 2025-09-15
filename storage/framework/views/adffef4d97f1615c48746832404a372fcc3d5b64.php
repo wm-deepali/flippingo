@@ -163,7 +163,7 @@
             <!-- Agar Listing nahi hogi -->
             <div class="listing-product no-listing mb-4">
                 <div class="create-listing-frame">
-                    <button class="create-listing-btn">+ Create Listing</button>
+                    <button id="create-listing-btn" class="create-listing-btn">+ Create Listing</button>
                 </div>
             </div>
 
@@ -171,14 +171,107 @@
             <div class="listing-product has-listing">
                 <!-- Summary Cards -->
                 <div class="summary-cards">
-                    <div class="summary-card">Active Listings <span>12</span></div>
-                    <div class="summary-card">Drafts <span>3</span></div>
-                    <div class="summary-card">Pending Approval <span>2</span></div>
-                    <div class="summary-card">Disapproved <span>1</span></div>
+                    <div class="summary-card">Published <span><?php echo e($summary['published']); ?></span></div>
+                    <div class="summary-card">Pending Approval <span><?php echo e($summary['pending']); ?></span></div>
+                    <div class="summary-card">Disapproved <span><?php echo e($summary['rejected']); ?></span></div>
+                    <div class="summary-card">Expired <span><?php echo e($summary['expired']); ?></span></div>
+                </div>
+
+
+                <!-- Listing Cards -->
+                <div class="listing-cards">
+                    <?php $__empty_1 = true; $__currentLoopData = $submissions; $__env->addLoop($__currentLoopData); foreach($__currentLoopData as $submission): $__env->incrementLoopIndices(); $loop = $__env->getLastLoop(); $__empty_1 = false; ?>
+                        <div class="listing-card">
+                            <?php
+                                $fields = json_decode($submission['data'], true);
+                                $productTitle = $fields['product_title']['value'] ?? 'No Title';
+                                $offeredPrice = $fields['offered_price']['value'] ?? '0';
+
+                                $summaryFields = $submission['summaryFields'] ?? null;
+                              ?>
+                            <?php if($submission['product_photo']): ?>
+                                <img src="<?php echo e(asset('storage/' . $submission['product_photo'])); ?>" />
+                            <?php else: ?>
+                                <img src="<?php echo e('https://www.stockvault.net/data/2012/09/10/135306/thumb16.jpg'); ?>" alt="Product">
+                            <?php endif; ?>
+                            <div class="listing-info">
+                                <h3><?php echo e($submission['product_title']); ?></h3>
+
+
+                                <?php if(!empty($summaryFields)): ?>
+                                    <?php
+                                        // Filter textarea fields using array_filter
+                                        $textareaFields = array_filter($summaryFields, function ($field) {
+                                            return
+                                                isset($field['field_id']) &&
+                                                Str::startsWith($field['field_id'], 'textarea');
+                                        });
+                                    ?>
+
+                                    <?php if(!empty($textareaFields)): ?>
+                                        <p>
+                                            <?php $__currentLoopData = $textareaFields; $__env->addLoop($__currentLoopData); foreach($__currentLoopData as $index => $field): $__env->incrementLoopIndices(); $loop = $__env->getLastLoop(); ?>
+                                                <?php if(!empty($field['icon'])): ?>
+                                                    <i class="<?php echo e($field['icon']); ?>" style="margin-right: 4px;"></i>
+                                                <?php endif; ?>
+                                                <?php echo e(\Illuminate\Support\Str::limit($field['value'], 200, '...')); ?>
+
+
+                                                
+                                                <?php if($index !== array_key_last($textareaFields)): ?>
+                                                    &nbsp;|&nbsp;
+                                                <?php endif; ?>
+                                            <?php endforeach; $__env->popLoop(); $loop = $__env->getLastLoop(); ?>
+                                        </p>
+                                    <?php endif; ?>
+                                <?php endif; ?>
+                                <div class="wishlist-item-card">
+                                    <?php if(!empty($summaryFields)): ?>
+                                        <?php
+                                            // Use array_filter when summaryFields is a plain array
+                                            $textFields = array_filter($summaryFields, function ($field) {
+                                                return
+                                                    isset($field['field_id']) &&
+                                                    Str::startsWith($field['field_id'], 'text_');
+                                            });
+                                          ?>
+
+                                        <?php if(!empty($textFields)): ?>
+                                            <?php $__currentLoopData = $textFields; $__env->addLoop($__currentLoopData); foreach($__currentLoopData as $field): $__env->incrementLoopIndices(); $loop = $__env->getLastLoop(); ?>
+                                                <div class="wishlist-left">
+                                                    <p class="m-0" style="color: green;">
+                                                        <i class="<?php echo e($field['icon'] ?? ''); ?>"></i>
+                                                    </p>
+                                                    <div class="d-flex flex-column">
+                                                        <p class="m-0" style="font-size: 16px;"><?php echo e($field['label'] ?? ''); ?></p>
+                                                        <h5 class="m-0" style="color: #000; font-size: 16px;"><?php echo e($field['value'] ?? ''); ?>
+
+                                                        </h5>
+                                                    </div>
+                                                </div>
+                                            <?php endforeach; $__env->popLoop(); $loop = $__env->getLastLoop(); ?>
+                                        <?php endif; ?>
+                                    <?php endif; ?>
+
+                                </div>
+
+                                <div class="listing-actions">
+                                    <a href="#" class="btn edit">Edit</a>
+                                    <a href="#" class="btn analytics">View
+                                        Analytics</a>
+                                    <a href="#" class="btn details">View Detail</a>
+                                </div>
+                            </div>
+                        </div>
+                    <?php endforeach; $__env->popLoop(); $loop = $__env->getLastLoop(); if ($__empty_1): ?>
+                        <div class="create-listing-frame">
+                            <button id="create-listing-btn" class="create-listing-btn">+ Create Listing</button>
+                        </div>
+                    <?php endif; ?>
                 </div>
 
                 <!-- Listings Cards -->
-                <div class="listing-cards">
+                <!-- <div class="listing-cards">
                     <div class="listing-card">
                         <img src="https://www.stockvault.net/data/2012/09/10/135306/thumb16.jpg" alt="Product">
                         <div class="listing-info">
@@ -235,47 +328,23 @@
                             </div>
                         </div>
                     </div>
-                </div>
+                </div> -->
 
 
 
             </div>
         </div>
 
-
-
-
-
-
-
-
-
-
-
     </div>
 <?php $__env->stopSection(); ?>
 
 <?php $__env->startPush('scripts'); ?>
-
     <script>
-        // Example: Toggle subscription condition
-        let hasSubscription = true; // backend se check karna hoga
-
-        if (hasSubscription) {
-            document.getElementById("withSubscription").style.display = "flex";
-            document.getElementById("noSubscription").style.display = "none";
-        } else {
-            document.getElementById("withSubscription").style.display = "none";
-            document.getElementById("noSubscription").style.display = "block";
-        }
-        function openRenewModal() {
-            document.getElementById("renewModal").style.display = "flex";
-        }
-        function closeRenewModal() {
-            document.getElementById("renewModal").style.display = "none";
-        }
-
+        // Redirect on clicking "Create Listing"
+        document.getElementById("create-listing-btn").addEventListener("click", function () {
+            let url = "<?php echo e(route('add-listing', ['from' => 'dashboard'])); ?>";
+            window.location.href = url;
+        });
     </script>
-
 <?php $__env->stopPush(); ?>
 <?php echo $__env->make('layouts.user-master', \Illuminate\Support\Arr::except(get_defined_vars(), ['__data', '__path']))->render(); ?><?php /**PATH D:\web-mingo-project\flippingo_admin\resources\views/user/listing.blade.php ENDPATH**/ ?>

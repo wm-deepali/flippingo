@@ -10,6 +10,7 @@ class PaymentRefund extends Model
 
     protected $fillable = [
         'subscription_id',
+        'product_order_id',
         'refund_method',
         'payment_date',
         'reference_id',

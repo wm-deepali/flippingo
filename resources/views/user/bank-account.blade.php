@@ -1,7 +1,7 @@
 @extends('layouts.user-master')
 
 @section('title')
-    {{ $page->meta_title ?? 'Orders' }}
+    {{ $page->meta_title ?? 'Bank Accounts' }}
 @endsection
 
 
@@ -122,93 +122,94 @@
 
             <!-- Payment Forms -->
             <div class="payment-forms" style="width: 60%;">
+
                 <!-- Bank Transfer -->
                 <div class="form-box show" id="bank">
                     <h3>Bank Transfer</h3>
                     <hr>
-                    <label>Account Holder Name</label>
-                    <input type="text" placeholder="Enter Account Holder Name">
+                    <form action="{{ route('payment-method.save.bank') }}" method="POST">
+                        @csrf
+                        <label>Account Holder Name</label>
+                        <input type="text" value="{{ old('account_holder_name', $bank->account_holder_name ?? '') }}"
+                            name="account_holder_name" placeholder="Enter Account Holder Name" required>
 
-                    <label>Account Number</label>
-                    <input type="text" placeholder="Enter Account Number">
+                        <label>Account Number</label>
+                        <input type="text" name="account_number" value="{{ old('account_number', $bank->account_number ?? '') }}" placeholder="Enter Account Number" required>
 
-                    <label>IFSC Code</label>
-                    <input type="text" placeholder="Enter IFSC Code">
+                        <label>IFSC Code</label>
+                        <input type="text" name="ifsc_code" value="{{ old('ifsc_code', default: $bank->ifsc_code ?? '') }}" placeholder="Enter IFSC Code">
 
-                    <label>Bank Name</label>
-                    <input type="text" placeholder="Enter Bank Name">
+                        <label>Bank Name</label>
+                        <input type="text" name="bank_name" value="{{ old('bank_name', default: $bank->bank_name ?? '') }}" placeholder="Enter Bank Name">
 
-                    <label>Branch Name</label>
-                    <input type="text" placeholder="Enter Branch Name">
-
-                    <button class="btn-submit">Add</button>
-                </div>
-
-                <!-- UPI -->
-                <div class="form-box" id="upi">
-
-
-                    <p class="small-note">Please make sure that you have entered the correct UPI payment details.</p>
-
-                    <label>Amount Receiver Name</label>
-                    <input type="text" placeholder="Enter Receiver Name">
-
-                    <label>UPI Id</label>
-                    <input type="text" placeholder="Enter your UPI ID">
-
-                    <button class="btn-submit">Add</button>
-                </div>
-
-                <!-- Wire Transfer -->
-                <div class="form-box" id="wire">
-                    <p>Please make sure that you have entered the correct <strong>WIRE</strong> payment details.</p>
-
-                    <form class="wire-form">
-                        <div class="form-group">
-                            <label for="wireAccountNumber">Account Number</label>
-                            <input type="text" id="wireAccountNumber" placeholder="Enter Account Number">
-                        </div>
-
-                        <div class="form-group">
-                            <label for="wireAccountOwner">Account Owner</label>
-                            <input type="text" id="wireAccountOwner" placeholder="Enter Account Owner Name">
-                        </div>
-
-                        <div class="form-group">
-                            <label for="wireBankName">Bank Name</label>
-                            <input type="text" id="wireBankName" placeholder="Enter Bank Name">
-                        </div>
-
-                        <div class="form-group">
-                            <label for="wireBankAddress">Bank Address</label>
-                            <input type="text" id="wireBankAddress" placeholder="Enter Bank Branch Address">
-                        </div>
-
-                        <div class="form-group">
-                            <label for="wireSwiftCode">Bank Swift Code</label>
-                            <input type="text" id="wireSwiftCode" placeholder="Enter SWIFT/BIC Code">
-                        </div>
-
-                        <div class="form-group">
-                            <label for="wireIban">IBAN Number</label>
-                            <input type="text" id="wireIban" placeholder="Enter IBAN Number">
-                        </div>
+                        <label>Branch Name</label>
+                        <input type="text" name="branch_name" value="{{ old('branch_name', $bank->branch_name ?? '') }}" placeholder="Enter Branch Name">
 
                         <button type="submit" class="btn-submit">Add</button>
                     </form>
                 </div>
 
+                <!-- UPI -->
+                <div class="form-box" id="upi">
+                    <form action="{{ route('payment-method.save.upi') }}" method="POST">
+                        @csrf
+                        <p class="small-note">Please make sure that you have entered the correct UPI payment details.</p>
+
+                        <label>Amount Receiver Name</label>
+                        <input type="text" name="receiver_name" value="{{ old('receiver_name', $upi->receiver_name ?? '') }}" placeholder="Enter Receiver Name" required>
+
+                        <label>UPI Id</label>
+                        <input type="text" name="upi_id" value="{{ old('upi_id', $upi->upi_id ?? '') }}" placeholder="Enter your UPI ID" required>
+
+                        <button type="submit" class="btn-submit">Add</button>
+                    </form>
+
+                </div>
+
+                <!-- Wire Transfer -->
+                <div class="form-box" id="wire">
+                    <form action="{{ route('payment-method.save.wire') }}" method="POST">
+                        @csrf
+                        <p>Please make sure that you have entered the correct <strong>WIRE</strong> payment details.</p>
+
+                        <label>Account Number</label>
+                        <input type="text" name="account_number" value="{{ old('account_number', $wire->account_number ?? '') }}" placeholder="Enter Account Number" required>
+
+                        <label>Account Owner</label>
+                        <input type="text" name="account_holder_name" value="{{ old('account_holder_name', $wire->account_holder_name ?? '') }}" placeholder="Enter Account Owner Name" required>
+
+                        <label>Bank Name</label>
+                        <input type="text" name="bank_name" value="{{ old('bank_name', $wire->bank_name ?? '') }}" placeholder="Enter Bank Name" required>
+
+                        <label>Bank Address</label>
+                        <input type="text" name="bank_address"  value="{{ old('bank_address', $wire->bank_address ?? '') }}" placeholder="Enter Bank Branch Address" required>
+
+                        <label>Bank Swift Code</label>
+                        <input type="text" name="swift_code" value="{{ old('swift_code', $wire->swift_code ?? '') }}" placeholder="Enter SWIFT/BIC Code">
+
+                        <label>IBAN Number</label>
+                        <input type="text" name="iban_number" value="{{ old('iban_number', $wire->iban_number ?? '') }}"  placeholder="Enter IBAN Number">
+
+                        <button type="submit" class="btn-submit">Add</button>
+                    </form>
+
+                </div>
+
                 <!-- Paypal -->
                 <div class="form-box" id="paypal">
-                    <p class="small-note">Please make sure that you have entered the correct UPI payment details.</p>
+                    <form action="{{ route('payment-method.save.paypal') }}" method="POST">
+                        @csrf
+                        <p class="small-note">Please make sure that you have entered the correct Paypal payment details.</p>
 
-                    <label>Amount Receiver Name</label>
-                    <input type="text" placeholder="Enter Receiver Name">
+                        <label>Amount Receiver Name</label>
+                        <input type="text" name="receiver_name" value="{{ old('receiver_name', $paypal->receiver_name ?? '') }}"  placeholder="Enter Receiver Name" required>
 
-                    <label>UPI Id</label>
-                    <input type="email" placeholder="Enter Paypal Email">
+                        <label>Paypal Email</label>
+                        <input type="email" name="paypal_email" value="{{ old('paypal_email', $paypal->paypal_email ?? '') }}"  placeholder="Enter Paypal Email" required>
 
-                    <button class="btn-submit">Add</button>
+                        <button type="submit" class="btn-submit">Add</button>
+                    </form>
+
                 </div>
             </div>
         </div>
@@ -225,20 +226,20 @@
 @endsection
 
 @push('scripts')
-  <script>
-const cards = document.querySelectorAll(".payment-card");
-const forms = document.querySelectorAll(".form-box");
+    <script>
+        const cards = document.querySelectorAll(".payment-card");
+        const forms = document.querySelectorAll(".form-box");
 
-cards.forEach(card => {
-  card.addEventListener("click", () => {
-    // remove active class
-    cards.forEach(c => c.classList.remove("active"));
-    forms.forEach(f => f.classList.remove("show"));
+        cards.forEach(card => {
+            card.addEventListener("click", () => {
+                // remove active class
+                cards.forEach(c => c.classList.remove("active"));
+                forms.forEach(f => f.classList.remove("show"));
 
-    // add active class to clicked
-    card.classList.add("active");
-    document.getElementById(card.dataset.tab).classList.add("show");
-  });
-});
-</script>
+                // add active class to clicked
+                card.classList.add("active");
+                document.getElementById(card.dataset.tab).classList.add("show");
+            });
+        });
+    </script>
 @endpush

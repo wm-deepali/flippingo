@@ -6,6 +6,7 @@
                 <th>Order ID</th>
                 <th>Buyer Info</th>
                 <th>Seller Info</th>
+                <th>Product Detail</th>
                 <th>Product Cost</th>
                 <th>Transaction ID</th>
                 <th>Payment Method</th>
@@ -47,7 +48,14 @@
                         {{ $order->seller->first_name ?? '-' }} {{ $order->seller->last_name ?? '-' }}<br>
                         {{ $order->seller->email ?? '-' }}
                     </td>
-
+ <td>
+                                                        <span class="product-name">{{ $order->product_title }}</span><br>
+                                                        <small>{{ $order->category_name }}</small><br>
+                                                        @if ($order->product_photo)
+                                                            <img src="{{ asset('storage/' . $order->product_photo) }}"
+                                                                alt="Product Photo" width="50">
+                                                        @endif
+                                                    </td>
                     <!-- Product Cost -->
                     <td>{{ $order->total ?? '-' }}</td>
 

@@ -31,6 +31,13 @@ class ProductOrder extends Model
         'updated_at',
     ];
 
+    protected $appends = [
+        'product_title',
+        'category_name',
+        'product_photo',
+    ];
+
+
     /**
      * Boot method to auto-calc commission & seller earning
      */
@@ -106,4 +113,24 @@ class ProductOrder extends Model
         return $this->hasOne(OrderStatus::class, 'product_order_id')->latestOfMany();
     }
 
+
+    public function getProductTitleAttribute()
+    {
+        $data = $this->submission ? json_decode($this->submission->data, true) : [];
+        return $data['product_title']['value'] ?? '-';
+    }
+
+    public function getCategoryNameAttribute()
+    {
+        return optional($this->submission->form->category)->name ?? '-';
+    }
+
+    public function getProductPhotoAttribute()
+    {
+        $file = $this->submission
+            ? $this->submission->files()->where('show_on_summary', true)->first()
+            : null;
+
+        return $file ? $file->file_path : null;
+    }
 }

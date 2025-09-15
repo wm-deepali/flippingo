@@ -4,21 +4,21 @@ use App\Http\Controllers\Admin\BlogController;
 use App\Http\Controllers\Admin\ClientReelController;
 use App\Http\Controllers\Admin\FaqController;
 use App\Http\Controllers\Admin\FormController;
-use App\Http\Controllers\Admin\ListingController;
 use App\Http\Controllers\Admin\PageController;
 use App\Http\Controllers\Admin\TestimonialController;
 use App\Http\Controllers\CheckoutController;
+use App\Http\Controllers\PaymentMethodController;
 use App\Http\Controllers\ProfileController;
 use App\Http\Controllers\SubscriptionController;
 
+use App\Http\Controllers\ListingController;
 use App\Http\Controllers\WalletController;
 use App\Http\Controllers\WishlistController;
-use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\SiteController;
 use App\Http\Controllers\CustomerController;
 use App\Http\Controllers\GoogleController;
-
+use App\Http\Controllers\OrderController;
 /*
 |--------------------------------------------------------------------------
 | Site Routes
@@ -185,9 +185,27 @@ Route::middleware(['web'])->group(function () {
             Route::post('/subscription/renew', [SubscriptionController::class, 'renew'])->name('subscription.renew');
             Route::get('/subscription-plan', [SubscriptionController::class, 'SubscriptionPlans'])->name('dashboard.subscription-plan');
 
-            Route::get('/bank-account', function () {
-                return view('user.bank-account');
-            })->name('dashboard.bank');
+            // orders 
+            Route::get('/orders/buyer', [OrderController::class, 'buyerOrders'])->name('dashboard.buyer-orders');
+            Route::get('/orders/seller', [OrderController::class, 'sellerOrders'])->name('dashboard.seller-orders');
+            Route::post('/orders/cancel', [OrderController::class, 'cancelOrder'])->name('orders.cancel');
+            Route::get('/{order}/detail', [OrderController::class, 'show'])->name('orders.detail');
+            Route::get('/{order}/invoice', [OrderController::class, 'viewInvoice'])->name('orders.invoice');
+
+            Route::get('/wallet', [WalletController::class, 'wallet'])->name('dashboard.wallet');
+            Route::post('/wallet/withdraw', [WalletController::class, 'withdrawStore'])->name('wallet.withdraw.store');
+
+            // bank accounts details
+            Route::get('/bank-account', [PaymentMethodController::class, 'index'])->name('dashboard.bank');
+            Route::post('/payment-method/banksave', [PaymentMethodController::class, 'saveBank'])->name('payment-method.save.bank');
+            Route::post('/payment-method/upisave', [PaymentMethodController::class, 'saveUpi'])->name('payment-method.save.upi');
+            Route::post('/payment-method/wiresave', [PaymentMethodController::class, 'saveWire'])->name('payment-method.save.wire');
+            Route::post('/payment-method/paypalsave', [PaymentMethodController::class, 'savePaypal'])->name('payment-method.save.paypal');
+
+            // Wishlist
+            Route::get('/listing', [ListingController::class, 'index'])->name('dashboard.listing');
+
+
 
             Route::get('/notifications', function () {
                 return view('user.notifications');
@@ -216,10 +234,6 @@ Route::middleware(['web'])->group(function () {
                 return view('user.invoices');
             })->name('dashboard.invoices');
 
-            // Wallet
-            Route::get('/wallet', function () {
-                return view('user.wallet');
-            })->name('dashboard.wallet');
 
             // Business Enquiries
             Route::get('/business-enquiries', function () {
@@ -231,10 +245,6 @@ Route::middleware(['web'])->group(function () {
                 return view('user.wishlist');
             })->name('dashboard.wishlist');
 
-            // Wishlist
-            Route::get('/listing', function () {
-                return view('user.listing');
-            })->name('dashboard.listing');
 
             Route::get('/reports', function () {
                 return view('user.reports');

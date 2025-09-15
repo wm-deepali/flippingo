@@ -111,4 +111,10 @@ class Customer extends Authenticatable
             ->latestOfMany(); // always return the latest active subscription
     }
 
+    // In Customer.php
+    public function paymentMethods()
+    {
+        return $this->hasMany(PaymentMethod::class);
+    }
+
 }

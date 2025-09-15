@@ -162,7 +162,7 @@
             <!-- Agar Listing nahi hogi -->
             <div class="listing-product no-listing mb-4">
                 <div class="create-listing-frame">
-                    <button class="create-listing-btn">+ Create Listing</button>
+                    <button id="create-listing-btn" class="create-listing-btn">+ Create Listing</button>
                 </div>
             </div>
 
@@ -170,14 +170,105 @@
             <div class="listing-product has-listing">
                 <!-- Summary Cards -->
                 <div class="summary-cards">
-                    <div class="summary-card">Active Listings <span>12</span></div>
-                    <div class="summary-card">Drafts <span>3</span></div>
-                    <div class="summary-card">Pending Approval <span>2</span></div>
-                    <div class="summary-card">Disapproved <span>1</span></div>
+                    <div class="summary-card">Published <span>{{ $summary['published'] }}</span></div>
+                    <div class="summary-card">Pending Approval <span>{{ $summary['pending'] }}</span></div>
+                    <div class="summary-card">Disapproved <span>{{ $summary['rejected'] }}</span></div>
+                    <div class="summary-card">Expired <span>{{ $summary['expired'] }}</span></div>
+                </div>
+
+
+                <!-- Listing Cards -->
+                <div class="listing-cards">
+                    @forelse($submissions as $submission)
+                        <div class="listing-card">
+                            @php
+                                $fields = json_decode($submission['data'], true);
+                                $productTitle = $fields['product_title']['value'] ?? 'No Title';
+                                $offeredPrice = $fields['offered_price']['value'] ?? '0';
+
+                                $summaryFields = $submission['summaryFields'] ?? null;
+                              @endphp
+                            @if($submission['product_photo'])
+                                <img src="{{ asset('storage/' . $submission['product_photo']) }}" />
+                            @else
+                                <img src="{{'https://www.stockvault.net/data/2012/09/10/135306/thumb16.jpg' }}" alt="Product">
+                            @endif
+                            <div class="listing-info">
+                                <h3>{{ $submission['product_title']}}</h3>
+
+
+                                @if(!empty($summaryFields))
+                                    @php
+                                        // Filter textarea fields using array_filter
+                                        $textareaFields = array_filter($summaryFields, function ($field) {
+                                            return
+                                                isset($field['field_id']) &&
+                                                Str::startsWith($field['field_id'], 'textarea');
+                                        });
+                                    @endphp
+
+                                    @if(!empty($textareaFields))
+                                        <p>
+                                            @foreach($textareaFields as $index => $field)
+                                                @if(!empty($field['icon']))
+                                                    <i class="{{ $field['icon'] }}" style="margin-right: 4px;"></i>
+                                                @endif
+                                                {{ \Illuminate\Support\Str::limit($field['value'], 200, '...') }}
+
+                                                {{-- Separator except for last item --}}
+                                                @if($index !== array_key_last($textareaFields))
+                                                    &nbsp;|&nbsp;
+                                                @endif
+                                            @endforeach
+                                        </p>
+                                    @endif
+                                @endif
+                                <div class="wishlist-item-card">
+                                    @if(!empty($summaryFields))
+                                        @php
+                                            // Use array_filter when summaryFields is a plain array
+                                            $textFields = array_filter($summaryFields, function ($field) {
+                                                return
+                                                    isset($field['field_id']) &&
+                                                    Str::startsWith($field['field_id'], 'text_');
+                                            });
+                                          @endphp
+
+                                        @if(!empty($textFields))
+                                            @foreach($textFields as $field)
+                                                <div class="wishlist-left">
+                                                    <p class="m-0" style="color: green;">
+                                                        <i class="{{ $field['icon'] ?? '' }}"></i>
+                                                    </p>
+                                                    <div class="d-flex flex-column">
+                                                        <p class="m-0" style="font-size: 16px;">{{ $field['label'] ?? '' }}</p>
+                                                        <h5 class="m-0" style="color: #000; font-size: 16px;">{{ $field['value'] ?? '' }}
+                                                        </h5>
+                                                    </div>
+                                                </div>
+                                            @endforeach
+                                        @endif
+                                    @endif
+
+                                </div>
+
+                                <div class="listing-actions">
+                                    <a href="#" class="btn edit">Edit</a>
+                                    <a href="#" class="btn analytics">View
+                                        Analytics</a>
+                                    <a href="#" class="btn details">View Detail</a>
+                                </div>
+                            </div>
+                        </div>
+                    @empty
+                        <div class="create-listing-frame">
+                            <button id="create-listing-btn" class="create-listing-btn">+ Create Listing</button>
+                        </div>
+                    @endforelse
                 </div>
 
                 <!-- Listings Cards -->
-                <div class="listing-cards">
+                <!-- <div class="listing-cards">
                     <div class="listing-card">
                         <img src="https://www.stockvault.net/data/2012/09/10/135306/thumb16.jpg" alt="Product">
                         <div class="listing-info">
@@ -234,22 +325,22 @@
                             </div>
                         </div>
                     </div>
-                </div>
+                </div> -->
 
 
 
             </div>
         </div>
 
-
-
-
-
-
-
-
-
-
-
     </div>
 @endsection
+
+@push('scripts')
+    <script>
+        // Redirect on clicking "Create Listing"
+        document.getElementById("create-listing-btn").addEventListener("click", function () {
+            let url = "{{ route('add-listing', ['from' => 'dashboard']) }}";
+            window.location.href = url;
+        });
+    </script>
+@endpush

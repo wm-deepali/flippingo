@@ -6,6 +6,7 @@
                 <th>Order ID</th>
                 <th>Buyer Info</th>
                 <th>Seller Info</th>
+                <th>Product Detail</th>
                 <th>Product Cost</th>
                 <th>Transaction ID</th>
                 <th>Payment Method</th>
@@ -49,7 +50,14 @@
                         <?php echo e($order->seller->email ?? '-'); ?>
 
                     </td>
-
+ <td>
+                                                        <span class="product-name"><?php echo e($order->product_title); ?></span><br>
+                                                        <small><?php echo e($order->category_name); ?></small><br>
+                                                        <?php if($order->product_photo): ?>
+                                                            <img src="<?php echo e(asset('storage/' . $order->product_photo)); ?>"
+                                                                alt="Product Photo" width="50">
+                                                        <?php endif; ?>
+                                                    </td>
                     <!-- Product Cost -->
                     <td><?php echo e($order->total ?? '-'); ?></td>
 
