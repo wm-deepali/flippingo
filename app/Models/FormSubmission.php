@@ -20,6 +20,10 @@ class FormSubmission extends Model
         'status',
         'expires_at',
         'published_at',
+        'total_views',
+        'unique_views',
+        'total_clicks',
+        'sponsor_display_until'
     ];
 
     protected $casts = [
@@ -27,6 +31,7 @@ class FormSubmission extends Model
         'published' => 'boolean',
         'expires_at' => 'datetime',
         'published_at' => 'datetime',
+        'sponsor_display_until' => 'datetime'
     ];
 
 
@@ -34,6 +39,7 @@ class FormSubmission extends Model
         'product_title',
         'category_name',
         'product_photo',
+        'offered_price'
     ];
 
     // Relationships:
@@ -87,6 +93,14 @@ class FormSubmission extends Model
         $data = $this->data ? json_decode($this->data, true) : [];
         return $data['product_title']['value'] ?? '-';
     }
+
+
+     public function getOfferedPriceAttribute()
+    {
+        $data = $this->data ? json_decode($this->data, true) : [];
+        return $data['offered_price']['value'] ?? '-';
+    }
+
 
     public function getCategoryNameAttribute()
     {

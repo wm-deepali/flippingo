@@ -122,6 +122,11 @@
         color: #065f46;
     }
 
+    .status.new {
+        background: #e0f7fa;
+        color: #047857;
+    }
+
     .btn-view,
     .btn-reply {
         padding: 6px 10px;
@@ -196,6 +201,11 @@
         border: none;
         border-radius: 6px;
     }
+
+    .btn-mark-resolved {
+    margin-left: 5px;
+}
+
 </style>
 
 @section('content')
@@ -209,28 +219,23 @@
                 <div class="ticket-card new">
                     <div class="ticket-left">
                         <span>New Ticket</span>
-                        <h3>12</h3>
+                        <h3>{{ $countNew }}</h3>
+
                     </div>
                     <div class="ticket-icon"><i class="fas fa-plus-circle"></i></div>
                 </div>
                 <div class="ticket-card ">
                     <div class="ticket-left">
                         <span>In Progress</span>
-                        <h3>12</h3>
+                        <h3>{{ $countProgress }}</h3>
                     </div>
                     <div class="ticket-icon"><i class="fas fa-spinner"></i></div>
                 </div>
-                <!-- <div class="ticket-card progress">
-          <div class="ticket-left">
-            <span>In Progress</span>
-            <h3>8</h3>
-          </div>
-          <div class="ticket-icon"><i class="fas fa-spinner"></i></div>
-        </div> -->
+
                 <div class="ticket-card resolved">
                     <div class="ticket-left">
                         <span>Resolved</span>
-                        <h3>25</h3>
+                        <h3>{{ $countResolved }}</h3>
                     </div>
                     <div class="ticket-icon"><i class="fas fa-check-circle"></i></div>
                 </div>
@@ -254,36 +259,48 @@
                         <th>Ticket ID</th>
                         <th>Detail</th>
                         <th>Status</th>
+                        <th>Replies</th>
                         <th>Action</th>
                     </tr>
                 </thead>
                 <tbody>
-                    <tr>
-                        <td>05-Sep-2025 10:30 AM</td>
-                        <td>#TCKT1234</td>
-                        <td>
-                            <strong style="font-weight: 600;">Password Reset Issue</strong><br>
-                            I am unable to reset my password using the reset link.
-                        </td>
-                        <td><span class="status in-progress" style="white-space: nowrap;">In Progress</span></td>
-                        <td class="d-flex gap-2">
-                            <button class="btn-view"><i class="fas fa-eye"></i> View</button>
-                            <button class="btn-reply"><i class="fas fa-reply"></i> Reply</button>
-                        </td>
-                    </tr>
-                    <tr>
-                        <td>04-Sep-2025 02:15 PM</td>
-                        <td>#TCKT1229</td>
-                        <td>
-                            <strong style="font-weight: 600;">Payment Not Received</strong><br>
-                            I have made the payment but it's not reflecting.
-                        </td>
-                        <td><span class="status resolved">Resolved</span></td>
-                        <td class="d-flex gap-2">
-                            <button class="btn-view"><i class="fas fa-eye"></i> View</button>
-                            <button class="btn-reply"><i class="fas fa-reply"></i> Reply</button>
-                        </td>
-                    </tr>
+                    @forelse($tickets as $ticket)
+                                <tr>
+                                    <td>{{ $ticket->created_at->format('d-M-Y h:i A') }}</td>
+                                    <td>#TCKT{{ $ticket->id }}</td>
+                                    <td>
+                                        <strong style="font-weight: 600;">{{ $ticket->subject }}</strong><br>
+                                        {{ $ticket->detail }}
+                                    </td>
+                                    <td>
+                                        <span class="status
+                                                                                                        {{ $ticket->status == 'Resolved' ? 'resolved' :
+                        ($ticket->status == 'In Progress' ? 'in-progress' :
+                            ($ticket->status == 'New' ? 'new' : '')) }}" style="white-space: nowrap;">
+                                            {{ $ticket->status }}
+                                        </span>
+                                    </td>
+                                    <td>{{ $ticket->replies->count() }}</td>
+                                    <td class="d-flex gap-2">
+                                        <a href="{{ route('tickets.show', $ticket->id) }}" class="btn-view btn btn-sm btn-info"><i
+                                                class="fas fa-eye"></i> View</a>
+                                        <button class="btn-reply"><i class="fas fa-reply"></i> Reply</button>
+                                      @if($ticket->status !== 'Resolved')
+    <button class="btn btn-sm btn-success btn-mark-resolved" data-ticket-id="{{ $ticket->id }}">
+    <i class="fas fa-check"></i> Mark as Resolved
+</button>
+
+@endif
+
+
+
+                                    </td>
+                                </tr>
+                    @empty
+                        <tr>
+                            <td colspan="5">No tickets found.</td>
+                        </tr>
+                    @endforelse
                 </tbody>
             </table>
         </div>
@@ -293,24 +310,37 @@
             <div class="modal-box">
                 <h3>Create New Ticket</h3>
                 <hr>
-                <form id="ticketForm">
-                    <label class="m-0">Title</label>
-                    <input type="text" required>
+                <form id="ticketForm" enctype="multipart/form-data">
+                    <label for="ticket_type" class="m-0">Ticket Type</label>
+                    <select class="form-control" name="ticket_type" id="ticket_type" required>
+                        <option value="">Select Ticket Type</option>
+                        <option value="order_related">Order Related</option>
+                        <option value="enquiry_related">Enquiry Related</option>
+                        <option value="wallet_issue">Wallet Issue</option>
+                        <option value="customer_related">Customer Related</option>
+                        <option value="payment_related">Payment Related</option>
+                        <option value="others">Others</option>
+                    </select>
 
-                    <label class="m-0">Subject</label>
-                    <input type="text" required>
+                    <label for="subject" class="m-0">Subject</label>
+                    <input type="text" name="subject" id="subject" required placeholder="Enter subject">
 
-                    <label class="m-0">Description</label>
-                    <textarea required></textarea>
+                    <label for="order_id" class="m-0">Order ID (if any)</label>
+                    <input type="text" name="order_id" id="order_id" placeholder="Enter Order ID">
 
-                    <label class="m-0">Attach File</label>
-                    <input type="file">
+                    <label for="detail" class="m-0">Detail</label>
+                    <textarea name="detail" id="detail" required
+                        placeholder="Enter detailed description of your issue"></textarea>
+
+                    <label for="file" class="m-0">Attach Screenshot / File</label>
+                    <input type="file" name="file" id="file">
 
                     <div class="modal-actions">
                         <button type="button" class="btn-close" onclick="closeCreateModal()">Cancel</button>
                         <button type="submit" class="btn-submit">Submit</button>
                     </div>
                 </form>
+
             </div>
         </div>
 
@@ -319,12 +349,16 @@
             <div class="modal-box">
                 <h3>Reply to Ticket</h3>
                 <hr>
-                <textarea placeholder="Type your reply..."></textarea>
-                <input type="file" />
-                <div class="modal-actions">
-                    <button class="btn-close" onclick="closeModal()">Cancel</button>
-                    <button class="btn-submit">Submit</button>
-                </div>
+                <form id="replyForm" enctype="multipart/form-data">
+                    @csrf
+                    <input type="hidden" name="ticket_id" id="reply_ticket_id" />
+                    <textarea name="reply" id="reply_text" required placeholder="Type your reply..."></textarea>
+                    <input type="file" name="file" id="reply_file" />
+                    <div class="modal-actions">
+                        <button type="button" class="btn-close" onclick="closeModal()">Cancel</button>
+                        <button type="submit" class="btn-submit">Submit</button>
+                    </div>
+                </form>
             </div>
         </div>
 
@@ -337,16 +371,69 @@
 @push('scripts')
 
 
-    <script>// Open Reply Modal
-        // Reply Modal
-        document.querySelectorAll(".btn-reply").forEach(btn => {
-            btn.addEventListener("click", () => {
-                document.getElementById("replyModal").style.display = "flex";
+    <script>
+        // Open reply modal and set ticket id and clear fields
+        document.querySelectorAll('.btn-reply').forEach(btn => {
+            btn.addEventListener('click', () => {
+                const ticketId = btn.closest('tr').querySelector('td:nth-child(2)').innerText.replace('#TCKT', '').trim();
+                document.getElementById('reply_ticket_id').value = ticketId;
+                document.getElementById('reply_text').value = '';
+                document.getElementById('reply_file').value = '';
+                document.getElementById('replyModal').style.display = 'flex';
             });
         });
+
+        // Close modal
         function closeModal() {
-            document.getElementById("replyModal").style.display = "none";
+            document.getElementById('replyModal').style.display = 'none';
         }
+
+        // Submit reply form with AJAX
+        document.getElementById('replyForm').addEventListener('submit', function (e) {
+            e.preventDefault();
+
+            const form = e.target;
+            const formData = new FormData(form);
+
+            const token = document.querySelector('meta[name="csrf-token"]').getAttribute('content');
+
+            fetch('{{ route("tickets.reply") }}', {
+                method: 'POST',
+                headers: {
+                    'X-CSRF-TOKEN': token
+                },
+                body: formData
+            })
+                .then(response => response.json())
+                .then(data => {
+                    if (data.success) {
+                        Swal.fire({
+                            icon: 'success',
+                            title: 'Reply Sent',
+                            text: 'Your reply has been submitted successfully.',
+                            timer: 2000,
+                            showConfirmButton: false
+                        });
+                        closeModal();
+                        // Optionally, reload the page or update UI dynamically
+                        location.reload();
+                    } else {
+                        Swal.fire({
+                            icon: 'error',
+                            title: 'Error',
+                            text: data.message || 'Failed to send reply. Please try again.'
+                        });
+                    }
+                })
+                .catch(() => {
+                    Swal.fire({
+                        icon: 'error',
+                        title: 'Error',
+                        text: 'Network error. Please try again.'
+                    });
+                });
+        });
+
 
         // Create Ticket Modal
         function openCreateModal() {
@@ -359,10 +446,95 @@
         // Submit Ticket Form
         document.getElementById("ticketForm").addEventListener("submit", function (e) {
             e.preventDefault();
-            alert("New Ticket Created Successfully!");
-            closeCreateModal();
+
+            const form = e.target;
+            const formData = new FormData(form); // Handles file upload automatically
+
+            // Get CSRF token
+            const token = document.querySelector('meta[name="csrf-token"]').getAttribute('content');
+
+            fetch("{{ route('tickets.store') }}", {
+                method: "POST",
+                headers: {
+                    "X-CSRF-TOKEN": token
+                },
+                body: formData
+            })
+                .then(response => response.json())
+                .then(data => {
+                    if (data.success) {
+                        // Show SweetAlert success
+                        Swal.fire({
+                            icon: 'success',
+                            title: 'Ticket Created!',
+                            text: 'Your ticket has been raised successfully.',
+                            timer: 2000,
+                            showConfirmButton: false
+                        });
+
+                        closeCreateModal(); // Close modal
+                        form.reset(); // Reset form
+
+                        // Optional: Add ticket to table dynamically here
+                    } else {
+                        Swal.fire({
+                            icon: 'error',
+                            title: 'Oops!',
+                            text: data.message || 'Something went wrong. Please try again.'
+                        });
+                    }
+                })
+                .catch(error => {
+                    console.error("Error:", error);
+                    Swal.fire({
+                        icon: 'error',
+                        title: 'Error',
+                        text: 'Error submitting ticket. Please try again.'
+                    });
+                });
         });
 
-    </script>
 
+    document.querySelectorAll('.btn-mark-resolved').forEach(button => {
+        button.addEventListener('click', () => {
+            const ticketId = button.getAttribute('data-ticket-id');
+            
+            Swal.fire({
+                title: 'Mark ticket as resolved?',
+                icon: 'question',
+                showCancelButton: true,
+                confirmButtonText: 'Yes, resolve it!',
+                cancelButtonText: 'Cancel',
+            }).then((result) => {
+                if (result.isConfirmed) {
+                    const token = document.querySelector('meta[name="csrf-token"]').getAttribute('content');
+                    fetch(`/dashboard/tickets/${ticketId}/status`, {
+                        method: 'PATCH',
+                        headers: {
+                            'X-CSRF-TOKEN': token,
+                            'Content-Type': 'application/json',
+                            'Accept': 'application/json'
+                        },
+                        body: JSON.stringify({status: 'Resolved'})
+                    })
+                    .then(response => response.json())
+                    .then(data => {
+                        if(data.success) {
+                            Swal.fire('Resolved!', 'Your ticket has been marked as resolved.', 'success');
+                            // Optionally reload page or update UI dynamically
+                            location.reload();
+                        } else {
+                            Swal.fire('Oops!', data.message || 'Failed to update status.', 'error');
+                        }
+                    })
+                    .catch(() => {
+                        Swal.fire('Error!', 'Network error. Please try again.', 'error');
+                    });
+                }
+            });
+        });
+    });
+
+
+    </script>
 @endpush

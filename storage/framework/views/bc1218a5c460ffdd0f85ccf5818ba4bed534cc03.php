@@ -196,6 +196,10 @@
 
       $('#packageForm').on('submit', function (e) {
         e.preventDefault();
+
+        let $btn = $(this).find('button[type="submit"]');
+        $btn.prop('disabled', true).text('Saving...');
+
         $.ajax({
           url: "<?php echo e(route('admin.packages.store')); ?>",
           type: "POST",
@@ -214,6 +218,9 @@
             let errorMessages = '';
             $.each(errors, (key, value) => errorMessages += value[0] + '\n');
             Swal.fire({ icon: 'error', title: 'Validation Error', text: errorMessages.trim() });
+          },
+          complete: function () {
+            $btn.prop('disabled', false).text('Save Package'); // re-enable after request
           }
         });
       });

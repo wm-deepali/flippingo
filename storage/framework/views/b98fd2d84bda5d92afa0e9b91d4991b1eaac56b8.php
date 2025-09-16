@@ -34,7 +34,7 @@
 
   <td><?php echo e($submission->id); ?></td>
                 <td><?php echo e($submission->product_title); ?></td>
-                <td><?php echo e(number_format($submission->offered_price, 2)); ?></td>
+                <td><?php echo e($submission->offered_price); ?></td>
                <td><?php echo e($submission->total_sales); ?></td>
 
                    <td><?php echo e(\Carbon\Carbon::parse($submission->expires_at)->format('Y-m-d H:i')); ?></td>
@@ -61,7 +61,7 @@
 
                 
 <?php if($submission->status === 'rejected'): ?>
-    <td><?php echo e($submission->currentStatus->remarks ?? '-'); ?></td>
+    <td><?php echo e($submission->currentStatus->admin_remarks ?? '-'); ?></td>
 <?php endif; ?>
 
                     <!-- Action Buttons -->

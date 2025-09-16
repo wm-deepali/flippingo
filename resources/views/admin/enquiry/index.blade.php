@@ -34,26 +34,41 @@
                                     <table class="table" id="enquiries-table">
                                         <thead>
                                             <tr>
-                                                <th>ID</th>
-                                                <th>Submission ID</th>
-                                                <th>Customer (Enquirer)</th>
+                                                <th>Date & Time</th>
+                                                <th>Enquiry ID</th>
+                                                <th>Buyer Info</th>
+                                                <th>Seller Info</th>
+                                                <th>Product Info</th>
                                                 <th>Message</th>
                                                 <th>Status</th>
-                                                <th>Created At</th>
+                                                <th>Action</th>
                                             </tr>
                                         </thead>
                                         <tbody>
                                             @forelse ($enquiries as $enquiry)
                                                 <tr>
-                                                    <td>{{ $enquiry->id }}</td>
+                                                    <td>{{ $enquiry->created_at->format('d M Y H:i') }}</td>
+                                                    <td>#{{ $enquiry->id }}</td>
                                                     <td>
-                                                        <a
-                                                            href="{{ route('admin.form-submissions.show', $enquiry->submission->id ?? '#') }}">
-                                                            {{ $enquiry->submission_id }}
-                                                        </a>
+                                                        ID: {{ $enquiry->customer->customer_id ?? '-' }}<br>
+                                                        {{ $enquiry->customer->first_name ?? '-' }}
+                                                        {{ $enquiry->customer->last_name ?? '-' }}<br>
+                                                        {{ $enquiry->customer->email ?? '-' }}
                                                     </td>
-                                                    <td>{{ $enquiry->customer->first_name }}
-                                                        {{  $enquiry->customer->last_name }}
+                                                    <td>
+                                                        ID: {{ $enquiry->submission->customer->customer_id ?? '-' }}<br>
+                                                        {{ $enquiry->submission->customer->first_name ?? '-' }}
+                                                        {{ $enquiry->submission->customer->last_name ?? '-' }}<br>
+                                                        {{ $enquiry->submission->customer->email ?? '-' }}
+                                                    </td>
+                                                    <td>
+                                                        <span
+                                                            class="product-name">{{ $enquiry->submission->product_title ?? '' }}</span><br>
+                                                        <small>{{ $enquiry->submission->category_name }}</small><br>
+                                                        @if ($enquiry->submission->product_photo)
+                                                            <img src="{{ asset('storage/' . $enquiry->submission->product_photo) }}"
+                                                                alt="Product Photo" width="50">
+                                                        @endif
                                                     </td>
                                                     <td>{{ Str::limit($enquiry->message, 100) }}</td>
                                                     <td>
@@ -66,7 +81,19 @@
                                                                 class="badge badge-secondary">{{ ucfirst($enquiry->status) }}</span>
                                                         @endif
                                                     </td>
-                                                    <td>{{ $enquiry->created_at->format('d M Y H:i') }}</td>
+<td class="actions">
+                                  
+ <a href="{{ route('admin.form-submissions.show', $enquiry->submission->id) }}" class="btn btn-sm btn-secondary">
+                            View Product Detail
+                        </a>
+                       
+                        <a href="{{ route('admin.customers.show',  $enquiry->submission->customer_id ?? '') }}" target="_blank" class="btn btn-sm btn-info">
+                            View Seller Info
+                        </a>
+                          <a href="{{ route('admin.form-submissions.sales',$enquiry->customer_id ) }}" target="_blank" class="btn btn-sm btn-primary">
+                           View Buyer Info
+                        </a>
+                                </td>
                                                 </tr>
                                             @empty
                                                 <tr>

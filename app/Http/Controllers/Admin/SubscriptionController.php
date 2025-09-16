@@ -17,6 +17,13 @@ class SubscriptionController extends Controller
     public function index()
     {
 
+        $now = Carbon::now();
+
+        // Update subscriptions where end_date is past and status is not 'expired'
+        Subscription::where('end_date', '<', $now)
+            ->where('status', '!=', 'expired')
+            ->update(['status' => 'expired']);
+
         $subscriptions = Subscription::with(['customer', 'package', 'payment', 'refund'])
             ->orderBy('created_at', 'desc')
             ->get();

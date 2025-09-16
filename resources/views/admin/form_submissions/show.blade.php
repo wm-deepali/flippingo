@@ -43,16 +43,24 @@
                         <dt class="col-sm-3">Submitted On</dt>
                         <dd class="col-sm-9">{{ $submission->created_at->format('d M Y H:i') }}</dd>
 
-                        <dt class="col-sm-3">Published</dt>
+                        <dt class="col-sm-3">Status</dt>
                         <dd class="col-sm-9">
-                            @if($submission->published)
-                                <span class="badge badge-success">Yes</span>
-                                <br>
-                                <small>On
-                                    {{ $submission->published_at ? $submission->published_at->format('d M Y H:i') : '-' }}</small>
-                            @else
-                                <span class="badge badge-secondary">No</span>
-                            @endif
+                          @switch($submission->status)
+                            @case('pending')
+                                <span class="badge badge-secondary">Recent</span>
+                                @break
+                            @case('published')
+                                <span class="badge badge-success">Published</span>
+                                @break
+                            @case('expired')
+                                <span class="badge badge-warning">Expired</span>
+                                @break
+                            @case('rejected')
+                                <span class="badge badge-danger">Rejected</span>
+                                @break
+                            @default
+                                <span class="badge badge-light">{{ ucfirst($submission->status) }}</span>
+                        @endswitch
                         </dd>
                     </dl>
                 </div>

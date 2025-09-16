@@ -203,10 +203,10 @@
 
       let id = $('#faq_id').val();
       let url = id ? '<?php echo e(url("admin/faqs")); ?>/' + id : '<?php echo e(route("admin.faqs.store")); ?>';
-
+      let method = id ? 'PUT' : 'POST';
       $.ajax({
         url: url,
-        method: 'PUT',
+        method: method,
         data: $(this).serialize(),
         headers: {
           'X-CSRF-TOKEN': '<?php echo e(csrf_token()); ?>'

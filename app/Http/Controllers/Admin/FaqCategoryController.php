@@ -20,119 +20,54 @@ class FaqCategoryController extends Controller
         ]);
     }
 
-    
+
     public function create()
     {
-        try{
+        try {
             return response()->json([
                 "success" => true,
                 "html" => view('admin.faq-categories.create')->render(),
             ]);
-        }
-        catch(\Exception $ex){
-            return response()->json([
-                "success" => false,
-                'msgText' =>$ex->getMessage(),
-            ]);
-        }
-    }
-
-    
-   public function store(Request $request)
-{
-    $requestData = $request->all();
-
-    // Generate slug from the input slug or name
-    $slug = Str::slug($request->input('slug') ?: $request->input('name'), '-');
-    $requestData['slug'] = $slug;
-
-    // Replace slug key if necessary (your model uses 'slug', not 'url')
-    $request->merge(['slug' => $slug]);
-
-    // Validate input
-    $validator = Validator::make($requestData, [
-        'name' => 'required|unique:faq_categories,name|max:255',
-        'slug' => 'required|unique:faq_categories,slug|max:255',
-        'status' => 'required|in:Published,Draft',
-    ]);
-
-    if ($validator->passes()) {
-        try {
-            FaqCategory::create([
-                'name' => $request->input('name'),
-                'slug' => $slug,
-                'status' => $request->input('status'),
-            ]);
-
-            return response()->json([
-                'success' => true,
-                'msgText' => 'FAQ Category Created Successfully',
-            ]);
         } catch (\Exception $ex) {
             return response()->json([
-                'success' => false,
-                'code' => 400,
+                "success" => false,
                 'msgText' => $ex->getMessage(),
             ]);
         }
-    } else {
-        return response()->json([
-            'success' => false,
-            'code' => 422,
-            'errors' => $validator->errors(),
-        ]);
-    }
-}
-
-
-    public function edit($id)
-    {
-        try {
-            $category = FaqCategory::findOrFail($id);
-            return response()->json([
-                "success" => true,
-                "html" => view('admin.faq-categories.edit')->with([
-                    'category' => $category
-                ])->render(),
-            ]);
-        } catch(\Exception $ex){
-            return response()->json([
-                "success" => false,
-                'msgText' =>$ex->getMessage(),
-            ]);
-        }
     }
 
-    
-    public function update(Request $request , $id)
+
+    public function store(Request $request)
     {
         $requestData = $request->all();
-        $requestData['url'] = Str::slug($request->url, '-');
-        $request->replace($requestData);
+
+        // Generate slug from the input slug or name
+        $slug = Str::slug($request->input('slug') ?: $request->input('name'), '-');
+        $requestData['slug'] = $slug;
+
+        // Replace slug key if necessary (your model uses 'slug', not 'url')
+        $request->merge(['slug' => $slug]);
+
+        // Validate input
         $validator = Validator::make($requestData, [
-        'name' => [ "required",Rule::unique('blog_categories')->ignore($id),"max:255"],
-        'url' => [ "required",Rule::unique('blog_categories')->ignore($id),"max:255"],
-            
-           
+            'name' => 'required|unique:faq_categories,name|max:255',
+            'slug' => 'required|unique:faq_categories,slug|max:255',
+            'status' => 'required|in:Published,Draft',
         ]);
+
         if ($validator->passes()) {
             try {
-                $category = FaqCategory::findOrFail($id);
-                $data = array(
-                    'name' => $request->name,
-                    'url' => $request->url,
-                    'status' => $request->status,
-                );
+                FaqCategory::create([
+                    'name' => $request->input('name'),
+                    'slug' => $slug,
+                    'status' => $request->input('status'),
+                ]);
 
-               
-
-
-                $category->update($data);
                 return response()->json([
                     'success' => true,
-                    'msgText' => 'Blog Updated',
+                    'msgText' => 'FAQ Category Created Successfully',
                 ]);
-            } catch(\Exception $ex) {
+            } catch (\Exception $ex) {
                 return response()->json([
                     'success' => false,
                     'code' => 400,
@@ -148,19 +83,80 @@ class FaqCategoryController extends Controller
         }
     }
 
-   
+
+    public function edit($id)
+    {
+        try {
+            $category = FaqCategory::findOrFail($id);
+            return response()->json([
+                "success" => true,
+                "html" => view('admin.faq-categories.edit')->with([
+                    'category' => $category
+                ])->render(),
+            ]);
+        } catch (\Exception $ex) {
+            return response()->json([
+                "success" => false,
+                'msgText' => $ex->getMessage(),
+            ]);
+        }
+    }
+
+
+    public function update(Request $request, $id)
+    {
+        $requestData = $request->all();
+        $requestData['slug'] = Str::slug($request->slug, '-');
+        $request->replace($requestData);
+        $validator = Validator::make($requestData, [
+            'name' => ["required", Rule::unique('blog_categories')->ignore($id), "max:255"],
+            'slug' => ["required", Rule::unique('blog_categories')->ignore($id), "max:255"],
+
+
+        ]);
+        if ($validator->passes()) {
+            try {
+                $category = FaqCategory::findOrFail($id);
+                $data = array(
+                    'name' => $request->name,
+                    'slug' => $request->slug,
+                    'status' => $request->status,
+                );
+
+                $category->update($data);
+                return response()->json([
+                    'success' => true,
+                    'msgText' => 'Blog Updated',
+                ]);
+            } catch (\Exception $ex) {
+                return response()->json([
+                    'success' => false,
+                    'code' => 400,
+                    'msgText' => $ex->getMessage(),
+                ]);
+            }
+        } else {
+            return response()->json([
+                'success' => false,
+                'code' => 422,
+                'errors' => $validator->errors(),
+            ]);
+        }
+    }
+
+
     public function destroy($id)
     {
         try {
             $category = FaqCategory::findOrFail($id);
-            
-            
+
+
 
             $category->delete();
             return response()->json([
                 'success' => true,
             ]);
-        } catch(\Exception $ex) {
+        } catch (\Exception $ex) {
             return response()->json([
                 'success' => false,
                 'msgText' => $ex->getMessage(),

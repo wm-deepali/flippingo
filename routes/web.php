@@ -22,6 +22,7 @@ use App\Http\Controllers\Admin\{
     PackageController,
     SubscriptionController,
     ProductOrderController,
+    TicketController
 };
 
 
@@ -199,6 +200,15 @@ Route::group(['middleware' => 'auth'], function () {
         Route::get('reports/sales/custom-date', [ProductOrderController::class, 'customDate'])
             ->name('reports.sales.customDate');
 
+        Route::get('/listings/analytics', [ListingController::class, 'SubmissionList'])->name('listings.analytics');
+        Route::get('/form-submissions/{submission}/analytics', [ListingController::class, 'analytics'])
+            ->name('form-submissions.analytics');
+
+
+        Route::get('/tickets', [TicketController::class, 'index'])->name('tickets.index');
+        Route::post('/tickets/reply', [TicketController::class, 'reply'])->name('tickets.reply');
+        Route::get('/tickets/{ticket}', [TicketController::class, 'show'])->name('tickets.show');
+        Route::patch('/tickets/{ticket}/status', [TicketController::class, 'updateStatus'])->name('tickets.updateStatus');
 
 
         Route::resource('deletion_reasons', \App\Http\Controllers\Admin\DeletionReasonController::class);

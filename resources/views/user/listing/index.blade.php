@@ -150,6 +150,16 @@
         background: #4CAF50;
         color: white;
     }
+
+    .btn.livechat {
+        background: #9C27B0;
+        color: white;
+    }
+
+    .btn.enquiries {
+        background: #607D8B;
+        color: white;
+    }
 </style>
 
 
@@ -253,11 +263,21 @@
                                 </div>
 
                                 <div class="listing-actions">
-                                    <a href="#" class="btn edit">Edit</a>
-                                    <a href="#" class="btn analytics">View
-                                        Analytics</a>
-                                    <a href="#" class="btn details">View Detail</a>
+                                    <a href="{{ route('listing.edit', $submission['id']) }}" class="btn edit">Edit</a>
+                                    <a href="#" class="btn analytics">View Analytics</a>
+                                    <a href="{{ route('listing.show', $submission['id']) }}" class="btn details">View Detail</a>
+                                    <a href="#" class="btn livechat">Live Chat</a>
+                                    <a href="{{ route('dashboard.enquiries', ['submission_id' => $submission['id']]) }}"
+                                        class="btn enquiries">
+                                        Show All Enquiries
+                                    </a>
+                                    <button type="button" class="btn btn-danger delete-listing"
+                                        data-id="{{ $submission['id'] }}">
+                                        Delete
+                                    </button>
                                 </div>
+
+
                             </div>
                         </div>
                     @empty
@@ -269,63 +289,63 @@
 
                 <!-- Listings Cards -->
                 <!-- <div class="listing-cards">
-                    <div class="listing-card">
-                        <img src="https://www.stockvault.net/data/2012/09/10/135306/thumb16.jpg" alt="Product">
-                        <div class="listing-info">
-                            <h3>Course Title or Product Name</h3>
-                            <p>
-                                This comprehensive course is designed to give learners an in-depth understanding of the
-                                subject matter.
-                                Covering all essential modules with practical examples, case studies, and real-world
-                                applications, it helps
-                                students develop critical skills, improve knowledge retention, and apply concepts
-                                effectively.
-                                Whether you are a beginner or an advanced learner, this program ensures a structured
-                                approach for your growth.
-                            </p>
-                            <ul class="key-points">
-                                <li>✔ Interactive video lessons</li>
-                                <li>✔ Downloadable resources</li>
-                                <li>✔ Quizzes and assignments</li>
-                                <li>✔ Lifetime access</li>
-                            </ul>
+                                        <div class="listing-card">
+                                            <img src="https://www.stockvault.net/data/2012/09/10/135306/thumb16.jpg" alt="Product">
+                                            <div class="listing-info">
+                                                <h3>Course Title or Product Name</h3>
+                                                <p>
+                                                    This comprehensive course is designed to give learners an in-depth understanding of the
+                                                    subject matter.
+                                                    Covering all essential modules with practical examples, case studies, and real-world
+                                                    applications, it helps
+                                                    students develop critical skills, improve knowledge retention, and apply concepts
+                                                    effectively.
+                                                    Whether you are a beginner or an advanced learner, this program ensures a structured
+                                                    approach for your growth.
+                                                </p>
+                                                <ul class="key-points">
+                                                    <li>✔ Interactive video lessons</li>
+                                                    <li>✔ Downloadable resources</li>
+                                                    <li>✔ Quizzes and assignments</li>
+                                                    <li>✔ Lifetime access</li>
+                                                </ul>
 
-                            <div class="listing-actions">
-                                <button class="btn edit">Edit</button>
-                                <button class="btn analytics">View Analytics</button>
-                                <button class="btn details">View Detail</button>
-                            </div>
-                        </div>
-                    </div>
+                                                <div class="listing-actions">
+                                                    <button class="btn edit">Edit</button>
+                                                    <button class="btn analytics">View Analytics</button>
+                                                    <button class="btn details">View Detail</button>
+                                                </div>
+                                            </div>
+                                        </div>
 
-                    <div class="listing-card">
-                        <img src="https://www.stockvault.net/data/2012/09/10/135306/thumb16.jpg" alt="Product">
-                        <div class="listing-info">
-                            <h3>Another Course Name</h3>
-                            <p>
-                                This training program introduces participants to essential concepts with a practical focus
-                                on application.
-                                The course ensures comprehensive coverage of the fundamentals while progressively advancing
-                                to complex topics.
-                                It is crafted to help professionals, students, and enthusiasts gain confidence, improve
-                                efficiency, and achieve
-                                measurable results by applying knowledge to real-world scenarios with guidance from experts.
-                            </p>
-                            <ul class="key-points">
-                                <li>✔ Beginner to advanced modules</li>
-                                <li>✔ Certification upon completion</li>
-                                <li>✔ Hands-on projects</li>
-                                <li>✔ 24/7 support</li>
-                            </ul>
+                                        <div class="listing-card">
+                                            <img src="https://www.stockvault.net/data/2012/09/10/135306/thumb16.jpg" alt="Product">
+                                            <div class="listing-info">
+                                                <h3>Another Course Name</h3>
+                                                <p>
+                                                    This training program introduces participants to essential concepts with a practical focus
+                                                    on application.
+                                                    The course ensures comprehensive coverage of the fundamentals while progressively advancing
+                                                    to complex topics.
+                                                    It is crafted to help professionals, students, and enthusiasts gain confidence, improve
+                                                    efficiency, and achieve
+                                                    measurable results by applying knowledge to real-world scenarios with guidance from experts.
+                                                </p>
+                                                <ul class="key-points">
+                                                    <li>✔ Beginner to advanced modules</li>
+                                                    <li>✔ Certification upon completion</li>
+                                                    <li>✔ Hands-on projects</li>
+                                                    <li>✔ 24/7 support</li>
+                                                </ul>
 
-                            <div class="listing-actions">
-                                <button class="btn edit">Edit</button>
-                                <button class="btn analytics">View Analytics</button>
-                                <button class="btn details">View Detail</button>
-                            </div>
-                        </div>
-                    </div>
-                </div> -->
+                                                <div class="listing-actions">
+                                                    <button class="btn edit">Edit</button>
+                                                    <button class="btn analytics">View Analytics</button>
+                                                    <button class="btn details">View Detail</button>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div> -->
 
 
 
@@ -342,5 +362,49 @@
             let url = "{{ route('add-listing', ['from' => 'dashboard']) }}";
             window.location.href = url;
         });
+
+
+        $(document).on('click', '.delete-listing', function () {
+            let listingId = $(this).data('id');
+
+            Swal.fire({
+                title: "Are you sure?",
+                text: "Deleting this listing will remove all related data permanently!",
+                icon: "warning",
+                showCancelButton: true,
+                confirmButtonColor: "#d33",
+                cancelButtonColor: "#3085d6",
+                confirmButtonText: "Yes, delete it!",
+                cancelButtonText: "Cancel"
+            }).then((result) => {
+                if (result.isConfirmed) {
+                    $.ajax({
+                        url: "{{ url('listing') }}/" + listingId,
+                        type: "DELETE",
+                        data: {
+                            _token: "{{ csrf_token() }}"
+                        },
+                        success: function (res) {
+                            Swal.fire({
+                                icon: "success",
+                                title: "Deleted!",
+                                text: res.message || "Listing deleted successfully."
+                            });
+
+                            // Reload after short delay
+                            setTimeout(() => location.reload(), 1000);
+                        },
+                        error: function (xhr) {
+                            Swal.fire({
+                                icon: "error",
+                                title: "Error!",
+                                text: xhr.responseJSON?.message || "Something went wrong, please try again."
+                            });
+                        }
+                    });
+                }
+            });
+        });
+
     </script>
 @endpush

@@ -101,8 +101,6 @@
                             <span class="hide-menu">Reports & Analytics</span>
                         </a>
                         <ul class="collapse first-level base-level-line">
-                            <li class="sidebar-item"><a href="{{ Route('dashboard.reports') }}"
-                                    class="sidebar-link">Reports</a></li>
                             <li class="sidebar-item"><a href="{{ Route('dashboard.analytics') }}"
                                     class="sidebar-link">Analytics</a></li>
                         </ul>
@@ -118,7 +116,7 @@
                     <ul class="collapse first-level base-level-line">
                         <li class="sidebar-item"><a href="{{ Route('dashboard.faq') }}" class="sidebar-link">FAQ</a>
                         </li>
-                        <li class="sidebar-item"><a href="{{ Route('dashboard.raise') }}" class="sidebar-link">Raise
+                        <li class="sidebar-item"><a href="{{ Route('dashboard.raise-ticket') }}" class="sidebar-link">Raise
                                 a Request</a></li>
                         <li class="sidebar-item"><a href="{{ Route('dashboard.contact') }}" class="sidebar-link">Contact
                                 Us</a></li>

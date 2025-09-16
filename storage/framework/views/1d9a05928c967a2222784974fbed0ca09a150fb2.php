@@ -1,8 +1,9 @@
-@extends('layouts.user-master')
 
-@section('title')
-    {{ $page->meta_title ?? 'Reports' }}
-@endsection
+
+<?php $__env->startSection('title'); ?>
+    <?php echo e($page->meta_title ?? 'Reports'); ?>
+
+<?php $__env->stopSection(); ?>
 
 
 <style>
@@ -199,9 +200,9 @@
     }
 </style>
 
-@section('content')
+<?php $__env->startSection('content'); ?>
 
-    @include('user.sidebar')
+    <?php echo $__env->make('user.sidebar', \Illuminate\Support\Arr::except(get_defined_vars(), ['__data', '__path']))->render(); ?>
 
     <div class="page-wrapper">
 
@@ -320,4 +321,6 @@
         <!-- CSS -->
     </div>
 
-@endsection
+<?php $__env->stopSection(); ?>
+
+<?php echo $__env->make('layouts.user-master', \Illuminate\Support\Arr::except(get_defined_vars(), ['__data', '__path']))->render(); ?><?php /**PATH D:\web-mingo-project\flippingo_admin\resources\views/user/reports.blade.php ENDPATH**/ ?>

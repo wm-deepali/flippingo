@@ -33,7 +33,7 @@
 
   <td>{{ $submission->id}}</td>
                 <td>{{ $submission->product_title }}</td>
-                <td>{{ number_format($submission->offered_price, 2) }}</td>
+                <td>{{  $submission->offered_price}}</td>
                <td>{{ $submission->total_sales }}</td>
 
                    <td>{{ \Carbon\Carbon::parse($submission->expires_at)->format('Y-m-d H:i') }}</td>
@@ -60,7 +60,7 @@
 
                 {{-- Rejected-specific columns --}}
 @if($submission->status === 'rejected')
-    <td>{{ $submission->currentStatus->remarks ?? '-' }}</td>
+    <td>{{ $submission->currentStatus->admin_remarks ?? '-' }}</td>
 @endif
 
                     <!-- Action Buttons -->

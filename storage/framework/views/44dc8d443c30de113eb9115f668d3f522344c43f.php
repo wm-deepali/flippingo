@@ -192,7 +192,8 @@
               </a>
             </li>
             <li>
-              <a class="dropdown-item d-flex align-items-center" href="<?php echo e(route('admin.product-orders.cancellationRequests')); ?>">
+              <a class="dropdown-item d-flex align-items-center"
+                href="<?php echo e(route('admin.product-orders.cancellationRequests')); ?>">
                 Sales Order Cancellation Request
               </a>
             </li>
@@ -248,8 +249,8 @@
               </a>
             </li>
             <li>
-              <a class="dropdown-item d-flex align-items-center" href="<?php echo e(route('admin.form-submissions.index')); ?>">
-                Analytics
+              <a class="dropdown-item d-flex align-items-center" href="<?php echo e(route('admin.listings.analytics')); ?>">
+                Listing Analytics
               </a>
             </li>
 
@@ -262,17 +263,17 @@
           </a>
           <ul class="dropdown-menu">
             <li>
-              <a class="dropdown-item d-flex align-items-center" href="<?php echo e(route('admin.form-submissions.index')); ?>">
+              <a class="dropdown-item d-flex align-items-center" href="<?php echo e(route('admin.tickets.index')); ?>">
                 Buyer Tickets
               </a>
             </li>
             <li>
-              <a class="dropdown-item d-flex align-items-center" href="<?php echo e(route('admin.form-submissions.index')); ?>">
+              <a class="dropdown-item d-flex align-items-center" href="<?php echo e(route('admin.tickets.index')); ?>">
                 Seller Tickets
               </a>
             </li>
-
           </ul>
+
         </li>
 
         <li class="dropdown nav-item" data-menu="dropdown">

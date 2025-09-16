@@ -34,29 +34,45 @@
                                     <table class="table" id="enquiries-table">
                                         <thead>
                                             <tr>
-                                                <th>ID</th>
-                                                <th>Submission ID</th>
-                                                <th>Customer (Enquirer)</th>
+                                                <th>Date & Time</th>
+                                                <th>Enquiry ID</th>
+                                                <th>Buyer Info</th>
+                                                <th>Seller Info</th>
+                                                <th>Product Info</th>
                                                 <th>Message</th>
                                                 <th>Status</th>
-                                                <th>Created At</th>
+                                                <th>Action</th>
                                             </tr>
                                         </thead>
                                         <tbody>
                                             <?php $__empty_1 = true; $__currentLoopData = $enquiries; $__env->addLoop($__currentLoopData); foreach($__currentLoopData as $enquiry): $__env->incrementLoopIndices(); $loop = $__env->getLastLoop(); $__empty_1 = false; ?>
                                                 <tr>
-                                                    <td><?php echo e($enquiry->id); ?></td>
+                                                    <td><?php echo e($enquiry->created_at->format('d M Y H:i')); ?></td>
+                                                    <td>#<?php echo e($enquiry->id); ?></td>
                                                     <td>
-                                                        <a
-                                                            href="<?php echo e(route('admin.form-submissions.show', $enquiry->submission->id ?? '#')); ?>">
-                                                            <?php echo e($enquiry->submission_id); ?>
+                                                        ID: <?php echo e($enquiry->customer->customer_id ?? '-'); ?><br>
+                                                        <?php echo e($enquiry->customer->first_name ?? '-'); ?>
 
-                                                        </a>
+                                                        <?php echo e($enquiry->customer->last_name ?? '-'); ?><br>
+                                                        <?php echo e($enquiry->customer->email ?? '-'); ?>
+
                                                     </td>
-                                                    <td><?php echo e($enquiry->customer->first_name); ?>
+                                                    <td>
+                                                        ID: <?php echo e($enquiry->submission->customer->customer_id ?? '-'); ?><br>
+                                                        <?php echo e($enquiry->submission->customer->first_name ?? '-'); ?>
 
-                                                        <?php echo e($enquiry->customer->last_name); ?>
+                                                        <?php echo e($enquiry->submission->customer->last_name ?? '-'); ?><br>
+                                                        <?php echo e($enquiry->submission->customer->email ?? '-'); ?>
 
+                                                    </td>
+                                                    <td>
+                                                        <span
+                                                            class="product-name"><?php echo e($enquiry->submission->product_title ?? ''); ?></span><br>
+                                                        <small><?php echo e($enquiry->submission->category_name); ?></small><br>
+                                                        <?php if($enquiry->submission->product_photo): ?>
+                                                            <img src="<?php echo e(asset('storage/' . $enquiry->submission->product_photo)); ?>"
+                                                                alt="Product Photo" width="50">
+                                                        <?php endif; ?>
                                                     </td>
                                                     <td><?php echo e(Str::limit($enquiry->message, 100)); ?></td>
                                                     <td>
@@ -69,7 +85,19 @@
                                                                 class="badge badge-secondary"><?php echo e(ucfirst($enquiry->status)); ?></span>
                                                         <?php endif; ?>
                                                     </td>
-                                                    <td><?php echo e($enquiry->created_at->format('d M Y H:i')); ?></td>
+<td class="actions">
+                                  
+ <a href="<?php echo e(route('admin.form-submissions.show', $enquiry->submission->id)); ?>" class="btn btn-sm btn-secondary">
+                            View Product Detail
+                        </a>
+                       
+                        <a href="<?php echo e(route('admin.customers.show',  $enquiry->submission->customer_id ?? '')); ?>" target="_blank" class="btn btn-sm btn-info">
+                            View Seller Info
+                        </a>
+                          <a href="<?php echo e(route('admin.form-submissions.sales',$enquiry->customer_id )); ?>" target="_blank" class="btn btn-sm btn-primary">
+                           View Buyer Info
+                        </a>
+                                </td>
                                                 </tr>
                                             <?php endforeach; $__env->popLoop(); $loop = $__env->getLastLoop(); if ($__empty_1): ?>
                                                 <tr>

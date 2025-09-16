@@ -469,7 +469,7 @@
                                                     class="fa-solid fa-indian-rupee-sign"></i><?php echo e($offeredPrice); ?></h2>
                                             <button type="button" class="btn btn-dark"
                                                 onclick="window.location.href='<?php echo e(route('listing-details', ['id' => $submission['id']])); ?>'">
-                                                View Listing
+                                                View Detail
                                             </button>
                                         </div>
 
@@ -549,7 +549,7 @@
                                                     class="fa-solid fa-indian-rupee-sign"></i><?php echo e($offeredPrice); ?></h2>
                                             <button type="button" class="btn btn-dark"
                                                 onclick="window.location.href='<?php echo e(route('listing-details', ['id' => $submission['id']])); ?>'">
-                                                View Listing
+                                                View Detail
                                             </button>
                                         </div>
                                     </div>
@@ -635,7 +635,7 @@
                                                             class="fa-solid fa-indian-rupee-sign"></i><?php echo e($offeredPrice); ?></h2>
                                                     <button type="button" class="btn btn-dark"
                                                         onclick="window.location.href='<?php echo e(route('listing-details', ['id' => $submission['id']])); ?>'">
-                                                        View Listing
+                                                        View Detail
                                                     </button>
                                                 </div>
 
@@ -716,7 +716,7 @@
                                                             class="fa-solid fa-indian-rupee-sign"></i><?php echo e($offeredPrice); ?></h2>
                                                     <button type="button" class="btn btn-dark"
                                                         onclick="window.location.href='<?php echo e(route('listing-details', ['id' => $submission['id']])); ?>'">
-                                                        View Listing
+                                                        View Detail
                                                     </button>
 
                                                 </div>

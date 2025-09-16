@@ -12,6 +12,7 @@ use App\Http\Controllers\ProfileController;
 use App\Http\Controllers\SubscriptionController;
 
 use App\Http\Controllers\ListingController;
+use App\Http\Controllers\TicketController;
 use App\Http\Controllers\WalletController;
 use App\Http\Controllers\WishlistController;
 use Illuminate\Support\Facades\Route;
@@ -202,57 +203,42 @@ Route::middleware(['web'])->group(function () {
             Route::post('/payment-method/wiresave', [PaymentMethodController::class, 'saveWire'])->name('payment-method.save.wire');
             Route::post('/payment-method/paypalsave', [PaymentMethodController::class, 'savePaypal'])->name('payment-method.save.paypal');
 
-            // Wishlist
+            // Listing products and their routes
             Route::get('/listing', [ListingController::class, 'index'])->name('dashboard.listing');
+            Route::get('/listing/{id}/edit', [ListingController::class, 'edit'])
+                ->name('listing.edit');
+            Route::put('/listing/{id}/update', [ListingController::class, 'update'])
+                ->name('listing.update');
+            Route::get('/listing/{id}/show', [ListingController::class, 'show'])
+                ->name('listing.show');
+            Route::delete('/listing/{id}', [ListingController::class, 'destroy'])->name('listing.destroy');
 
+            // Business Enquiries
+            Route::get('/business-enquiries', [ListingController::class, 'enquiryIndex'])->name('dashboard.enquiries');
+            // Wishlist
+            Route::get('/wishlist', [ListingController::class, 'wishlistIndex'])->name('dashboard.wishlist');
+
+            // help & support routes
+            Route::get('/faq', [FaqController::class, 'userFaq'])->name('dashboard.faq');
+
+            // ticket raise request      
+            Route::get('/raise-ticket', [TicketController::class, 'index'])->name('dashboard.raise-ticket');
+            Route::post('/tickets/store', [TicketController::class, 'store'])->name('tickets.store');
+            Route::get('/tickets/{ticket}', [TicketController::class, 'show'])->name('tickets.show');
+            Route::patch('/tickets/{ticket}/status', [TicketController::class, 'updateStatus'])->name('tickets.updateStatus');
+            Route::post('/tickets/reply', [TicketController::class, 'reply'])->name('tickets.reply');
+
+            Route::get('/analytics', [ListingController::class, 'analytics'])->name('dashboard.analytics');
 
 
             Route::get('/notifications', function () {
                 return view('user.notifications');
             })->name('dashboard.notifications');
-            // FAQ
-            Route::get('/faq', function () {
-                return view('user.faq');
-            })->name('dashboard.faq');
-
-            Route::get('/raise-request', function () {
-                return view('user.raise-request');
-            })->name('dashboard.raise');
-
             // Contact Us
             Route::get('/contact-us', function () {
                 return view('user.contact-us');
             })->name('dashboard.contact');
 
-            // Orders
-            Route::get('/orders', function () {
-                return view('user.orders');
-            })->name('dashboard.orders');
-
-            // Invoice (usually linked with orders)
-            Route::get('/invoices', function () {
-                return view('user.invoices');
-            })->name('dashboard.invoices');
-
-
-            // Business Enquiries
-            Route::get('/business-enquiries', function () {
-                return view('user.enquiries');
-            })->name('dashboard.enquiries');
-
-            // Wishlist
-            Route::get('/wishlist', function () {
-                return view('user.wishlist');
-            })->name('dashboard.wishlist');
-
-
-            Route::get('/reports', function () {
-                return view('user.reports');
-            })->name('dashboard.reports');
-
-            Route::get('/analytics', function () {
-                return view('user.analytics');
-            })->name('dashboard.analytics');
 
         });
 

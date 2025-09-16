@@ -8,6 +8,7 @@
                 <th>Seller Info</th>
                 <th>Product Cost</th>
                 <th>Order Status</th>
+          
                 <th>Action</th>
             </tr>
         </thead>
@@ -62,34 +63,7 @@
                         @endswitch
                     </td>
 
-                    {{-- Delivered-specific columns --}}
-                    @if($status === 'delivered')
-                        <td>{{ $order->currentStatus->delivery_date ?? '-' }}</td>
-                        <td>{{ $order->currentStatus->delivery_method ?? '-' }}</td>
-                    @endif
-
-                    {{-- Cancelled-specific columns --}}
-                   {{-- Cancelled-specific columns --}}
-@if($status === 'cancelled')
-    <td>
-        @php
-            $cancelledById = $order->currentStatus->cancelled_by ?? null;
-            $cancelledByName = '-';
-        @endphp
-
-        @if($cancelledById)
-            @if($cancelledById == $order->seller_id)
-                {{ $order->seller->first_name ?? '-' }} {{ $order->customer->last_name ?? '' }}
-            @else
-                {{-- assume it's admin --}}
-                {{ \App\Models\User::find($cancelledById)->name ?? 'Admin' }}
-            @endif
-        @endif
-    </td>
-    <td>{{ $order->currentStatus->cancellation_reason ?? '-' }}</td>
-    <td>{{ \Carbon\Carbon::parse($order->currentStatus->cancelled_at ?? $order->currentStatus->updated_at)->format('Y-m-d') }}</td>
-@endif
-
+           
 
                     <!-- Action Buttons -->
                     <td>

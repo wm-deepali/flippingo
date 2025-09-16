@@ -177,7 +177,7 @@
                         <input type="text" name="account_number" value="<?php echo e(old('account_number', $wire->account_number ?? '')); ?>" placeholder="Enter Account Number" required>
 
                         <label>Account Owner</label>
-                        <input type="text" name="account_owner" value="<?php echo e(old('account_owner', $wire->account_owner ?? '')); ?>" placeholder="Enter Account Owner Name" required>
+                        <input type="text" name="account_holder_name" value="<?php echo e(old('account_holder_name', $wire->account_holder_name ?? '')); ?>" placeholder="Enter Account Owner Name" required>
 
                         <label>Bank Name</label>
                         <input type="text" name="bank_name" value="<?php echo e(old('bank_name', $wire->bank_name ?? '')); ?>" placeholder="Enter Bank Name" required>

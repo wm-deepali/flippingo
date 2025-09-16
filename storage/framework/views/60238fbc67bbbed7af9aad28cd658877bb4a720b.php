@@ -102,7 +102,7 @@
                                                 <?php if(isset($reports[$key]) && $reports[$key]->count() > 0): ?>
                                                     <?php echo $__env->make('admin.reports.sub-table', ['subscriptions' => $reports[$key]], \Illuminate\Support\Arr::except(get_defined_vars(), ['__data', '__path']))->render(); ?>
                                                 <?php else: ?>
-                                                    <p class="text-center text-muted mt-4">No Subscription records in this period.</p>
+                                                    <p class="text-center text-muted mt-4">No Subscription Expiring in this period.</p>
                                                 <?php endif; ?>
                                             <?php endif; ?>
                                         </div>

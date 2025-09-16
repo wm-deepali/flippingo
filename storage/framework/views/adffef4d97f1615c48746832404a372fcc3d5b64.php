@@ -256,7 +256,7 @@
                                 </div>
 
                                 <div class="listing-actions">
-                                    <a href="#" class="btn edit">Edit</a>
+                                    <a href="<?php echo e(route('listing.edit', $submission['id'])); ?>" class="btn edit">Edit</a>
                                     <a href="#" class="btn analytics">View
                                         Analytics</a>
                                     <a href="#" class="btn details">View Detail</a>

@@ -17,16 +17,16 @@
                 <!-- Email & Mobile -->
                 <div class="contact-card email-card">
                     <h3><i class="fas fa-envelope"></i> Email & Mobile</h3>
-                    <p><strong>Email:</strong> support@example.com</p>
-                    <p><strong>Mobile:</strong> +91 9876543210</p>
+                    <p><strong>Email:</strong> {{ setting('footer_email', 'support@example.com') }}</p>
+                    <p><strong>Mobile:</strong> {{ setting('footer_helpline', '+91 9876543210') }}</p>
+
                 </div>
 
                 <!-- Full Address -->
                 <div class="contact-card address-card">
                     <h3><i class="fas fa-map-marker-alt"></i> Full Address</h3>
-                    <p>Nuvem Prints Pvt Ltd</p>
-                    <p>2nd Floor, Business Tower, MG Road</p>
-                    <p>Bangalore, India - 560001</p>
+                    <p>Flippingo Pvt Ltd</p>
+                    <p>{{ setting('footer_address', '2nd Floor, Business Tower, MG Road') }}</p>
                 </div>
 
                 <!-- Live Chat -->

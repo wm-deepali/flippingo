@@ -85,4 +85,18 @@ class FaqController extends Controller
 
         return view('front.faq-category', compact('category', 'faqs', 'categories'));
     }
+
+    public function userFaq()
+    {
+        $categories = FaqCategory::with([
+            'faqs' => function ($query) {
+                $query->where('status', 'Published');
+            }
+        ])
+            ->where('status', 'Published')
+            ->get();
+            // dd($categories->toArray());
+
+        return view('user.faq', compact('categories'));
+    }
 }

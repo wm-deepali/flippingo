@@ -53,7 +53,7 @@
                           <td>{{ $category->slug }}</td>
                           <td>{{ $category->status ?? 'Draft' }}</td>
                           <td>
-                            <a href="javascript:void(0)" class="btn btn-primary btn-sm edit-category"
+                            <a href="javascript:void(0)" id="edit-category" class="btn btn-primary btn-sm edit-category"
                               data-id="{{ $category->id }}">
                               Edit
                             </a>
@@ -112,7 +112,6 @@
     });
 
     $(document).ready(function () {
-      $('#pagetype-table').DataTable();
 
       // open create modal
       $(document).on('click', '#add-category', function () {
@@ -163,7 +162,7 @@
       });
 
       // open edit modal
-      $(document).on("click", ".edit-category", function () {
+      $(document).on("click", "#edit-category", function () {
         const id = $(this).data('id');
         $.ajax({
           url: `{{ url('admin/faq-categories') }}/${id}/edit`,

@@ -16,46 +16,51 @@ class SiteController extends Controller
 
         $submissionsByCategory = [];
         $allSubmissionsFlat = [];
+        $now = now();
 
         foreach ($categories as $category) {
-            // Get only the latest submission per category
-            $latestSubmission = FormSubmission::whereHas('form', function ($query) use ($category) {
+            // Get all sponsored submissions per category 
+            $sponsoredSubmissions = FormSubmission::whereHas('form', function ($query) use ($category) {
                 $query->where('category_id', $category->id);
             })
+                ->whereNotNull('sponsor_display_until')
+                ->where('sponsor_display_until', '>', $now)
                 ->with('form.category', 'form.formData', 'customer', 'files')
                 ->latest()
-                ->first();
+                ->get();
 
-            if ($latestSubmission) {
-                // Map field values to latest form meta
-                $fields = json_decode($latestSubmission->data, true) ?? [];
-                $formFields = collect(data_get($latestSubmission, 'form.formData.fields', []));
-                $summaryFields = [];
+            if ($sponsoredSubmissions->isNotEmpty()) {  // Only proceed if submissions exist
 
-                foreach ($fields as $field_id => $field) {
-                    $meta = $formFields->firstWhere('field_id', $field_id);
-                    if (($meta && !empty($meta['show_on_summary'])) || (!empty($field['show_on_summary']))) {
-                        $summaryFields[] = [
-                            'field_id' => $field_id,
-                            'label' => $meta['label'] ?? $field['label'] ?? '',
-                            'icon' => $meta['icon'] ?? $field['icon'] ?? '',
-                            'value' => $field['value'] ?? '',
-                        ];
+                // Process each submission to build summary fields etc.
+                $processedSubmissions = $sponsoredSubmissions->map(function ($submission) {
+                    $fields = json_decode($submission->data, true) ?? [];
+                    $formFields = collect(data_get($submission, 'form.formData.fields', []));
+                    $summaryFields = [];
+
+                    foreach ($fields as $field_id => $field) {
+                        $meta = $formFields->firstWhere('field_id', $field_id);
+                        if (($meta && !empty($meta['show_on_summary'])) || (!empty($field['show_on_summary']))) {
+                            $summaryFields[] = [
+                                'field_id' => $field_id,
+                                'label' => $meta['label'] ?? $field['label'] ?? '',
+                                'icon' => $meta['icon'] ?? $field['icon'] ?? '',
+                                'value' => $field['value'] ?? '',
+                            ];
+                        }
                     }
-                }
 
-                $latestSubmission->summaryFields = $summaryFields;
-                $latestSubmission->category = $latestSubmission->form->category;
+                    $submission->summaryFields = $summaryFields;
+                    $submission->category = $submission->form->category;
+                    $submission->imageFile = collect($submission->files)->firstWhere('show_on_summary', true);
 
-                $imageFile = collect($latestSubmission->files)->firstWhere('show_on_summary', true);
-                $latestSubmission->imageFile = $imageFile;
+                    return $submission;
+                });
 
-                $submissionsByCategory[$category->id] = $latestSubmission;
-                $allSubmissionsFlat[] = $latestSubmission;
+                $submissionsByCategory[$category->id] = $processedSubmissions;
+                $allSubmissionsFlat = array_merge($allSubmissionsFlat, $processedSubmissions->toArray());
             }
         }
 
-        // Collection of latest submissions (one per category) for "All" tab
         $allSubmissions = collect($allSubmissionsFlat);
 
         $blogs = Blog::with('category')
@@ -65,7 +70,6 @@ class SiteController extends Controller
             ->get();
 
         $testimonials = Testimonial::where('status', 'active')->get();
-
         return view('front.index', compact('categories', 'submissionsByCategory', 'allSubmissions', 'blogs', 'testimonials'));
     }
 
@@ -81,14 +85,20 @@ class SiteController extends Controller
         $customer = Auth::guard('customer')->user();
         $subscription = $customer->activeSubscription;
 
-        // No active subscription → redirect to correct pricing page
-        if (!$subscription) {
+        // Check if subscription exists and is active (not expired)
+        if (!$subscription || $subscription->end_date < now()) {
+            $errorMessage = 'Please purchase a subscription before creating a listing.';
+            if ($subscription && $subscription->end_date < now()) {
+                $subscription->update(['status' => 'expired']);
+                $errorMessage = 'Your subscription has expired. Please renew or purchase a new subscription.';
+            }
+
             if ($request->has('from') && $request->from === 'dashboard') {
                 return redirect()->route(
                     'dashboard.subscription-plan',
                     [
                         'redirect' => 'add-listing',
-                        'error' => 'Please purchase a subscription before creating a listing.'
+                        'error' => $errorMessage
                     ]
                 );
             }
@@ -97,20 +107,22 @@ class SiteController extends Controller
                 'pricing',
                 [
                     'redirect' => 'add-listing',
-                    'error' => 'Please purchase a subscription before creating a listing.'
+                    'error' => $errorMessage
                 ]
             );
         }
 
-        // Check subscription usage
+        // Check subscription usage limit
         $package = $subscription->package;
         if ($subscription->used_listings >= $package->listings) {
+            $errorMessage = 'Your subscription Listing limit has been reached. Please upgrade.';
+
             if ($request->has('from') && $request->from === 'dashboard') {
                 return redirect()->route(
                     'dashboard.subscription-plan',
                     [
                         'redirect' => 'add-listing',
-                        'error' => 'Your subscription limit has been reached. Please upgrade.'
+                        'error' => $errorMessage
                     ]
                 );
             }
@@ -119,12 +131,12 @@ class SiteController extends Controller
                 'pricing',
                 [
                     'redirect' => 'add-listing',
-                    'error' => 'Your subscription limit has been reached. Please upgrade.'
+                    'error' => $errorMessage
                 ]
             );
         }
 
-        // ✅ Load categories
+        // Load categories
         $categories = Category::where('status', true)
             ->orderBy('created_at', 'desc')
             ->with('form')

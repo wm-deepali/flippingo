@@ -27,8 +27,8 @@
                             <div class="card-header">
                                 <h4 class="card-title">Form Submissions Listing</h4>
                             </div>
-                            <div class="card-body">
 
+                            <div class="card-body">
                                 <!-- Tabs navigation -->
                                 <ul class="nav nav-tabs" id="orderTabs" role="tablist">
                                     <li class="nav-item"><button class="nav-link active" data-toggle="tab"
@@ -44,30 +44,26 @@
 
                                 <!-- Tabs content -->
                                 <div class="tab-content">
-                              @foreach(['pending', 'published', 'expired', 'rejected'] as $status)
-    <div class="tab-pane fade @if($loop->first) show active @endif" id="{{ $status }}">
-        @include('admin.form_submissions.table', [
-            'submissions' => $submissions->filter(fn($submission) => strtolower($submission->status) === strtolower($status))
-        ])
-    </div>
-@endforeach
-
-
-                        </div>
+                                    @foreach(['pending', 'published', 'expired', 'rejected'] as $status)
+                                                <div class="tab-pane fade @if($loop->first) show active @endif" id="{{ $status }}">
+                                                    @include('admin.form_submissions.table', [
+                                                        'submissions' => $submissions->filter(fn($submission) => strtolower($submission->status) === strtolower($status))
+                                                    ])
+                                           </div>
+                                    @endforeach
+                            </div>
                             </div>
                         </div>
                     </div>
                 </div>
-                    </div>
-        </div>
+            </div>
             </div>
         </div>
 @endsection
 
-
-
-   <!-- Status Modal -->
-<div class="modal fade" id="statusModal" tabindex="-1" role="dialog" aria-labelledby="statusModalLabel" aria-hidden="true">
+<!-- Status Modal -->
+<div class="modal fade" id="statusModal" tabindex="-1" role="dialog" aria-labelledby="statusModalLabel"
+    aria-hidden="true">
     <div class="modal-dialog">
         <form id="updateStatusForm">
             @csrf
@@ -90,9 +86,10 @@
 
                     <!-- Remarks -->
                     <div class="form-group" id="remarksContainer" style="display:none;">
-        
-                                           <label for="statusRemarks">Remarks</label>
-                        <textarea name="remarks" id="statusRemarks" class="form-control" rows="4" placeholder="Enter remarks..."></textarea>
+
+                        <label for="statusRemarks">Remarks</label>
+                        <textarea name="remarks" id="statusRemarks" class="form-control" rows="4"
+                            placeholder="Enter remarks..."></textarea>
                     </div>
                 </div>
                 <div class="modal-footer">
@@ -103,76 +100,82 @@
     </div>
 </div>
 
-
-    @push('scripts')
-        <script>
+@push('scripts')
+    <script>
 
         let currentSubmissionId = null;
+        const allowedNextStatuses = {
+            pending: ['published', 'rejected', 'expired'],
+            published: ['expired', 'rejected'], // cannot go back to pending
+            rejected: ['expired'],
+                expired: [] // cannot change
+           };
 
-const allowedNextStatuses = {
-    pending: ['published','rejected','expired'],
-    published: ['expired','rejected'], // cannot go back to pending
-    rejected: ['expired'], 
-    expired: [] // cannot change
-};
+               $(document).on('click', '.changeStatusBtn', function () {
+        currentSubmissionId = $(this).data('id');
+            $('#updateStatusForm').data('submission-id', currentSubmissionId);
 
-$(document).on('click', '.changeStatusBtn', function() {
-    currentSubmissionId = $(this).data('id');
-    $('#updateStatusForm').data('submission-id', currentSubmissionId);
+            let currentStatus = $(this).data('status');
 
-    let currentStatus = $(this).data('status');
+            // Safety check
+            const nextStatuses = allowedNextStatuses[currentStatus] || [];
 
-    // Safety check
-    const nextStatuses = allowedNextStatuses[currentStatus] || [];
+         // Show all options first
+            $('#newStatus option').show();
 
-    // Show all options first
-    $('#newStatus option').show();
-
-    // Hide options that are NOT allowed
-    $('#newStatus option').each(function() {
-        let val = $(this).val();
-        if (!nextStatuses.includes(val) && val !== currentStatus) {
-            $(this).hide();
-        }
-    });
-
-    // Set current status as selected by default
-    $('#newStatus').val(currentStatus).trigger('change');
-
-    $('#statusRemarks').val($(this).data('remarks') || '');
-    $('#statusModal').modal('show');
-});
-
-
-             // Submit AJAX
-        $('#updateStatusForm').on('submit', function(e) {
-                e.preventDefault();
-
-                 let submissionId = $(this).data('submission-id');
-                let status = $('#newStatus').val();
-            let remarks = $('#statusRemarks').val();
-                let token = $('input[name="_token"]').val();
-
-                let data = { _token: token, status };
-
-                    if(status === 'rejected') {
-                data.remarks = remarks;
-                }
-
-                $.ajax({
-                    url: '/admin/form-submissions/' + submissionId + '/update-status',
-                    type: 'PATCH',
-                  data   : data,
-                    success: function(response) {
-                        $('#statusModal').modal('hide');
-                        Swal.fire('Success', response.message, 'success');
-                        setTimeout( () => location.reload(), 800);
-                  },
-                      error: function(xhr) {
-                        Swal.fire('Error', xhr.responseJSON?.message || 'Something went wrong', 'error');
-                    }
+           // H   ide options that are NOT allowed
+            $('#newStatus option').each(function () {
+            let     val = $(this).val();
+                if (!nextStatuses.includes(val) && val !== currentStatus) {
+                    $(this).hide();
+            }
             });
+
+            // Set current status as selected by default
+            $('#newStatus').val(currentStatus).trigger('change');
+
+                $('#statusRemarks').val($(this).data('remarks') || '');
+        $('#statusModal').modal('show');
         });
 
+        // 🔹 Toggle remarks field dynamically
+        $(document).on('change', '#newStatus', function () {
+            if ($(this).val() === 'rejected') {
+                $('#remarksContainer').show();
+            } else {
+                $('#remarksContainer').hide();
+        }
+        });
+
+      // S  ubmit AJAX
+    $('#updateStatusForm').on('submit', function (e) {
+            e.preventDefault();
+
+               let submissionId = $(this).data('submission-id');
+            let status = $('#newStatus').val();
+        let remarks = $('#statusRemarks').val();
+            let token = $('input[name="_token"]').val();
+
+            let data = { _token: token, status };
+
+               if (status === 'rejected') {
+            data.remarks = remarks;
+            }
+
+            $.ajax({
+                url: '/admin/form-submissions/' + submissionId + '/update-status',
+                type: 'PATCH',
+            data    : data,
+               success: function (response) {
+                    $('#statusModal').modal('hide');
+                    Swal.fire('Success', response.message, 'success');
+                    setTimeout(() => location.reload(), 800);
+            },
+                    error: function (xhr) {
+                    Swal.fire('Error', xhr.responseJSON?.message || 'Something went wrong', 'error');
+                }
+        });
+    });
+
         </script>
-    @endpush
+@endpush

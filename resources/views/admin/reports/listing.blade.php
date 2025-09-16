@@ -1,0 +1,117 @@
+@extends('layouts.master')
+
+@section('title', 'Listing Analytics')
+
+@section('content')
+
+    <div class="app-content content">
+        <div class="content-overlay"></div>
+        <div class="header-navbar-shadow"></div>
+        <div class="content-wrapper">
+            <div class="content-header row">
+                <div class="content-header-left col-md-9 col-12 mb-2">
+                    <div class="row breadcrumbs-top">
+                        <div class="col-12">
+                            <div class="breadcrumb-wrapper">
+                                <ol class="breadcrumb">
+                                    <li class="breadcrumb-item"><a href="{{ route('home') }}">Home</a></li>
+                                    <li class="breadcrumb-item active">Manage Listing Analytics</li>
+                                </ol>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="content-body">
+                <div class="row">
+                    <div class="col-md-12">
+                        <div class="card">
+                            <div class="card-header">
+                                <h4 class="card-title">Listing Analytics</h4>
+                            </div>
+                            <div class="card-body">
+
+
+                                <ul class="nav nav-tabs" id="reportTabs" role="tablist">
+                                    <li class="nav-item">
+                                        <a class="nav-link active" id="active-tab" data-toggle="tab" href="#recent"
+                                            role="tab" aria-controls="active" aria-selected="true">
+                                            Recent 
+                                        </a>
+                                    </li>
+                                    
+                                    <li class="nav-item">
+                                        <a class="nav-link" id="7day-tab" data-toggle="tab" href="#seven-day" role="tab"
+                                            aria-controls="seven-day" aria-selected="false">
+                                            7 Days
+                                        </a>
+                                    </li>
+                                    <li class="nav-item">
+                                        <a class="nav-link" id="15day-tab" data-toggle="tab" href="#fifteen-day" role="tab"
+                                            aria-controls="fifteen-day" aria-selected="false">
+                                            15 Days
+                                        </a>
+                                    </li>
+                                    <li class="nav-item">
+                                        <a class="nav-link" id="30day-tab" data-toggle="tab" href="#thirty-day" role="tab"
+                                            aria-controls="thirty-day" aria-selected="false">
+                                            30 Days
+                                        </a>
+                                    </li>
+                                  
+                                </ul>
+
+                                <div class="tab-content" id="reportTabsContent">
+
+                                @foreach (['recent', 'seven-day', 'fifteen-day', 'thirty-day'] as $key)
+    <div class="tab-pane fade @if($loop->first) show active @endif" id="{{ $key }}" role="tabpanel" aria-labelledby="{{ $key }}-tab">
+        @if(isset($reports[$key]) && $reports[$key]->count())
+            @include('admin.reports.listing-table', ['submissions' => $reports[$key]])
+        @else
+            <p class="text-center text-muted mt-4">No listing analytics records in this period.</p>
+        @endif
+    </div>
+@endforeach
+
+                                
+                                </div>
+
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+
+        </div>
+    </div>
+  <script src="https://code.jquery.com/jquery-3.5.1.min.js"></script>
+    <script>
+        $(document).ready(function () {
+            $('#customDateForm').on('submit', function (e) {
+                e.preventDefault();
+
+                let startDate = $('input[name="start_date"]').val();
+                let endDate = $('input[name="end_date"]').val();
+
+                $.ajax({
+                    url: '{{ route("admin.reports.sales.customDate") }}',
+                    method: 'GET',
+                    data: { start_date: startDate, end_date: endDate },
+                    beforeSend: function () {
+                        $('#customDateResult').html('<div class="text-center py-4">Loading...</div>');
+                    },
+                    success: function (response) {
+                        $('#customDateResult').html(response);
+                    },
+                    error: function () {
+                        $('#customDateResult').html('<p class="text-center text-danger">Failed to load data.</p>');
+                    }
+                });
+            });
+        });
+    </script>
+
+
+@endsection

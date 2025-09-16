@@ -45,16 +45,24 @@
                         <dt class="col-sm-3">Submitted On</dt>
                         <dd class="col-sm-9"><?php echo e($submission->created_at->format('d M Y H:i')); ?></dd>
 
-                        <dt class="col-sm-3">Published</dt>
+                        <dt class="col-sm-3">Status</dt>
                         <dd class="col-sm-9">
-                            <?php if($submission->published): ?>
-                                <span class="badge badge-success">Yes</span>
-                                <br>
-                                <small>On
-                                    <?php echo e($submission->published_at ? $submission->published_at->format('d M Y H:i') : '-'); ?></small>
-                            <?php else: ?>
-                                <span class="badge badge-secondary">No</span>
-                            <?php endif; ?>
+                          <?php switch($submission->status):
+                            case ('pending'): ?>
+                                <span class="badge badge-secondary">Recent</span>
+                                <?php break; ?>
+                            <?php case ('published'): ?>
+                                <span class="badge badge-success">Published</span>
+                                <?php break; ?>
+                            <?php case ('expired'): ?>
+                                <span class="badge badge-warning">Expired</span>
+                                <?php break; ?>
+                            <?php case ('rejected'): ?>
+                                <span class="badge badge-danger">Rejected</span>
+                                <?php break; ?>
+                            <?php default: ?>
+                                <span class="badge badge-light"><?php echo e(ucfirst($submission->status)); ?></span>
+                        <?php endswitch; ?>
                         </dd>
                     </dl>
                 </div>

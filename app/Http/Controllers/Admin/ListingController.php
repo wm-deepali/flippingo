@@ -3,12 +3,15 @@
 namespace App\Http\Controllers\Admin;
 
 use App\Http\Controllers\Controller;
+use App\Models\Category;
+use App\Models\Customer;
 use App\Models\Enquiry;
 use App\Models\FormData;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Storage;
 use App\Models\FormSubmission;
+use App\Models\FormSubmissionView;
 
 class ListingController extends Controller
 {
@@ -91,7 +94,7 @@ class ListingController extends Controller
     public function update(Request $request, $id)
     {
         $submission = FormSubmission::with('form')->find($id);
-      
+
         try {
             $form = $submission->form;
             if (!$form) {
@@ -214,22 +217,28 @@ class ListingController extends Controller
 
         $submission->status = $status;
 
-        if ($status === 'rejected') {
-            $submission->remarks = $request->input('remarks'); // Save remarks
+        // If status is empty, clear published_at (or set as needed)
+        if (empty($status)) {
+            $submission->published_at = null;
+        } else {
+            // Optionally, set published_at if status means published
+            if ($status === 'published') {
+                $submission->published_at = now();
+            }
         }
 
         $submission->save();
 
-        // Optional: add history entry
+        // Add history record with optional remarks
         $submission->addHistory($status, $request->input('remarks'));
 
         return response()->json(['message' => 'Status updated successfully']);
     }
 
- 
+
     public function enquiryIndex()
     {
-        $enquiries = Enquiry::with('customer', 'submission')->paginate(20);
+        $enquiries = Enquiry::with('customer', 'submission.customer')->paginate(20);
         return view('admin.enquiry.index', compact('enquiries'));
     }
 
@@ -247,5 +256,58 @@ class ListingController extends Controller
         return view('admin.form_submissions.sales', compact('submission', 'orders'));
     }
 
+    public function SubmissionList(Request $request)
+    {
+        $now = now();
+
+        $queryBase = FormSubmission::query()->with(['form.category', 'customer']);
+
+        // Submissions per period with pagination
+        $reports['recent'] = (clone $queryBase)->whereDate('created_at', $now->toDateString())->paginate(20);
+        $reports['seven-day'] = (clone $queryBase)->whereBetween('created_at', [$now->copy()->subDays(7), $now])->paginate(20);
+        $reports['fifteen-day'] = (clone $queryBase)->whereBetween('created_at', [$now->copy()->subDays(15), $now])->paginate(20);
+        $reports['thirty-day'] = (clone $queryBase)->whereBetween('created_at', [$now->copy()->subDays(30), $now])->paginate(20);
+
+        // Prepare chart data for last 30 days (example)
+        $chartData = FormSubmission::selectRaw('DATE(created_at) as date')
+            ->selectRaw('SUM(total_clicks) as clicks')
+            ->selectRaw('SUM(total_views) as views')
+            ->whereBetween('created_at', [$now->copy()->subDays(30), $now])
+            ->groupBy('date')
+            ->orderBy('date')
+            ->get();
+
+        // Transform chart data for frontend (arrays of labels and values)
+        $chartLabels = $chartData->pluck('date')->map(fn($d) => \Carbon\Carbon::parse($d)->format('d M'))->toArray();
+        $chartClicks = $chartData->pluck('clicks')->toArray();
+        $chartViews = $chartData->pluck('views')->toArray();
+
+        return view('admin.reports.listing', compact('reports', 'chartLabels', 'chartClicks', 'chartViews'));
+    }
+
+
+    public function analytics($id)
+    {
+        $submission = FormSubmission::with(['form.category', 'customer'])->findOrFail($id);
+
+        // Example: fetch daily clicks/views data for last 30 days for this submission
+        $now = now();
+        $start = $now->copy()->subDays(30);
+
+        $chartData = FormSubmissionView::selectRaw('DATE(created_at) as date')
+            ->selectRaw('COUNT(*) as views')
+            ->where('form_submission_id', $id)
+            ->whereBetween('created_at', [$start, $now])
+            ->groupBy('date')
+            ->orderBy('date')
+            ->get();
+
+        $chartLabels = $chartData->pluck('date')->map(fn($d) => \Carbon\Carbon::parse($d)->format('d M'))->toArray();
+        $chartViews = $chartData->pluck('views')->toArray();
+
+        // Similar queries can be made for clicks data if tracked separately
+
+        return view('admin.form-submissions.analytics-detail', compact('submission', 'chartLabels', 'chartViews'));
+    }
 
 }

@@ -91,105 +91,178 @@
 
             <div class="wishlist-container">
                 <!-- <h2 style="color: #000;font-weight: 600; line-height: 20px;">Draft Listings</h2>
-            <p>Continue where you left off</p> -->
+                                            <p>Continue where you left off</p> -->
                 <div class="wishlist-cont">
-                    <button class="wishlist-create">+ Create Your Wishlist</button>
+                    <button type="button"  onclick="window.location.href='<?php echo e(route('listing-list')); ?>'" class="wishlist-create">+ Create Your Wishlist</button>
                     <p>you can create your wishlist to keep getting the updates.</p>
                 </div>
-
-
             </div>
+
 
             <div class="wishlist-card">
-                <div class="wishlist-product-card">
-                    <img src="https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcThez8EsMExS0cJzMTvAM6OlRj9d9SecStl6g&s">
-                    <div class="wishlist-budge">
-                        <div class="d-flex justify-content-between align-items-center">
-                            <div class="budge-active">
-                                <p><i class="fa-solid fa-circle-check"></i> Active</p>
-                            </div>
-                            <h4 class="m-0" style="font-size: 24px;padding-right: 15px;"><i class="fa-regular fa-heart"></i>
-                            </h4>
+                <?php if($wishlist->count()): ?>
+                    <?php $__currentLoopData = $wishlist; $__env->addLoop($__currentLoopData); foreach($__currentLoopData as $item): $__env->incrementLoopIndices(); $loop = $__env->getLastLoop(); ?>
+                        <?php
+                            $submission = $item->submission ?? [];
+                            $customer = $submission->customer ?? [];
+                        ?>
 
-                        </div>
+                        <div class="wishlist-product-card">
+                            <?php if($submission->product_photo): ?>
+                                <img src="<?php echo e(asset('storage/' . $submission->product_photo)); ?>" />
+                            <?php else: ?>
+                                <img src="https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcThez8EsMExS0cJzMTvAM6OlRj9d9SecStl6g&s">
+                            <?php endif; ?>
+                            <div class="wishlist-budge">
+                                <div class="d-flex justify-content-between align-items-center">
+                                    <div class="budge-active">
+                                        <p><i class="fa-solid fa-circle-check"></i> Active</p>
+                                    </div>
+                                    <h4 class="m-0" style="font-size: 24px;padding-right: 15px;"><i class="fa-regular fa-heart"></i>
+                                    </h4>
 
-                    </div>
-                    <div class="product-details-hover">
-
-
-                        <div class="wishlist-button">
-                            <p>Website</p>
-
-                        </div>
-                        <h3 class="mt-2 " style="color: #000;">Demo Content</h3>
-                        <div class="d-flex justify-content-between align-items-center">
-                            <p class="m-0">By Rohan Wagha</p>
-                            <p class="m-0" style="color: #007bff;"><i class="fa-solid fa-eye"></i> 10</p>
-                        </div>
-                        <div class="wishlist-item-card">
-                            <div class="wishlist-left">
-                                <p class="m-0" style="color: green;"><i class="fa-solid fa-dollar-sign"></i></p>
-                                <div class="d-flex flex-column ">
-                                    <p class="m-0" style="font-size: 16px;">Revenue</p>
-                                    <h5 class="m-0" style="color: #000 ;font-size: 16px;">45/mo</h5>
                                 </div>
 
                             </div>
-                            <div class="wishlist-left">
-                                <p class="m-0" style="color: rgb(17, 96, 216);"><i class="fa-solid fa-eye"></i></p>
-                                <div class="d-flex flex-column ">
-                                    <p class="m-0" style="font-size: 16px;">Traffic</p>
-                                    <h5 class="m-0" style="color: #000 ;font-size: 16px;">4597/mo</h5>
+                            <div class="product-details-hover">
+                                <div class="wishlist-button">
+                                    <p><?php echo e($submission->category_name ?? ''); ?></p>
+
                                 </div>
-
-                            </div>
-
-                        </div>
-                        <div class="wishlist-price d-flex justify-content-between mt-3">
-                            <h2 style="color: #000;"><i class="fa-solid fa-indian-rupee-sign"></i>10,000</h2>
-                            <button> View Detail</button>
-
-                        </div>
-
-                    </div>
-                    <div class="more-info" data-aos="fade-up" data-aos-duration="500">
-
-
-                        <h3 class="mt-2" style="color: #000;">More Information</h3>
-                        <p style="font-size: 13px;">Free consultation | Fast Approval | 100% Transparent Process | No Hidden
-                            Cost</p>
-                        <div class="d-flex justify-content-between align-items-center">
-                            <p class="m-0">By Rohan Wagha</p>
-                            <p class="m-0" style="color: #007bff;"><i class="fa-solid fa-eye"></i> 10</p>
-                        </div>
-                        <div class="wishlist-item-card">
-                            <div class="wishlist-left">
-                                <p class="m-0" style="color: green;"><i class="fa-solid fa-dollar-sign"></i></p>
-                                <div class="d-flex flex-column ">
-                                    <p class="m-0" style="font-size: 16px;">Revenue</p>
-                                    <h5 class="m-0" style="color: #000 ;font-size: 16px;">45/mo</h5>
+                                <h3 class="mt-2 " style="color: #000;"><?php echo e($submission->product_title ?? ''); ?></h3>
+                                <div class="d-flex justify-content-between align-items-center">
+                                    <p class="m-0">By <?php echo e(($customer->first_name ?? '') . ' ' . ($customer->last_name ?? '')); ?></p>
+                                    <p class="m-0" style="color: #007bff;"><i class="fa-solid fa-eye"></i> 10</p>
                                 </div>
+                                <div class="wishlist-item-card">
+                                     <?php if(!empty($submission->summaryFields)): ?>
+    <?php
+        // Use array_filter when summaryFields is a plain array
+        $textFields = array_filter($submission->summaryFields, function ($field) {
+            return
+                isset($field['field_id']) &&
+                Str::startsWith($field['field_id'], 'text_');
+        });
+    ?>
 
-                            </div>
-                            <div class="wishlist-left">
-                                <p class="m-0" style="color: rgb(17, 96, 216);"><i class="fa-solid fa-eye"></i></p>
-                                <div class="d-flex flex-column ">
-                                    <p class="m-0" style="font-size: 16px;">Traffic</p>
-                                    <h5 class="m-0" style="color: #000 ;font-size: 16px;">4597/mo</h5>
-                                </div>
-
-                            </div>
-
-                        </div>
-                        <div class="wishlist-price d-flex justify-content-between mt-3">
-                            <h2 style="color: #000;"><i class="fa-solid fa-indian-rupee-sign"></i>10,000</h2>
-                            <button> View Detail</button>
-
-                        </div>
-                    </div>
+    <?php if(!empty($textFields)): ?>
+        <?php $__currentLoopData = $textFields; $__env->addLoop($__currentLoopData); foreach($__currentLoopData as $field): $__env->incrementLoopIndices(); $loop = $__env->getLastLoop(); ?>
+            <div class="wishlist-left">
+                <p class="m-0" style="color: green;">
+                    <i class="<?php echo e($field['icon'] ?? ''); ?>"></i>
+                </p>
+                <div class="d-flex flex-column">
+                    <p class="m-0" style="font-size: 16px;"><?php echo e($field['label'] ?? ''); ?></p>
+                    <h5 class="m-0" style="color: #000; font-size: 16px;"><?php echo e($field['value'] ?? ''); ?></h5>
                 </div>
-
             </div>
+        <?php endforeach; $__env->popLoop(); $loop = $__env->getLastLoop(); ?>
+    <?php endif; ?>
+<?php endif; ?>
+
+                                </div>
+                                <div class="wishlist-price d-flex justify-content-between mt-3">
+                                    <h2 style="color: #000;"><i
+                                            class="fa-solid fa-indian-rupee-sign"></i><?php echo e($submission->offered_price ?? ''); ?></h2>
+                                    <button type="button" class="btn btn-dark"
+                                                onclick="window.location.href='<?php echo e(route('listing-details', ['id' => $submission['id']])); ?>'">
+                                                View Detail
+                                            </button>
+
+                                </div>
+
+                            </div>
+                            <div class="more-info" data-aos="fade-up" data-aos-duration="500">
+
+
+                                <div class="wishlist-button">
+                                    <p><?php echo e($submission->category_name ?? ''); ?></p>
+                                
+                                </div>
+                                <h3 class="mt-2" style="color: #000;"><?php echo e($submission->product_title ?? ''); ?></h3>
+                             <?php if(!empty($submission->summaryFields)): ?>
+    <?php
+        // Filter textarea fields using array_filter
+        $textareaFields = array_filter($submission->summaryFields, function($field) {
+            return
+                isset($field['field_id']) &&
+                Str::startsWith($field['field_id'], 'textarea');
+        });
+    ?>
+
+    <?php if(!empty($textareaFields)): ?>
+        <p style="font-size: 13px;">
+            <?php $__currentLoopData = $textareaFields; $__env->addLoop($__currentLoopData); foreach($__currentLoopData as $index => $field): $__env->incrementLoopIndices(); $loop = $__env->getLastLoop(); ?>
+                <?php if(!empty($field['icon'])): ?>
+                    <i class="<?php echo e($field['icon']); ?>" style="margin-right: 4px;"></i>
+                <?php endif; ?>
+                <?php echo e(\Illuminate\Support\Str::limit($field['value'], 100, '...')); ?>
+
+
+                
+                <?php if($index !== array_key_last($textareaFields)): ?>
+                    &nbsp;|&nbsp;
+                <?php endif; ?>
+            <?php endforeach; $__env->popLoop(); $loop = $__env->getLastLoop(); ?>
+        </p>
+    <?php endif; ?>
+<?php endif; ?>
+
+                                <div class="d-flex justify-content-between align-items-center">
+                                    <p class="m-0">By <?php echo e(($customer->first_name ?? '') . ' ' . ($customer->last_name ?? '')); ?></p>
+                                    <p class="m-0" style="color: #007bff;"><i class="fa-solid fa-eye"></i> 10</p>
+                                </div>
+                                <div class="wishlist-item-card">
+                                  <?php if(!empty($submission->summaryFields)): ?>
+    <?php
+        // Use array_filter when summaryFields is a plain array
+        $textFields = array_filter($submission->summaryFields, function ($field) {
+            return
+                isset($field['field_id']) &&
+                Str::startsWith($field['field_id'], 'text_');
+        });
+    ?>
+
+    <?php if(!empty($textFields)): ?>
+        <?php $__currentLoopData = $textFields; $__env->addLoop($__currentLoopData); foreach($__currentLoopData as $field): $__env->incrementLoopIndices(); $loop = $__env->getLastLoop(); ?>
+            <div class="wishlist-left">
+                <p class="m-0" style="color: green;">
+                    <i class="<?php echo e($field['icon'] ?? ''); ?>"></i>
+                </p>
+                <div class="d-flex flex-column">
+                    <p class="m-0" style="font-size: 16px;"><?php echo e($field['label'] ?? ''); ?></p>
+                    <h5 class="m-0" style="color: #000; font-size: 16px;"><?php echo e($field['value'] ?? ''); ?></h5>
+                </div>
+            </div>
+        <?php endforeach; $__env->popLoop(); $loop = $__env->getLastLoop(); ?>
+    <?php endif; ?>
+<?php endif; ?>
+                                </div>
+                                <div class="wishlist-price d-flex justify-content-between mt-3">
+                                    <h2 style="color: #000;"><i
+                                            class="fa-solid fa-indian-rupee-sign"></i><?php echo e($submission->offered_price ?? ''); ?></h2>
+                                       <button type="button" class="btn btn-dark"
+                                                onclick="window.location.href='<?php echo e(route('listing-details', ['id' => $submission['id']])); ?>'">
+                                                View Detail
+                                            </button>
+
+                                </div>
+                            </div>
+                        </div>
+                    <?php endforeach; $__env->popLoop(); $loop = $__env->getLastLoop(); ?>
+
+
+                    
+                    <div class="mt-3">
+                        <?php echo e($wishlist->links()); ?>
+
+                    </div>
+                <?php else: ?>
+                    <p class="text-center">No items in wishlist yet.</p>
+                <?php endif; ?>
+            </div>
+
+       
 
         </div>
     </div>

@@ -8,6 +8,7 @@
                 <th>Seller Info</th>
                 <th>Product Cost</th>
                 <th>Order Status</th>
+          
                 <th>Action</th>
             </tr>
         </thead>
@@ -64,36 +65,7 @@
                         <?php endswitch; ?>
                     </td>
 
-                    
-                    <?php if($status === 'delivered'): ?>
-                        <td><?php echo e($order->currentStatus->delivery_date ?? '-'); ?></td>
-                        <td><?php echo e($order->currentStatus->delivery_method ?? '-'); ?></td>
-                    <?php endif; ?>
-
-                    
-                   
-<?php if($status === 'cancelled'): ?>
-    <td>
-        <?php
-            $cancelledById = $order->currentStatus->cancelled_by ?? null;
-            $cancelledByName = '-';
-        ?>
-
-        <?php if($cancelledById): ?>
-            <?php if($cancelledById == $order->seller_id): ?>
-                <?php echo e($order->seller->first_name ?? '-'); ?> <?php echo e($order->customer->last_name ?? ''); ?>
-
-            <?php else: ?>
-                
-                <?php echo e(\App\Models\User::find($cancelledById)->name ?? 'Admin'); ?>
-
-            <?php endif; ?>
-        <?php endif; ?>
-    </td>
-    <td><?php echo e($order->currentStatus->cancellation_reason ?? '-'); ?></td>
-    <td><?php echo e(\Carbon\Carbon::parse($order->currentStatus->cancelled_at ?? $order->currentStatus->updated_at)->format('Y-m-d')); ?></td>
-<?php endif; ?>
-
+           
 
                     <!-- Action Buttons -->
                     <td>
