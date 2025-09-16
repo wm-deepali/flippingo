@@ -117,4 +117,13 @@ class Customer extends Authenticatable
         return $this->hasMany(PaymentMethod::class);
     }
 
+
+    public function notifications()
+    {
+        return $this->belongsToMany(Notification::class, 'notification_customer')
+            ->withPivot(['status', 'read_at', 'is_bookmarked'])
+            ->withTimestamps();
+    }
+
+
 }

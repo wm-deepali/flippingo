@@ -146,7 +146,6 @@ class CheckoutController extends Controller
                 'seller_earning' => $sellerEarning,
             ]);
 
-
             // ⚡ Create initial "recent" status for the order
             OrderStatus::create([
                 'product_order_id' => $order->id,
@@ -167,8 +166,12 @@ class CheckoutController extends Controller
                 $wallet->save();
 
                 $wallet->addTransaction('debit', $totalAmount, 'Purchase Products', 'Payment for order ' . $order->order_number);
-
                 $order->update(['paid_at' => now()]);
+
+                sendNotification('wallet_debit', [
+                    'amount' => $totalAmount,
+                    'balance' => $wallet->balance,
+                ], $submission->customer_id);
 
                 Payment::create([
                     'product_order_id' => $order->id,
@@ -220,6 +223,19 @@ class CheckoutController extends Controller
                 'issued_at' => now(),
             ]);
 
+
+
+            sendNotification('order_placed', [
+                'order_id' => $orderNumber,
+                'amount' => $totalAmount,
+            ], $user->id);
+
+            sendNotification('new_order_received', [
+                'listing_title' => $order->product_title,
+                'order_id' => $orderNumber,
+                'customer_name' => $order->customer->first_name,
+            ], $order->seller_id);
+
             DB::commit();
 
             return response()->json([
@@ -251,6 +267,12 @@ class CheckoutController extends Controller
             'Product Sales',
             'Earning from order ' . $order->order_number
         );
+
+        sendNotification('wallet_credit', [
+            'amount' => $order->seller_earning,
+            'balance' => $sellerWallet->balance,
+        ], $order->seller_id);
+
     }
 
 

@@ -22,7 +22,8 @@ use App\Http\Controllers\Admin\{
     PackageController,
     SubscriptionController,
     ProductOrderController,
-    TicketController
+    TicketController,
+    NotificationController
 };
 
 
@@ -216,6 +217,22 @@ Route::group(['middleware' => 'auth'], function () {
             ->name('account_deletion_requests.index');
         Route::post('account_deletion_requests/{id}/delete-instant', [AccountDeletionRequestController::class, 'deleteInstant'])
             ->name('account_deletion_requests.delete_instant');
+
+
+        // Event-Based Notifications
+        Route::get('/notifications/events', [NotificationController::class, 'eventNotifications'])
+            ->name('notifications.events');
+
+        // Admin-Created Notifications
+        Route::get('/notifications/custom', [NotificationController::class, 'adminNotifications'])
+            ->name('notifications.custom');
+
+        Route::get('/notifications/custom/create', [NotificationController::class, 'create'])
+            ->name('notifications.create');
+        Route::post('/notifications/custom/store', [NotificationController::class, 'store'])
+            ->name('notifications.store');
+        Route::post('/notifications/send-from-template', [NotificationController::class, 'sendFromTemplate'])
+            ->name('notifications.sendFromTemplate');
 
 
         // Content managemnent

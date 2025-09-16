@@ -67,7 +67,7 @@ class SubscriptionController extends Controller
         return view('user.subscription-plan', compact('packages', 'walletBalance'));
     }
 
-    
+
     public function ListPackage()
     {
         $user = Auth::guard('customer')->user();
@@ -114,6 +114,11 @@ class SubscriptionController extends Controller
                 "Purchased {$package->name} plan",
                 $package->id
             );
+
+            sendNotification('wallet_debit', [
+                'amount' => $package->offered_price,
+                'balance' => $wallet->balance,
+            ], $customer->id);
         }
 
         // Generate unique order number

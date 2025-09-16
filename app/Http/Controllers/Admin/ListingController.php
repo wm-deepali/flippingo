@@ -218,12 +218,16 @@ class ListingController extends Controller
         $submission->status = $status;
 
         // If status is empty, clear published_at (or set as needed)
-        if (empty($status)) {
-            $submission->published_at = null;
-        } else {
+        if (!empty($status)) {
+
             // Optionally, set published_at if status means published
             if ($status === 'published') {
                 $submission->published_at = now();
+                sendNotification('listing_published', [
+                    'customer_name' => $submission->customer->first_name . ' ' . $submission->customer->last_name,
+                    'listing_title' => $submission->product_title,
+                ], $submission->customer_id);
+
             }
         }
 

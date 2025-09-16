@@ -89,6 +89,10 @@ class SubscriptionController extends Controller
             // Credit wallet for refund
             $wallet->addTransaction('credit', $subscription->package->offered_price, 'Refund', $remarks);
 
+            sendNotification('wallet_credit', [
+                'amount' => $subscription->package->offered_price,
+                'balance' => $wallet->balance,
+            ], $wallet->customer_id);
         }
 
         // Update subscription status

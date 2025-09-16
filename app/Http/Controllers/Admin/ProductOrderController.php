@@ -285,6 +285,12 @@ class ProductOrderController extends Controller
             $buyerWallet = Wallet::firstOrCreate(['customer_id' => $order->customer->id]);
             $remarks = 'Refund for order cancellation #' . $order->order_number;
             $buyerWallet->addTransaction('credit', $order->total, 'Refund', $remarks);
+
+            sendNotification('wallet_credit', [
+                'amount' => $order->total,
+                'balance' => $buyerWallet->balance,
+            ], $buyerWallet->customer_id);
+
         }
 
         // Debit seller wallet for refund amount
@@ -294,6 +300,12 @@ class ProductOrderController extends Controller
             $sellerWallet->addTransaction('debit', $order->seller_earning, 'Refund Debit', $debitRemarks);
             $sellerWallet->balance -= $order->seller_earning;
             $sellerWallet->save();
+
+            sendNotification('wallet_debit', [
+                'amount' => $order->seller_earning,
+                'balance' => $sellerWallet->balance,
+            ], $sellerWallet->customer_id);
+
         } else {
             // Handle insufficient seller balance if needed, e.g. throw error or log
         }

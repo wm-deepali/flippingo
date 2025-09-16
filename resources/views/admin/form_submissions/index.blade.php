@@ -125,7 +125,7 @@
 
            // H   ide options that are NOT allowed
             $('#newStatus option').each(function () {
-            let     val = $(this).val();
+            let    val = $(this).val();
                 if (!nextStatuses.includes(val) && val !== currentStatus) {
                     $(this).hide();
             }
@@ -135,7 +135,10 @@
             $('#newStatus').val(currentStatus).trigger('change');
 
                 $('#statusRemarks').val($(this).data('remarks') || '');
-        $('#statusModal').modal('show');
+        // Bootstrap 5
+var myModal = new bootstrap.Modal(document.getElementById('statusModal'));
+myModal.show();
+
         });
 
         // 🔹 Toggle remarks field dynamically

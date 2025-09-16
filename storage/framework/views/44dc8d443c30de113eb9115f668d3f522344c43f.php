@@ -278,6 +278,25 @@
 
         <li class="dropdown nav-item" data-menu="dropdown">
           <a class="dropdown-toggle nav-link d-flex align-items-center" href="#" data-toggle="dropdown">
+            <span>Notifications</span>
+          </a>
+          <ul class="dropdown-menu">
+            <li>
+              <a class="dropdown-item d-flex align-items-center" href="<?php echo e(route('admin.notifications.events')); ?>">
+                Event-Based Notifications
+              </a>
+            </li>
+            <li>
+              <a class="dropdown-item d-flex align-items-center" href="<?php echo e(route('admin.notifications.custom')); ?>">
+                Admin-Created Notifications
+              </a>
+            </li>
+          </ul>
+        </li>
+
+
+        <li class="dropdown nav-item" data-menu="dropdown">
+          <a class="dropdown-toggle nav-link d-flex align-items-center" href="#" data-toggle="dropdown">
             <span>Content Management</span>
           </a>
           <ul class="dropdown-menu">

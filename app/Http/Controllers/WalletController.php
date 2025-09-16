@@ -71,11 +71,16 @@ class WalletController extends Controller
         // Record credit transaction and update balance
         $transaction = $wallet->addTransaction(
             'credit',
-            $request->amount / 100,  // converting paise to rupees
+            $request->amount,  // converting paise to rupees
             'Money Added to Wallet',
             'Added funds via Razorpay',
             $request->razorpay_payment_id
         );
+
+        sendNotification('wallet_credit', [
+            'amount' => $request->amount,
+            'balance' => $wallet->balance,
+        ], $user->id);
 
         if ($transaction) {
             return response()->json(['success' => true, 'message' => 'Wallet topped up successfully']);

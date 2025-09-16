@@ -7,6 +7,7 @@ use App\Http\Controllers\Admin\FormController;
 use App\Http\Controllers\Admin\PageController;
 use App\Http\Controllers\Admin\TestimonialController;
 use App\Http\Controllers\CheckoutController;
+use App\Http\Controllers\NotificationController;
 use App\Http\Controllers\PaymentMethodController;
 use App\Http\Controllers\ProfileController;
 use App\Http\Controllers\SubscriptionController;
@@ -181,6 +182,7 @@ Route::middleware(['web'])->group(function () {
             Route::post('/delete-account', [ProfileController::class, 'deleteAccount'])->name('delete.account');
             Route::post('/kyc-update', [ProfileController::class, 'updateKyc'])->name('kyc.update');
 
+
             // subscriptions
             Route::get('/subscription', [SubscriptionController::class, 'index'])->name('dashboard.subscriptions');
             Route::post('/subscription/renew', [SubscriptionController::class, 'renew'])->name('subscription.renew');
@@ -232,9 +234,13 @@ Route::middleware(['web'])->group(function () {
             Route::get('/analytics', [ListingController::class, 'SubmissionList'])->name('dashboard.analytics');
             Route::get('/analytics/{submission}', [ListingController::class, 'analytics'])->name('dashboard.analytics.details');
 
-            Route::get('/notifications', function () {
-                return view('user.notifications');
-            })->name('dashboard.notifications');
+            Route::get('/notifications', [NotificationController::class, 'notifications'])->name('dashboard.notifications');
+            Route::post('/notifications/{id}/mark-as-read', [NotificationController::class, 'markAsRead'])
+                ->name('notifications.markAsRead');
+            // Toggle bookmark
+            Route::post('/notifications/{id}/toggle-bookmark', [NotificationController::class, 'toggleBookmark'])
+                ->name('notifications.toggleBookmark');
+
             // Contact Us
             Route::get('/contact-us', function () {
                 return view('user.contact-us');

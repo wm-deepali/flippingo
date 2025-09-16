@@ -158,17 +158,21 @@ class ListingController extends Controller
         if (!$authCustomer) {
             return response()->json(['success' => false, 'message' => 'Unauthorized'], 401);
         }
-
         if (!FormSubmission::where('id', $submissionId)->exists()) {
             return response()->json(['success' => false, 'message' => 'Invalid submission ID'], 400);
         }
 
+        $formSubmission = FormSubmission::where('id', $submissionId)->first();
         Enquiry::create([
             'submission_id' => $submissionId,
             'customer_id' => $authCustomer->id,
             'message' => $message,
             'status' => 'pending',
         ]);
+
+        sendNotification('new_enquiry', [
+            'customer_name' => $authCustomer->first_name . ' ' . $authCustomer->last_name,
+        ], $formSubmission->customer_id);
 
         return response()->json(['success' => true]);
     }

@@ -127,33 +127,38 @@
             <div class="notif-cards">
                 <div class="notif-card notif-recent">
                     <h4>Recent Notifications</h4>
-                    <span class="notif-count">24</span>
+                    <span class="notif-count"><?php echo e($counts['recent']); ?></span>
                 </div>
                 <div class="notif-card notif-unread">
                     <h4>Unread</h4>
-                    <span class="notif-count">8</span>
+                    <span class="notif-count"><?php echo e($counts['unread']); ?></span>
                 </div>
                 <div class="notif-card notif-read">
                     <h4>Read</h4>
-                    <span class="notif-count">12</span>
+                    <span class="notif-count"><?php echo e($counts['read']); ?></span>
                 </div>
                 <div class="notif-card notif-bookmark">
                     <h4>Bookmarks</h4>
-                    <span class="notif-count">4</span>
+                    <span class="notif-count"><?php echo e($counts['bookmarks']); ?></span>
                 </div>
             </div>
+
 
             <!-- Filter & Search -->
             <div class="notif-controls">
                 <div class="notif-filter">
-                    <label>Filter By:</label>
-                    <select
-                        style="height: 40px;border: none; border: 1px solid rgba(128, 128, 128, 0.671); border-radius: 4px;width: 150px; padding: 0px 10px;">
-                        <option>Recent First</option>
-                        <option>Unread</option>
-                        <option>Read</option>
-                        <option>Bookmarks</option>
-                    </select>
+                    <!-- Filter -->
+                    <form method="GET">
+                        <label>Filter By:</label>
+                        <select name="filter" onchange="this.form.submit()"
+                            style="height: 40px;border: none; border: 1px solid rgba(128, 128, 128, 0.671); border-radius: 4px;width: 150px; padding: 0px 10px;">
+                            <option value="">Recent First</option>
+                            <option value="Unread" <?php echo e(($filter ?? '') == 'Unread' ? 'selected' : ''); ?>>Unread</option>
+                            <option value="Read" <?php echo e(($filter ?? '') == 'Read' ? 'selected' : ''); ?>>Read</option>
+                            <option value="Bookmarks" <?php echo e(($filter ?? '') == 'Bookmarks' ? 'selected' : ''); ?>>Bookmarks
+                            </option>
+                        </select>
+                    </form>
                 </div>
                 <div class="notif-search">
                     <input type="text" placeholder="Search Notifications...">
@@ -171,33 +176,48 @@
                     </tr>
                 </thead>
                 <tbody>
-                    <tr>
-                        <td>04-Sep-2025 10:30 AM</td>
-                        <td>
-                            <strong style="font-weight: 600;">Payment Successful</strong><br>
-                            Your payment of INR 500 has been successfully processed.
-                            <span class="notif-flag">NEW</span>
-                        </td>
-                        <td>Unread</td>
-                        <td>
-                            <button class="btn-view">👁</button>
-                            <button class="btn-bookmark" style="color: red;"><i class="fa-solid fa-bookmark"
-                                    style="color: red;"></i></button>
-                        </td>
-                    </tr>
-                    <tr>
-                        <td>03-Sep-2025 05:10 PM</td>
-                        <td>
-                            <strong style="font-weight: 600;">Profile Updated</strong><br>
-                            Your profile information has been successfully updated.
-                        </td>
-                        <td>Read</td>
-                        <td>
-                            <button class="btn-view">👁</button>
-                            <button class="btn-bookmark" style="color: red;"><i class="fa-solid fa-bookmark"
-                                    style="color: red;"></i></button>
-                        </td>
-                    </tr>
+                    <?php $__empty_1 = true; $__currentLoopData = $notifications; $__env->addLoop($__currentLoopData); foreach($__currentLoopData as $notification): $__env->incrementLoopIndices(); $loop = $__env->getLastLoop(); $__empty_1 = false; ?>
+                        <tr>
+                            <td><?php echo e($notification->created_at->format('d-M-Y h:i A')); ?></td>
+                            <td>
+                                <strong style="font-weight: 600;">
+                                    <?php echo e($notification->subject ?? 'Notification'); ?>
+
+                                </strong><br>
+                                <?php echo $notification->content ?? ''; ?>
+
+                                <?php if(!$notification->pivot->read_at): ?>
+                                    <span class="notif-flag">NEW</span>
+                                <?php endif; ?>
+                            </td>
+                            <td><?php echo e($notification->pivot->status == 'read' ? 'Read' : 'Unread'); ?></td>
+                            <td>
+                                <div style="display: flex; gap: 5px; align-items: center;">
+                                    <form action="<?php echo e(route('notifications.markAsRead', $notification->id)); ?>" method="POST">
+                                        <?php echo csrf_field(); ?>
+                                        <button type="submit" class="btn-view">👁</button>
+                                    </form>
+                                    <form action="<?php echo e(route('notifications.toggleBookmark', $notification->id)); ?>" method="POST">
+                                        <?php echo csrf_field(); ?>
+                                        <button type="submit" class="btn-bookmark">
+                                            <?php if($notification->pivot->is_bookmarked): ?>
+                                                <i class="fa-solid fa-bookmark" style="color: red;"></i>
+                                            <?php else: ?>
+                                                <i class="fa-regular fa-bookmark"></i>
+                                            <?php endif; ?>
+                                        </button>
+                                    </form>
+                                </div>
+                            </td>
+
+                        </tr>
+                    <?php endforeach; $__env->popLoop(); $loop = $__env->getLastLoop(); if ($__empty_1): ?>
+                        <tr>
+                            <td colspan="4" class="text-center">No notifications found.</td>
+                        </tr>
+                    <?php endif; ?>
+
+
                 </tbody>
             </table>
         </div>
