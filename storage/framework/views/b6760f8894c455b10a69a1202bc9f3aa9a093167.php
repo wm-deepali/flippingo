@@ -1,7 +1,7 @@
 
 
 <?php $__env->startSection('title'); ?>
-    <?php echo e($page->meta_title ?? 'Reports'); ?>
+    <?php echo e($page->meta_title ?? 'Listing Analytics'); ?>
 
 <?php $__env->stopSection(); ?>
 
@@ -209,7 +209,7 @@
         <div class="report-analystics container my-4">
 
             <!-- Title -->
-            <h4 class="mb-4 fw-bold">Reports & Analytics</h4>
+            <h4 class="mb-4 fw-bold">Listing Analytics</h4>
 
             <!-- Summary Cards -->
             <div class="row g-3 mb-4">
@@ -245,11 +245,11 @@
     <?php
         $queryParams = ['category' => $categoryFilter, 'start_date' => $startDate, 'end_date' => $endDate, 'sort' => $sort];
     ?>
-    <li class="nav-item"><a href="<?php echo e(route('dashboard.analytics', array_merge($queryParams, ['filter' => 'all']))); ?>" class="nav-link <?php if($filter == 'all'): ?> active <?php endif; ?>">Recent</a></li>
     <li class="nav-item"><a href="<?php echo e(route('dashboard.analytics', array_merge($queryParams, ['filter' => 'today']))); ?>" class="nav-link <?php if($filter == 'today'): ?> active <?php endif; ?>">Today</a></li>
     <li class="nav-item"><a href="<?php echo e(route('dashboard.analytics', array_merge($queryParams, ['filter' => 'days7']))); ?>" class="nav-link <?php if($filter == 'days7'): ?> active <?php endif; ?>">7 Days</a></li>
     <li class="nav-item"><a href="<?php echo e(route('dashboard.analytics', array_merge($queryParams, ['filter' => 'days15']))); ?>" class="nav-link <?php if($filter == 'days15'): ?> active <?php endif; ?>">15 Days</a></li>
     <li class="nav-item"><a href="<?php echo e(route('dashboard.analytics', array_merge($queryParams, ['filter' => 'days30']))); ?>" class="nav-link <?php if($filter == 'days30'): ?> active <?php endif; ?>">30 Days</a></li>
+    <li class="nav-item"><a href="<?php echo e(route('dashboard.analytics', array_merge($queryParams, ['filter' => 'all']))); ?>" class="nav-link <?php if($filter == 'all'): ?> active <?php endif; ?>">All</a></li>
 </ul>
 
             <!-- Filters -->
@@ -293,9 +293,10 @@
                         <tr>
                             <th>Date & Time</th>
                             <th>Product Detail</th>
-                            <th style="white-space: nowrap;">Published Date</th>
-                            <th style="white-space: nowrap;">Total Clicks</th>
-                            <th style="white-space: nowrap;">Total Views</th>
+                            <th >Published Date</th>
+                            <th>Total Clicks</th>
+            <th>Total Views</th>
+            <th>Unique Views</th>
                             <th>Status</th>
                             <th>Action</th>
                         </tr>
@@ -315,7 +316,7 @@
                                 <td><?php echo e($submission->published_at ? $submission->published_at->format('d-m-Y') : '-'); ?></td>
                                 <td><?php echo e(number_format($submission->total_clicks)); ?></td>
                                 <td><?php echo e(number_format($submission->total_views)); ?></td>
-
+ <td><?php echo e(number_format($submission->unique_views)); ?></td>
           <td>
   <?php switch($submission->status):
     case ('pending'): ?>
@@ -335,9 +336,9 @@
   <?php endswitch; ?>
 </td>
                                 <td>
-                                    <a href="<?php echo e(route('listing-details', ['id' => $submission->id])); ?>"
+                                    <a href="<?php echo e(route('dashboard.analytics.details', $submission->id)); ?>"
                                         class="btn btn-sm btn-primary" title="View">
-                                        <i class="bi bi-eye" style="color: #fff;">view Listing Details</i>
+                                        <i class="bi bi-eye" style="color: #fff;">View Details</i>
                                     </a>
                                 </td>
                             </tr>

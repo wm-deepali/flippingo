@@ -147,4 +147,57 @@ class OrderController extends Controller
             'type'
         ));
     }
+    public function reports(Request $request)
+    {
+        $user = Auth::guard('customer')->user();
+        $filter = $request->query('filter', 'recent');
+
+        // Base query
+        $query = ProductOrder::with('customer', 'seller')->where('seller_id', $user->id);
+
+        // Apply filter
+        switch ($filter) {
+            case 'today':
+                $query->whereDate('created_at', now());
+                break;
+            case 'seven-day':
+                $query->whereBetween('created_at', [now()->subDays(7)->startOfDay(), now()->endOfDay()]);
+                break;
+            case 'fifteen-day':
+                $query->whereBetween('created_at', [now()->subDays(15)->startOfDay(), now()->endOfDay()]);
+                break;
+            case 'thirty-day':
+                $query->whereBetween('created_at', [now()->subDays(30)->startOfDay(), now()->endOfDay()]);
+                break;
+            case 'custom-date':
+                $startDate = $request->query('start_date');
+                $endDate = $request->query('end_date');
+
+                if ($startDate)
+                    $startDate = \Carbon\Carbon::parse($startDate)->startOfDay();
+                if ($endDate)
+                    $endDate = \Carbon\Carbon::parse($endDate)->endOfDay();
+
+                if ($startDate && $endDate) {
+                    $query->whereBetween('created_at', [$startDate, $endDate]);
+                } elseif ($startDate) {
+                    $query->where('created_at', '>=', $startDate);
+                } elseif ($endDate) {
+                    $query->where('created_at', '<=', $endDate);
+                }
+                break;
+            default:
+                $query->orderByDesc('created_at');
+        }
+
+        $reports = $query->get();
+
+        // Totals
+        $totalSales = $reports->count(); // number of orders
+        $totalEarning = $reports->sum('seller_earning'); // sum of seller earnings
+
+        return view('user.reports', compact('reports', 'filter', 'totalSales', 'totalEarning'));
+    }
+
+
 }

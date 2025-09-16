@@ -37,7 +37,7 @@
                                     <li class="nav-item">
                                         <a class="nav-link active" id="active-tab" data-toggle="tab" href="#recent"
                                             role="tab" aria-controls="active" aria-selected="true">
-                                            Recent 
+                                            Today 
                                         </a>
                                     </li>
                                     
@@ -59,12 +59,18 @@
                                             30 Days
                                         </a>
                                     </li>
-                                  
+                                  <li class="nav-item">
+    <a class="nav-link" id="all-tab" data-toggle="tab" href="#all-time" role="tab"
+        aria-controls="all-time" aria-selected="false">
+        All Time
+    </a>
+</li>
+
                                 </ul>
 
                                 <div class="tab-content" id="reportTabsContent">
 
-                                <?php $__currentLoopData = ['recent', 'seven-day', 'fifteen-day', 'thirty-day']; $__env->addLoop($__currentLoopData); foreach($__currentLoopData as $key): $__env->incrementLoopIndices(); $loop = $__env->getLastLoop(); ?>
+                                <?php $__currentLoopData = ['today', 'seven-day', 'fifteen-day', 'thirty-day','all-time']; $__env->addLoop($__currentLoopData); foreach($__currentLoopData as $key): $__env->incrementLoopIndices(); $loop = $__env->getLastLoop(); ?>
     <div class="tab-pane fade <?php if($loop->first): ?> show active <?php endif; ?>" id="<?php echo e($key); ?>" role="tabpanel" aria-labelledby="<?php echo e($key); ?>-tab">
         <?php if(isset($reports[$key]) && $reports[$key]->count()): ?>
             <?php echo $__env->make('admin.reports.listing-table', ['submissions' => $reports[$key]], \Illuminate\Support\Arr::except(get_defined_vars(), ['__data', '__path']))->render(); ?>

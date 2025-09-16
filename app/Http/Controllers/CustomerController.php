@@ -213,7 +213,7 @@ class CustomerController extends Controller
                 }
 
                 // Send SMS
-                $message = "{$otp} is the OTP to verify your Mobile Number at https://ashtonwell.com. Please do not share this OTP with anyone. Regards Ashton & Well";
+                $message = "{$otp} is the One Time Password(OTP) to verify your MOB number at Web Mingo, This OTP is Usable only once and is valid for 10 min,PLS DO NOT SHARE THE OTP WITH ANYONE";
 
                 $response = SmsHelper::send($value, $message, 'verify_otp', [
                     'otp' => $otp,
@@ -479,12 +479,12 @@ class CustomerController extends Controller
         try {
             Mail::to($request->email)->send(new MailForgotPassword($mailData));
         } catch (\Exception $e) {
-            dd(Config::get('mail.mailers.smtp'),  $e->getMessage());
+            dd(Config::get('mail.mailers.smtp'), $e->getMessage());
             return response()->json([
-            'status' => 'error',
-            'message' => 'Failed to send password reset email. Please try again later.'
-        ], 500);
-    }
+                'status' => 'error',
+                'message' => 'Failed to send password reset email. Please try again later.'
+            ], 500);
+        }
         return response()->json([
             'status' => 'success',
             'message' => 'We have e-mailed your password reset link! Please check your email in inbox, spam and junk folder.'

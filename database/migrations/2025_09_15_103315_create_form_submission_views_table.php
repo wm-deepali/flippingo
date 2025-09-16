@@ -12,20 +12,35 @@ class CreateFormSubmissionViewsTable extends Migration
             $table->id();
 
             // Reference to the form submission
-            $table->foreignId('form_submission_id')->constrained('form_submissions')->cascadeOnDelete();
+            $table->foreignId('form_submission_id')
+                  ->constrained('form_submissions')
+                  ->cascadeOnDelete();
 
             // Customer reference, nullable for guests
-            $table->foreignId('customer_id')->nullable()->constrained('customers')->nullOnDelete();
+            $table->foreignId('customer_id')
+                  ->nullable()
+                  ->constrained('customers')
+                  ->nullOnDelete();
 
             // IP address for guests
-            $table->string('ip_address')->nullable();
+            $table->string('ip_address',191)->nullable();
+
+            // Track by day
+            $table->date('view_date');
 
             $table->timestamps();
 
-            // Ensure uniqueness either by customer_id or IP per submission to count unique views
-            $table->unique(['form_submission_id', 'customer_id']);
-            // You might also want to add a unique constraint for IP to avoid duplicates for guests:
-            $table->unique(['form_submission_id', 'ip_address']);
+            // Ensure uniqueness per submission per day for customers
+            $table->unique(
+                ['form_submission_id', 'customer_id', 'view_date'],
+                'fs_views_sub_cust_date_unique'
+            );
+
+            // Ensure uniqueness per submission per day for guest IPs
+            $table->unique(
+                ['form_submission_id', 'ip_address', 'view_date'],
+                'fs_views_sub_ip_date_unique'
+            );
         });
     }
 

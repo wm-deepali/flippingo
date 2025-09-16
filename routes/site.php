@@ -192,6 +192,7 @@ Route::middleware(['web'])->group(function () {
             Route::post('/orders/cancel', [OrderController::class, 'cancelOrder'])->name('orders.cancel');
             Route::get('/{order}/detail', [OrderController::class, 'show'])->name('orders.detail');
             Route::get('/{order}/invoice', [OrderController::class, 'viewInvoice'])->name('orders.invoice');
+            Route::get('/reports', [OrderController::class, 'reports'])->name('dashboard.reports');
 
             Route::get('/wallet', [WalletController::class, 'wallet'])->name('dashboard.wallet');
             Route::post('/wallet/withdraw', [WalletController::class, 'withdrawStore'])->name('wallet.withdraw.store');
@@ -228,8 +229,8 @@ Route::middleware(['web'])->group(function () {
             Route::patch('/tickets/{ticket}/status', [TicketController::class, 'updateStatus'])->name('tickets.updateStatus');
             Route::post('/tickets/reply', [TicketController::class, 'reply'])->name('tickets.reply');
 
-            Route::get('/analytics', [ListingController::class, 'analytics'])->name('dashboard.analytics');
-
+            Route::get('/analytics', [ListingController::class, 'SubmissionList'])->name('dashboard.analytics');
+            Route::get('/analytics/{submission}', [ListingController::class, 'analytics'])->name('dashboard.analytics.details');
 
             Route::get('/notifications', function () {
                 return view('user.notifications');

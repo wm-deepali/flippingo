@@ -37,7 +37,7 @@
                                     <li class="nav-item">
                                         <a class="nav-link active" id="active-tab" data-toggle="tab" href="#recent"
                                             role="tab" aria-controls="active" aria-selected="true">
-                                            Recent 
+                                            Today 
                                         </a>
                                     </li>
                                     
@@ -59,12 +59,18 @@
                                             30 Days
                                         </a>
                                     </li>
-                                  
+                                  <li class="nav-item">
+    <a class="nav-link" id="all-tab" data-toggle="tab" href="#all-time" role="tab"
+        aria-controls="all-time" aria-selected="false">
+        All Time
+    </a>
+</li>
+
                                 </ul>
 
                                 <div class="tab-content" id="reportTabsContent">
 
-                                @foreach (['recent', 'seven-day', 'fifteen-day', 'thirty-day'] as $key)
+                                @foreach (['today', 'seven-day', 'fifteen-day', 'thirty-day','all-time'] as $key)
     <div class="tab-pane fade @if($loop->first) show active @endif" id="{{ $key }}" role="tabpanel" aria-labelledby="{{ $key }}-tab">
         @if(isset($reports[$key]) && $reports[$key]->count())
             @include('admin.reports.listing-table', ['submissions' => $reports[$key]])

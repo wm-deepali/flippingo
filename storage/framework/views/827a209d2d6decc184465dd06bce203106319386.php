@@ -17,9 +17,11 @@
                 <td><?php echo e($submission->created_at->format('Y-m-d')); ?></td>
                 <td><?php echo e($submission->product_title); ?></td>
                 <td><?php echo e($submission->category_name ?? '-'); ?></td>
-                <td><?php echo e(number_format($submission->total_clicks)); ?></td>
-                <td><?php echo e(number_format($submission->total_views)); ?></td>
-                <td><?php echo e(number_format($submission->unique_views)); ?></td>
+
+                <td><?php echo e(number_format($submission->period_clicks)); ?></td>
+                <td><?php echo e(number_format($submission->period_views)); ?></td>
+                <td><?php echo e(number_format($submission->period_unique)); ?></td>
+
                 <td>
                     <span class="badge badge-<?php echo e($submission->status === 'published' ? 'success' : 'secondary'); ?>">
                         <?php echo e(ucfirst($submission->status)); ?>
@@ -27,13 +29,12 @@
                     </span>
                 </td>
                 <td>
-                    <a href="<?php echo e(route('admin.form-submissions.show', $submission->id)); ?>" class="btn btn-sm btn-primary">View</a>
+                    <a href="<?php echo e(route('admin.form-submissions.analytics', $submission->id)); ?>"
+                        class="btn btn-sm btn-primary">View</a>
                 </td>
             </tr>
         <?php endforeach; $__env->popLoop(); $loop = $__env->getLastLoop(); ?>
     </tbody>
 </table>
 
-<?php echo e($submissions->links()); ?>
-
-<?php /**PATH D:\web-mingo-project\flippingo_admin\resources\views/admin/reports/listing-table.blade.php ENDPATH**/ ?>
+<?php echo e($submissions->links()); ?><?php /**PATH D:\web-mingo-project\flippingo_admin\resources\views/admin/reports/listing-table.blade.php ENDPATH**/ ?>

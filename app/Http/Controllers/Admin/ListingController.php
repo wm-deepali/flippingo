@@ -260,54 +260,84 @@ class ListingController extends Controller
     {
         $now = now();
 
-        $queryBase = FormSubmission::query()->with(['form.category', 'customer']);
+        // Base query: all submissions with relations
+        $baseQuery = FormSubmission::with(['form.category', 'customer']);
 
-        // Submissions per period with pagination
-        $reports['recent'] = (clone $queryBase)->whereDate('created_at', $now->toDateString())->paginate(20);
-        $reports['seven-day'] = (clone $queryBase)->whereBetween('created_at', [$now->copy()->subDays(7), $now])->paginate(20);
-        $reports['fifteen-day'] = (clone $queryBase)->whereBetween('created_at', [$now->copy()->subDays(15), $now])->paginate(20);
-        $reports['thirty-day'] = (clone $queryBase)->whereBetween('created_at', [$now->copy()->subDays(30), $now])->paginate(20);
+        // Helper to get submissions with aggregated stats
+        $getWithStats = function ($from = null, $to = null) use ($baseQuery) {
+            $statsQuery = \App\Models\FormSubmissionStat::selectRaw('form_submission_id')
+                ->selectRaw('SUM(views) as views')
+                ->selectRaw('SUM(clicks) as clicks')
+                ->selectRaw('SUM(unique_views) as unique_views')
+                ->groupBy('form_submission_id');
 
-        // Prepare chart data for last 30 days (example)
-        $chartData = FormSubmission::selectRaw('DATE(created_at) as date')
-            ->selectRaw('SUM(total_clicks) as clicks')
-            ->selectRaw('SUM(total_views) as views')
-            ->whereBetween('created_at', [$now->copy()->subDays(30), $now])
-            ->groupBy('date')
-            ->orderBy('date')
-            ->get();
+            // Apply date filters if provided
+            if ($from && $to) {
+                $statsQuery->whereBetween('date', [$from, $to]);
+            } elseif ($from) {
+                $statsQuery->whereDate('date', $from);
+            }
 
-        // Transform chart data for frontend (arrays of labels and values)
-        $chartLabels = $chartData->pluck('date')->map(fn($d) => \Carbon\Carbon::parse($d)->format('d M'))->toArray();
-        $chartClicks = $chartData->pluck('clicks')->toArray();
-        $chartViews = $chartData->pluck('views')->toArray();
+            $stats = $statsQuery->get()->keyBy('form_submission_id');
 
-        return view('admin.reports.listing', compact('reports', 'chartLabels', 'chartClicks', 'chartViews'));
+            $submissions = (clone $baseQuery)->paginate(20);
+
+            // Attach stats into each submission
+            $submissions->getCollection()->transform(function ($submission) use ($stats) {
+                $s = $stats[$submission->id] ?? null;
+                $submission->period_views = $s->views ?? 0;
+                $submission->period_clicks = $s->clicks ?? 0;
+                $submission->period_unique = $s->unique_views ?? 0;
+                return $submission;
+            });
+
+            return $submissions;
+        };
+
+        // Reports
+        $reports['today'] = $getWithStats($now->toDateString());
+        $reports['seven-day'] = $getWithStats($now->copy()->subDays(7)->toDateString(), $now->toDateString());
+        $reports['fifteen-day'] = $getWithStats($now->copy()->subDays(15)->toDateString(), $now->toDateString());
+        $reports['thirty-day'] = $getWithStats($now->copy()->subDays(30)->toDateString(), $now->toDateString());
+        $reports['all-time'] = $getWithStats(); // <--- All time, no date filter
+
+        return view('admin.reports.listing', compact('reports'));
     }
-
 
     public function analytics($id)
     {
         $submission = FormSubmission::with(['form.category', 'customer'])->findOrFail($id);
 
-        // Example: fetch daily clicks/views data for last 30 days for this submission
         $now = now();
         $start = $now->copy()->subDays(30);
 
-        $chartData = FormSubmissionView::selectRaw('DATE(created_at) as date')
-            ->selectRaw('COUNT(*) as views')
-            ->where('form_submission_id', $id)
-            ->whereBetween('created_at', [$start, $now])
-            ->groupBy('date')
+        // Use FormSubmissionStat for aggregated stats per day
+        $chartData = \App\Models\FormSubmissionStat::where('form_submission_id', $id)
+            ->whereBetween('date', [$start->toDateString(), $now->toDateString()])
             ->orderBy('date')
-            ->get();
+            ->get()
+            ->keyBy(fn($item) => $item->date);
 
-        $chartLabels = $chartData->pluck('date')->map(fn($d) => \Carbon\Carbon::parse($d)->format('d M'))->toArray();
-        $chartViews = $chartData->pluck('views')->toArray();
+        $chartLabels = [];
+        $chartViews = [];
+        $chartClicks = [];
+        $chartUniques = [];
 
-        // Similar queries can be made for clicks data if tracked separately
+        // Fill missing days with 0
+        for ($date = $start->copy(); $date->lte($now); $date->addDay()) {
+            $d = $date->toDateString();
+            $chartLabels[] = $date->format('d M');
+            $chartViews[] = $chartData[$d]->views ?? 0;
+            $chartClicks[] = $chartData[$d]->clicks ?? 0;
+            $chartUniques[] = $chartData[$d]->unique_views ?? 0;
+        }
 
-        return view('admin.form-submissions.analytics-detail', compact('submission', 'chartLabels', 'chartViews'));
+        return view('admin.reports.analytics-detail', compact(
+            'submission',
+            'chartLabels',
+            'chartViews',
+            'chartClicks',
+            'chartUniques'
+        ));
     }
-
 }

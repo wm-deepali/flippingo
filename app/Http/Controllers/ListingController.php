@@ -7,6 +7,7 @@ use App\Models\Enquiry;
 use App\Models\FormData;
 use App\Models\FormSubmission;
 use App\Models\Wishlist;
+use App\Models\FormSubmissionStat;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Storage;
@@ -67,14 +68,27 @@ class ListingController extends Controller
 
         if ($user) {
             // Track total views
+            $today = now()->toDateString();
+
+            // --- Lifetime Tracking ---
             $submission->increment('total_views');
             $submission->increment('total_clicks');
+
+            // --- Daily Tracking ---
+            $stat = FormSubmissionStat::firstOrCreate(
+                ['form_submission_id' => $submission->id, 'date' => $today],
+                ['views' => 0, 'clicks' => 0, 'unique_views' => 0]
+            );
+
+            $stat->increment('views');
+            $stat->increment('clicks');
 
             // Track unique views by customer ID
             $userId = $user->id;
 
             $hasViewed = \App\Models\FormSubmissionView::where('form_submission_id', $id)
                 ->where('customer_id', $userId)
+                ->where('view_date', $today)
                 ->exists();
 
             if (!$hasViewed) {
@@ -82,10 +96,13 @@ class ListingController extends Controller
                     'form_submission_id' => $id,
                     'customer_id' => $userId,
                     'ip_address' => $request->ip(),
+                    'view_date' => $today,
                 ]);
 
                 $submission->increment('unique_views');
+                $stat->increment('unique_views');
             }
+
         }
         // Else: no tracking if not logged in
 
@@ -498,21 +515,32 @@ class ListingController extends Controller
 
     public function enquiryIndex(Request $request)
     {
-        $query = Enquiry::with('customer', 'submission.form');
+        $user = auth('customer')->user();
 
-        // 🔹 Filter by Business Category (via related form of submission)
+        $query = Enquiry::with('customer', 'submission.form')
+            ->where(function ($q) use ($user) {
+                // 🟢 Case 1: I am the buyer (I enquired)
+                $q->where('customer_id', $user->id)
+
+                    // 🟢 Case 2: I am the seller (enquiries on my listings)
+                    ->orWhereHas('submission', function ($subQ) use ($user) {
+                    $subQ->where('customer_id', $user->id);
+                });
+            });
+
+        // 🔹 Filter by Business Category
         if ($request->filled('business_category')) {
             $query->whereHas('submission.form', function ($q) use ($request) {
                 $q->where('category_id', $request->business_category);
             });
         }
 
-        // 🔹 Filter by Listing (Show enquiries of a single submission if id is given)
+        // 🔹 Filter by Listing
         if ($request->filled('submission_id')) {
             $query->where('submission_id', $request->submission_id);
         }
 
-        // 🔹 Date Range Filter
+        // 🔹 Date Range
         if ($request->filled('start_date') && $request->filled('end_date')) {
             $query->whereBetween('created_at', [$request->start_date, $request->end_date]);
         }
@@ -526,13 +554,15 @@ class ListingController extends Controller
 
         $enquiries = $query->paginate(20)->appends($request->query());
 
-        // Totals (based on same query if submission_id is present, so counts match the filter)
-        $totalEnquiries = $query->count();
-        $totalCustomers = $query->distinct('customer_id')->count('customer_id');
+        // Totals
+        $totalEnquiries = (clone $query)->count();
+        $totalCustomers = (clone $query)->distinct('customer_id')->count('customer_id');
 
         // For filters
         $businessCategories = Category::all();
-        $submissionsList = FormSubmission::with('form')->get();
+        $submissionsList = FormSubmission::with('form')
+            ->where('customer_id', $user->id) // only their listings
+            ->get();
 
         return view('user.enquiries', compact(
             'enquiries',
@@ -542,6 +572,7 @@ class ListingController extends Controller
             'submissionsList'
         ));
     }
+
 
     public function wishlistIndex()
     {
@@ -586,41 +617,31 @@ class ListingController extends Controller
         return view('user.wishlist', compact('wishlist'));
     }
 
-    public function analytics(Request $request)
+    public function SubmissionList(Request $request)
     {
         $customerId = auth('customer')->id();
+        $now = now();
 
-        // Fetch all categories for filter dropdownz
+        // Fetch categories
         $categories = Category::orderBy('name')->get();
 
-        $filter = $request->query('filter', 'all'); // tab filter
+        // Filters
+        $filter = $request->query('filter', 'all'); // today / seven-day / etc.
         $categoryFilter = $request->query('category');
-        $startDate = $request->query('start_date');  // date from
-        $endDate = $request->query('end_date');      // date to
-        $sort = $request->query('sort');          // sorting option
+        $startDate = $request->query('start_date');
+        $endDate = $request->query('end_date');
+        $sort = $request->query('sort'); // Maximum Views / Maximum Clicks / Recent First
 
-        $query = FormSubmission::where('customer_id', $customerId);
+        // Base query: all submissions of the customer
+        $query = FormSubmission::where('customer_id', $customerId)
+            ->with(['form.category', 'customer']);
 
-        // Apply period filter (tabs)
-        if ($filter === 'today') {
-            $query->whereDate('created_at', now());
-        } elseif ($filter === 'days7') {
-            $query->where('created_at', '>=', now()->subDays(7));
-        } elseif ($filter === 'days15') {
-            $query->where('created_at', '>=', now()->subDays(15));
-        } elseif ($filter === 'days30') {
-            $query->where('created_at', '>=', now()->subDays(30));
-        }
-
-        // Apply category filter
+        // Category filter
         if ($categoryFilter) {
-            // Assuming you have category_id in submissions or via relation filtering
-            $query->whereHas('form.category', function ($q) use ($categoryFilter) {
-                $q->where('name', $categoryFilter);
-            });
+            $query->whereHas('form.category', fn($q) => $q->where('name', $categoryFilter));
         }
 
-        // Apply date range filter
+        // Date range filter on submissions (optional)
         if ($startDate && $endDate) {
             $query->whereBetween('created_at', [$startDate, $endDate]);
         } elseif ($startDate) {
@@ -629,21 +650,56 @@ class ListingController extends Controller
             $query->where('created_at', '<=', $endDate);
         }
 
-        // Apply sorting
-        if ($sort === 'Maximum Views') {
-            $query->orderBy('total_views', 'desc');
-        } elseif ($sort === 'Maximum Clicks') {
-            $query->orderBy('total_clicks', 'desc');
-        } elseif ($sort === 'Recent First') {
-            $query->orderBy('created_at', 'desc');
+        $submissions = $query->paginate(20);
+        $submissionIds = $submissions->pluck('id')->toArray();
+
+        // Determine period for stats (skip for 'all')
+        $statsFrom = null;
+        $statsTo = null;
+        if ($filter !== 'all') {
+            if ($filter === 'today') {
+                $statsFrom = $statsTo = $now->toDateString();
+            } elseif ($filter === 'seven-day') {
+                $statsFrom = $now->copy()->subDays(7)->toDateString();
+                $statsTo = $now->toDateString();
+            } elseif ($filter === 'fifteen-day') {
+                $statsFrom = $now->copy()->subDays(15)->toDateString();
+                $statsTo = $now->toDateString();
+            } elseif ($filter === 'thirty-day') {
+                $statsFrom = $now->copy()->subDays(30)->toDateString();
+                $statsTo = $now->toDateString();
+            }
         }
 
-        $submissions = $query->with(['form.category', 'customer'])->paginate(20);
+        // Aggregate stats
+        $statsQuery = \App\Models\FormSubmissionStat::selectRaw('form_submission_id')
+            ->selectRaw('SUM(views) as views')
+            ->selectRaw('SUM(clicks) as clicks')
+            ->selectRaw('SUM(unique_views) as unique_views')
+            ->whereIn('form_submission_id', $submissionIds);
 
-        // Calculate summary stats like before
-        $totalClicks = $submissions->sum('total_clicks');
-        $totalViews = $submissions->sum('total_views');
-        $uniqueViews = $submissions->sum('unique_views');
+        // Apply period filter only if not "all"
+        if ($statsFrom && $statsTo) {
+            $statsQuery->whereBetween('date', [$statsFrom, $statsTo]);
+        }
+
+        $stats = $statsQuery->groupBy('form_submission_id')
+            ->get()
+            ->keyBy('form_submission_id');
+
+        // Attach stats to submissions
+        $submissions->getCollection()->transform(function ($submission) use ($stats) {
+            $s = $stats[$submission->id] ?? null;
+            $submission->views = $s->views ?? 0;
+            $submission->clicks = $s->clicks ?? 0;
+            $submission->unique = $s->unique_views ?? 0;
+            return $submission;
+        });
+
+        // Summary stats
+        $totalClicks = $submissions->sum('clicks');
+        $totalViews = $submissions->sum('views');
+        $uniqueViews = $submissions->sum('unique');
 
         $firstSubmission = $submissions->sortBy('created_at')->first();
         $daysActive = $firstSubmission ? $firstSubmission->created_at->diffInDays(now()) : 1;
@@ -664,7 +720,42 @@ class ListingController extends Controller
         ));
     }
 
+    public function analytics($id)
+    {
+        $submission = FormSubmission::with(['form.category', 'customer'])->findOrFail($id);
 
+        $now = now();
+        $start = $now->copy()->subDays(30);
+
+        // Use FormSubmissionStat for aggregated stats per day
+        $chartData = \App\Models\FormSubmissionStat::where('form_submission_id', $id)
+            ->whereBetween('date', [$start->toDateString(), $now->toDateString()])
+            ->orderBy('date')
+            ->get()
+            ->keyBy(fn($item) => $item->date);
+
+        $chartLabels = [];
+        $chartViews = [];
+        $chartClicks = [];
+        $chartUniques = [];
+
+        // Fill missing days with 0
+        for ($date = $start->copy(); $date->lte($now); $date->addDay()) {
+            $d = $date->toDateString();
+            $chartLabels[] = $date->format('d M');
+            $chartViews[] = $chartData[$d]->views ?? 0;
+            $chartClicks[] = $chartData[$d]->clicks ?? 0;
+            $chartUniques[] = $chartData[$d]->unique_views ?? 0;
+        }
+
+        return view('user.analytics-detail', compact(
+            'submission',
+            'chartLabels',
+            'chartViews',
+            'chartClicks',
+            'chartUniques'
+        ));
+    }
 
 }
 

@@ -1,9 +1,8 @@
+@extends('layouts.user-master')
 
-
-<?php $__env->startSection('title'); ?>
-    <?php echo e($page->meta_title ?? 'Sales Reports'); ?>
-
-<?php $__env->stopSection(); ?>
+@section('title')
+    {{ $page->meta_title ?? 'Sales Reports' }}
+@endsection
 
 
 <style>
@@ -200,9 +199,9 @@
     }
 </style>
 
-<?php $__env->startSection('content'); ?>
+@section('content')
 
-    <?php echo $__env->make('user.sidebar', \Illuminate\Support\Arr::except(get_defined_vars(), ['__data', '__path']))->render(); ?>
+    @include('user.sidebar')
 
     <div class="page-wrapper">
 
@@ -216,13 +215,13 @@
                 <div class="col-md-6">
                     <div class="report-card pastel-blue">
                         <p>Total Sales</p>
-                        <h3><?php echo e(number_format($totalSales)); ?></h3>
+                        <h3>{{ number_format($totalSales) }}</h3>
                     </div>
                 </div>
                 <div class="col-md-6">
                     <div class="report-card pastel-green">
                         <p>Total Earning</p>
-                        <h3><?php echo e(number_format($totalEarning)); ?></h3>
+                        <h3>{{ number_format($totalEarning) }}</h3>
                     </div>
                 </div>
             </div>
@@ -231,17 +230,17 @@
 
            <!-- Tabs -->
 <ul class="nav nav-tabs mb-3 report-tabs" id="analyticsTabs">
-    <li class="nav-item"><a href="<?php echo e(route('dashboard.reports', ['filter' => 'recent'])); ?>" class="nav-link <?php if($filter == 'recent'): ?> active <?php endif; ?>">Recent</a></li>
-    <li class="nav-item"><a href="<?php echo e(route('dashboard.reports', ['filter' => 'seven-day'])); ?>" class="nav-link <?php if($filter == 'seven-day'): ?> active <?php endif; ?>">7 Days</a></li>
-    <li class="nav-item"><a href="<?php echo e(route('dashboard.reports', ['filter' => 'fifteen-day'])); ?>" class="nav-link <?php if($filter == 'fifteen-day'): ?> active <?php endif; ?>">15 Days</a></li>
-    <li class="nav-item"><a href="<?php echo e(route('dashboard.reports', ['filter' => 'thirty-day'])); ?>" class="nav-link <?php if($filter == 'thirty-day'): ?> active <?php endif; ?>">30 Days</a></li>
-    <li class="nav-item"><a href="#" class="nav-link <?php if($filter == 'custom-date'): ?> active <?php endif; ?>" data-bs-toggle="tab" onclick="document.getElementById('customDateForm').style.display='flex'">Custom Date</a></li>
+    <li class="nav-item"><a href="{{ route('dashboard.reports', ['filter' => 'recent']) }}" class="nav-link @if($filter == 'recent') active @endif">Recent</a></li>
+    <li class="nav-item"><a href="{{ route('dashboard.reports', ['filter' => 'seven-day']) }}" class="nav-link @if($filter == 'seven-day') active @endif">7 Days</a></li>
+    <li class="nav-item"><a href="{{ route('dashboard.reports', ['filter' => 'fifteen-day']) }}" class="nav-link @if($filter == 'fifteen-day') active @endif">15 Days</a></li>
+    <li class="nav-item"><a href="{{ route('dashboard.reports', ['filter' => 'thirty-day']) }}" class="nav-link @if($filter == 'thirty-day') active @endif">30 Days</a></li>
+    <li class="nav-item"><a href="#" class="nav-link @if($filter == 'custom-date') active @endif" data-bs-toggle="tab" onclick="document.getElementById('customDateForm').style.display='flex'">Custom Date</a></li>
 </ul>
 
 <!-- Custom Date Form -->
-<form method="GET" action="<?php echo e(route('dashboard.reports')); ?>" id="customDateForm" class="mb-3" style="display: <?php if($filter == 'custom-date'): ?> flex <?php else: ?> none <?php endif; ?>; gap: 10px;">
-    <input type="date" name="start_date" value="<?php echo e(request('start_date')); ?>" class="form-control" placeholder="Start Date">
-    <input type="date" name="end_date" value="<?php echo e(request('end_date')); ?>" class="form-control" placeholder="End Date">
+<form method="GET" action="{{ route('dashboard.reports') }}" id="customDateForm" class="mb-3" style="display: @if($filter == 'custom-date') flex @else none @endif; gap: 10px;">
+    <input type="date" name="start_date" value="{{ request('start_date') }}" class="form-control" placeholder="Start Date">
+    <input type="date" name="end_date" value="{{ request('end_date') }}" class="form-control" placeholder="End Date">
     <input type="hidden" name="filter" value="custom-date">
     <button type="submit" class="btn btn-primary">Apply</button>
 </form>
@@ -263,74 +262,72 @@
                         </tr>
                     </thead>
                     <tbody>
-                        <?php $__empty_1 = true; $__currentLoopData = $reports; $__env->addLoop($__currentLoopData); foreach($__currentLoopData as $order): $__env->incrementLoopIndices(); $loop = $__env->getLastLoop(); $__empty_1 = false; ?>
-                            <?php $status = $order->currentStatus->status ?? 'N/A'; ?>
+                        @forelse($reports as $order)
+                            @php $status = $order->currentStatus->status ?? 'N/A'; @endphp
 
                             <tr>
-                                <td><?php echo e(\Carbon\Carbon::parse($order->created_at)->format('Y-m-d H:i')); ?></td>
-                                <td><?php echo e($order->order_number); ?></td>
+                                <td>{{ \Carbon\Carbon::parse($order->created_at)->format('Y-m-d H:i') }}</td>
+                                <td>{{ $order->order_number }}</td>
 
                                 <!-- Buyer Info -->
                                 <td>
-                                    ID: <?php echo e($order->customer->customer_id ?? '-'); ?><br>
-                                    <?php echo e($order->customer->first_name ?? '-'); ?> <?php echo e($order->customer->last_name ?? '-'); ?><br>
-                                    <?php echo e($order->customer->email ?? '-'); ?>
-
+                                    ID: {{ $order->customer->customer_id ?? '-' }}<br>
+                                    {{ $order->customer->first_name ?? '-' }} {{ $order->customer->last_name ?? '-' }}<br>
+                                    {{ $order->customer->email ?? '-' }}
                                 </td>
 
                                 <!-- Seller Info -->
                                 <td>
-                                    ID: <?php echo e($order->seller->customer_id ?? '-'); ?><br>
-                                    <?php echo e($order->seller->first_name ?? '-'); ?> <?php echo e($order->seller->last_name ?? '-'); ?><br>
-                                    <?php echo e($order->seller->email ?? '-'); ?>
-
+                                    ID: {{ $order->seller->customer_id ?? '-' }}<br>
+                                    {{ $order->seller->first_name ?? '-' }} {{ $order->seller->last_name ?? '-' }}<br>
+                                    {{ $order->seller->email ?? '-' }}
                                 </td>
 
                                 <!-- Product Cost -->
-                                <td><?php echo e($order->amount ?? '-'); ?></td>
+                                <td>{{ $order->amount ?? '-' }}</td>
 
-                                <td><?php echo e($order->seller_earning ?? '-'); ?></td>
+                                <td>{{ $order->seller_earning ?? '-' }}</td>
                                 <!-- Order Status -->
 
 
 
  <td>
-                        <?php switch($status):
-                            case ('recent'): ?>
+                        @switch($status)
+                            @case('recent')
                                 <span class="badge badge-primary">Recent</span>
-                                <?php break; ?>
-                            <?php case ('approved'): ?>
+                                @break
+                            @case('approved')
                                 <span class="badge badge-secondary">Approved</span>
-                                <?php break; ?>
-                            <?php case ('processing'): ?>
+                                @break
+                            @case('processing')
                                 <span class="badge badge-info">Processing</span>
-                                <?php break; ?>
-                            <?php case ('delivered'): ?>
+                                @break
+                            @case('delivered')
                                 <span class="badge badge-success">Delivered</span>
-                                <?php break; ?>
-                            <?php case ('cancel_requested'): ?>
+                                @break
+                            @case('cancel_requested')
                                 <span class="badge badge-warning">Cancel Requested</span>
-                                <?php break; ?>
-                            <?php case ('cancelled'): ?>
+                                @break
+                            @case('cancelled')
                                 <span class="badge badge-danger">Cancelled</span>
-                                <?php break; ?>
-                            <?php default: ?>
-                                <span class="badge badge-light"><?php echo e(ucfirst($status)); ?></span>
-                        <?php endswitch; ?>
+                                @break
+                            @default
+                                <span class="badge badge-light">{{ ucfirst($status) }}</span>
+                        @endswitch
                     </td>
 
                                 <!-- Action Buttons -->
                                 <td>
-                                    <a href="<?php echo e(route('orders.detail', $order->id)); ?>" class="btn btn-sm btn-secondary">
+                                    <a href="{{ route('orders.detail', $order->id) }}" class="btn btn-sm btn-secondary">
                                         View Order Detail
                                     </a>
                                 </td>
                             </tr>
-                        <?php endforeach; $__env->popLoop(); $loop = $__env->getLastLoop(); if ($__empty_1): ?>
+                        @empty
                             <tr>
                                 <td colspan="8" class="text-center">No submissions available.</td>
                             </tr>
-                        <?php endif; ?>
+                        @endforelse
                     </tbody>
 
 
@@ -346,5 +343,4 @@
         <!-- CSS -->
     </div>
 
-<?php $__env->stopSection(); ?>
-<?php echo $__env->make('layouts.user-master', \Illuminate\Support\Arr::except(get_defined_vars(), ['__data', '__path']))->render(); ?><?php /**PATH D:\web-mingo-project\flippingo_admin\resources\views/user/reports.blade.php ENDPATH**/ ?>
+@endsection

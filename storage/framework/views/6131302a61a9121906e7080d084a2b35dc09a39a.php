@@ -101,6 +101,8 @@
                             <span class="hide-menu">Reports & Analytics</span>
                         </a>
                         <ul class="collapse first-level base-level-line">
+                            <li class="sidebar-item"><a href="<?php echo e(Route('dashboard.reports')); ?>"
+                                    class="sidebar-link">Sales Reports</a></li>
                             <li class="sidebar-item"><a href="<?php echo e(Route('dashboard.analytics')); ?>"
                                     class="sidebar-link">Analytics</a></li>
                         </ul>

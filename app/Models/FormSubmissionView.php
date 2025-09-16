@@ -16,6 +16,7 @@ class FormSubmissionView extends Model
         'form_submission_id',
         'customer_id',
         'ip_address',
+        'view_date'
     ];
 
     /**
@@ -32,5 +33,16 @@ class FormSubmissionView extends Model
     public function customer()
     {
         return $this->belongsTo(Customer::class);
+    }
+
+    protected static function boot()
+    {
+        parent::boot();
+
+        static::creating(function ($model) {
+            if (!$model->view_date) {
+                $model->view_date = now()->toDateString();
+            }
+        });
     }
 }

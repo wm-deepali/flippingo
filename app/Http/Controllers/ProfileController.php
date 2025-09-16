@@ -91,7 +91,7 @@ class ProfileController extends Controller
         if ($type === 'mobile') {
             // Send via SMS
             try {
-                $message = "{$otp} is the OTP to verify your Mobile Number at https://ashtonwell.com. Please do not share this OTP with anyone. Regards Ashton & Well";
+                $message = "{$otp} is the One Time Password(OTP) to verify your MOB number at Web Mingo, This OTP is Usable only once and is valid for 10 min,PLS DO NOT SHARE THE OTP WITH ANYONE";
 
                 $response = SmsHelper::send($value, $message, 'verify_otp', [
                     'otp' => $otp,
