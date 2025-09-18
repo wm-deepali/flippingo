@@ -31,7 +31,8 @@ class Customer extends Authenticatable
         'state',
         'city',
         'zip_code',
-        'commission_rate'
+        'commission_rate',
+        'last_active'
     ];
 
     protected $hidden = [
@@ -41,6 +42,7 @@ class Customer extends Authenticatable
     protected $casts = [
         'email_verified_at' => 'datetime',
         'mobile_verified_at' => 'datetime',
+        'last_active' => 'datetime'
     ];
 
     protected $appends = ['listing_count'];  // Add this line to append listing_count
@@ -125,5 +127,32 @@ class Customer extends Authenticatable
             ->withTimestamps();
     }
 
+    // convenience method
+    public function isOnline($thresholdMinutes = 2)
+    {
+        return $this->last_active && $this->last_active->gt(now()->subMinutes($thresholdMinutes));
+    }
+
+    // optionally an accessor
+    public function getOnlineAttribute()
+    {
+        return $this->isOnline();
+    }
+
+    // Customer.php
+
+public function getNameAttribute()
+{
+    // Priority: display_name > first_name + last_name > email
+    if (!empty($this->display_name)) {
+        return $this->display_name;
+    }
+
+    if (!empty($this->first_name) || !empty($this->last_name)) {
+        return trim($this->first_name . ' ' . $this->last_name);
+    }
+
+    return $this->email; // fallback
+}
 
 }

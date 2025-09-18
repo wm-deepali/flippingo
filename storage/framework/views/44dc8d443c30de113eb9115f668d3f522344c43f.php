@@ -294,6 +294,12 @@
           </ul>
         </li>
 
+        <li class="nav-item">
+          <a class="nav-link d-flex align-items-center" href="<?php echo e(route('admin.live-chat.index')); ?>">
+            <span>Live Chat</span>
+          </a>
+        </li>
+
 
         <li class="dropdown nav-item" data-menu="dropdown">
           <a class="dropdown-toggle nav-link d-flex align-items-center" href="#" data-toggle="dropdown">

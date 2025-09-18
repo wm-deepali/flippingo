@@ -30,15 +30,12 @@
 
                 <!-- Buyer Section -->
                 <div id="buyer-section" style="display:none;">
-                    <li class="sidebar-item has-arrow">
-                        <a class="sidebar-link" href="javascript:void(0)">
+                    <li class="sidebar-item">
+                        <a class="sidebar-link" href="<?php echo e(route('dashboard.buyer-orders')); ?>" aria-expanded="false">
                             <i data-feather="grid" class="feather-icon"></i>
                             <span class="hide-menu">Orders & Invoice</span>
                         </a>
-                        <ul class="collapse first-level base-level-line">
-                            <li class="sidebar-item"><a href="<?php echo e(route('dashboard.buyer-orders')); ?>"
-                                    class="sidebar-link">Orders</a></li>
-                        </ul>
+
                     </li>
                     <li class="sidebar-item"> <a class="sidebar-link sidebar-link"
                             href="<?php echo e(Route('dashboard.wallet')); ?>" aria-expanded="false"><i data-feather="sidebar"
@@ -58,15 +55,12 @@
                 </div>
                 <!-- Seller Section -->
                 <div id="seller-section" style="display:none;">
-                    <li class="sidebar-item has-arrow">
-                        <a class="sidebar-link" href="javascript:void(0)">
+                    <li class="sidebar-item">
+                        <a class="sidebar-link" href="<?php echo e(route('dashboard.seller-orders')); ?>" aria-expanded="false">
                             <i data-feather="grid" class="feather-icon"></i>
                             <span class="hide-menu">Orders & Invoice</span>
                         </a>
-                        <ul class="collapse first-level base-level-line">
-                            <li class="sidebar-item"><a href="<?php echo e(route('dashboard.seller-orders')); ?>"
-                                    class="sidebar-link">Orders</a></li>
-                        </ul>
+
                     </li>
                     <li class="sidebar-item"> <a class="sidebar-link sidebar-link"
                             href="<?php echo e(Route('dashboard.wallet')); ?>" aria-expanded="false"><i data-feather="sidebar"
@@ -118,12 +112,21 @@
                     <ul class="collapse first-level base-level-line">
                         <li class="sidebar-item"><a href="<?php echo e(Route('dashboard.faq')); ?>" class="sidebar-link">FAQ</a>
                         </li>
-                        <li class="sidebar-item"><a href="<?php echo e(Route('dashboard.raise-ticket')); ?>" class="sidebar-link">Raise
+                        <li class="sidebar-item"><a href="<?php echo e(Route('dashboard.raise-ticket')); ?>"
+                                class="sidebar-link">Raise
                                 a Request</a></li>
                         <li class="sidebar-item"><a href="<?php echo e(Route('dashboard.contact')); ?>" class="sidebar-link">Contact
                                 Us</a></li>
                     </ul>
                 </li>
+
+                <!-- Live Chat Menu -->
+<li class="sidebar-item">
+    <a class="sidebar-link sidebar-link" href="<?php echo e(route('dashboard.chat')); ?>">
+        <i data-feather="message-circle" class="feather-icon"></i>
+        <span class="hide-menu">Live Chat</span>
+    </a>
+</li>
 
                 <li class="sidebar-item"><a class="sidebar-link sidebar-link" href="<?php echo e(Route('account-logout')); ?>"><i
                             data-feather="log-out" class="feather-icon"></i>Logout</a></li>

@@ -66,7 +66,7 @@ class NotificationTemplateSeeder extends Seeder
                 'subject' => 'Your Listing Received a New Order',
                 'content' => 'Your listing "#{listing_title}" has received a new order #{order_id} from {customer_name}.',
                 'channels' => ['in_app'],
-                'default_recipient' => 'listing_seller', // send to the seller of the listing
+                'default_recipient' => 'specific_customers', // send to the seller of the listing
                 'placeholders' => ['{listing_title}', '{order_id}', '{customer_name}'],
                 'is_active' => true,
             ],

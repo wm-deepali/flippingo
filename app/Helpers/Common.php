@@ -5,6 +5,67 @@ use App\Models\Subcategory;
 use App\Models\MasterSetting;
 use App\Models\Country;
 
+use App\Models\Notification;
+use App\Models\NotificationTemplate;
+
+if (!function_exists('sendNotification')) {
+    /**
+     * Send notification using a template key.
+     *
+     * @param string $key  Template key (e.g., listing_published, wallet_credit)
+     * @param array  $data Placeholder data to replace in subject/content
+     * @param mixed  $customers Single customer_id, array of customer_ids, or null (for broadcast)
+     */
+    function sendNotification(string $key, array $data = [], $customers = null)
+    {
+        // 1. Get template
+        $template = NotificationTemplate::where('key', $key)
+            ->where('is_active', true)
+            ->first();
+
+        if (!$template) {
+            return false; // no template found
+        }
+
+        // 2. Replace placeholders in subject and content
+        $subject = $template->subject;
+        $content = $template->content;
+
+        foreach ($data as $placeholder => $value) {
+            $subject = str_replace("{" . $placeholder . "}", $value, $subject);
+            $content = str_replace("{" . $placeholder . "}", $value, $content);
+        }
+
+        // 3. Create notification record
+        $notification = Notification::create([
+            'template_id'   => $template->id,
+            'subject'       => $subject,
+            'content'       => $content,
+            'channels'      => $template->channels,
+            'is_broadcast'  => $template->default_recipient === 'all_customers',
+            'broadcast_filter' => null, // optional filter rules
+        ]);
+
+        // 4. Attach customers
+        if ($template->default_recipient === 'all_customers') {
+            // broadcast → attach all customers
+            $allCustomers = \App\Models\Customer::pluck('id')->toArray();
+            $notification->customers()->attach($allCustomers);
+        } else {
+            // specific customers
+            if ($customers) {
+                if (!is_array($customers)) {
+                    $customers = [$customers];
+                }
+                $notification->customers()->attach($customers);
+            }
+        }
+
+        return $notification;
+    }
+}
+
+
 if (!function_exists('ageInYear')) {
 	function ageInYear($dob) 
 	{

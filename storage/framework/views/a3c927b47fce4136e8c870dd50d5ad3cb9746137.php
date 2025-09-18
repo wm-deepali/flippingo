@@ -10,7 +10,8 @@
 </footer>
 
 <button class="btn btn-primary btn-icon scroll-top" type="button"><i data-feather="arrow-up"></i></button>
-
+<script src="https://js.pusher.com/7.2/pusher.min.js"></script>
+<script src="<?php echo e(mix('js/app.js')); ?>"></script>
 <script src="<?php echo e(URL::asset('admin_assets/js/jquery.min.js')); ?>"></script>
 <script src="//cdnjs.cloudflare.com/ajax/libs/jquery-validate/1.19.0/jquery.validate.js"></script>
 <script src="//cdnjs.cloudflare.com/ajax/libs/jquery-validate/1.19.0/additional-methods.min.js"></script>
@@ -29,6 +30,12 @@
 <script src="//cdn.jsdelivr.net/npm/sweetalert2@11"></script>
 <!-- jQuery first -->
 <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+<!-- Pusher JS -->
+<script src="https://js.pusher.com/8.2/pusher.min.js"></script>
+
+<!-- Laravel Echo -->
+<script src="https://cdn.jsdelivr.net/npm/laravel-echo@1.16.0/dist/echo.iife.js"></script>
+
 <!-- Popper.js (required for Bootstrap 4) -->
 <script src="https://cdn.jsdelivr.net/npm/popper.js@1.16.1/dist/umd/popper.min.js"></script>
 

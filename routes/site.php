@@ -6,6 +6,7 @@ use App\Http\Controllers\Admin\FaqController;
 use App\Http\Controllers\Admin\FormController;
 use App\Http\Controllers\Admin\PageController;
 use App\Http\Controllers\Admin\TestimonialController;
+use App\Http\Controllers\ChatController;
 use App\Http\Controllers\CheckoutController;
 use App\Http\Controllers\NotificationController;
 use App\Http\Controllers\PaymentMethodController;
@@ -240,6 +241,11 @@ Route::middleware(['web'])->group(function () {
             // Toggle bookmark
             Route::post('/notifications/{id}/toggle-bookmark', [NotificationController::class, 'toggleBookmark'])
                 ->name('notifications.toggleBookmark');
+
+            Route::get('/chat/{receiver_type?}/{receiver_id?}', [ChatController::class, 'index'])->name('dashboard.chat');
+            Route::post('/chat/send', [ChatController::class, 'send'])->name('chat.send');
+
+
 
             // Contact Us
             Route::get('/contact-us', function () {

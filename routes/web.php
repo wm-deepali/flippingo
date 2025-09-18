@@ -23,7 +23,8 @@ use App\Http\Controllers\Admin\{
     SubscriptionController,
     ProductOrderController,
     TicketController,
-    NotificationController
+    NotificationController,
+    ChatController
 };
 
 
@@ -233,6 +234,11 @@ Route::group(['middleware' => 'auth'], function () {
             ->name('notifications.store');
         Route::post('/notifications/send-from-template', [NotificationController::class, 'sendFromTemplate'])
             ->name('notifications.sendFromTemplate');
+
+
+        Route::get('live-chat/{receiver_type?}/{receiver_id?}', [ChatController::class, 'index'])->name('live-chat.index');
+        Route::post('live-chat/send', [ChatController::class, 'send'])->name('live-chat.send');
+
 
 
         // Content managemnent

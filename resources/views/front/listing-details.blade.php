@@ -1016,11 +1016,33 @@
 
 
               </div>
-              <div class="d-flex flex-column gap-3 mt-4">
-                <a href="" class="theme-btn w-100" data-bs-toggle="modal" data-bs-target="#shareModal">Chat</a>
-                <a id="enquireBtn" class="theme-btn w-100" type="button" data-bs-toggle="modal"
-                  data-bs-target="#enquiryModal" style="background:gray;">Send Enquiry</a>
-              </div>
+          @php
+    $seller = $submission->customer;
+    $isOnline = $seller && $seller->isOnline();
+@endphp
+
+<div class="d-flex flex-column gap-3 mt-4">
+    @if($isOnline)
+        <a href="{{ route('dashboard.chat', ['receiver_type' => 'customer', 'receiver_id' => $seller->id]) }}"
+           class="theme-btn w-100">
+           <i class="fas fa-comments"></i> Live Chat
+        </a>
+    @else
+        <a href="javascript:void(0)" class="theme-btn w-100 disabled" aria-disabled="true">
+            <i class="fas fa-comments"></i> Live Chat
+        </a>
+        <div class="text-muted small mt-2">
+            Seller is Offline at this moment, You may send Enquiry
+        </div>
+    @endif
+
+    <a id="enquireBtn" class="theme-btn w-100" type="button"
+       data-bs-toggle="modal"
+       data-bs-target="#enquiryModal"
+       style="{{ $isOnline ? '' : 'background:gray;' }}">
+       Send Enquiry
+    </a>
+</div>
 
 
             </div>

@@ -329,6 +329,8 @@
     <!-- ============================================================== -->
     <!-- All Jquery -->
     <!-- ============================================================== -->
+    <script src="https://js.pusher.com/7.2/pusher.min.js"></script>
+
     <script src="{{ asset('user_assets') }}/libs/jquery/dist/jquery.min.js"></script>
     <script src="{{ asset('user_assets') }}/libs/popper.js/dist/umd/popper.min.js"></script>
     <script src="{{ asset('user_assets') }}/libs/bootstrap/dist/js/bootstrap.min.js"></script>
@@ -350,6 +352,12 @@
     <script src="{{ asset('user_assets') }}/libs/chartist-plugin-tooltips/dist/chartist-plugin-tooltip.min.js"></script>
     <script src="{{ asset('user_assets') }}/extra-libs/jvector/jquery-jvectormap-2.0.2.min.js"></script>
     <script src="{{ asset('user_assets') }}/extra-libs/jvector/jquery-jvectormap-world-mill-en.js"></script>
+    <!-- Laravel Echo -->
+<script src="https://cdn.jsdelivr.net/npm/laravel-echo@1.16.0/dist/echo.iife.js"></script>
+
+<!-- Popper.js (required for Bootstrap 4) -->
+<script src="https://cdn.jsdelivr.net/npm/popper.js@1.16.1/dist/umd/popper.min.js"></script>
+
     <script src="{{ asset('user_assets') }}/js/pages/dashboards/dashboard1.min.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
     @stack('scripts')

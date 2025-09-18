@@ -3431,57 +3431,7 @@
 
   <!-- end testimonial-area -->
 
-  <section class="testimonial-reels-section py-5 bg-light">
-    <div class="container">
-      <h2 class="sec__title mb-3 text-center">Reels</h2>
-      <p class="sec__desc text-center">
-        Explore a range of digital assets ready to buy or sell
-      </p>
-      <div class="row g-4 justify-content-center">
-
-        <!-- Reel 1 -->
-        <div class="col-md-3 col-sm-6">
-          <div class="reel-card">
-            <video controls loop muted autoplay playsinline>
-              <source src="{{ asset('assets') }}/images/reels.mp4" type="video/mp4">
-              Your browser does not support video.
-            </video>
-          </div>
-        </div>
-
-        <!-- Reel 2 -->
-        <div class="col-md-3 col-sm-6">
-          <div class="reel-card">
-            <video controls loop muted autoplay playsinline>
-              <source src="{{ asset('assets') }}/images/reels1.mp4" type="video/mp4">
-              Your browser does not support video.
-            </video>
-          </div>
-        </div>
-
-        <!-- Reel 3 -->
-        <div class="col-md-3 col-sm-6">
-          <div class="reel-card">
-            <video controls loop muted autoplay playsinline>
-              <source src="{{ asset('assets') }}/images/reels.mp4" type="video/mp4">
-              Your browser does not support video.
-            </video>
-          </div>
-        </div>
-
-        <!-- Reel 4 -->
-        <div class="col-md-3 col-sm-6">
-          <div class="reel-card">
-            <video controls loop muted autoplay playsinline>
-              <source src="{{ asset('assets') }}/images/reels.mp41" type="video/mp4">
-              Your browser does not support video.
-            </video>
-          </div>
-        </div>
-
-      </div>
-    </div>
-  </section>
+ 
 
   <section class="testimonial-reels-section py-5 bg-light">
     <div class="container">

@@ -1,13 +1,14 @@
-@extends('layouts.user-master')
-
-@section('title')
-    {{ $page->meta_title ?? 'Chats' }}
-@endsection
 
 
-@section('content')
+<?php $__env->startSection('title'); ?>
+    <?php echo e($page->meta_title ?? 'Chats'); ?>
 
-    @include('user.sidebar')
+<?php $__env->stopSection(); ?>
+
+
+<?php $__env->startSection('content'); ?>
+
+    <?php echo $__env->make('user.sidebar', \Illuminate\Support\Arr::except(get_defined_vars(), ['__data', '__path']))->render(); ?>
 
     <div class="page-wrapper">
 
@@ -61,25 +62,25 @@
                                     <ul class="mailbox list-style-none">
                                         <li>
                                             <div class="message-center">
-                                                @foreach($contacts as $contact)
+                                                <?php $__currentLoopData = $contacts; $__env->addLoop($__currentLoopData); foreach($__currentLoopData as $contact): $__env->incrementLoopIndices(); $loop = $__env->getLastLoop(); ?>
                                                     <a href="javascript:void(0)"
                                                         class="message-item d-flex align-items-center border-bottom px-3 py-2 contact"
-                                                        data-id="{{ $contact->id }}" data-type="{{ $contact->type }}">
+                                                        data-id="<?php echo e($contact->id); ?>" data-type="<?php echo e($contact->type); ?>">
                                                         <div class="user-img">
-                                                            <img src="{{ $contact->avatar ? asset('storage/' . $contact->avatar) : 'https://flippingo.store/user-dashboard/assets/images/users/1.jpg' }}"
+                                                            <img src="<?php echo e($contact->avatar ? asset('storage/' . $contact->avatar) : 'https://flippingo.store/user-dashboard/assets/images/users/1.jpg'); ?>"
                                                                 alt="user" class="img-fluid rounded-circle" width="40px">
                                                             <span
-                                                                class="profile-status {{ $contact->status ?? 'offline' }} float-right"></span>
+                                                                class="profile-status <?php echo e($contact->status ?? 'offline'); ?> float-right"></span>
                                                         </div>
                                                         <div class="w-75 d-inline-block v-middle pl-2">
-                                                            <h6 class="message-title mb-0 mt-1">{{ $contact->name }}</h6>
+                                                            <h6 class="message-title mb-0 mt-1"><?php echo e($contact->name); ?></h6>
                                                             <span
-                                                                class="font-12 text-nowrap d-block text-muted text-truncate">{{ $contact->last_message }}</span>
+                                                                class="font-12 text-nowrap d-block text-muted text-truncate"><?php echo e($contact->last_message); ?></span>
                                                             <span
-                                                                class="font-12 text-nowrap d-block text-muted">{{ $contact->last_message_time }}</span>
+                                                                class="font-12 text-nowrap d-block text-muted"><?php echo e($contact->last_message_time); ?></span>
                                                         </div>
                                                     </a>
-                                                @endforeach
+                                                <?php endforeach; $__env->popLoop(); $loop = $__env->getLastLoop(); ?>
                                             </div>
                                         </li>
                                     </ul>
@@ -90,13 +91,14 @@
                                 <div class="chat-header border-bottom p-3 d-flex align-items-center">
                                     <div class="chat-img">
                                         <img id="chatReceiverAvatar"
-                                            src="{{ $receiver->profile_pic ? asset('storage/' . $receiver->profile_pic) : 'https://flippingo.store/user-dashboard/assets/images/users/1.jpg' }}"
+                                            src="<?php echo e($receiver->profile_pic ? asset('storage/' . $receiver->profile_pic) : 'https://flippingo.store/user-dashboard/assets/images/users/1.jpg'); ?>"
                                             class="rounded-circle" width="45">
                                     </div>
                                     <div class="chat-name pl-3">
-                                        <h5 class="mb-0" id="chatReceiverName">{{ $receiver->name ?? 'Admin' }}</h5>
+                                        <h5 class="mb-0" id="chatReceiverName"><?php echo e($receiver->name ?? 'Admin'); ?></h5>
                                         <small class="text-muted" id="chatReceiverStatus">
-                                            {{ $receiver instanceof \App\Models\Customer ? ($receiver->online ? 'online' : 'offline') : 'online' }}
+                                            <?php echo e($receiver instanceof \App\Models\Customer ? ($receiver->online ? 'online' : 'offline') : 'online'); ?>
+
                                         </small>
 
                                     </div>
@@ -105,33 +107,35 @@
                                 <div class="chat-box scrollable position-relative" style="height: calc(100vh - 111px);">
                                     <!--chat Row -->
                                     <ul class="chat-list list-style-none px-3 pt-3">
-                                        @if($messages->isEmpty())
+                                        <?php if($messages->isEmpty()): ?>
                                             <li class="text-center py-3">
-                                                Start a conversation with {{ $receiver->name ?? 'Admin' }}
+                                                Start a conversation with <?php echo e($receiver->name ?? 'Admin'); ?>
+
                                             </li>
-                                        @else
-                                            @foreach($messages as $msg)
+                                        <?php else: ?>
+                                            <?php $__currentLoopData = $messages; $__env->addLoop($__currentLoopData); foreach($__currentLoopData as $msg): $__env->incrementLoopIndices(); $loop = $__env->getLastLoop(); ?>
                                                 <li
-                                                    class="chat-item {{ $msg->sender_type === 'customer' && $msg->sender_id === auth('customer')->id() ? 'odd text-right' : '' }} list-style-none mt-3">
-                                                    @if($msg->sender_type !== 'customer' || $msg->sender_id !== auth('customer')->id())
+                                                    class="chat-item <?php echo e($msg->sender_type === 'customer' && $msg->sender_id === auth('customer')->id() ? 'odd text-right' : ''); ?> list-style-none mt-3">
+                                                    <?php if($msg->sender_type !== 'customer' || $msg->sender_id !== auth('customer')->id()): ?>
                                                         <div class="chat-img d-inline-block">
-                                                            <img src="{{ $msg->sender_avatar ? asset('storage/' . $msg->sender_avatar) : 'https://flippingo.store/user-dashboard/assets/images/users/1.jpg' }}"
+                                                            <img src="<?php echo e($msg->sender_avatar ? asset('storage/' . $msg->sender_avatar) : 'https://flippingo.store/user-dashboard/assets/images/users/1.jpg'); ?>"
                                                                 class="rounded-circle" width="45">
                                                         </div>
-                                                    @endif
+                                                    <?php endif; ?>
                                                     <div
-                                                        class="chat-content d-inline-block pl-3 {{ $msg->sender_type === 'customer' && $msg->sender_id === auth('customer')->id() ? 'text-right' : '' }}">
-                                                        <h6 class="font-weight-medium">{{ $msg->sender_name }}</h6>
-                                                        <div class="box msg p-2 d-inline-block mb-1">{{ $msg->message }}</div>
+                                                        class="chat-content d-inline-block pl-3 <?php echo e($msg->sender_type === 'customer' && $msg->sender_id === auth('customer')->id() ? 'text-right' : ''); ?>">
+                                                        <h6 class="font-weight-medium"><?php echo e($msg->sender_name); ?></h6>
+                                                        <div class="box msg p-2 d-inline-block mb-1"><?php echo e($msg->message); ?></div>
                                                     </div>
                                                     <div
-                                                        class="chat-time d-block font-10 mt-1 mr-0 mb-3 {{ $msg->sender_type === 'customer' && $msg->sender_id === auth('customer')->id() ? 'text-right' : '' }}">
-                                                        {{ $msg->created_at }}
+                                                        class="chat-time d-block font-10 mt-1 mr-0 mb-3 <?php echo e($msg->sender_type === 'customer' && $msg->sender_id === auth('customer')->id() ? 'text-right' : ''); ?>">
+                                                        <?php echo e($msg->created_at); ?>
+
                                                     </div>
                                                 </li>
-                                            @endforeach
+                                            <?php endforeach; $__env->popLoop(); $loop = $__env->getLastLoop(); ?>
 
-                                        @endif
+                                        <?php endif; ?>
                                     </ul>
 
 
@@ -140,8 +144,8 @@
                                     <div class="row">
                                         <div class="col-9">
                                             <div class="input-field mt-0 mb-0">
-                                                <input id="textarea1" data-user-id="{{ $receiver->id ?? '' }}"
-                                                    data-user-type="{{ $receiverType }}" placeholder="Type and enter"
+                                                <input id="textarea1" data-user-id="<?php echo e($receiver->id ?? ''); ?>"
+                                                    data-user-type="<?php echo e($receiverType); ?>" placeholder="Type and enter"
                                                     class="form-control border-0" type="text">
 
                                             </div>
@@ -167,16 +171,16 @@
 
     </div>
 
-@endsection
+<?php $__env->stopSection(); ?>
 
-@push('scripts')
+<?php $__env->startPush('scripts'); ?>
     <script>
-        // In Blade, create a "template" URL using placeholders
-        let routeTemplate = "{{ route('dashboard.chat', ['receiver_type' => 'RECEIVER_TYPE', 'receiver_id' => 'RECEIVER_ID']) }}";
 
         $(function () {
 
             // Click contact to load chat
+            // In Blade, create a "template" URL using placeholders
+            let routeTemplate = "<?php echo e(route('dashboard.chat', ['receiver_type' => 'RECEIVER_TYPE', 'receiver_id' => 'RECEIVER_ID'])); ?>";
 
             // Click contact to load chat
             $(document).on('click', '.contact', function () {
@@ -197,7 +201,7 @@
                 $.get(url, function (res) {
                     let html = '';
                     res.messages.forEach(function (msg) {
-                        let isOwn = msg.sender_type === 'customer' && msg.sender_id === {{ auth('customer')->id() }};
+                        let isOwn = msg.sender_type === 'customer' && msg.sender_id === <?php echo e(auth('customer')->id()); ?>;
                         html += renderMessage(msg, isOwn);
                     });
                     $('.chat-list').html(html);
@@ -218,8 +222,8 @@
                 let receiver_id = $('#textarea1').data('user-id');
                 let receiver_type = $('#textarea1').data('user-type');
                 if (!msg.trim() || !receiver_id) return;
-                $.post("{{ route('chat.send') }}", {
-                    _token: "{{ csrf_token() }}",
+                $.post("<?php echo e(route('chat.send')); ?>", {
+                    _token: "<?php echo e(csrf_token()); ?>",
                     message: msg,
                     receiver_id: receiver_id,
                     receiver_type: receiver_type
@@ -254,17 +258,6 @@
 
         });
 
-        // Enable Pusher logging for debugging (optional)
-        Pusher.logToConsole = true;
-
-        // Initialize Laravel Echo
-        window.Echo = new Echo({
-            broadcaster: 'pusher',
-            key: '44b3ff02c74805cc4d12',   // your Pusher key
-            cluster: 'ap2',                 // your Pusher cluster
-            forceTLS: true
-        });
-
 
         window.Echo.channel('chat')
             .listen('MessageSent', (e) => {
@@ -280,7 +273,7 @@
                 $.get(url, function (res) {
                     let html = '';
                     res.messages.forEach(function (msg) {
-                        let isOwn = msg.sender_type === 'customer' && msg.sender_id === {{ auth('customer')->id() }};
+                        let isOwn = msg.sender_type === 'customer' && msg.sender_id === <?php echo e(auth('customer')->id()); ?>;
                         html += renderMessage(msg, isOwn);
                     });
                     $('.chat-list').html(html);
@@ -349,4 +342,5 @@
 
 
     </script>
-@endpush
+<?php $__env->stopPush(); ?>
+<?php echo $__env->make('layouts.user-master', \Illuminate\Support\Arr::except(get_defined_vars(), ['__data', '__path']))->render(); ?><?php /**PATH D:\web-mingo-project\flippingo_admin\resources\views/user/live-chat.blade.php ENDPATH**/ ?>

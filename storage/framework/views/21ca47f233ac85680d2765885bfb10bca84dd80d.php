@@ -248,7 +248,7 @@
 
                                         <?php if(!empty($textFields)): ?>
                                             <?php $__currentLoopData = $textFields; $__env->addLoop($__currentLoopData); foreach($__currentLoopData as $field): $__env->incrementLoopIndices(); $loop = $__env->getLastLoop(); ?>
-                                                <div class="wishlist-left">
+                                                <div class="wishlist-left mb-2">
                                                     <p class="m-0" style="color: green;">
                                                         <i class="<?php echo e($field['icon'] ?? ''); ?>"></i>
                                                     </p>
@@ -292,63 +292,63 @@
 
                 <!-- Listings Cards -->
                 <!-- <div class="listing-cards">
-                                        <div class="listing-card">
-                                            <img src="https://www.stockvault.net/data/2012/09/10/135306/thumb16.jpg" alt="Product">
-                                            <div class="listing-info">
-                                                <h3>Course Title or Product Name</h3>
-                                                <p>
-                                                    This comprehensive course is designed to give learners an in-depth understanding of the
-                                                    subject matter.
-                                                    Covering all essential modules with practical examples, case studies, and real-world
-                                                    applications, it helps
-                                                    students develop critical skills, improve knowledge retention, and apply concepts
-                                                    effectively.
-                                                    Whether you are a beginner or an advanced learner, this program ensures a structured
-                                                    approach for your growth.
-                                                </p>
-                                                <ul class="key-points">
-                                                    <li>✔ Interactive video lessons</li>
-                                                    <li>✔ Downloadable resources</li>
-                                                    <li>✔ Quizzes and assignments</li>
-                                                    <li>✔ Lifetime access</li>
-                                                </ul>
+                                            <div class="listing-card">
+                                                <img src="https://www.stockvault.net/data/2012/09/10/135306/thumb16.jpg" alt="Product">
+                                                <div class="listing-info">
+                                                    <h3>Course Title or Product Name</h3>
+                                                    <p>
+                                                        This comprehensive course is designed to give learners an in-depth understanding of the
+                                                        subject matter.
+                                                        Covering all essential modules with practical examples, case studies, and real-world
+                                                        applications, it helps
+                                                        students develop critical skills, improve knowledge retention, and apply concepts
+                                                        effectively.
+                                                        Whether you are a beginner or an advanced learner, this program ensures a structured
+                                                        approach for your growth.
+                                                    </p>
+                                                    <ul class="key-points">
+                                                        <li>✔ Interactive video lessons</li>
+                                                        <li>✔ Downloadable resources</li>
+                                                        <li>✔ Quizzes and assignments</li>
+                                                        <li>✔ Lifetime access</li>
+                                                    </ul>
 
-                                                <div class="listing-actions">
-                                                    <button class="btn edit">Edit</button>
-                                                    <button class="btn analytics">View Analytics</button>
-                                                    <button class="btn details">View Detail</button>
+                                                    <div class="listing-actions">
+                                                        <button class="btn edit">Edit</button>
+                                                        <button class="btn analytics">View Analytics</button>
+                                                        <button class="btn details">View Detail</button>
+                                                    </div>
                                                 </div>
                                             </div>
-                                        </div>
 
-                                        <div class="listing-card">
-                                            <img src="https://www.stockvault.net/data/2012/09/10/135306/thumb16.jpg" alt="Product">
-                                            <div class="listing-info">
-                                                <h3>Another Course Name</h3>
-                                                <p>
-                                                    This training program introduces participants to essential concepts with a practical focus
-                                                    on application.
-                                                    The course ensures comprehensive coverage of the fundamentals while progressively advancing
-                                                    to complex topics.
-                                                    It is crafted to help professionals, students, and enthusiasts gain confidence, improve
-                                                    efficiency, and achieve
-                                                    measurable results by applying knowledge to real-world scenarios with guidance from experts.
-                                                </p>
-                                                <ul class="key-points">
-                                                    <li>✔ Beginner to advanced modules</li>
-                                                    <li>✔ Certification upon completion</li>
-                                                    <li>✔ Hands-on projects</li>
-                                                    <li>✔ 24/7 support</li>
-                                                </ul>
+                                            <div class="listing-card">
+                                                <img src="https://www.stockvault.net/data/2012/09/10/135306/thumb16.jpg" alt="Product">
+                                                <div class="listing-info">
+                                                    <h3>Another Course Name</h3>
+                                                    <p>
+                                                        This training program introduces participants to essential concepts with a practical focus
+                                                        on application.
+                                                        The course ensures comprehensive coverage of the fundamentals while progressively advancing
+                                                        to complex topics.
+                                                        It is crafted to help professionals, students, and enthusiasts gain confidence, improve
+                                                        efficiency, and achieve
+                                                        measurable results by applying knowledge to real-world scenarios with guidance from experts.
+                                                    </p>
+                                                    <ul class="key-points">
+                                                        <li>✔ Beginner to advanced modules</li>
+                                                        <li>✔ Certification upon completion</li>
+                                                        <li>✔ Hands-on projects</li>
+                                                        <li>✔ 24/7 support</li>
+                                                    </ul>
 
-                                                <div class="listing-actions">
-                                                    <button class="btn edit">Edit</button>
-                                                    <button class="btn analytics">View Analytics</button>
-                                                    <button class="btn details">View Detail</button>
+                                                    <div class="listing-actions">
+                                                        <button class="btn edit">Edit</button>
+                                                        <button class="btn analytics">View Analytics</button>
+                                                        <button class="btn details">View Detail</button>
+                                                    </div>
                                                 </div>
                                             </div>
-                                        </div>
-                                    </div> -->
+                                        </div> -->
 
 
 
@@ -381,8 +381,11 @@
                 cancelButtonText: "Cancel"
             }).then((result) => {
                 if (result.isConfirmed) {
+                    let url = "<?php echo e(route('listing.destroy', ':id')); ?>";
+                    url = url.replace(':id', listingId);
+
                     $.ajax({
-                        url: "<?php echo e(url('listing')); ?>/" + listingId,
+                        url: url,
                         type: "DELETE",
                         data: {
                             _token: "<?php echo e(csrf_token()); ?>"
