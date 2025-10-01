@@ -189,11 +189,14 @@ Route::group(['middleware' => 'auth'], function () {
 
 
         // product orders and their routes
+             Route::resource('order_cancellation_reasons', \App\Http\Controllers\Admin\OrderCancellationReasonController::class);
+             
         Route::get('product-orders/cancellation-requests', [ProductOrderController::class, 'cancellationRequests'])->name('product-orders.cancellationRequests');
         Route::post('product-orders/{subscription}/approve-cancellation', [ProductOrderController::class, 'approveCancellation'])
             ->name('product-orders.approveCancellation');
         Route::post('product-orders/{subscription}/reject-cancellation', [ProductOrderController::class, 'rejectCancellation'])
             ->name('product-orders.rejectCancellation');
+
 
         Route::resource('product-orders', ProductOrderController::class);
         Route::patch('/product-orders/{id}/update-status', [ProductOrderController::class, 'updateStatus'])->name('product-orders.update-status');

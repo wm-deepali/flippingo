@@ -318,7 +318,7 @@
                 href="{{ route('admin.client-reels.index') }}"><span>Listing Rejection Reasons</span></a>
             </li>
             <li><a class="dropdown-item d-flex align-items-center"
-                href="{{ route('admin.client-reels.index') }}"><span>Order Cancellation Reasons</span></a>
+                href="{{ route('admin.order_cancellation_reasons.index') }}"><span>Order Cancellation Reasons</span></a>
             </li>
             <li><a class="dropdown-item d-flex align-items-center"
                 href="{{ route('admin.deletion_reasons.index') }}"><span> Account Delete Reasons</span></a>

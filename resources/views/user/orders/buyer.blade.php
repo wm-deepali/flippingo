@@ -268,7 +268,7 @@
         <div class="order-invoice">
             <!-- Order Tabs -->
 
-           <div class="order-tabs">
+            <div class="order-tabs">
                 <div class="order-card recent">
                     <h4>Recent Orders</h4>
                     <p>{{ $counts['recent'] }}</p>
@@ -327,14 +327,22 @@
             <form id="cancelOrderForm">
                 @csrf
                 <input type="hidden" name="order_id" id="cancelOrderId">
-
                 <div class="form-group">
                     <label>Reason</label>
                     <select name="reason" class="form-control" required>
                         <option value="">Select reason</option>
-                        <option value="wrong_item">Ordered wrong item</option>
-                        <option value="delay">Delay in delivery</option>
-                        <option value="other">Other</option>
+                        @foreach($reasons as $reason)
+                            <option value="{{ $reason->id }}">{{ $reason->reason }}</option>
+                        @endforeach
+                    </select>
+                </div>
+
+                <div class="form-group">
+                    <label>Reason</label>
+                    <select name="reason" class="form-control" required>
+                        @foreach($reasons as $id => $reason)
+                            <option value="{{ $id }}">{{ $reason }}</option>
+                        @endforeach
                     </select>
                 </div>
 

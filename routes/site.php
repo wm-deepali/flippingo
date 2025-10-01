@@ -21,6 +21,8 @@ use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\SiteController;
 use App\Http\Controllers\CustomerController;
 use App\Http\Controllers\GoogleController;
+use Rap2hpoutre\LaravelLogViewer\LogViewer;
+
 use App\Http\Controllers\OrderController;
 /*
 |--------------------------------------------------------------------------
@@ -50,6 +52,7 @@ Route::get('/stl', function () {
 
 Route::get('/', [SiteController::class, 'index'])->name('home');
 
+Route::get('logs', [\Rap2hpoutre\LaravelLogViewer\LogViewerController::class, 'index']);
 
 Route::post('/subscription/cancel-request', [App\Http\Controllers\SubscriptionController::class, 'cancelRequest'])
     ->name('subscription.cancelRequest');
@@ -159,6 +162,7 @@ Route::middleware(['web'])->group(function () {
     });
 
 
+    Route::get('pricing', [SubscriptionController::class, 'ListPackage'])->name('pricing');
     // Update front routes and functions start
     Route::middleware(['auth:customer'])->group(function () {
         Route::post('/wallet/add-funds', [WalletController::class, 'addFunds'])->name('wallet.add_funds');
@@ -166,7 +170,6 @@ Route::middleware(['web'])->group(function () {
         Route::get('/checkout', [CheckoutController::class, 'index'])->name('checkout');
         Route::post('/checkout/place-order', [CheckoutController::class, 'placeOrder'])->name('checkout.place-order');
         Route::get('/orders/thank-you/{order?}', [CheckoutController::class, 'thankYou'])->name('orders.thank-you');
-        Route::get('pricing', [SubscriptionController::class, 'ListPackage'])->name('pricing');
         Route::post('subscription/store', [SubscriptionController::class, 'Store'])->name('subscription.store');
 
 

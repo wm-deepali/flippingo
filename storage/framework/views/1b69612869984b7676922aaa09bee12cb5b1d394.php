@@ -108,10 +108,16 @@
                     </div>
 
                     <!-- Cancelled-specific fields -->
-                    <div class="form-group cancelled-fields d-none">
-                        <label>Cancellation Reason</label>
-                        <textarea id="cancellationReason" class="form-control" rows="2"></textarea>
-                    </div>
+                   <div class="form-group cancelled-fields d-none">
+    <label>Cancellation Reason</label>
+    <select id="cancellationReason" class="form-control" required>
+        <option value="">Select reason</option>
+        <?php $__currentLoopData = $reasons; $__env->addLoop($__currentLoopData); foreach($__currentLoopData as $id => $reason): $__env->incrementLoopIndices(); $loop = $__env->getLastLoop(); ?>
+            <option value="<?php echo e($id); ?>"><?php echo e($reason); ?></option>
+        <?php endforeach; $__env->popLoop(); $loop = $__env->getLastLoop(); ?>
+    </select>
+</div>
+
                 </div>
                 <div class="modal-footer">
                     <button type="submit" class="btn btn-primary">Update Status</button>
@@ -164,7 +170,8 @@ $(document).on('click', '.changeStatusBtn', function() {
     $('#deliveryMethod').val($(this).data('delivery-method'));
     $('#cancellationReason').val($(this).data('cancellation-reason'));
 
-    $('#statusModal').modal('show');
+   var myModal = new bootstrap.Modal(document.getElementById('statusModal'));
+myModal.show();
 });
 
 

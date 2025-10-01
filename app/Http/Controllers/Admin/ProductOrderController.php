@@ -3,6 +3,7 @@
 namespace App\Http\Controllers\Admin;
 
 use App\Http\Controllers\Controller;
+use App\Models\OrderCancellationReason;
 use App\Models\Payment;
 use App\Models\PaymentRefund;
 use App\Models\Wallet;
@@ -18,8 +19,13 @@ class ProductOrderController extends Controller
     public function index()
     {
         $orders = ProductOrder::with(['customer', 'seller'])->latest()->paginate(20);
-        return view('admin.product-orders.index', compact('orders'));
+
+        // Get active cancellation reasons from DB
+        $reasons = OrderCancellationReason::pluck('reason', 'id');
+
+        return view('admin.product-orders.index', compact('orders', 'reasons'));
     }
+
 
     public function sellerOrders($sellerId)
     {
@@ -96,7 +102,8 @@ class ProductOrderController extends Controller
         // If cancelled, allow additional fields
         if ($request->status == 'cancelled') {
             $data['cancelled_by'] = auth()->id(); // current admin
-            $data['cancellation_reason'] = $request->cancellation_reason ?? 'N/A';
+            $reasonText = OrderCancellationReason::find($request->cancellation_reason)?->reason ?? 'N/A';
+            $data['cancellation_reason'] = $reasonText;
             $data['cancelled_at'] = now();
         }
 

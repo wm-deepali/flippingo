@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use App\Models\ProductOrder;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
+use App\Models\OrderCancellationReason;
 
 class OrderController extends Controller
 {
@@ -32,7 +33,11 @@ class OrderController extends Controller
             'refunds' => $refundOrders->count(),
         ];
 
-        return view('user.orders.buyer', compact('recentOrders', 'deliveredOrders', 'cancelRequestedOrders', 'refundOrders', 'counts'));
+         // Get active cancellation reasons from DB
+        $reasons = OrderCancellationReason::pluck('reason', 'id');
+
+
+        return view('user.orders.buyer', compact('recentOrders', 'deliveredOrders', 'cancelRequestedOrders', 'refundOrders', 'counts', 'reasons'));
     }
 
     public function sellerOrders()
@@ -58,8 +63,10 @@ class OrderController extends Controller
             'cancel_requested' => $cancelRequestedOrders->count(),
             'refunds' => $refundOrders->count(),
         ];
+         // Get active cancellation reasons from DB
+        $reasons = OrderCancellationReason::pluck('reason', 'id');
 
-        return view('user.orders.seller', compact('recentOrders', 'deliveredOrders', 'cancelRequestedOrders', 'refundOrders', 'counts'));
+        return view('user.orders.seller', compact('recentOrders', 'deliveredOrders', 'cancelRequestedOrders', 'refundOrders', 'counts', 'reasons'));
     }
 
     public function cancelOrder(Request $request)
@@ -77,12 +84,14 @@ class OrderController extends Controller
             return response()->json(['message' => 'Order cannot be cancelled now.'], 400);
         }
 
+         $reasonText = OrderCancellationReason::find($request->reason)?->reason ?? 'N/A';
+
         // Save "cancellation request" instead of cancelling directly
         $order->statuses()->create([
             'status' => 'cancel_requested',
             'remarks' => $request->remarks,
             'requested_by' => Auth::guard('customer')->user()->id,
-            'cancellation_reason' => $request->reason ?? 'N/A',
+            'cancellation_reason' => $reasonText,
             'requested_at' => now()
         ]);
 

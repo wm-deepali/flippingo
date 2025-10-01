@@ -11,6 +11,7 @@
   <title>Flippingo Admin</title>
   <link rel="shortcut icon" type="image/x-icon" href="<?php echo e(URL::asset('admin_assets/images/favicon.png')); ?>">
   <link rel="stylesheet" type="text/css" href="<?php echo e(URL::asset('admin_assets/css/flatpickr.min.css')); ?>">
+  <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
   <link rel="stylesheet" type="text/css" href="<?php echo e(URL::asset('admin_assets/css/bootstrap.min.css')); ?>">
   <link rel="stylesheet" type="text/css" href="<?php echo e(URL::asset('admin_assets/css/bootstrap-extended.min.css')); ?>">
   <link rel="stylesheet" type="text/css" href="<?php echo e(URL::asset('admin_assets/css/chart-apex.min.css')); ?>">

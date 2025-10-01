@@ -294,15 +294,15 @@
                         <!-- Free Plan -->
                         <!-- <div class="package-card" data-badge="Free">
 
-                                                                                <h3>Temporary Free Option</h3>
-                                                                                <p class="price">₹0</p>
-                                                                                <hr>
-                                                                                <ul>
-                                                                                    <li>✅ 1 Listing Free On Signup</li>
-                                                                                    <li>✅ Listings Duration - For 30 days</li>
-                                                                                </ul>
-                                                                                <button class="subscription-btn">Get Started</button>
-                                                                            </div> -->
+                                                                                    <h3>Temporary Free Option</h3>
+                                                                                    <p class="price">₹0</p>
+                                                                                    <hr>
+                                                                                    <ul>
+                                                                                        <li>✅ 1 Listing Free On Signup</li>
+                                                                                        <li>✅ Listings Duration - For 30 days</li>
+                                                                                    </ul>
+                                                                                    <button class="subscription-btn">Get Started</button>
+                                                                                </div> -->
 
                         
                         <?php $__empty_1 = true; $__currentLoopData = $packages; $__env->addLoop($__currentLoopData); foreach($__currentLoopData as $package): $__env->incrementLoopIndices(); $loop = $__env->getLastLoop(); $__empty_1 = false; ?>
@@ -413,6 +413,11 @@
     <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
 
     <script>
+
+        const isLoggedIn = <?php echo json_encode(Auth::guard('customer')->check(), 15, 512) ?>;
+        const loginUrl = "<?php echo e(route('authentication-signup', ['redirect' => 'pricing'])); ?>";
+
+
         let redirectAfterPayment = "<?php echo e(request('redirect') ?? route('dashboard.index')); ?>";
 
         let selectedPackage = {};
@@ -421,6 +426,23 @@
 
             document.querySelectorAll(".choose-plan").forEach(button => {
                 button.addEventListener("click", function () {
+                      // 🔒 If not logged in, redirect
+                if (!isLoggedIn) {
+                    Swal.fire({
+                        icon: 'warning',
+                        title: 'Please Login',
+                        text: 'You need to login to choose a subscription plan.',
+                        showCancelButton: true,
+                        confirmButtonText: 'Login / Signup',
+                        cancelButtonText: 'Cancel'
+                    }).then(result => {
+                        if (result.isConfirmed) {
+                            window.location.href = loginUrl;
+                        }
+                    });
+                    return;
+                }
+                
                     selectedPackage = {
                         id: this.getAttribute("data-id"),
                         name: this.getAttribute("data-name"),
@@ -585,9 +607,9 @@
                                 });
                         },
                         prefill: {
-                            name: "<?php echo e(auth()->user()->name); ?>",
-                            email: "<?php echo e(auth()->user()->email); ?>",
-                            contact: "<?php echo e(auth()->user()->phone ?? ''); ?>"
+                            name: "Test",
+                            email: "abc@gmail.com",
+                            contact: ""
                         },
                         theme: { color: "#2979ff" }
                     };

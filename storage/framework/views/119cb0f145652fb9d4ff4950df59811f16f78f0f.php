@@ -331,11 +331,11 @@
 
                 <div class="form-group">
                     <label>Reason</label>
-                    <select name="reason" class="form-control" required>
+                     <select name="reason" class="form-control" required>
                         <option value="">Select reason</option>
-                        <option value="wrong_item">Ordered wrong item</option>
-                        <option value="delay">Delay in delivery</option>
-                        <option value="other">Other</option>
+                         <?php $__currentLoopData = $reasons; $__env->addLoop($__currentLoopData); foreach($__currentLoopData as $id => $reason): $__env->incrementLoopIndices(); $loop = $__env->getLastLoop(); ?>
+            <option value="<?php echo e($id); ?>"><?php echo e($reason); ?></option>
+        <?php endforeach; $__env->popLoop(); $loop = $__env->getLastLoop(); ?>
                     </select>
                 </div>
 

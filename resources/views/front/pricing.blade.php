@@ -209,7 +209,6 @@
         border-radius: 8px;
         cursor: pointer;
         font-size: 14px;
-        transition: background 0.2s ease;
     }
 
     .subscription-btn:hover {
@@ -292,15 +291,15 @@
                         <!-- Free Plan -->
                         <!-- <div class="package-card" data-badge="Free">
 
-                                                                                <h3>Temporary Free Option</h3>
-                                                                                <p class="price">₹0</p>
-                                                                                <hr>
-                                                                                <ul>
-                                                                                    <li>✅ 1 Listing Free On Signup</li>
-                                                                                    <li>✅ Listings Duration - For 30 days</li>
-                                                                                </ul>
-                                                                                <button class="subscription-btn">Get Started</button>
-                                                                            </div> -->
+                                                                                    <h3>Temporary Free Option</h3>
+                                                                                    <p class="price">₹0</p>
+                                                                                    <hr>
+                                                                                    <ul>
+                                                                                        <li>✅ 1 Listing Free On Signup</li>
+                                                                                        <li>✅ Listings Duration - For 30 days</li>
+                                                                                    </ul>
+                                                                                    <button class="subscription-btn">Get Started</button>
+                                                                                </div> -->
 
                         {{-- Dynamic packages from database --}}
                         @forelse($packages as $package)
@@ -405,6 +404,11 @@
     <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
 
     <script>
+
+        const isLoggedIn = @json(Auth::guard('customer')->check());
+        const loginUrl = "{{ route('authentication-signup', ['redirect' => 'pricing']) }}";
+
+
         let redirectAfterPayment = "{{ request('redirect') ?? route('dashboard.index') }}";
 
         let selectedPackage = {};
@@ -413,6 +417,23 @@
 
             document.querySelectorAll(".choose-plan").forEach(button => {
                 button.addEventListener("click", function () {
+                      // 🔒 If not logged in, redirect
+                if (!isLoggedIn) {
+                    Swal.fire({
+                        icon: 'warning',
+                        title: 'Please Login',
+                        text: 'You need to login to choose a subscription plan.',
+                        showCancelButton: true,
+                        confirmButtonText: 'Login / Signup',
+                        cancelButtonText: 'Cancel'
+                    }).then(result => {
+                        if (result.isConfirmed) {
+                            window.location.href = loginUrl;
+                        }
+                    });
+                    return;
+                }
+                
                     selectedPackage = {
                         id: this.getAttribute("data-id"),
                         name: this.getAttribute("data-name"),
@@ -577,9 +598,9 @@
                                 });
                         },
                         prefill: {
-                            name: "{{ auth()->user()->name }}",
-                            email: "{{ auth()->user()->email }}",
-                            contact: "{{ auth()->user()->phone ?? '' }}"
+                            name: "Test",
+                            email: "abc@gmail.com",
+                            contact: ""
                         },
                         theme: { color: "#2979ff" }
                     };

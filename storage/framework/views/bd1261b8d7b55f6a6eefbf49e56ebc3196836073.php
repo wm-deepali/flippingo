@@ -47,11 +47,43 @@
           <!--  <hr class="border-top-gray flex-grow-1" />-->
           <!--</div>-->
           <div id="step1" class="mt-3">
-            <div class="form-group position-relative mt-4">
+          
+
+            <div class="form-group position-relative mt-3">
+              <label class="label-text">Signup with Mobile</label>
+              <div class="input-group">
+                <select id="countryCode" class="form-select country-code col-3">
+                  <option value="+91"> +91</option>
+                  <option value="+1"> +1</option>
+                  <option value="+44"> +44</option>
+                  <option value="+971"> +971</option>
+                </select>
+                <input class="form-control form--control" type="text" name="loginPhone" id="phone"
+                  placeholder="Enter Mobile Number" />
+                <button type="button" class="arrow-btn" id="nextBtnPhone">→</button>
+              </div>
+            </div>
+
+            <div id="otpSectionPhone" class="d-none mt-3">
+              <label class="label-text">Enter OTP</label>
+              <div class="d-flex mb-2">
+                <input type="text" class="form-control me-2" placeholder="Enter OTP" id="otpField" style="width: 70%;">
+                <button type="button" class="btn btn-outline-secondary" id="verifyOtpBtn">Verify OTP</button>
+              </div>
+              <button type="button" class="btn btn-outline-primary w-100 mt-2" id="resendOtpBtn">Resend OTP</button>
+            </div>
+
+            <div class="d-flex align-items-center">
+              <hr class="border-top-gray flex-grow-1" />
+              <span class="mx-1 text-uppercase">or</span>
+              <hr class="border-top-gray flex-grow-1" />
+            </div>
+
+  <div class="form-group position-relative mt-4">
               <label class="label-text">Signup in With E-mail </label>
               <input class="form-control form--control ps-3" type="text" name="loginEmail" id="email"
                 placeholder="Enter E-mail Id " />
-              <button type="button" class="arrow-btn" id="nextBtnEmail">âžœ</button>
+              <button type="button" class="arrow-btn" id="nextBtnEmail">→</button>
             </div>
 
             <!-- Step 2: Hidden initially -->
@@ -73,36 +105,6 @@
               <button type="button" class="btn btn-outline-primary w-100 mt-2" id="resendOtpBtn">Resend OTP</button>
             </div>
 
-
-            <div class="d-flex align-items-center">
-              <hr class="border-top-gray flex-grow-1" />
-              <span class="mx-1 text-uppercase">or</span>
-              <hr class="border-top-gray flex-grow-1" />
-            </div>
-
-            <div class="form-group position-relative mt-3">
-              <label class="label-text">Signup with Mobile</label>
-              <div class="input-group">
-                <select id="countryCode" class="form-select country-code col-3">
-                  <option value="+91">ðŸ‡®ðŸ‡³ +91</option>
-                  <option value="+1">ðŸ‡ºðŸ‡¸ +1</option>
-                  <option value="+44">ðŸ‡¬ðŸ‡§ +44</option>
-                  <option value="+971">ðŸ‡¦ðŸ‡ª +971</option>
-                </select>
-                <input class="form-control form--control" type="text" name="loginPhone" id="phone"
-                  placeholder="Enter Mobile Number" />
-                <button type="button" class="arrow-btn" id="nextBtnPhone">âžœ</button>
-              </div>
-            </div>
-
-            <div id="otpSectionPhone" class="d-none mt-3">
-              <label class="label-text">Enter OTP</label>
-              <div class="d-flex mb-2">
-                <input type="text" class="form-control me-2" placeholder="Enter OTP" id="otpField" style="width: 70%;">
-                <button type="button" class="btn btn-outline-secondary" id="verifyOtpBtn">Verify OTP</button>
-              </div>
-              <button type="button" class="btn btn-outline-primary w-100 mt-2" id="resendOtpBtn">Resend OTP</button>
-            </div>
 
             <div class="form-group d-flex align-items-center justify-content-between hidden" id="rememberBox">
               <div class="custom-control custom-checkbox">
@@ -130,7 +132,7 @@
               <input type="text" class="form-control" placeholder="Enter Legal Name">
             </div>
 
-            <input type="hidden" id="redirectUrl" value="<?php echo e(request()->query('redirect', url('/'))); ?>">
+            <input type="hidden" id="redirectUrl" value="<?php echo e(request()->query('redirect', 'dashboard.index')); ?>">
 
             <!-- Other Fields -->
             <input type="text" class="form-control mb-3" placeholder="First Name">

@@ -10,7 +10,7 @@
 </footer>
 
 <button class="btn btn-primary btn-icon scroll-top" type="button"><i data-feather="arrow-up"></i></button>
-<script src="https://js.pusher.com/7.2/pusher.min.js"></script>
+
 <script src="{{ URL::asset('admin_assets/js/jquery.min.js') }}"></script>
 <script src="//cdnjs.cloudflare.com/ajax/libs/jquery-validate/1.19.0/jquery.validate.js"></script>
 <script src="//cdnjs.cloudflare.com/ajax/libs/jquery-validate/1.19.0/additional-methods.min.js"></script>
@@ -27,8 +27,6 @@
 <script src="{{ URL::asset('admin_assets/js/ckeditor.js') }}"></script>
 <script type="text/javascript" charset="utf8" src="//cdn.datatables.net/1.11.1/js/jquery.dataTables.js"></script>
 <script src="//cdn.jsdelivr.net/npm/sweetalert2@11"></script>
-<!-- jQuery first -->
-<script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
 <!-- Pusher JS -->
 <script src="https://js.pusher.com/8.2/pusher.min.js"></script>
 

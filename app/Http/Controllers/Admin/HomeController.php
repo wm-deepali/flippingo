@@ -4,8 +4,13 @@ namespace App\Http\Controllers\Admin;
 
 use App\Http\Controllers\Controller;
 use App\Models\BasicSetting;
+use App\Models\Chat;
+use App\Models\Customer;
+use App\Models\FormSubmission;
 use App\Models\LoginActivity;
+use App\Models\ProductOrder;
 use App\Models\Setting;
+use App\Models\Subscription;
 use App\Models\User;
 use App\Models\UserMeta;
 use App\Models\UserSocialLink;
@@ -14,6 +19,7 @@ use Illuminate\Http\Request;
 use App\Models\SiteMetaContent;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Hash;
+
 
 class HomeController extends Controller
 {
@@ -25,8 +31,148 @@ class HomeController extends Controller
      */
     public function index()
     {
-        return view('home');
+        // ✅ Unique customers count
+        $totalUsers = Customer::distinct('id')->count();
+
+        $sellers = Customer::sellers()->count();
+        $buyers = Customer::buyers()->count();
+
+        // Active Listings = published submissions
+        $activeListings = FormSubmission::where('status', 'published')->count();
+
+        // Subscription Payments Total Amount
+        $subscriptionOrdersAmount = \App\Models\Payment::whereHas('subscription')
+            ->sum('amount');
+
+        // Orders within last 7, 15, 30 days
+        $orders7Days = ProductOrder::with(['customer'])
+            ->where('created_at', '>=', now()->subDays(7))
+            ->latest()
+            ->get();
+
+        $orders15Days = ProductOrder::with(['customer'])
+            ->where('created_at', '>=', now()->subDays(15))
+            ->latest()
+            ->get();
+
+        $orders30Days = ProductOrder::with(['customer'])
+            ->where('created_at', '>=', now()->subDays(30))
+            ->latest()
+            ->get();
+
+        // Subscriptions within last 7, 15, 30 days
+        $subs7Days = Subscription::with(['customer', 'package'])
+            ->where('created_at', '>=', now()->subDays(7))
+            ->latest()
+            ->get();
+
+        $subs15Days = Subscription::with(['customer', 'package'])
+            ->where('created_at', '>=', now()->subDays(15))
+            ->latest()
+            ->get();
+
+        $subs30Days = Subscription::with(['customer', 'package'])
+            ->where('created_at', '>=', now()->subDays(30))
+            ->latest()
+            ->get();
+
+        // Product Orders Total Earnings
+        $ordersEarnings = ProductOrder::sum('total');
+
+        // Combine earnings
+        $totalEarnings = $subscriptionOrdersAmount + $ordersEarnings;
+
+        // ✅ This month's earnings (Orders + Subscriptions)
+        $thisMonthOrders = ProductOrder::whereMonth('created_at', now()->month)
+            ->sum('total');
+        $thisMonthSubscriptions = \App\Models\Payment::whereHas('subscription')
+            ->whereMonth('created_at', now()->month)
+            ->sum('amount');
+        $thisMonthEarnings = $thisMonthOrders + $thisMonthSubscriptions;
+
+        // ✅ Last month earnings (to calculate growth %)
+        $lastMonthOrders = ProductOrder::whereMonth('created_at', now()->subMonth()->month)
+            ->sum('total');
+        $lastMonthSubscriptions = \App\Models\Payment::whereHas('subscription')
+            ->whereMonth('created_at', now()->subMonth()->month)
+            ->sum('amount');
+        $lastMonthEarnings = $lastMonthOrders + $lastMonthSubscriptions;
+
+        $growthPercentage = $lastMonthEarnings > 0
+            ? (($thisMonthEarnings - $lastMonthEarnings) / $lastMonthEarnings) * 100
+            : 100;
+
+        $stats = [
+            'total_users' => $totalUsers,
+            'total_earning' => $totalEarnings,
+            'this_month_earning' => $thisMonthEarnings,
+            'growth_percentage' => round($growthPercentage, 1),
+            'sellers' => $sellers,
+            'buyers' => $buyers,
+            'active_listings' => $activeListings,
+            'subscription_orders_amt' => $subscriptionOrdersAmount,
+        ];
+
+        // In your index() method
+        $monthlyEarnings = ProductOrder::selectRaw('MONTH(created_at) as month, SUM(total) as total')
+            ->groupBy('month')
+            ->orderBy('month')
+            ->pluck('total', 'month')
+            ->toArray();
+
+        $earningsData = [];
+        for ($i = 1; $i <= 12; $i++) {
+            $earningsData[] = $monthlyEarnings[$i] ?? 0;
+        }
+        $earningsData = array_map('floatval', $earningsData);
+
+$recentChats = $this->getRecentChats(5);
+
+// dd($recentChats);
+        return view('home', compact(
+            'stats',
+            'orders7Days',
+            'orders15Days',
+            'orders30Days',
+            'subs7Days',
+            'subs15Days',
+            'subs30Days',
+            'earningsData',
+            'lastMonthEarnings',
+        ));
     }
+
+
+
+public function getRecentChats($limit = 5)
+{
+    $admin = auth()->user();
+
+    $chats = Chat::where(function ($q) use ($admin) {
+        $q->where('sender_type', 'user')->where('sender_id', $admin->id)
+          ->where('receiver_type', 'customer');
+    })->orWhere(function ($q) use ($admin) {
+        $q->where('sender_type', 'customer')
+          ->where('receiver_type', 'user')
+          ->where('receiver_id', $admin->id);
+    })->latest()
+      ->take($limit)
+      ->get();
+
+    return $chats->map(fn($msg) => (object) [
+        'id' => $msg->id,
+        'sender_name' => $msg->sender_type === 'customer'
+            ? Customer::find($msg->sender_id)?->name
+            : User::find($msg->sender_id)?->name ?? 'Admin',
+        'sender_avatar' => $msg->sender_type === 'customer'
+            ? Customer::find($msg->sender_id)?->profile_pic
+            : User::find($msg->sender_id)?->profile_pic,
+        'sender_type' => $msg->sender_type,
+        'message' => $msg->message,
+        'created_at' => $msg->created_at->format('Y-m-d H:i')
+    ]);
+}
+
 
     public function profile()
     {

@@ -141,18 +141,44 @@ class Customer extends Authenticatable
 
     // Customer.php
 
-public function getNameAttribute()
-{
-    // Priority: display_name > first_name + last_name > email
-    if (!empty($this->display_name)) {
-        return $this->display_name;
+    public function getNameAttribute()
+    {
+        // Priority: display_name > first_name + last_name > email
+        if (!empty($this->display_name)) {
+            return $this->display_name;
+        }
+
+        if (!empty($this->first_name) || !empty($this->last_name)) {
+            return trim($this->first_name . ' ' . $this->last_name);
+        }
+
+        return $this->email; // fallback
     }
 
-    if (!empty($this->first_name) || !empty($this->last_name)) {
-        return trim($this->first_name . ' ' . $this->last_name);
+    // Orders placed by this customer (buyer role)
+    public function orders()
+    {
+        return $this->hasMany(ProductOrder::class, 'customer_id');
     }
 
-    return $this->email; // fallback
-}
+    // Orders received (when this customer is seller)
+    public function sales()
+    {
+        return $this->hasMany(ProductOrder::class, 'seller_id');
+    }
+
+    // Sellers = customers with listings or active subscription
+    public function scopeSellers($query)
+    {
+        return $query->whereHas('submissions', function ($q) {
+            $q->where('published', true);
+        })->orWhereHas('activeSubscription');
+    }
+
+    // Buyers = customers who placed orders
+    public function scopeBuyers($query)
+    {
+        return $query->whereHas('orders');
+    }
 
 }

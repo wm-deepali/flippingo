@@ -237,7 +237,7 @@
 
                                                 <div class="form-group">
                                                     <label>SMTP Password</label>
-                                                    <input type="password" class="form-control" name="smtp_password"
+                                                    <input type="text" class="form-control" name="smtp_password"
                                                         value="<?php echo e($settings['smtp_password'] ?? ''); ?>">
                                                 </div>
 
@@ -276,24 +276,24 @@
                                                 <div class="form-group">
                                                     <label>PE ID (Entity Registration ID)</label>
                                                     <input type="text" class="form-control" name="pe_id"
-                                                        value="<?php echo e($settings['pe_id'] ?? ''); ?>">
+                                                        value="<?php echo e($settings['pe_id'] ?? ''); ?>" readonly>
                                                 </div>
 
                                                 <div class="form-group">
                                                     <label>Sender ID</label>
                                                     <input type="text" class="form-control" name="sender_id"
-                                                        value="<?php echo e($settings['sender_id'] ?? ''); ?>">
+                                                        value="<?php echo e($settings['sender_id'] ?? ''); ?>" readonly>
                                                 </div>
 
                                                 <div class="form-group">
                                                     <label>Auth Key</label>
                                                     <input type="text" class="form-control" name="auth_key"
-                                                        value="<?php echo e($settings['auth_key'] ?? ''); ?>">
+                                                        value="<?php echo e($settings['auth_key'] ?? ''); ?>" readonly>
                                                 </div>
 
                                                 <?php
                                                     $templates = !empty($settings['sms_templates'])
-                                                        ? json_decode($settings['sms_templates'], true)
+                                                        ? $settings['sms_templates']
                                                         : [
                                                             [
                                                                 'type' => 'verify_otp',
@@ -312,7 +312,7 @@
                                                             
                                                             <label>Template Type</label>
                                                             <select class="form-control mb-2"
-                                                                name="sms_templates[<?php echo e($i); ?>][type]">
+                                                                name="sms_templates[<?php echo e($i); ?>][type]" disabled>
                                                                 <option value="verify_otp" <?php echo e(($template['type'] ?? '') == 'verify_otp' ? 'selected' : ''); ?>>Verify OTP</option>
                                                                 <option value="custom" <?php echo e(($template['type'] ?? '') == 'custom' ? 'selected' : ''); ?>>Custom</option>
                                                             </select>
@@ -322,13 +322,13 @@
                                                             <input type="text" class="form-control mb-2"
                                                                 name="sms_templates[<?php echo e($i); ?>][id]"
                                                                 value="<?php echo e($template['id'] ?? ''); ?>"
-                                                                placeholder="DLT Template ID">
+                                                                placeholder="DLT Template ID" readonly>
 
                                                             
                                                             <label>Template Text</label>
                                                             <textarea class="form-control mb-2"
                                                                 name="sms_templates[<?php echo e($i); ?>][text]"
-                                                                placeholder="Enter Template Message"><?php echo e($template['text'] ?? ''); ?></textarea>
+                                                                placeholder="Enter Template Message" readonly><?php echo e($template['text'] ?? ''); ?></textarea>
 
                                                             
                                                             <label>Available Variables</label>

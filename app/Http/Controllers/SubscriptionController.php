@@ -61,8 +61,11 @@ class SubscriptionController extends Controller
             ->orderBy('created_at', 'desc')
             ->get();
 
-        // Get wallet balance (default 0 if no wallet yet)
-        $walletBalance = optional($user->wallet)->balance ?? 0;
+        $walletBalance = 0;
+        if ($user) {
+            // Get wallet balance (default 0 if no wallet yet)
+            $walletBalance = optional($user->wallet)->balance ?? 0;
+        }
 
         return view('user.subscription-plan', compact('packages', 'walletBalance'));
     }
@@ -72,16 +75,25 @@ class SubscriptionController extends Controller
     {
         $user = Auth::guard('customer')->user();
 
-        // get all active packages
         $packages = Package::where('status', 'active')
             ->orderBy('created_at', 'desc')
             ->get();
 
-        // ✅ get wallet balance (default 0 if no wallet exists yet)
-        $walletBalance = optional($user->wallet)->balance ?? 0;
+        $walletBalance = $user ? optional($user->wallet)->balance ?? 0 : 0;
 
-        return view('front.pricing', compact('packages', 'walletBalance'));
+        $prefill = $user ? [
+            'name' => $user->name,
+            'email' => $user->email,
+            'contact' => $user->mobile ?? ''
+        ] : [
+            'name' => '',
+            'email' => '',
+            'contact' => ''
+        ];
+
+        return view('front.pricing', compact('packages', 'walletBalance', 'prefill'));
     }
+
 
 
     public function store(Request $request)

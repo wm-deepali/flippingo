@@ -330,11 +330,11 @@
 
                 <div class="form-group">
                     <label>Reason</label>
-                    <select name="reason" class="form-control" required>
+                     <select name="reason" class="form-control" required>
                         <option value="">Select reason</option>
-                        <option value="wrong_item">Ordered wrong item</option>
-                        <option value="delay">Delay in delivery</option>
-                        <option value="other">Other</option>
+                         @foreach($reasons as $id => $reason)
+            <option value="{{ $id }}">{{ $reason }}</option>
+        @endforeach
                     </select>
                 </div>
 

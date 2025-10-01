@@ -237,7 +237,7 @@
 
                                                 <div class="form-group">
                                                     <label>SMTP Password</label>
-                                                    <input type="password" class="form-control" name="smtp_password"
+                                                    <input type="text" class="form-control" name="smtp_password"
                                                         value="{{ $settings['smtp_password'] ?? '' }}">
                                                 </div>
 
@@ -276,24 +276,24 @@
                                                 <div class="form-group">
                                                     <label>PE ID (Entity Registration ID)</label>
                                                     <input type="text" class="form-control" name="pe_id"
-                                                        value="{{ $settings['pe_id'] ?? '' }}">
+                                                        value="{{ $settings['pe_id'] ?? '' }}" readonly>
                                                 </div>
 
                                                 <div class="form-group">
                                                     <label>Sender ID</label>
                                                     <input type="text" class="form-control" name="sender_id"
-                                                        value="{{ $settings['sender_id'] ?? '' }}">
+                                                        value="{{ $settings['sender_id'] ?? '' }}" readonly>
                                                 </div>
 
                                                 <div class="form-group">
                                                     <label>Auth Key</label>
                                                     <input type="text" class="form-control" name="auth_key"
-                                                        value="{{ $settings['auth_key'] ?? '' }}">
+                                                        value="{{ $settings['auth_key'] ?? '' }}" readonly>
                                                 </div>
 
                                                 @php
                                                     $templates = !empty($settings['sms_templates'])
-                                                        ? json_decode($settings['sms_templates'], true)
+                                                        ? $settings['sms_templates']
                                                         : [
                                                             [
                                                                 'type' => 'verify_otp',
@@ -312,7 +312,7 @@
                                                             {{-- Template Type --}}
                                                             <label>Template Type</label>
                                                             <select class="form-control mb-2"
-                                                                name="sms_templates[{{ $i }}][type]">
+                                                                name="sms_templates[{{ $i }}][type]" disabled>
                                                                 <option value="verify_otp" {{ ($template['type'] ?? '') == 'verify_otp' ? 'selected' : '' }}>Verify OTP</option>
                                                                 <option value="custom" {{ ($template['type'] ?? '') == 'custom' ? 'selected' : '' }}>Custom</option>
                                                             </select>
@@ -322,13 +322,13 @@
                                                             <input type="text" class="form-control mb-2"
                                                                 name="sms_templates[{{ $i }}][id]"
                                                                 value="{{ $template['id'] ?? '' }}"
-                                                                placeholder="DLT Template ID">
+                                                                placeholder="DLT Template ID" readonly>
 
                                                             {{-- Template Text --}}
                                                             <label>Template Text</label>
                                                             <textarea class="form-control mb-2"
                                                                 name="sms_templates[{{ $i }}][text]"
-                                                                placeholder="Enter Template Message">{{ $template['text'] ?? '' }}</textarea>
+                                                                placeholder="Enter Template Message" readonly>{{ $template['text'] ?? '' }}</textarea>
 
                                                             {{-- Variables --}}
                                                             <label>Available Variables</label>

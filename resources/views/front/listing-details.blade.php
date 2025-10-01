@@ -1444,8 +1444,8 @@ var addMoneyButton = document.getElementById('addMoneyButton');
             });
         },
         prefill: {
-            name: "{{ auth()->user()->name }}",
-            email: "{{ auth()->user()->email }}",
+            name: "{{ auth()->user()->name ?? '' }}",
+            email: "{{ auth()->user()->email?? '' }}",
             contact: "{{ auth()->user()->phone ?? '' }}"
         },
         theme: {

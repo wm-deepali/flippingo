@@ -108,10 +108,16 @@
                     </div>
 
                     <!-- Cancelled-specific fields -->
-                    <div class="form-group cancelled-fields d-none">
-                        <label>Cancellation Reason</label>
-                        <textarea id="cancellationReason" class="form-control" rows="2"></textarea>
-                    </div>
+                   <div class="form-group cancelled-fields d-none">
+    <label>Cancellation Reason</label>
+    <select id="cancellationReason" class="form-control" required>
+        <option value="">Select reason</option>
+        @foreach($reasons as $id => $reason)
+            <option value="{{ $id }}">{{ $reason }}</option>
+        @endforeach
+    </select>
+</div>
+
                 </div>
                 <div class="modal-footer">
                     <button type="submit" class="btn btn-primary">Update Status</button>
@@ -164,7 +170,8 @@ $(document).on('click', '.changeStatusBtn', function() {
     $('#deliveryMethod').val($(this).data('delivery-method'));
     $('#cancellationReason').val($(this).data('cancellation-reason'));
 
-    $('#statusModal').modal('show');
+   var myModal = new bootstrap.Modal(document.getElementById('statusModal'));
+myModal.show();
 });
 
 
