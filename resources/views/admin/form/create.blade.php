@@ -52,8 +52,8 @@
     }
 
     /* #my-form {
-                                                              height: 100vh;
-                                                          } */
+                                                                          height: 100vh;
+                                                                      } */
 
     /* Modal button styling */
     .modal-footer .btn {
@@ -129,11 +129,11 @@
     }
 
     .drag-over-top {
-      border-top: 2px solid #007bff;
+      border-top: 3px solid #007bff;
     }
 
     .drag-over-bottom {
-      border-bottom: 2px solid #007bff;
+      border-bottom: 3px solid #007bff;
     }
 
     .steps {
@@ -185,6 +185,23 @@
       border-radius: 3px;
       margin-right: 8px;
       vertical-align: middle;
+    }
+
+    .drop-placeholder {
+      height: 50px;
+      border: 2px dashed #007bff;
+      border-radius: 6px;
+      margin: 8px 0;
+      background: rgba(0, 123, 255, 0.05);
+      transition: all 0.2s ease-in-out;
+    }
+     .reorder-placeholder {
+      height: 50px;
+      border: 2px dashed #007bff;
+      border-radius: 6px;
+      margin: 8px 0;
+      background: rgba(0, 123, 255, 0.05);
+      transition: all 0.2s ease-in-out;
     }
   </style>
   @push('styles')
@@ -315,16 +332,16 @@
 
           <!-- Right Sidebar: Styles -->
           <!-- <div id="ef-styles" class="col-md-3 d-none">
-                      <div class="ef-sidebar-outer p-2">
-                        <h5>Design</h5>
-                        <div id="styles-panel">
-                        </div>
-                        <div class="mt-2">
-                          <a href="#" id="collapse-styles">Collapse All</a> |
-                          <a href="#" id="expand-styles">Expand All</a>
-                        </div>
-                      </div>
-                    </div> -->
+                                  <div class="ef-sidebar-outer p-2">
+                                    <h5>Design</h5>
+                                    <div id="styles-panel">
+                                    </div>
+                                    <div class="mt-2">
+                                      <a href="#" id="collapse-styles">Collapse All</a> |
+                                      <a href="#" id="expand-styles">Expand All</a>
+                                    </div>
+                                  </div>
+                                </div> -->
 
         </div>
 
@@ -395,25 +412,31 @@
       const $field = $(`<div class="form-group" data-field-id="${fieldId}" data-field-type="${type}" draggable="true">${fieldHtml}</div>`);
 
       // Merge defaults from FIELD_CONFIGS and passed config
-      const defaults = window.FIELD_CONFIGS?.[type] || {};
+      // const defaults = window.FIELD_CONFIGS?.[type] || {};
       const data = {};
 
-      // Get default values (skip 'id' key)
-      for (const [key, fieldConfig] of Object.entries(defaults)) {
-        if (key === 'id') continue;
-        if (fieldConfig.type === 'select') {
-          data[key] = getSelectedOptionValue(fieldConfig.value);
-        } else if (fieldConfig.value !== undefined) {
-          data[key] = fieldConfig.value;
-        }
-      }
+      // // Get default values (skip 'id' key)
+      // for (const [key, fieldConfig] of Object.entries(config)) {
+      //   if (key === 'id') continue;
+      //   if (fieldConfig.type === 'select') {
+      //     data[key] = getSelectedOptionValue(fieldConfig.value);
+      //   } else if (fieldConfig.type === 'choice') {
+      //     data[key] = fieldConfig.value; // Array for choices
+      //   }
+      //   else {
+      //     data[key] = fieldConfig.value;
+      //   }
+      // }
 
       // Override with provided config values
       for (const [key, val] of Object.entries(config)) {
         if (val && val.value !== undefined) {
-          if (Array.isArray(val.value)) {
+          if (val.type === 'select') {
             data[key] = getSelectedOptionValue(val.value);
-          } else {
+          } else if (val.type === 'choice') {
+            data[key] = val.value;
+          }
+          else {
             data[key] = val.value;
           }
         } else {
@@ -423,7 +446,7 @@
 
 
       // Special: For essential fields, mark as non-deletable and disable deletion and dragging
-      const nonDeletableFields = ['title', 'product_title', 'mrp', 'discount', 'offered_price'];
+      const nonDeletableFields = ['product_title', 'mrp', 'urgent_sale', 'offered_price'];
       // console.log(config, 'config');
 
       const configId = (config.id && config.id.value) || (config.alias && config.alias.value) || '';

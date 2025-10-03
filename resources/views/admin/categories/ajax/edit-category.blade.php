@@ -37,6 +37,14 @@
                         <div class="text-danger validation-err" id="status-err"></div>
                     </div>
 
+                    <!-- Popular Checkbox -->
+                    <div class="form-group">
+                        <label>
+                            <input type="checkbox" name="is_popular" id="is_popular" value="1" {{ $category->is_popular ? 'checked' : '' }}>
+                            Mark as Popular
+                        </label>
+                    </div>
+
                     <div class="form-group">
                         <label>Icon Image</label>
                         <input type="file" name="icon_image" class="form-control-file">
@@ -61,16 +69,16 @@
 </div>
 
 <script>
-  // Function to convert text to URL-friendly slug
-  function slugify(text) {
-    return text.toString().toLowerCase()
-      .trim()
-      .replace(/[\s\W-]+/g, '-')   // Replace spaces and non-word chars with hyphens
-      .replace(/^-+|-+$/g, '');    // Remove leading/trailing hyphens
-  }
+    // Function to convert text to URL-friendly slug
+    function slugify(text) {
+        return text.toString().toLowerCase()
+            .trim()
+            .replace(/[\s\W-]+/g, '-')   // Replace spaces and non-word chars with hyphens
+            .replace(/^-+|-+$/g, '');    // Remove leading/trailing hyphens
+    }
 
-  // Listen for input changes on the 'name' field and update 'slug' field accordingly
-  document.getElementById('name').addEventListener('input', function() {
-    document.getElementById('slug').value = slugify(this.value);
-  });
+    // Listen for input changes on the 'name' field and update 'slug' field accordingly
+    document.getElementById('name').addEventListener('input', function () {
+        document.getElementById('slug').value = slugify(this.value);
+    });
 </script>

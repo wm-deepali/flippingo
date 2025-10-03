@@ -33,6 +33,16 @@
                         </select>
                         <div class="text-danger validation-err" id="status-err"></div>
                     </div>
+
+                    <!-- Popular Checkbox -->
+                    <div class="form-group">
+                        <label>
+                            <input type="checkbox" name="is_popular" id="is_popular" value="1">
+                            Mark as Popular
+                        </label>
+                    </div>
+
+
                     <!-- Icon Image -->
                     <div class="form-group">
                         <label>Icon Image</label>
@@ -49,16 +59,16 @@
 </div>
 
 <script>
-function slugify(text) {
-    return text
-      .toString()
-      .toLowerCase()
-      .trim()
-      .replace(/[\s\W-]+/g, '-')   // Replace spaces and non-word chars with hyphens
-      .replace(/^-+|-+$/g, '');    // Remove leading/trailing hyphens
-}
+    function slugify(text) {
+        return text
+            .toString()
+            .toLowerCase()
+            .trim()
+            .replace(/[\s\W-]+/g, '-')   // Replace spaces and non-word chars with hyphens
+            .replace(/^-+|-+$/g, '');    // Remove leading/trailing hyphens
+    }
 
-document.getElementById('name').addEventListener('input', function() {
-    document.getElementById('slug').value = slugify(this.value);
-});
+    document.getElementById('name').addEventListener('input', function () {
+        document.getElementById('slug').value = slugify(this.value);
+    });
 </script>

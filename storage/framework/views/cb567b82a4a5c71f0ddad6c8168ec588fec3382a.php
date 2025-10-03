@@ -14,80 +14,7 @@
             .then(([rules, properties]) => {
                 renderDesignAccordion(rules, properties);
             });
-
-
-
-        let dragged;
-
-        // Make form fields draggable
-        $('#my-form').on('mouseenter', '.form-group', function () {
-            $(this).attr('draggable', true);
-        });
-
-        // Handle drag start (store reference to dragged element)
-        $('#my-form').on('dragstart', '.form-group', function (e) {
-            dragged = this;
-            e.originalEvent.dataTransfer.effectAllowed = 'move';
-            $(this).addClass('dragging');
-        });
-
-        // Handle drag end (cleanup)
-        $('#my-form').on('dragend', '.form-group', function () {
-            $(this).removeClass('dragging');
-            dragged = null;
-        });
-
-        // Visual indicators on drag over
-        $('#my-form').on('dragover', '.form-group', function (e) {
-            e.preventDefault();
-            e.originalEvent.dataTransfer.dropEffect = 'move';
-
-            var $this = $(this);
-            var offset = $this.offset();
-            var height = $this.outerHeight();
-            var mouseY = e.originalEvent.pageY;
-
-            $this.removeClass('drag-over-top drag-over-bottom');
-            if (mouseY - offset.top < height / 2) {
-                $this.addClass('drag-over-top');
-            } else {
-                $this.addClass('drag-over-bottom');
-            }
-        });
-
-        // Remove visual indicators on drag leave
-        $('#my-form').on('dragleave', '.form-group', function () {
-            $(this).removeClass('drag-over-top drag-over-bottom');
-        });
-
-        // Handle drop on an existing field for reordering
-        $('#my-form').on('drop', '.form-group', function (e) {
-            e.preventDefault();
-
-            e.stopPropagation(); // Stop event bubbling to avoid duplicate handling
-            var $this = $(this);
-            $this.removeClass('drag-over-top drag-over-bottom');
-
-            if (dragged && dragged !== this) {
-                var offset = $this.offset();
-                var height = $this.outerHeight();
-                var mouseY = e.originalEvent.pageY;
-
-                // Insert dragged element before or after target based on mouse position
-                if (mouseY - offset.top < height / 2) {
-                    $(dragged).insertBefore(this);
-                } else {
-                    $(dragged).insertAfter(this);
-                }
-
-                updateCodePreview();
-            }
-        });
-
-
-
     });
-
 
 
     function renderDesignAccordion(rules, properties) {
@@ -647,29 +574,122 @@
     }
 
 
-    // Enhanced drag & drop with visual feedback
-    $(document).on('dragstart', '.builder-item', function (e) {
-        e.originalEvent.dataTransfer.setData('field-type', $(this).data('type'));
-        $(this).addClass('dragging');
-    });
+    document.addEventListener('DOMContentLoaded', function () {
+        let dragged = null;
+        let $reorderPlaceholder = $('<div class="reorder-placeholder"></div>');
+        let $newFieldPlaceholder = $('<div class="drop-placeholder"></div>');
 
-    $(document).on('dragend', '.builder-item', function (e) {
-        $(this).removeClass('dragging');
-    });
+        // ===== 1. REORDER EXISTING FIELDS =====
+        $('#my-form').on('mouseenter', '.form-group', function () {
+            $(this).attr('draggable', true);
+        });
 
-    $('#canvas').on('dragover', function (e) {
-        e.preventDefault();
-        $(this).addClass('drag-over');
-    });
+        $('#my-form').on('dragstart', '.form-group', function (e) {
+            dragged = $(this);
+            e.originalEvent.dataTransfer.effectAllowed = 'move';
+            e.originalEvent.dataTransfer.setData('drag-type', 'reorder');
+            dragged.addClass('dragging');
+        });
 
-    $('#canvas').on('dragleave', function (e) {
-        // Only remove class if we're actually leaving the canvas, not just entering a child element
-        if (!$(this).is(e.relatedTarget) && !$(this).has(e.relatedTarget).length) {
-            $(this).removeClass('drag-over');
-        }
-    });
+        $('#my-form').on('dragover', '.form-group', function (e) {
+            e.preventDefault();
+            if (!dragged) return;
 
-    // Drop handler will be defined below with the complete implementation
+            const $this = $(this);
+            const mouseY = e.originalEvent.pageY;
+            const mid = $this.offset().top + $this.outerHeight() / 2;
+
+            $reorderPlaceholder.detach();
+            $newFieldPlaceholder.detach();
+            if (mouseY < mid) {
+                $reorderPlaceholder.insertBefore($this);
+            } else {
+                $reorderPlaceholder.insertAfter($this);
+            }
+        });
+
+        $('#my-form').on('drop', function (e) {
+            e.preventDefault();
+            const dragType = e.originalEvent.dataTransfer.getData('drag-type');
+            if (dragType === 'reorder' && dragged) {
+                $reorderPlaceholder.replaceWith(dragged);
+                $newFieldPlaceholder.detach();
+                dragged.removeClass('dragging');
+                dragged = null;
+                updateCodePreview();
+            }
+        });
+
+        $('#my-form').on('dragend', '.form-group', function () {
+            if (dragged) dragged.removeClass('dragging');
+            dragged = null;
+            $reorderPlaceholder.detach();
+            $newFieldPlaceholder.detach();
+        });
+
+        // ===== 2. ADD NEW FIELDS =====
+        $(document).on('dragstart', '.builder-item', function (e) {
+            e.originalEvent.dataTransfer.setData('drag-type', 'new-field');
+            e.originalEvent.dataTransfer.setData('field-type', $(this).data('type'));
+            $(this).addClass('dragging');
+        });
+
+        $(document).on('dragend', '.builder-item', function () {
+            $(this).removeClass('dragging');
+            $newFieldPlaceholder.detach();
+        });
+
+        $('#canvas').on('dragover', function (e) {
+            e.preventDefault();
+            const mouseY = e.originalEvent.pageY - $(this).offset().top;
+            let $closest = null;
+            let insertBefore = false;
+
+            $('#my-form .form-group').each(function () {
+                const $el = $(this);
+                const mid = $el.position().top + $el.outerHeight() / 2;
+                if (Math.abs(mouseY - mid) < Math.abs(mouseY - ($closest ? $closest.position().top + $closest.outerHeight() / 2 : Infinity))) {
+                    $closest = $el;
+                    insertBefore = mouseY < mid;
+                }
+            });
+
+            $newFieldPlaceholder.detach();
+            if ($closest) {
+                if (insertBefore) $newFieldPlaceholder.insertBefore($closest);
+                else $newFieldPlaceholder.insertAfter($closest);
+            } else {
+                $('#my-form').append($newFieldPlaceholder);
+            }
+        });
+
+        $('#canvas').on('drop', function (e) {
+            e.preventDefault();
+            const dragType = e.originalEvent.dataTransfer.getData('drag-type');
+            if (dragType !== 'new-field') return;
+
+            const fieldType = e.originalEvent.dataTransfer.getData('field-type');
+            const fieldId = generateSimpleFieldId(fieldType);
+            const fieldHtml = getFieldHtml(fieldType, fieldId);
+
+            const $fieldElement = $(`<div class="form-group" data-field-id="${fieldId}" data-field-type="${fieldType}">${fieldHtml}</div>`);
+            const defaultsConfig = (window.FIELD_CONFIGS || {})[fieldType] || {};
+            const defaults = {};
+            Object.entries(defaultsConfig).forEach(([k, v]) => {
+                if (k === 'id') return;
+                defaults[k] = v.type === 'select' ? getSelectedOptionValue(v.value) : v.value;
+            });
+
+            setFieldData($fieldElement, defaults);
+            applyConfigToField($fieldElement, fieldType, defaults, fieldId);
+            if (fieldType === 'signature') initSignaturePad(fieldId);
+
+            if ($newFieldPlaceholder.parent().length) $newFieldPlaceholder.replaceWith($fieldElement);
+            else $('#my-form').append($fieldElement);
+
+            updateCodePreview();
+        });
+    });
 
     // Escape helper
     function escapeHtml(str) {
@@ -736,7 +756,7 @@
             } else if (conf.type === 'checkbox') {
                 const checked = value === true || value === 'true' || value === 1 || value === '1';
                 inputHtml = `<div class=\"form-check form-group\"><input class=\"form-check-input\" type=\"checkbox\" name=\"${key}\" id=\"edit-${key}\" ${checked ? 'checked' : ''}><label class=\"form-check-label\" for=\"edit-${key}\">${labelText}</label></div>`;
-            } else if (conf.type === 'choice') {
+            } else if (conf.type === 'choice' && !isNonDeletable) {
                 // Handle choice type fields (like checkboxes, radios, options)
                 let choiceHtml = `<div class=\"form-group\"><label class=\"form-label\">${labelText}</label>`;
 
@@ -884,7 +904,7 @@
         });
     });
 
-    const criticalFields = ['product_title', 'mrp', 'discount', 'offered_price'];
+    const criticalFields = ['product_title', 'mrp', 'urgent_sale', 'offered_price'];
 
 
     function applyConfigToField($field, fieldType, data, fieldId, config = {}) {
@@ -1582,98 +1602,6 @@
 
 
 
-    $('#canvas').on('drop', function (e) {
-        e.preventDefault();
-        $(this).removeClass('drag-over');
-
-        const fieldType = e.originalEvent.dataTransfer.getData('field-type');
-        const fieldId = generateSimpleFieldId(fieldType);
-        const fieldHtml = getFieldHtml(fieldType, fieldId);
-
-        const $fieldElement = $(`<div class="form-group" data-field-id="${fieldId}" data-field-type="${fieldType}">${fieldHtml}</div>`);
-
-        // Set default config values
-        const defaultsConfig = (window.FIELD_CONFIGS || {})[fieldType] || {};
-        const defaults = {};
-        Object.entries(defaultsConfig).forEach(([k, v]) => {
-            if (k === 'id') return; // Skip id
-            if (v.type === 'select') {
-                defaults[k] = getSelectedOptionValue(v.value);
-            } else if (v.type === 'choice') {
-                defaults[k] = v.value; // Array for choices
-            } else {
-                defaults[k] = v.value;
-            }
-        });
-
-        setData: setFieldData($fieldElement, defaults);
-        applyConfig: applyConfigToField($fieldElement, fieldType, defaults, fieldId);
-
-        // After inserting the new signature field element
-        if (fieldType === 'signature') {
-            initSignaturePad(fieldId);
-        }
-
-
-        // Calculate the Y position of the drop relative to the canvas
-        const canvasOffset = $(this).offset();
-        const dropY = e.originalEvent.pageY - canvasOffset.top;
-
-        // Find first form-group where top > dropY
-        let inserted = false;
-        $('#my-form .form-group').each(function () {
-            const $el = $(this);
-            const offsetTop = $el.position().top;
-            if (offsetTop > dropY && !inserted) {
-                $fieldElement.insertBefore($el);
-                inserted = true;
-                return false; // break each loop
-            }
-        });
-
-        // If none found (dropped below all), append at end
-        if (!inserted) {
-            $('#my-form').append($fieldElement);
-        }
-
-        // Apply layout settings to newly inserted field
-        const $label = $fieldElement.find('label').first();
-        const currentLayout = $('#form-layout').val() || 'Vertical';
-
-        if (currentLayout === 'Horizontal') {
-            $fieldElement.addClass('row');
-            if ($label.length) {
-                $label.removeClass(function (index, className) {
-                    return (className.match(/(^|\s)col-\S+/g) || []).join(' ');
-                });
-                $label.addClass('col-3 col-form-label');
-                const $controls = $fieldElement.children().not('label');
-                const $wrapper = $('<div class="col col-wrapper"></div>');
-                $controls.wrapAll($wrapper);
-            }
-        } else if (currentLayout === 'Vertical') {
-            if ($label.length) {
-                $label.removeClass(function (index, className) {
-                    return (className.match(/(^|\s)col-\S+/g) || []).join(' ');
-                });
-                $label.addClass('form-label');
-            }
-        } else if (currentLayout === 'Inline') {
-            if ($label.length) {
-                $label.addClass('visually-hidden');
-            }
-        }
-
-        // Respect disable state toggle
-        const disable = $('#disable-elements').prop('checked');
-        disableAllFormControls(disable);
-
-        // Update code preview
-        updateCodePreview();
-    });
-
-
-
     // Remove field from canvas
     $(document).on('click', '.remove-field-btn', function () {
         $(this).closest('[data-field-id]').remove();
@@ -1729,9 +1657,11 @@
                 props.name = $field.find('input, select, textarea').attr('name');
                 props.value = $field.find('input, select, textarea').val();
             }
+            console.log(props, 'props');
 
             return props;
         }
+
         function showToast(status, message) {
             $('#toast-status').text(status + ': ');
             $('#toast-message').text(message);

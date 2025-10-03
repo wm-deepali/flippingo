@@ -17,6 +17,7 @@ class SiteController extends Controller
         $submissionsByCategory = [];
         $allSubmissionsFlat = [];
         $now = now();
+        $categorySubmissionCounts = [];
 
         foreach ($categories as $category) {
             // Get all sponsored submissions per category 
@@ -30,6 +31,7 @@ class SiteController extends Controller
                 ->get();
 
             if ($sponsoredSubmissions->isNotEmpty()) {  // Only proceed if submissions exist
+                $categorySubmissionCounts[$category->id] = $sponsoredSubmissions->count();;
 
                 // Process each submission to build summary fields etc.
                 $processedSubmissions = $sponsoredSubmissions->map(function ($submission) {
@@ -70,7 +72,7 @@ class SiteController extends Controller
             ->get();
 
         $testimonials = Testimonial::where('status', 'active')->get();
-        return view('front.index', compact('categories', 'submissionsByCategory', 'allSubmissions', 'blogs', 'testimonials'));
+        return view('front.index', compact('categories', 'submissionsByCategory', 'allSubmissions', 'blogs', 'testimonials', 'categorySubmissionCounts'));
     }
 
 

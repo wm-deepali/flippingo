@@ -1,103 +1,111 @@
 @extends('layouts.master')
 
 @section('content')
-<div class="app-content content">
-  <div class="content-overlay"></div>
-  <div class="header-navbar-shadow"></div>
-  <div class="content-wrapper">
-    <div class="content-header row">
-      <div class="content-header-left col-md-9 col-12 mb-2">
-        <div class="row breadcrumbs-top">
-          <div class="col-12">
-            <div class="breadcrumb-wrapper">
-              <ol class="breadcrumb">
-                <li class="breadcrumb-item"><a href="{{ route('home') }}">Home</a></li>
-                <li class="breadcrumb-item active">Category</li>
-              </ol>
+  <div class="app-content content">
+    <div class="content-overlay"></div>
+    <div class="header-navbar-shadow"></div>
+    <div class="content-wrapper">
+      <div class="content-header row">
+        <div class="content-header-left col-md-9 col-12 mb-2">
+          <div class="row breadcrumbs-top">
+            <div class="col-12">
+              <div class="breadcrumb-wrapper">
+                <ol class="breadcrumb">
+                  <li class="breadcrumb-item"><a href="{{ route('home') }}">Home</a></li>
+                  <li class="breadcrumb-item active">Category</li>
+                </ol>
+              </div>
             </div>
           </div>
         </div>
-      </div>
-      <div class="content-header-right text-md-right col-md-3 col-12 d-md-block d-none">
-        <div class="form-group breadcrumb-right">
-          <a href="javascript:void(0)" class="btn-icon btn btn-primary btn-round btn-sm" id="add-category">Add</a>
+        <div class="content-header-right text-md-right col-md-3 col-12 d-md-block d-none">
+          <div class="form-group breadcrumb-right">
+            <a href="javascript:void(0)" class="btn-icon btn btn-primary btn-round btn-sm" id="add-category">Add</a>
+          </div>
         </div>
       </div>
-    </div>
 
-    <div class="content-body">
-      <div class="row">
-        <div class="col-md-12">
-          <div class="card">
-            <div class="card-header">
-              <h4 class="card-title">Category List</h4>
-            </div>
-            <div class="card-body">
-              <div class="table-responsive">
-                <table class="table" id="dynamic-pages-table">
-                  <thead>
-                    <tr>
-                      <th>#</th>
-                      <th>Name</th>
-                      <th>Slug</th>
-                      <th>Image</th>
-                      <th>Status</th>
-                      <th>Created At</th>
-                      <th width="100px">Action</th>
-                    </tr>
-                  </thead>
-                  <tbody>
-                    @forelse ($categories as $category)
-                    <tr>
-                      <td>{{ $loop->iteration }}</td>
-                      <td>{{ $category->name }}</td>
-                      <td>{{ $category->slug }}</td>
-                      <td>
-                        @if($category->image)
-                          <img src="{{ asset('storage/' . $category->image) }}" alt="Image" width="50" height="50"
-                            class="rounded">
-                        @else
-                          <span class="text-muted">No Image</span>
-                        @endif
-                      </td>
-                      <td>{{ ucfirst($category->status) }}</td>
+      <div class="content-body">
+        <div class="row">
+          <div class="col-md-12">
+            <div class="card">
+              <div class="card-header">
+                <h4 class="card-title">Category List</h4>
+              </div>
+              <div class="card-body">
+                <div class="table-responsive">
+                  <table class="table" id="dynamic-pages-table">
+                    <thead>
+                      <tr>
+                        <th>#</th>
+                        <th>Name</th>
+                        <th>Slug</th>
+                        <th>Image</th>
+                        <th>Status</th>
+                        <th>Popular</th>
+                        <th>Created At</th>
+                        <th width="100px">Action</th>
+                      </tr>
+                    </thead>
+                    <tbody>
+                      @forelse ($categories as $category)
+                        <tr>
+                          <td>{{ $loop->iteration }}</td>
+                          <td>{{ $category->name }}</td>
+                          <td>{{ $category->slug }}</td>
+                          <td>
+                            @if($category->image)
+                              <img src="{{ asset('storage/' . $category->image) }}" alt="Image" width="50" height="50"
+                                class="rounded">
+                            @else
+                              <span class="text-muted">No Image</span>
+                            @endif
+                          </td>
+                          <td>{{ ucfirst($category->status) }}</td>
+                          <td>
+                            @if($category->is_popular)
+                              <span class="badge badge-success">Popular</span>
+                            @else
+                              <span class="text-muted">—</span>
+                            @endif
+                          </td>
 
-                      <td>{{ $category->created_at->format('d M Y, h:i A') }}</td>
+                          <td>{{ $category->created_at->format('d M Y, h:i A') }}</td>
 
-                      <td>
-                        <ul class="list-inline">
-                          <li class="list-inline-item">
-                            <a href="javascript:void(0)" class="btn btn-primary btn-sm edit-category"
-                              data-id="{{ $category->id }}">
-                              <i class="fas fa-pencil-alt"></i>
-                            </a>
-                          </li>
-                          <li class="list-inline-item">
-                            <a href="javascript:void(0)" onclick="deleteConfirmation({{ $category->id }})">
-                              <i class="fa fa-trash text-danger"></i>
-                            </a>
-                          </li>
-                        </ul>
-                      </td>
-                    </tr>
-                    @empty
-                    <tr>
-                      <td colspan="6" class="text-center">No categories found.</td>
-                    </tr>
-                    @endforelse
-                  </tbody>
-                </table>
+                          <td>
+                            <ul class="list-inline">
+                              <li class="list-inline-item">
+                                <a href="javascript:void(0)" class="btn btn-primary btn-sm edit-category"
+                                  data-id="{{ $category->id }}">
+                                  <i class="fas fa-pencil-alt"></i>
+                                </a>
+                              </li>
+                              <li class="list-inline-item">
+                                <a href="javascript:void(0)" onclick="deleteConfirmation({{ $category->id }})">
+                                  <i class="fa fa-trash text-danger"></i>
+                                </a>
+                              </li>
+                            </ul>
+                          </td>
+                        </tr>
+                      @empty
+                        <tr>
+                          <td colspan="6" class="text-center">No categories found.</td>
+                        </tr>
+                      @endforelse
+                    </tbody>
+                  </table>
+                </div>
               </div>
             </div>
           </div>
         </div>
       </div>
+
     </div>
-
   </div>
-</div>
 
-<div class="modal fade" id="category-modal" tabindex="-1" role="dialog" aria-hidden="true"></div>
+  <div class="modal fade" id="category-modal" tabindex="-1" role="dialog" aria-hidden="true"></div>
 @endsection
 
 @push('scripts')

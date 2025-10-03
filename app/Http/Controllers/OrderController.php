@@ -33,7 +33,7 @@ class OrderController extends Controller
             'refunds' => $refundOrders->count(),
         ];
 
-         // Get active cancellation reasons from DB
+        // Get active cancellation reasons from DB
         $reasons = OrderCancellationReason::pluck('reason', 'id');
 
 
@@ -63,7 +63,7 @@ class OrderController extends Controller
             'cancel_requested' => $cancelRequestedOrders->count(),
             'refunds' => $refundOrders->count(),
         ];
-         // Get active cancellation reasons from DB
+        // Get active cancellation reasons from DB
         $reasons = OrderCancellationReason::pluck('reason', 'id');
 
         return view('user.orders.seller', compact('recentOrders', 'deliveredOrders', 'cancelRequestedOrders', 'refundOrders', 'counts', 'reasons'));
@@ -84,7 +84,7 @@ class OrderController extends Controller
             return response()->json(['message' => 'Order cannot be cancelled now.'], 400);
         }
 
-         $reasonText = OrderCancellationReason::find($request->reason)?->reason ?? 'N/A';
+        $reasonText = OrderCancellationReason::find($request->reason)?->reason ?? 'N/A';
 
         // Save "cancellation request" instead of cancelling directly
         $order->statuses()->create([
@@ -117,7 +117,10 @@ class OrderController extends Controller
 
         $order->product = [
             "productTitle" => $submittedValues['product_title']['value'] ?? '-',
-            "offeredPrice" => $submittedValues['offered_price']['value'] ?? 0,
+            "offeredPrice" => ($submittedValues['urgent_sale']['value'] ?? '') === 'Yes'
+                ? ($submittedValues['offered_price']['value'] ?? 0)
+                : ($submittedValues['mrp']['value'] ?? 0),
+
             "category" => optional($order->submission->form->category)->name ?? '-',
             "productPhoto" => optional($order->submission->files()->where('show_on_summary', true)->first())->file_path ?? null,
         ];
@@ -144,7 +147,10 @@ class OrderController extends Controller
 
         $order->product = [
             "productTitle" => $submittedValues['product_title']['value'] ?? '-',
-            "offeredPrice" => $submittedValues['offered_price']['value'] ?? 0,
+            "offeredPrice" => ($submittedValues['urgent_sale']['value'] ?? '') === 'Yes'
+                ? ($submittedValues['offered_price']['value'] ?? 0)
+                : ($submittedValues['mrp']['value'] ?? 0),
+
             "category" => optional($order->submission->form->category)->name ?? '-',
             "productPhoto" => optional($order->submission->files()->where('show_on_summary', true)->first())->file_path ?? null,
         ];

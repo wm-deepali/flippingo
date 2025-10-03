@@ -398,7 +398,10 @@
 
                                     $fields = json_decode($submission['data'], true);
                                     $productTitle = $fields['product_title']['value'] ?? 'No Title';
-                                    $offeredPrice = $fields['offered_price']['value'] ?? '0';
+                                   $offeredPrice = ($fields['urgent_sale']['value'] ?? '') === 'Yes'
+    ? ($fields['offered_price']['value'] ?? '0')
+    : ($fields['mrp']['value'] ?? '0');
+
 
                                    $imageFile = $submission['imageFile'] ?? null; 
                                     $summaryFields = $submission['summaryFields'] ?? null;

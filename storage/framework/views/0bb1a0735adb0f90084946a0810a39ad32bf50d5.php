@@ -231,7 +231,7 @@
           var totalAmount = parseFloat(<?php echo e($total); ?>);
 
           if (walletBalance < totalAmount) {
-            alert('Insufficient wallet balance.');
+            Swal.fire('Insufficient wallet balance.');
             return;
           }
 

@@ -1,103 +1,111 @@
 
 
 <?php $__env->startSection('content'); ?>
-<div class="app-content content">
-  <div class="content-overlay"></div>
-  <div class="header-navbar-shadow"></div>
-  <div class="content-wrapper">
-    <div class="content-header row">
-      <div class="content-header-left col-md-9 col-12 mb-2">
-        <div class="row breadcrumbs-top">
-          <div class="col-12">
-            <div class="breadcrumb-wrapper">
-              <ol class="breadcrumb">
-                <li class="breadcrumb-item"><a href="<?php echo e(route('home')); ?>">Home</a></li>
-                <li class="breadcrumb-item active">Category</li>
-              </ol>
+  <div class="app-content content">
+    <div class="content-overlay"></div>
+    <div class="header-navbar-shadow"></div>
+    <div class="content-wrapper">
+      <div class="content-header row">
+        <div class="content-header-left col-md-9 col-12 mb-2">
+          <div class="row breadcrumbs-top">
+            <div class="col-12">
+              <div class="breadcrumb-wrapper">
+                <ol class="breadcrumb">
+                  <li class="breadcrumb-item"><a href="<?php echo e(route('home')); ?>">Home</a></li>
+                  <li class="breadcrumb-item active">Category</li>
+                </ol>
+              </div>
             </div>
           </div>
         </div>
-      </div>
-      <div class="content-header-right text-md-right col-md-3 col-12 d-md-block d-none">
-        <div class="form-group breadcrumb-right">
-          <a href="javascript:void(0)" class="btn-icon btn btn-primary btn-round btn-sm" id="add-category">Add</a>
+        <div class="content-header-right text-md-right col-md-3 col-12 d-md-block d-none">
+          <div class="form-group breadcrumb-right">
+            <a href="javascript:void(0)" class="btn-icon btn btn-primary btn-round btn-sm" id="add-category">Add</a>
+          </div>
         </div>
       </div>
-    </div>
 
-    <div class="content-body">
-      <div class="row">
-        <div class="col-md-12">
-          <div class="card">
-            <div class="card-header">
-              <h4 class="card-title">Category List</h4>
-            </div>
-            <div class="card-body">
-              <div class="table-responsive">
-                <table class="table" id="dynamic-pages-table">
-                  <thead>
-                    <tr>
-                      <th>#</th>
-                      <th>Name</th>
-                      <th>Slug</th>
-                      <th>Image</th>
-                      <th>Status</th>
-                      <th>Created At</th>
-                      <th width="100px">Action</th>
-                    </tr>
-                  </thead>
-                  <tbody>
-                    <?php $__empty_1 = true; $__currentLoopData = $categories; $__env->addLoop($__currentLoopData); foreach($__currentLoopData as $category): $__env->incrementLoopIndices(); $loop = $__env->getLastLoop(); $__empty_1 = false; ?>
-                    <tr>
-                      <td><?php echo e($loop->iteration); ?></td>
-                      <td><?php echo e($category->name); ?></td>
-                      <td><?php echo e($category->slug); ?></td>
-                      <td>
-                        <?php if($category->image): ?>
-                          <img src="<?php echo e(asset('storage/' . $category->image)); ?>" alt="Image" width="50" height="50"
-                            class="rounded">
-                        <?php else: ?>
-                          <span class="text-muted">No Image</span>
-                        <?php endif; ?>
-                      </td>
-                      <td><?php echo e(ucfirst($category->status)); ?></td>
+      <div class="content-body">
+        <div class="row">
+          <div class="col-md-12">
+            <div class="card">
+              <div class="card-header">
+                <h4 class="card-title">Category List</h4>
+              </div>
+              <div class="card-body">
+                <div class="table-responsive">
+                  <table class="table" id="dynamic-pages-table">
+                    <thead>
+                      <tr>
+                        <th>#</th>
+                        <th>Name</th>
+                        <th>Slug</th>
+                        <th>Image</th>
+                        <th>Status</th>
+                        <th>Popular</th>
+                        <th>Created At</th>
+                        <th width="100px">Action</th>
+                      </tr>
+                    </thead>
+                    <tbody>
+                      <?php $__empty_1 = true; $__currentLoopData = $categories; $__env->addLoop($__currentLoopData); foreach($__currentLoopData as $category): $__env->incrementLoopIndices(); $loop = $__env->getLastLoop(); $__empty_1 = false; ?>
+                        <tr>
+                          <td><?php echo e($loop->iteration); ?></td>
+                          <td><?php echo e($category->name); ?></td>
+                          <td><?php echo e($category->slug); ?></td>
+                          <td>
+                            <?php if($category->image): ?>
+                              <img src="<?php echo e(asset('storage/' . $category->image)); ?>" alt="Image" width="50" height="50"
+                                class="rounded">
+                            <?php else: ?>
+                              <span class="text-muted">No Image</span>
+                            <?php endif; ?>
+                          </td>
+                          <td><?php echo e(ucfirst($category->status)); ?></td>
+                          <td>
+                            <?php if($category->is_popular): ?>
+                              <span class="badge badge-success">Popular</span>
+                            <?php else: ?>
+                              <span class="text-muted">—</span>
+                            <?php endif; ?>
+                          </td>
 
-                      <td><?php echo e($category->created_at->format('d M Y, h:i A')); ?></td>
+                          <td><?php echo e($category->created_at->format('d M Y, h:i A')); ?></td>
 
-                      <td>
-                        <ul class="list-inline">
-                          <li class="list-inline-item">
-                            <a href="javascript:void(0)" class="btn btn-primary btn-sm edit-category"
-                              data-id="<?php echo e($category->id); ?>">
-                              <i class="fas fa-pencil-alt"></i>
-                            </a>
-                          </li>
-                          <li class="list-inline-item">
-                            <a href="javascript:void(0)" onclick="deleteConfirmation(<?php echo e($category->id); ?>)">
-                              <i class="fa fa-trash text-danger"></i>
-                            </a>
-                          </li>
-                        </ul>
-                      </td>
-                    </tr>
-                    <?php endforeach; $__env->popLoop(); $loop = $__env->getLastLoop(); if ($__empty_1): ?>
-                    <tr>
-                      <td colspan="6" class="text-center">No categories found.</td>
-                    </tr>
-                    <?php endif; ?>
-                  </tbody>
-                </table>
+                          <td>
+                            <ul class="list-inline">
+                              <li class="list-inline-item">
+                                <a href="javascript:void(0)" class="btn btn-primary btn-sm edit-category"
+                                  data-id="<?php echo e($category->id); ?>">
+                                  <i class="fas fa-pencil-alt"></i>
+                                </a>
+                              </li>
+                              <li class="list-inline-item">
+                                <a href="javascript:void(0)" onclick="deleteConfirmation(<?php echo e($category->id); ?>)">
+                                  <i class="fa fa-trash text-danger"></i>
+                                </a>
+                              </li>
+                            </ul>
+                          </td>
+                        </tr>
+                      <?php endforeach; $__env->popLoop(); $loop = $__env->getLastLoop(); if ($__empty_1): ?>
+                        <tr>
+                          <td colspan="6" class="text-center">No categories found.</td>
+                        </tr>
+                      <?php endif; ?>
+                    </tbody>
+                  </table>
+                </div>
               </div>
             </div>
           </div>
         </div>
       </div>
+
     </div>
-
   </div>
-</div>
 
-<div class="modal fade" id="category-modal" tabindex="-1" role="dialog" aria-hidden="true"></div>
+  <div class="modal fade" id="category-modal" tabindex="-1" role="dialog" aria-hidden="true"></div>
 <?php $__env->stopSection(); ?>
 
 <?php $__env->startPush('scripts'); ?>

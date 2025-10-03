@@ -122,7 +122,7 @@ class ProductOrder extends Model
 
     public function getCategoryNameAttribute()
     {
-        return optional($this->submission->form->category)->name ?? '-';
+        return optional($this->submission?->form?->category)?->name ?? '-';
     }
 
     public function getProductPhotoAttribute()

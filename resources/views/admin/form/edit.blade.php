@@ -52,8 +52,8 @@
         }
 
         /* #my-form {
-                                                                            height: 100vh;
-                                                                        } */
+                                                                                    height: 100vh;
+                                                                                } */
 
         /* Modal button styling */
         .modal-footer .btn {
@@ -129,12 +129,13 @@
         }
 
         .drag-over-top {
-            border-top: 2px solid #007bff;
+            border-top: 3px solid #007bff;
         }
 
         .drag-over-bottom {
-            border-bottom: 2px solid #007bff;
+            border-bottom: 3px solid #007bff;
         }
+
 
         .steps {
             display: flex;
@@ -185,6 +186,24 @@
             border-radius: 3px;
             margin-right: 8px;
             vertical-align: middle;
+        }
+
+        .drop-placeholder {
+            height: 50px;
+            border: 2px dashed #007bff;
+            border-radius: 6px;
+            margin: 8px 0;
+            background: rgba(0, 123, 255, 0.05);
+            transition: all 0.2s ease-in-out;
+        }
+
+        .reorder-placeholder {
+            height: 50px;
+            border: 2px dashed #007bff;
+            border-radius: 6px;
+            margin: 8px 0;
+            background: rgba(0, 123, 255, 0.05);
+            transition: all 0.2s ease-in-out;
         }
     </style>
     @push('styles')
@@ -306,15 +325,15 @@
 
                     {{-- Right Sidebar --}}
                     <!-- <div id="ef-styles" class="col-md-3 d-none">
-                                                    <div class="ef-sidebar-outer p-2">
-                                                        <h5>Design</h5>
-                                                        <div id="styles-panel"></div>
-                                                        <div class="mt-2">
-                                                            <a href="#" id="collapse-styles">Collapse All</a> |
-                                                            <a href="#" id="expand-styles">Expand All</a>
-                                                        </div>
-                                                    </div>
-                                                </div> -->
+                                                            <div class="ef-sidebar-outer p-2">
+                                                                <h5>Design</h5>
+                                                                <div id="styles-panel"></div>
+                                                                <div class="mt-2">
+                                                                    <a href="#" id="collapse-styles">Collapse All</a> |
+                                                                    <a href="#" id="expand-styles">Expand All</a>
+                                                                </div>
+                                                            </div>
+                                                        </div> -->
                 </div>
 
                 {{-- Saved modal --}}
@@ -383,7 +402,7 @@
                 @if(isset($formData) && $formData->fields)
                     let savedFields = @json($formData->fields);
 
-                    const criticalFields = ['product_title', 'mrp', 'discount', 'offered_price'];
+                    const criticalFields = ['product_title', 'mrp', 'urgent_sale', 'offered_price'];
 
 
                     $('#my-form').empty();

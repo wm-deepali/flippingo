@@ -395,9 +395,13 @@
   $submittedValues = json_decode($submission->data, true) ?? [];
 
   $productTitle = $submittedValues['product_title']['value'] ?? 'No Title';
-  $offeredPrice = $submittedValues['offered_price']['value'] ?? '0';
+    $offeredPrice = ($submittedValues['urgent_sale']['value'] ?? '') === 'Yes'
+    ? ($submittedValues['offered_price']['value'] ?? '0')
+    : ($submittedValues['mrp']['value'] ?? '0');
+
   $mrp = $submittedValues['mrp']['value'] ?? 0;
-  $discount = $submittedValues['discount']['value'] ?? 0;
+ // Calculate discount
+        $discount = max($mrp - $offeredPrice, 0); // difference between MRP and offered price
 
     @endphp
 
@@ -906,10 +910,12 @@
                 <!--</div>-->
 
                 @php
-  $offeredPrice = (float) ($submittedValues['offered_price']['value'] ?? 0);
+     $offeredPrice = ($submittedValues['urgent_sale']['value'] ?? '') === 'Yes'
+    ?  ($submittedValues['offered_price']['value'] ?? '0')
+    : ($submittedValues['mrp']['value'] ?? '0');
+
    $requiredAmount = max(0, $offeredPrice - $walletBalance);
                 @endphp
-
                 <!--<div class="card mt-4">-->
                 <!--  <div class="card-body">-->
                 <!--    <button class="btn btn-primary w-100 mb-2">Add Funds to Wallet</button>-->

@@ -13,8 +13,8 @@
 
 @section('content')
     <!-- ================================
-                                                                        START BREADCRUMB AREA
-                                                                    ================================= -->
+                                                                                START BREADCRUMB AREA
+                                                                            ================================= -->
     <section class="breadcrumb-area bread-bg">
         <div class="overlay"></div>
         <!-- end overlay -->
@@ -39,12 +39,12 @@
     </section>
     <!-- end breadcrumb-area -->
     <!-- ================================
-                                                                        END BREADCRUMB AREA
-                                                                    ================================= -->
+                                                                                END BREADCRUMB AREA
+                                                                            ================================= -->
 
     <!-- ================================
-                                                                        START ADD-LISTING AREA
-                                                                    ================================= -->
+                                                                                START ADD-LISTING AREA
+                                                                            ================================= -->
     <section class="add-listing-area padding-top-60px padding-bottom-90px">
         <div class="container">
             <div class="row justify-content-center">
@@ -112,9 +112,9 @@
 
                 // const actionUrl = form.attr('action') || '/listing/store';
                 const method = form.attr('method') || 'POST';
-  const Url = "{{ route('listing.store') }}";
+                const Url = "{{ route('listing.store') }}";
 
-  
+
                 fetch(Url, {
                     method: method,
                     headers: {
@@ -143,39 +143,82 @@
                     });
             });
         });
-function loadForm(formId) {
-    const container = $('#dynamicFormContainer');
-    if (!formId) {
-        container.html('<p>No form available.</p>');
-        return;
-    }
-
-    container.html('Loading...');
-
-    // Blade will render something like "/forms/"
-    const baseUrl = "{{ route('forms', ['id' => 'FORM_ID']) }}".replace('FORM_ID', formId);
-
-    fetch(baseUrl)
-        .then(response => {
-            if (!response.ok) throw new Error('Network error fetching form.');
-            return response.json(); // make sure your controller returns JSON
-        })
-        .then(data => {
-            if (data.success && data.html.trim()) {
-                container.html(data.html);
-            } else {
+        function loadForm(formId) {
+            const container = $('#dynamicFormContainer');
+            if (!formId) {
                 container.html('<p>No form available.</p>');
+                return;
             }
-        })
-        .catch(err => {
-            container.html(`<p class="text-danger">${err.message}</p>`);
-            console.error(err);
+
+            container.html('Loading...');
+
+            // Blade will render something like "/forms/"
+            const baseUrl = "{{ route('forms', ['id' => 'FORM_ID']) }}".replace('FORM_ID', formId);
+
+            fetch(baseUrl)
+                .then(response => {
+                    if (!response.ok) throw new Error('Network error fetching form.');
+                    return response.json(); // make sure your controller returns JSON
+                })
+                .then(data => {
+                    if (data.success && data.html.trim()) {
+                        container.html(data.html);
+
+                        // =============================
+                        // After loading the form, handle offered_price visibility
+                        // =============================
+                        const urgentSale = $('#urgent_sale').val(); // get current value
+                        if (urgentSale === 'Yes') {
+                            $('#offered_price').closest('.form-group').show();
+                        } else {
+                            $('#offered_price').closest('.form-group').hide();
+                        }
+
+                        // Also bind change event for future updates
+                        $(document).on('change', '#urgent_sale', function () {
+                            if ($(this).val() === 'Yes') {
+                                $('#offered_price').closest('.form-group').show();
+                            } else {
+                                $('#offered_price').closest('.form-group').hide();
+                            }
+                        });
+
+                    } else {
+                        container.html('<p>No form available.</p>');
+                    }
+                })
+                .catch(err => {
+                    container.html(`<p class="text-danger">${err.message}</p>`);
+                    console.error(err);
+                });
+
+        }
+
+
+        $(document).ready(function () {
+            // Function to update visibility
+            function toggleOfferedPrice() {
+                const val = $('#urgent_sale').val();
+                if (val === 'Yes') {
+                    $('#offered_price').closest('.form-group').show();
+                } else {
+                    $('#offered_price').closest('.form-group').hide();
+                }
+            }
+
+            // Run on change
+            $(document).on('change', '#urgent_sale', function () {
+                toggleOfferedPrice();
+            });
+
+            // Run immediately after form is loaded dynamically
+            $(document).on('DOMNodeInserted', '#dynamicFormContainer', function () {
+                toggleOfferedPrice();
+            });
         });
-}
-
-
 
     </script>
+
 
     <script>
         document.addEventListener('DOMContentLoaded', function () {
@@ -193,7 +236,7 @@ function loadForm(formId) {
 
                 // Wire up Clear button
                 const clearBtn = document.getElementById('clear_signature_field_' + fieldId);
-        
+
                 if (clearBtn) {
                     clearBtn.addEventListener('click', function () {
 
@@ -230,6 +273,36 @@ function loadForm(formId) {
 
                 canvas.addEventListener('mouseup', saveSignature);
                 canvas.addEventListener('touchend', saveSignature);
+            });
+        });
+    </script>
+
+    <script>
+        $(document).ready(function () {
+            // Event delegation for dynamically loaded form
+            $(document).on('change', 'select[name="urgent_sale"]', function () {
+                const value = $(this).val(); // get selected value
+                const $offeredPriceField = $('#offered_price_field'); // the field wrapper div
+
+                if (value === 'yes') {
+                    $offeredPriceField.show();
+                } else {
+                    $offeredPriceField.hide();
+                }
+            });
+
+            // Optional: hide initially if urgent_sale is not yes
+            $(document).on('DOMSubtreeModified', '#dynamicFormContainer', function () {
+                const $select = $(this).find('select[name="urgent_sale"]');
+                const $offeredPriceField = $(this).find('#offered_price_field');
+
+                if ($select.length && $offeredPriceField.length) {
+                    if ($select.val() === 'yes') {
+                        $offeredPriceField.show();
+                    } else {
+                        $offeredPriceField.hide();
+                    }
+                }
             });
         });
     </script>

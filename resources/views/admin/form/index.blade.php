@@ -34,7 +34,7 @@
                 <h4 class="card-title">Forms Listing</h4>
               </div>
               <div class="card-body">
-                <div class="table-responsive">
+                <div class="table-responsive" style="min-height:200px">
                   <table class="table" id="dynamic-pages-table">
                     <thead>
                       <tr>

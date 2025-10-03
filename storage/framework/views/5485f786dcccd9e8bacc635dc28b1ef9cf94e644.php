@@ -34,7 +34,7 @@
                 <h4 class="card-title">Forms Listing</h4>
               </div>
               <div class="card-body">
-                <div class="table-responsive">
+                <div class="table-responsive" style="min-height:200px">
                   <table class="table" id="dynamic-pages-table">
                     <thead>
                       <tr>
@@ -98,42 +98,7 @@
                                   </a>
                                 </li>
 
-                                <!-- <li>
-                              <a class="dropdown-item" href="<?php echo e(route('admin.form.conditionalRules', $form->id)); ?>">
-                              <i class="fas fa-random"></i> Conditional Rules
-                              </a>
-                            </li>
-                            <li>
-                              <a class="dropdown-item" href="<?php echo e(route('admin.form.show', $form->id)); ?>" target="_blank">
-                              <i class="fas fa-file-alt"></i> View Record
-                              </a>
-                            </li>
-                            <li>
-                              <a class="dropdown-item" href="<?php echo e(route('admin.form.copy', $form->id)); ?>">
-                              <i class="fas fa-copy"></i> Copy
-                              </a>
-                            </li>
-                            <li>
-                              <a class="dropdown-item" href="<?php echo e(route('admin.form.publishShare', $form->id)); ?>">
-                              <i class="fas fa-share-alt"></i> Publish & Share
-                              </a>
-                            </li>
-                            <li>
-                              <a class="dropdown-item" href="<?php echo e(route('admin.form.submissions', $form->id)); ?>">
-                              <i class="fas fa-paper-plane"></i> Submissions
-                              </a>
-                            </li>
-                            <li>
-                              <a class="dropdown-item" href="<?php echo e(route('admin.form.addons', $form->id)); ?>">
-                              <i class="fas fa-puzzle-piece"></i> Add-Ons
-                              </a>
-                            </li>
-                            <li>
-                              <a class="dropdown-item" href="<?php echo e(route('admin.form.submissionsReport', $form->id)); ?>">
-                              <i class="fas fa-clock"></i> Submissions Report
-                              </a>
-                            </li>
-                            </ul> -->
+                            
 
 
                             </div>

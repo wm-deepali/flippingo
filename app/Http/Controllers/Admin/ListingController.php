@@ -36,7 +36,11 @@ class ListingController extends Controller
         $submissions = $submissions->map(function ($submission) {
             $submittedValues = $submission ? json_decode($submission->data, true) : [];
 
-            $submission->offered_price = $submittedValues['offered_price']['value'] ?? 0;
+            $submission->offered_price =
+                ($submittedValues['urgent_sale']['value'] ?? '') === 'Yes'
+                ? ($submittedValues['offered_price']['value'] ?? 0)
+                : ($submittedValues['mrp']['value'] ?? 0);
+
             $submission->product_title = $submittedValues['product_title']['value'] ?? '';
             $submission->category_name = optional($submission->form->category)->name ?? '';
             $submission->total_sales = $submission->orders->count();

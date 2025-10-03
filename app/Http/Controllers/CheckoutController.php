@@ -21,10 +21,16 @@ class CheckoutController extends Controller
             ->find($request->query('submission_id'));
 
         $submittedValues = $submission ? json_decode($submission->data, true) : [];
-        $mrp = $submittedValues['mrp']['value'] ?? 0;
-        $offeredPrice = $submittedValues['offered_price']['value'] ?? 0;
         $productTitle = $submittedValues['product_title']['value'] ?? '';
-        $discount = $submittedValues['discount']['value'] ?? 0;
+        $mrp = $submittedValues['mrp']['value'] ?? 0;
+
+        $offeredPrice = ($submittedValues['urgent_sale']['value'] ?? '') === 'Yes'
+            ? ($submittedValues['offered_price']['value'] ?? 0)
+            : $mrp;
+
+        // Calculate discount
+        $discount = max($mrp - $offeredPrice, 0); // difference between MRP and offered price
+
         $walletBalance = optional($submission->customer->wallet)->balance ?? 0;
 
         // Category from form relation
@@ -93,7 +99,9 @@ class CheckoutController extends Controller
 
         $submission = FormSubmission::with('customer.wallet')->findOrFail($request->submission_id);
         $submittedValues = json_decode($submission->data, true);
-        $offeredPrice = $submittedValues['offered_price']['value'] ?? 0;
+        $offeredPrice = ($submittedValues['urgent_sale']['value'] ?? '') === 'Yes'
+            ? ($submittedValues['offered_price']['value'] ?? 0)
+            : ($submittedValues['mrp']['value'] ?? 0);
 
         // GST handling
         $igstRate = Setting::where('key', 'igst')->value('value') ?? 18;

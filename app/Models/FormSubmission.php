@@ -95,10 +95,17 @@ class FormSubmission extends Model
     }
 
 
-     public function getOfferedPriceAttribute()
+    public function getOfferedPriceAttribute()
     {
         $data = $this->data ? json_decode($this->data, true) : [];
-        return $data['offered_price']['value'] ?? '-';
+
+        $urgentSale = $data['urgent_sale']['value'] ?? 'No';
+
+        if ($urgentSale === 'Yes') {
+            return $data['offered_price']['value'] ?? '-';
+        } else {
+            return $data['mrp']['value'] ?? '-';
+        }
     }
 
 

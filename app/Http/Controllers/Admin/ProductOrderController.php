@@ -55,8 +55,17 @@ class ProductOrderController extends Controller
 
         $productTitle = $submittedValues['product_title']['value'] ?? '-';
         $mrp = $submittedValues['mrp']['value'] ?? 0;
-        $offeredPrice = $submittedValues['offered_price']['value'] ?? 0;
-        $discount = $submittedValues['discount']['value'] ?? 0;
+
+        $offeredPrice = ($submittedValues['urgent_sale']['value'] ?? '') === 'Yes'
+            ? ($submittedValues['offered_price']['value'] ?? 0)
+            : $mrp;
+
+        // Calculate discount
+        $discount = max($mrp - $offeredPrice, 0); // difference between MRP and offered price
+
+        // Optional: final price after discount
+        $finalPrice = $offeredPrice - $discount;
+
 
         // Category
         $category = optional($order->submission->form->category)->name ?? '-';
@@ -143,8 +152,13 @@ class ProductOrderController extends Controller
 
         $productTitle = $submittedValues['product_title']['value'] ?? '-';
         $mrp = $submittedValues['mrp']['value'] ?? 0;
-        $offeredPrice = $submittedValues['offered_price']['value'] ?? 0;
-        $discount = $submittedValues['discount']['value'] ?? 0;
+        $offeredPrice =
+            ($submittedValues['urgent_sale']['value'] ?? '') === 'Yes'
+            ? ($submittedValues['offered_price']['value'] ?? 0)
+            : ($submittedValues['mrp']['value'] ?? 0);
+
+        // Calculate discount
+        $discount = max($mrp - $offeredPrice, 0); // difference between MRP and offered price
         $category = optional($order->submission->form->category)->name ?? '-';
         $productPhoto = optional($order->submission->files()->where('show_on_summary', true)->first())->file_path ?? null;
 
@@ -178,7 +192,11 @@ class ProductOrderController extends Controller
         $type = 'product';
         $order->product = [
             "productTitle" => $submittedValues['product_title']['value'] ?? '-',
-            "offeredPrice" => $submittedValues['offered_price']['value'] ?? 0,
+            "offeredPrice" =>
+                ($submittedValues['urgent_sale']['value'] ?? '') === 'Yes'
+                ? ($submittedValues['offered_price']['value'] ?? 0)
+                : ($submittedValues['mrp']['value'] ?? 0),
+
             "category" => optional($order->submission->form->category)->name ?? '-',
             "productPhoto" => optional($order->submission->files()->where('show_on_summary', true)->first())->file_path ?? null,
         ];

@@ -64,8 +64,10 @@ class CategoryController extends Controller
                     'name' => $request->name,
                     'slug' => $request->slug,
                     'status' => $request->status,
+                    'is_popular' => $request->has('is_popular') ? 1 : 0,
                     'image' => $imagePath,
                 ]);
+
 
                 DB::commit();
                 return response()->json(['success' => true]);
@@ -138,8 +140,10 @@ class CategoryController extends Controller
                     'name' => $request->name,
                     'slug' => $request->slug,
                     'status' => $request->status,
+                    'is_popular' => $request->has('is_popular') ? 1 : 0,
                     'image' => $category->image,
                 ]);
+
 
                 DB::commit();
                 return response()->json(['success' => true]);
