@@ -271,6 +271,10 @@
       </div>
       <!-- end container-fluid -->
     </div>
+    <?php
+      use App\Models\Category;
+      $categories = Category::where('status', 'active')->get();
+    ?>
     <div class="top-header">
       <div class="top-header-list">
         <nav class="main-menu " style="width: 100%;">
@@ -278,13 +282,9 @@
             <li>
               <a href="<?php echo e(Route('listing-list')); ?>">Browse <span class="fal fa-angle-down"></span></a>
               <ul class="dropdown-menu-item">
-                <li><a href="<?php echo e(Route('listing-list')); ?>">Website</a></li>
-                <li><a href="<?php echo e(Route('listing-list')); ?>">YouTube Channel</a></li>
-                <li><a href="<?php echo e(Route('listing-list')); ?>">Instagram Pages </a></li>
-                <li>
-                  <a href="<?php echo e(Route('listing-list')); ?>">Telegram Account</a>
-                </li>
-                <li><a href="<?php echo e(Route('listing-list')); ?>">Facebook Account</a></li>
+                <?php $__currentLoopData = $categories; $__env->addLoop($__currentLoopData); foreach($__currentLoopData as $category): $__env->incrementLoopIndices(); $loop = $__env->getLastLoop(); ?>
+                  <li><a href="<?php echo e(Route('listing-list')); ?>"><?php echo e($category->name); ?></a></li>
+                <?php endforeach; $__env->popLoop(); $loop = $__env->getLastLoop(); ?>
               </ul>
             </li>
             <li>

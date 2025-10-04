@@ -736,7 +736,7 @@
         Object.entries(config).forEach(([key, conf]) => {
             if (key === 'id') return; // never show raw id in modal
             if (hiddenKeys.includes(key)) return; // skip showing in modal
-            if (isNonDeletable && key === 'inputType') return;
+            if (isNonDeletable && (key === 'inputType' || key ==='options')) return;
             const rawDefault = conf.type === 'select' ? getSelectedOptionValue(conf.value) : conf.value;
             const value = fieldData[key] !== undefined ? fieldData[key] : rawDefault;
 
@@ -756,7 +756,7 @@
             } else if (conf.type === 'checkbox') {
                 const checked = value === true || value === 'true' || value === 1 || value === '1';
                 inputHtml = `<div class=\"form-check form-group\"><input class=\"form-check-input\" type=\"checkbox\" name=\"${key}\" id=\"edit-${key}\" ${checked ? 'checked' : ''}><label class=\"form-check-label\" for=\"edit-${key}\">${labelText}</label></div>`;
-            } else if (conf.type === 'choice' && !isNonDeletable) {
+            } else if (conf.type === 'choice') {
                 // Handle choice type fields (like checkboxes, radios, options)
                 let choiceHtml = `<div class=\"form-group\"><label class=\"form-label\">${labelText}</label>`;
 

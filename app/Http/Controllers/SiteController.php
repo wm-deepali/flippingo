@@ -7,6 +7,7 @@ use App\Models\Category;
 use App\Models\Testimonial;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\DB;
 
 class SiteController extends Controller
 {
@@ -24,14 +25,14 @@ class SiteController extends Controller
             $sponsoredSubmissions = FormSubmission::whereHas('form', function ($query) use ($category) {
                 $query->where('category_id', $category->id);
             })
-                ->whereNotNull('sponsor_display_until')
-                ->where('sponsor_display_until', '>', $now)
+                // ->whereNotNull('sponsor_display_until')
+                // ->where('sponsor_display_until', '>', $now)
                 ->with('form.category', 'form.formData', 'customer', 'files')
                 ->latest()
                 ->get();
 
             if ($sponsoredSubmissions->isNotEmpty()) {  // Only proceed if submissions exist
-                $categorySubmissionCounts[$category->id] = $sponsoredSubmissions->count();;
+                $categorySubmissionCounts[$category->id] = $sponsoredSubmissions->count();
 
                 // Process each submission to build summary fields etc.
                 $processedSubmissions = $sponsoredSubmissions->map(function ($submission) {
@@ -72,7 +73,9 @@ class SiteController extends Controller
             ->get();
 
         $testimonials = Testimonial::where('status', 'active')->get();
-        return view('front.index', compact('categories', 'submissionsByCategory', 'allSubmissions', 'blogs', 'testimonials', 'categorySubmissionCounts'));
+        $countries = DB::table('countries')->orderBy('name')->get();
+        // dd($categorySubmissionCounts);
+        return view('front.index', compact('categories', 'submissionsByCategory', 'allSubmissions', 'blogs', 'testimonials', 'categorySubmissionCounts', 'countries'));
     }
 
 
@@ -149,24 +152,106 @@ class SiteController extends Controller
 
 
 
-    public function FormSubmissionList()
+    public function FormSubmissionList(Request $request)
     {
-        $categories = Category::where('status', 'active')->get();
+        $categories = Category::where('status', 'active')
+            ->with(['form.filters', 'form.formData'])
+            ->get();
 
         $submissionsByCategory = [];
         $allSubmissionsFlat = [];
 
         foreach ($categories as $category) {
-            $allSubmissions = FormSubmission::whereHas('form', function ($query) use ($category) {
-                $query->where('category_id', $category->id);
-            })
-                ->with('form.category', 'form.formData', 'customer', 'files')
-                ->latest()
-                ->get();
+            // Fetch all submissions for the category
+            $submissions = FormSubmission::whereHas('form', function ($q) use ($category) {
+                $q->where('category_id', $category->id);
+            })->with(['form.category', 'form.formData', 'customer', 'files'])->get();
 
-            // Map each submission's field values to current form field meta
-            $allSubmissionsMapped = $allSubmissions->map(function ($submission) {
-                $fields = json_decode($submission->data, true) ?? [];
+            // Apply filters using collection
+            $filtered = $submissions->filter(function ($submission) use ($request) {
+                $data = is_array($submission->data) ? $submission->data : json_decode($submission->data, true);
+
+                // Search filter
+                if ($request->filled('search')) {
+                    $search = strtolower($request->search);
+                    $found = false;
+                    foreach ($data as $field) {
+                        if (isset($field['value']) && str_contains(strtolower($field['value']), $search)) {
+                            $found = true;
+                            break;
+                        }
+                    }
+                    if (!$found)
+                        return false;
+                }
+
+                // Price filters
+                $mrp = floatval($data['mrp']['value'] ?? 0);
+                if ($request->filled('price_min') && $mrp < $request->price_min)
+                    return false;
+                if ($request->filled('price_max') && $mrp > $request->price_max)
+                    return false;
+
+                // Rating filter
+                $rating = floatval($data['rating']['value'] ?? 0);
+                if ($request->filled('rating') && $rating < $request->rating)
+                    return false;
+
+                // Country filter (customer->country)
+                if ($request->filled('country')) {
+                    $customerCountry = optional($submission->customer)->country ?? null;
+                    if (strtolower($customerCountry) !== strtolower($request->country))
+                        return false;
+                }
+
+                // For Sale filter (urgent_sale: Yes/No)
+                if ($request->filled('for_sale')) {
+                    $urgentSale = $data['urgent_sale']['value'] ?? 'No';
+                    if (strtolower($urgentSale) !== strtolower($request->for_sale))
+                        return false;
+                }
+
+                // Dynamic filters
+                if ($request->has('filters') && is_array($request->filters)) {
+                    foreach ($request->filters as $field => $value) {
+                        if (empty($value))
+                            continue;
+
+                        $fieldValue = strtolower($data[$field]['value'] ?? '');
+                        if (is_array($value)) {
+                            $matches = collect($value)->map(fn($v) => strtolower($v))->contains($fieldValue);
+                            if (!$matches)
+                                return false;
+                        } else {
+                            if ($fieldValue !== strtolower($value))
+                                return false;
+                        }
+                    }
+                }
+
+                return true;
+            });
+
+            // Apply sorting
+            $sort = $request->input('sort', 'latest');
+            $filtered = $filtered->sortBy(function ($submission) use ($sort) {
+                $data = is_array($submission->data) ? $submission->data : json_decode($submission->data, true);
+                switch ($sort) {
+                    case 'high-rated':
+                        return -($data['rating']['value'] ?? 0);
+                    case 'price-low-to-high':
+                        return $data['mrp']['value'] ?? 0;
+                    case 'price-high-to-low':
+                        return -($data['mrp']['value'] ?? 0);
+                    case 'latest':
+                    default:
+                        return strtotime($submission->created_at);
+                }
+            });
+
+            // Map summary fields
+            $allSubmissionsMapped = $filtered->map(function ($submission) {
+                $fields = is_array($submission->data) ? $submission->data : json_decode($submission->data, true);
                 $formFields = collect(data_get($submission, 'form.formData.fields', []));
                 $summaryFields = [];
 
@@ -182,13 +267,9 @@ class SiteController extends Controller
                     }
                 }
 
-                // Attach summary fields for use in blade
                 $submission->summaryFields = $summaryFields;
                 $submission->category = $submission->form->category;
-
-                // Select image
-                $imageFile = collect($submission->files)->firstWhere('show_on_summary', true);
-                $submission->imageFile = $imageFile;
+                $submission->imageFile = collect($submission->files)->firstWhere('show_on_summary', true);
 
                 return $submission;
             });
@@ -197,15 +278,34 @@ class SiteController extends Controller
                 $submissionsByCategory[$category->id] = $allSubmissionsMapped;
                 $allSubmissionsFlat = array_merge($allSubmissionsFlat, $allSubmissionsMapped->toArray());
             }
+
+            // Prepare frontend filters
+            $filterKeys = $category->form ? $category->form->filters->pluck('field_key')->toArray() : [];
+            $cleanOptions = fn($options) => collect($options)->map(fn($o) => preg_replace('/\|selected$/', '', $o))->toArray();
+            $category->filters = collect(data_get($category, 'form.formData.fields', []))
+                ->filter(fn($f) => in_array(($f['properties']['id'] ?? $f['id']) ?? '', $filterKeys))
+                ->map(function ($field) use ($cleanOptions) {
+                    $type = $field['type'] ?? '';
+                    $options = match ($type) {
+                        'radio' => $cleanOptions($field['properties']['radios'] ?? []),
+                        'checkbox' => $cleanOptions($field['properties']['checkboxes'] ?? []),
+                        default => $cleanOptions($field['properties']['options'] ?? []),
+                    };
+                    return [
+                        'field_id' => $field['properties']['id'] ?? $field['id'],
+                        'label' => $field['properties']['label'] ?? '',
+                        'type' => $type,
+                        'options' => $options,
+                    ];
+                })->values();
         }
 
-        // Combines all submissions from all categories for "All" tab
         $allSubmissions = collect($allSubmissionsFlat);
-
-        // Remove dd() for live use
-        // dd($allSubmissions->toArray());
-
-        return view('front.listing-list', compact('categories', 'submissionsByCategory', 'allSubmissions'));
+        $countries = DB::table('countries')->orderBy('name')->get();
+        return view('front.listing-list', compact('categories', 'submissionsByCategory', 'allSubmissions', 'countries'));
     }
+
+
+
 
 }

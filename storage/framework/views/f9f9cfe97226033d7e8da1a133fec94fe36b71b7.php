@@ -35,14 +35,12 @@
                 <div class="row">
                     <div class="col-md-12">
                         <div class="card">
-
                             <div class="card-header">
                                 <h4 class="card-title">Form Templates</h4>
                             </div>
-
                             <div class="card-body">
                                 <div class="table-responsive">
-                                    <table class="table" id="template-table">
+                                    <table class="table" id="dynamic-pages-table">
                                         <thead>
                                             <tr>
                                                 <th>#</th>
@@ -83,11 +81,11 @@
                                                                     </a>
                                                                 </li>
                                                                 <!-- <li>
-                                                                    <a class="dropdown-item" href="javascript:void(0);"
-                                                                        onclick="deleteTemplateConfirmation(<?php echo e($template->id); ?>)">
-                                                                        <i class="fas fa-trash"></i> Delete
-                                                                    </a>
-                                                                </li> -->
+                                                                                    <a class="dropdown-item" href="javascript:void(0);"
+                                                                                        onclick="deleteTemplateConfirmation(<?php echo e($template->id); ?>)">
+                                                                                        <i class="fas fa-trash"></i> Delete
+                                                                                    </a>
+                                                                                </li> -->
                                                             </ul>
 
                                                         </div>
@@ -102,11 +100,12 @@
                                     </table>
                                 </div>
                             </div>
-
                         </div>
                     </div>
                 </div>
             </div>
+
+
 
         </div>
     </div>

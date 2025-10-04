@@ -50,7 +50,7 @@
                     <tbody>
 
                       @foreach ($forms as $form)
-                         <tr>
+                        <tr>
                           <td>{{ $loop->iteration }}</td>
                           <td>{{ $form->name }}</td>
                           <td>{{ $form->category->name ?? '-' }}</td>
@@ -85,6 +85,11 @@
                                     <i class="fas fa-th-large"></i> Layout
                                   </a>
                                 </li>
+                                <li>
+                                  <a class="dropdown-item" href="{{ route('admin.form.create-filter', $form->id) }}">
+                                    <i class="fas fa-filter"></i> Form Filter
+                                  </a>
+                                </li>
 
                                 <li>
                                   <a class="dropdown-item" href="{{ route('admin.form.settings', $form->id) }}">
@@ -98,7 +103,7 @@
                                   </a>
                                 </li>
 
-                            
+
 
 
                             </div>

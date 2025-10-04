@@ -156,18 +156,61 @@
             transform: translateY(0);
         }
     }
+    .tabs-wrapper {
+  display: flex;
+  align-items: center;
+  position: relative;
+  max-width: 100%;
+  overflow: hidden;
+}
+
+.tabs-container {
+  display: flex;
+  overflow-x: auto;
+  scroll-behavior: smooth;
+  gap: 10px;
+  scrollbar-width: none; /* Firefox */
+}
+.tabs-container::-webkit-scrollbar {
+  display: none; /* Chrome, Safari */
+}
+
+.tab-btn {
+  white-space: nowrap;
+  padding: 10px 15px;
+  border: none;
+  background: #f3f3f3;
+  border-radius: 5px;
+  font-weight: bold;
+  cursor: pointer;
+}
+
+.scroll-btn {
+  background: black;
+  color: white;
+  border: none;
+  padding: 8px 12px;
+  cursor: pointer;
+  font-size: 18px;
+}
+.scroll-btn.prev {
+  margin-right: 5px;
+}
+.scroll-btn.next {
+  margin-left: 5px;
+}
+.icon-element-sm {
+    width: 35px;
+    height: 35px;
+    line-height: 35px;
+    font-size: 16px;
+    display: flex !important;
+    align-items: center !important;
+    justify-content: center !important;
+}
 </style>
 @section('content')
-
-
-    <!-- ================================
-                                                                                                                                                            START BREADCRUMB AREA
-                                                                                                                                                        ================================= -->
-
-    <!-- end breadcrumb-area -->
-    <!-- ================================
-                                                                                                                                                            END BREADCRUMB AREA
-                                                                                                                                                        ================================= -->
+                                                                                                                           
     <section class="card-area " style="padding-top:60px; padding-bottom:90px; margin-top:130px;">
         <div class="container">
             <div class="card">
@@ -200,192 +243,198 @@
             </div>
 
             <div class="row">
-                <div class="col-lg-3">
-                    <div class="sidebar">
-                        <div class="card">
-                            <div class="card-body">
-                                <h4 class="card-title mb-3">Search</h4>
-                                <div class="form-group">
-                                    <span class="fal fa-search form-icon"></span>
-                                    <input class="form-control form--control" type="text"
-                                        placeholder="What are you looking for?" />
-                                </div>
-                                <!-- end form-group -->
-                                <div class="form-group">
-                                    <span class="fal fa-map-marker-alt form-icon"></span>
-                                    <input class="form-control form--control" type="text" placeholder="Location" />
-                                </div>
-                                <!-- end form-group -->
-                                <div class="form-group select2-container-wrapper">
-                                    <select class="select-picker" data-width="100%" data-size="5">
-                                        <option value>Select a Category</option>
-                                        <option value="1">Shops</option>
-                                        <option value="2">Hotels</option>
-                                        <option value="3">Foods & Restaurants</option>
-                                        <option value="4">Fitness</option>
-                                        <option value="5">Travel</option>
-                                        <option value="6">Salons</option>
-                                        <option value="7">Event</option>
-                                        <option value="8">Business</option>
-                                    </select>
-                                </div>
-                                <!-- end form-group -->
-                                <button class="theme-btn border-0 w-100" type="submit">
-                                    Search
-                                </button>
-                            </div>
-                            <!-- end card-body -->
+              <div class="col-lg-3">
+    <div class="sidebar">
+        <!-- Search & Clear buttons at topmost -->
+        <div class="d-flex justify-content-between mb-3">
+            <button type="submit" form="filter-form" class="theme-btn border-0 w-75">Search</button>
+            <button type="button" class="theme-btn border-0 w-20" id="clear-filters">Clear</button>
+        </div>
+
+        <form id="filter-form" method="GET" action="{{ route('listing-list') }}">
+            @csrf
+
+            {{-- Search --}}
+            <div class="form-group mb-3">
+                <span class="fal fa-search form-icon"></span>
+                <input name="search" class="form-control form--control" type="text"
+                       placeholder="What are you looking for?"
+                       value="{{ request('search') }}">
+            </div>
+
+            {{-- Country --}}
+            <div class="form-group mb-3">
+                <label for="country">Country</label>
+                <select name="country" class="form-select">
+                    <option value="">Select Country</option>
+                    @foreach($countries as $country)
+                        <option value="{{ $country->name }}" {{ request('country') == $country->name ? 'selected' : '' }}>
+                            {{ $country->name }}
+                        </option>
+                    @endforeach
+                </select>
+            </div>
+
+            {{-- For Sale --}}
+            <div class="form-group mb-3">
+                <label for="for_sale">For Sale</label>
+                <select name="for_sale" class="form-select">
+                    <option value="">Select</option>
+                    <option value="Yes" {{ request('for_sale') == 'Yes' ? 'selected' : '' }}>Yes</option>
+                    <option value="No" {{ request('for_sale') == 'No' ? 'selected' : '' }}>No</option>
+                </select>
+            </div>
+
+            {{-- Price --}}
+            <div class="card mb-3">
+                <div class="card-body">
+                    <h4 class="card-title mb-3">Price</h4>
+                    <div class="d-flex align-items-center">
+                        <div class="form-group me-2">
+                            <input name="price_min" class="form-control form--control ps-3" type="text" placeholder="$3"
+                                   value="{{ request('price_min') }}">
                         </div>
-                        <!-- end card -->
-                        <div class="card">
-                            <div class="card-body">
-                                <h4 class="card-title mb-3">Price</h4>
-                                <form action="#" class="d-flex align-items-center">
-                                    <div class="form-group me-2">
-                                        <input class="form-control form--control ps-3" type="text" placeholder="$3" />
-                                    </div>
-                                    <div class="form-group me-2">
-                                        <input class="form-control form--control ps-3" type="text" placeholder="$269" />
-                                    </div>
-                                    <button class="theme-btn theme-btn-gray border-0 mb-3" type="submit">
-                                        <i class="fal fa-angle-right"></i>
-                                    </button>
-                                </form>
-                            </div>
-                            <!-- end card-body -->
+                        <div class="form-group me-2">
+                            <input name="price_max" class="form-control form--control ps-3" type="text" placeholder="$269"
+                                   value="{{ request('price_max') }}">
                         </div>
-                        <!-- end card -->
-                        <div class="card">
-                            <div class="card-body">
-                                <h4 class="card-title mb-3">Tags</h4>
-                                <ul class="tag-list">
-                                    <li><a href="#">Restaurant</a></li>
-                                    <li><a href="#">Hotel</a></li>
-                                    <li><a href="#">Food</a></li>
-                                    <li><a href="#">Bars</a></li>
-                                    <li><a href="#">Salon</a></li>
-                                    <li><a href="#">Cleaning</a></li>
-                                    <li><a href="#">Fashion</a></li>
-                                </ul>
-                            </div>
-                            <!-- end card-body -->
-                        </div>
-                        <!-- end card -->
-                        <div class="card">
-                            <div class="card-body">
-                                <h4 class="card-title mb-3">Features</h4>
-                                <div class="mb-2">
-                                    <div class="custom-control custom-checkbox mb-2">
-                                        <input type="checkbox" class="custom-control-input" id="ElevatorInBuilding" />
-                                        <label class="custom-control-label" for="ElevatorInBuilding">Elevator in
-                                            building</label>
-                                    </div>
-                                    <div class="custom-control custom-checkbox mb-2">
-                                        <input type="checkbox" class="custom-control-input" id="FriendlyWorkspace" />
-                                        <label class="custom-control-label" for="FriendlyWorkspace">Friendly
-                                            workspace</label>
-                                    </div>
-                                    <div class="custom-control custom-checkbox mb-2">
-                                        <input type="checkbox" class="custom-control-input" id="InstantBook" />
-                                        <label class="custom-control-label" for="InstantBook">Instant Book</label>
-                                    </div>
-                                    <div class="custom-control custom-checkbox mb-2">
-                                        <input type="checkbox" class="custom-control-input" id="WirelessInternet" />
-                                        <label class="custom-control-label" for="WirelessInternet">Wireless Internet</label>
-                                    </div>
-                                </div>
-                                <div class="collapse" id="moreFeatureCollapse">
-                                    <div class="more-content-wrap">
-                                        <div class="custom-control custom-checkbox mb-2">
-                                            <input type="checkbox" class="custom-control-input"
-                                                id="FreeParkingOnPremises" />
-                                            <label class="custom-control-label" for="FreeParkingOnPremises">Free parking on
-                                                premises</label>
-                                        </div>
-                                        <div class="custom-control custom-checkbox mb-2">
-                                            <input type="checkbox" class="custom-control-input" id="FreeParkingOnStreet" />
-                                            <label class="custom-control-label" for="FreeParkingOnStreet">Free parking on
-                                                street</label>
-                                        </div>
-                                        <div class="custom-control custom-checkbox mb-2">
-                                            <input type="checkbox" class="custom-control-input" id="SmokingAllowed" />
-                                            <label class="custom-control-label" for="SmokingAllowed">Smoking allowed</label>
-                                        </div>
-                                        <div class="custom-control custom-checkbox mb-2">
-                                            <input type="checkbox" class="custom-control-input" id="Events" />
-                                            <label class="custom-control-label" for="Events">Events</label>
-                                        </div>
-                                    </div>
-                                    <!-- end more-content-wrap -->
-                                </div>
-                                <!-- end collapse -->
-                                <a class="collapse-btn btn-link" data-bs-toggle="collapse" href="#moreFeatureCollapse"
-                                    role="button" aria-expanded="false" aria-controls="moreFeatureCollapse">
-                                    <span class="collapse-icon-show">Show more <i class="fal fa-angle-down"></i></span>
-                                    <span class="collapse-icon-hide">Show less <i class="fal fa-angle-up"></i></span>
-                                </a>
-                            </div>
-                            <!-- end card-body -->
-                        </div>
-                        <!-- end card -->
-                        <div class="card">
-                            <div class="card-body">
-                                <h4 class="card-title mb-3">Ratings</h4>
-                                <div class="custom-control custom-radio">
-                                    <input type="radio" class="custom-control-input" id="fiveStarRadio"
-                                        name="radio-stacked" />
-                                    <label class="custom-control-label" for="fiveStarRadio">
-                                        <span class="star-rating d-inline-block line-height-24 font-size-15"
-                                            data-rating="5"></span>
-                                    </label>
-                                </div>
-                                <div class="custom-control custom-radio">
-                                    <input type="radio" class="custom-control-input" id="fourStarRadio"
-                                        name="radio-stacked" />
-                                    <label class="custom-control-label" for="fourStarRadio">
-                                        <span class="star-rating d-inline-block line-height-24 font-size-15"
-                                            data-rating="4"></span>
-                                    </label>
-                                </div>
-                                <div class="custom-control custom-radio">
-                                    <input type="radio" class="custom-control-input" id="threeStarRadio"
-                                        name="radio-stacked" />
-                                    <label class="custom-control-label" for="threeStarRadio">
-                                        <span class="star-rating d-inline-block line-height-24 font-size-15"
-                                            data-rating="3"></span>
-                                    </label>
-                                </div>
-                                <div class="custom-control custom-radio">
-                                    <input type="radio" class="custom-control-input" id="twoStarRadio"
-                                        name="radio-stacked" />
-                                    <label class="custom-control-label" for="twoStarRadio">
-                                        <span class="star-rating d-inline-block line-height-24 font-size-15"
-                                            data-rating="2"></span>
-                                    </label>
-                                </div>
-                                <div class="custom-control custom-radio">
-                                    <input type="radio" class="custom-control-input" id="oneStarRadio"
-                                        name="radio-stacked" />
-                                    <label class="custom-control-label" for="oneStarRadio">
-                                        <span class="star-rating d-inline-block line-height-24 font-size-15"
-                                            data-rating="1"></span>
-                                    </label>
-                                </div>
-                            </div>
-                            <!-- end card-body -->
-                        </div>
-                        <!-- end card -->
                     </div>
-                    <!-- end sidebar -->
                 </div>
+            </div>
+
+            {{-- Ratings --}}
+            <div class="card mb-3">
+                <div class="card-body">
+                    <h4 class="card-title mb-3">Ratings</h4>
+                    @for($i=5; $i>=1; $i--)
+                        <div class="custom-control custom-radio">
+                            <input type="radio" class="custom-control-input" id="{{ $i }}StarRadio" name="rating" value="{{ $i }}"
+                                   {{ request('rating') == $i ? 'checked' : '' }} />
+                            <label class="custom-control-label" for="{{ $i }}StarRadio">
+                                <span class="star-rating d-inline-block line-height-24 font-size-15" data-rating="{{ $i }}"></span>
+                            </label>
+                        </div>
+                    @endfor
+                </div>
+            </div>
+
+            <!-- Dynamic Category Filters -->
+            @foreach($categories as $category)
+                <div class="category-filters" data-category="{{ $category['slug'] ?? '' }}" style="display:none;">
+                    @if(isset($category['filters']) && count($category['filters']))
+                        <div class="card mb-4">
+                            <div class="card-body">
+                                <h4 class="card-title mb-3">Category Filters</h4>
+                                @foreach($category['filters'] as $filter)
+                                    <div class="mb-3">
+                                        @php
+                                            $fieldKey = $filter['field_key'] ?? $filter['field_id'];
+                                            $oldValue = request()->input("filters.$fieldKey");
+                                        @endphp
+                                        @switch($filter['type'] ?? '')
+                                            @case('text')
+                                            <h6 class="mb-2">{{ $filter['label'] ?? '' }}</h6>
+                                            <input type="text" name="filters[{{ $fieldKey }}]" class="form-control"
+                                                   placeholder="Enter {{ $filter['label'] ?? '' }}"
+                                                   value="{{ $oldValue }}">
+                                            @break
+
+                                            @case('number')
+                                            <h6 class="mb-2">{{ $filter['label'] ?? '' }}</h6>
+                                            <input type="number" name="filters[{{ $fieldKey }}]" class="form-control"
+                                                   placeholder="Enter {{ $filter['label'] ?? '' }}"
+                                                   value="{{ $oldValue }}">
+                                            @break
+
+                                            @case('date')
+                                            <h6 class="mb-2">{{ $filter['label'] ?? '' }}</h6>
+                                            <input type="date" name="filters[{{ $fieldKey }}]" class="form-control"
+                                                   value="{{ $oldValue }}">
+                                            @break
+
+                                            @case('email')
+                                            <h6 class="mb-2">{{ $filter['label'] ?? '' }}</h6>
+                                            <input type="email" name="filters[{{ $fieldKey }}]" class="form-control"
+                                                   placeholder="Enter {{ $filter['label'] ?? '' }}"
+                                                   value="{{ $oldValue }}">
+                                            @break
+
+                                            @case('textarea')
+                                            <h6 class="mb-2">{{ $filter['label'] ?? '' }}</h6>
+                                            <textarea name="filters[{{ $fieldKey }}]" class="form-control" rows="2"
+                                                      placeholder="Enter {{ $filter['label'] ?? '' }}">{{ $oldValue }}</textarea>
+                                            @break
+
+                                            @case('checkbox')
+                                            <h6 class="mb-2">{{ $filter['label'] ?? '' }}</h6>
+                                            @foreach($filter['options'] as $index => $option)
+                                                @php
+                                                    $optionId = 'filter_'.$filter['field_id'].'_'.$index;
+                                                    $optionLabel = explode('|', $option)[0];
+                                                    $checked = is_array($oldValue) && in_array($optionLabel, $oldValue) ? 'checked' : '';
+                                                @endphp
+                                                <div class="custom-control custom-checkbox">
+                                                    <input type="checkbox" class="custom-control-input" id="{{ $optionId }}"
+                                                           name="filters[{{ $filter['field_id'] }}][]"
+                                                           value="{{ $optionLabel }}" {{ $checked }}>
+                                                    <label class="custom-control-label" for="{{ $optionId }}">{{ $optionLabel }}</label>
+                                                </div>
+                                            @endforeach
+                                            @break
+
+                                            @case('radio')
+                                            <h6 class="mb-2">{{ $filter['label'] ?? '' }}</h6>
+                                            @foreach($filter['options'] as $index => $option)
+                                                @php
+                                                    $optionId = 'filter_'.$filter['field_id'].'_'.$index;
+                                                    $optionLabel = explode('|', $option)[0];
+                                                    $checked = $oldValue == $optionLabel ? 'checked' : '';
+                                                @endphp
+                                                <div class="custom-control custom-radio">
+                                                    <input type="radio" class="custom-control-input" id="{{ $optionId }}"
+                                                           name="filters[{{ $filter['field_id'] }}]"
+                                                           value="{{ $optionLabel }}" {{ $checked }}>
+                                                    <label class="custom-control-label" for="{{ $optionId }}">{{ $optionLabel }}</label>
+                                                </div>
+                                            @endforeach
+                                            @break
+
+                                            @case('selectlist')
+                                            <h6 class="mb-2">{{ $filter['label'] ?? '' }}</h6>
+                                            <select name="filters[{{ $fieldKey }}]" class="form-select">
+                                                <option value="">Select {{ $filter['label'] ?? '' }}</option>
+                                                @foreach($filter['options'] ?? [] as $option)
+                                                    <option value="{{ $option }}" {{ $oldValue == $option ? 'selected' : '' }}>{{ $option }}</option>
+                                                @endforeach
+                                            </select>
+                                            @break
+                                        @endswitch
+                                    </div>
+                                @endforeach
+                            </div>
+                        </div>
+                    @endif
+                </div>
+            @endforeach
+        </form>
+    </div>
+</div>
+
                 <!-- end col-lg-4 -->
                 <div class="col-lg-9">
-                    <div class=" " style="margin-bottom: 30px;">
-                        <button class="tab-btn active" data-category="all">All</button>
-                        @foreach($categories as $category)
-                            <button class="tab-btn" data-category="{{ $category->slug }}">{{ $category->name }}</button>
-                        @endforeach
-                    </div>
+                    <div class="tabs-wrapper" style="margin-bottom: 30px;">
+    <button class="scroll-btn prev" onclick="scrollTabs(-200)">&#10094;</button>
+
+    <div class="tabs-container" id="tabsContainer">
+        <button class="tab-btn active" data-category="all">All</button>
+        @foreach($categories as $category)
+            <button class="tab-btn" data-category="{{ $category->slug }}">{{ $category->name }}</button>
+        @endforeach
+    </div>
+
+    <button class="scroll-btn next" onclick="scrollTabs(200)">&#10095;</button>
+</div>
+
                     <div id="submissions-container">
 
                         {{-- All submissions (for All tab) --}}
@@ -735,18 +784,6 @@
         </div>
         <!-- end container -->
     </section>
-    <!-- ================================
-                                                                                                                                                            START CARD AREA
-                                                                                                                                                        ================================= -->
-
-    <!-- end card-area -->
-    <!-- ================================
-                                                                                                                                                            END CARD AREA
-                                                                                                                                                        ================================= -->
-
-    <!-- ================================
-                                                                                                                                                            START SUBSCRIBER AREA
-                                                                                                                                                        ================================= -->
     <section class="subscriber-area mb-n5 position-relative z-index-2">
         <div class="container">
             <div class="subscriber-box d-flex flex-wrap align-items-center justify-content-between bg-dark overflow-hidden">
@@ -771,29 +808,69 @@
         </div>
         <!-- end container -->
     </section>
-    <!-- end subscriber-area -->
-    <!-- ================================
-                                                                                                                                                            END SUBSCRIBER AREA
-                                                                                                                                                        ================================= -->
+                                                                                                                                      
 
     <script>
-        document.querySelectorAll('.tab-btn').forEach(btn => {
-            btn.addEventListener('click', () => {
-                // Remove active class from all buttons
-                document.querySelectorAll('.tab-btn').forEach(b => b.classList.remove('active'));
-                btn.classList.add('active');
+        document.addEventListener('DOMContentLoaded', function() {
+    // Get URL parameters
+    const params = new URLSearchParams(window.location.search);
+    const selectedCategory = params.get('category') || 'all'; // default to 'all' if none
 
-                const category = btn.getAttribute('data-category');
-                const groups = document.querySelectorAll('.submission-group');
+    // Trigger click on the corresponding tab
+    const tabToOpen = document.querySelector(`.tab-btn[data-category="${selectedCategory}"]`);
+    if (tabToOpen) {
+        tabToOpen.click();
+    } else {
+        // fallback to all
+        document.querySelector('.tab-btn[data-category="all"]').click();
+    }
+});
 
-                groups.forEach(group => {
-                    if (category === 'all') {
-                        group.style.display = group.getAttribute('data-group') === 'all' ? '' : 'none';
-                    } else {
-                        group.style.display = group.getAttribute('data-group') === category ? '' : 'none';
-                    }
-                });
-            });
+document.querySelectorAll('.tab-btn').forEach(btn => {
+    btn.addEventListener('click', () => {
+        // Remove active class from all buttons
+        document.querySelectorAll('.tab-btn').forEach(b => b.classList.remove('active'));
+        btn.classList.add('active');
+
+        const category = btn.getAttribute('data-category');
+        const groups = document.querySelectorAll('.submission-group');
+        const filters = document.querySelectorAll('.category-filters');
+
+        // Show/hide submissions
+        groups.forEach(group => {
+            if (category === 'all') {
+                group.style.display = group.getAttribute('data-group') === 'all' ? '' : 'none';
+            } else {
+                group.style.display = group.getAttribute('data-group') === category ? '' : 'none';
+            }
         });
-    </script>
+
+        // Show/hide filters
+        filters.forEach(div => {
+            if (category === 'all' || div.getAttribute('data-category') === category) {
+                div.style.display = '';
+            } else {
+                div.style.display = 'none';
+            }
+        });
+    });
+});
+
+function scrollTabs(amount) {
+    const container = document.getElementById("tabsContainer");
+    container.scrollBy({ left: amount, behavior: "smooth" });
+}
+
+document.getElementById('clear-filters').addEventListener('click', function() {
+    const form = document.getElementById('filter-form');
+    form.querySelectorAll('input[type="text"], input[type="number"], input[type="date"], input[type="email"], textarea, select')
+        .forEach(el => el.value = '');
+    form.querySelectorAll('input[type="checkbox"], input[type="radio"]').forEach(el => el.checked = false);
+
+    const url = window.location.href.split('?')[0];
+    window.location.href = url;
+});
+
+</script>
+
 @endsection

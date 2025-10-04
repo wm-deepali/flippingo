@@ -2094,8 +2094,8 @@ class FormBuilderController extends Controller
                     ]
                 ]
 
-                // Add further components here if your original JSON had more
-            ]
+            ],
+            // Add further components here if your original JSON had more
         ];
 
         // After defining $components array

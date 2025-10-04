@@ -318,13 +318,13 @@
 
                             </form>
                         </div>
-                        <div class="mt-3">
-                            <button id="save-form-btn" type="button" class="btn btn-success">
-                                <i class="fas fa-check me-2"></i> Update Form
-                            </button>
-                        </div>
                     </div>
-
+                    
+                    <div  class="d-flex justify-content-center mt-3 mb-3">
+                        <button id="save-form-btn" type="button" class="btn btn-success">
+                            <i class="fas fa-check me-2"></i> Update Form
+                        </button>
+                    </div>
                     
                     <!-- <div id="ef-styles" class="col-md-3 d-none">
                                                             <div class="ef-sidebar-outer p-2">
@@ -459,6 +459,8 @@
                         properties: getFieldData($field)
                     });
                 });
+                // console.log(fields, 'fielss');
+                // return;
                 formData.append('fields', JSON.stringify(fields));
                 formData.append('html', $('#canvas').html());
                 formData.append('builder', JSON.stringify({

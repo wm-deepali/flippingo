@@ -56,5 +56,10 @@ class Form extends Model
         return $this->hasOne(FormData::class, 'form_id', 'id');
     }
 
+    public function filters()
+    {
+        return $this->hasMany(FormFilter::class);
+    }
+
 }
 

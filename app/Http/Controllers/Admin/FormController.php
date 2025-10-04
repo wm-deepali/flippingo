@@ -58,8 +58,11 @@ class FormController extends Controller
      */
     public function create()
     {
-        // Fetch categories for select dropdown
-        $categories = Category::all();
+        // Get IDs of categories which already have a form
+        $formCategoryIds = Form::distinct()->pluck('category_id')->toArray();
+
+        // Fetch categories excluding those with forms
+        $categories = Category::whereNotIn('id', $formCategoryIds)->get();
 
         // Localization strings
         $i18n = [
@@ -183,7 +186,7 @@ class FormController extends Controller
             ],
         ];
 
-        return view('admin.form.create', compact('categories', 'defaultForm', 'i18n'));
+        return view('admin.form.create', compact('categories', 'defaultForm', 'i18n'))->with('isTemplate', false);
     }
 
 
@@ -194,7 +197,15 @@ class FormController extends Controller
         // Validate incoming data
         $validated = $request->validate([
             'name' => 'required|string|max:255',
-            'category_id' => 'required|exists:categories,id', // Add this line
+            'category_id' => [
+                'required',
+                'exists:categories,id',
+                function ($attribute, $value, $fail) {
+                    if (Form::where('category_id', $value)->exists()) {
+                        $fail('This category already has a form.');
+                    }
+                },
+            ],
             'fields' => 'required|json',
             'builder' => 'required|json',
             'html' => 'nullable|string',
@@ -241,28 +252,49 @@ class FormController extends Controller
     {
         $form = Form::findOrFail($id);
         $formData = FormData::where('form_id', $form->id)->first();
-        // Fetch categories, for example: ID and Name
-        $categories = Category::all(); // or use pluck('name', 'id') if you want an array
-        // dd($formData->toArray());
+
+        // Get ids of categories already linked to forms other than this form
+        $formCategoryIds = Form::where('id', '!=', $form->id)
+            ->distinct()
+            ->pluck('category_id')
+            ->toArray();
+
+        // Fetch categories excluding those with forms already, but always include current form's category
+        $categories = Category::whereNotIn('id', $formCategoryIds)
+            ->orWhere('id', $form->category_id) // assuming form has category_id
+            ->get();
+
         return view('admin.form.edit', compact('form', 'formData', 'categories'));
     }
 
     public function update(Request $request, $id)
     {
-        // dd($request->all());
+        $form = Form::findOrFail($id);
         // Validate incoming data
         $validated = $request->validate([
             'name' => 'required|string|max:255',
             'fields' => 'required|json',
             'builder' => 'required|json',
             'html' => 'nullable|string',
-            'category_id' => 'required|exists:categories,id',
+            'category_id' => [
+                'required',
+                'exists:categories,id',
+                function ($attribute, $value, $fail) use ($form) {
+                    if (
+                        Form::where('category_id', $value)
+                            ->where('id', '!=', $form->id)
+                            ->exists()
+                    ) {
+                        $fail('This category already has a form.');
+                    }
+                },
+            ],
             'height' => 'nullable|numeric'
         ]);
-
         // Decode JSON fields
         $fields = json_decode($validated['fields'], true);
         $builder = json_decode($validated['builder'], true);
+        // dd('here',$fields,$validated['fields']);
 
         // Find the existing form
         $form = Form::findOrFail($id);
@@ -363,6 +395,102 @@ class FormController extends Controller
 
         return response()->json(['success' => true]);
     }
+
+    public function createFilter(Form $form)
+    {
+        $formData = FormData::where('form_id', $form->id)->first();
+        $fields = [];
+
+        if ($formData) {
+            $decodedFields = is_array($formData->fields)
+                ? $formData->fields
+                : json_decode($formData->fields, true);
+
+            if ($decodedFields) {
+                foreach ($decodedFields as $field) {
+                    // Skip headings/paragraphs since they aren’t input fields
+                    if (in_array($field['type'], ['heading', 'paragraph', 'button'])) {
+                        continue;
+                    }
+
+                    $properties = $field['properties'] ?? [];
+
+                    $fields[] = [
+                        'id' => $properties['id'] ?? $field['id'],
+                        'label' => $properties['label'] ?? ucfirst($field['type']),
+                        'type' => $field['type'] ?? 'text',
+                    ];
+                }
+            }
+        }
+
+        // Fetch already saved filters
+        $savedFilters = $form->filters()->get();
+
+        return view('admin.form.filter-create', compact('form', 'fields', 'savedFilters'));
+    }
+
+
+    public function storeFilter(Request $request, Form $form)
+    {
+        $request->validate([
+            'filters' => 'required|array',
+        ]);
+
+        // Fetch existing filters keyed by field_key
+        $existingFilters = $form->filters()->get()->keyBy('field_key');
+
+        // Map of available fields for label/type lookup
+        $formData = FormData::where('form_id', $form->id)->first();
+        $fieldMap = [];
+
+        if ($formData) {
+            $decodedFields = is_array($formData->fields)
+                ? $formData->fields
+                : json_decode($formData->fields, true);
+
+            if ($decodedFields) {
+                foreach ($decodedFields as $field) {
+                    if (in_array($field['type'], ['heading', 'paragraph', 'button'])) {
+                        continue;
+                    }
+                    $properties = $field['properties'] ?? [];
+                    $key = $properties['id'] ?? $field['id'];
+                    $fieldMap[$key] = [
+                        'label' => $properties['label'] ?? ucfirst($field['type']),
+                        'type' => $field['type'] ?? 'text',
+                    ];
+                }
+            }
+        }
+
+        $submittedKeys = $request->filters;
+
+        foreach ($submittedKeys as $index => $key) {
+            if ($existingFilters->has($key)) {
+                // Update position
+                $existingFilters[$key]->update(['position' => $index]);
+                // Remove from existingFilters to mark as handled
+                $existingFilters->forget($key);
+            } else {
+                // New filter, create it
+                $form->filters()->create([
+                    'field_key' => $key,
+                    'label' => $fieldMap[$key]['label'] ?? ucfirst(str_replace('_', ' ', $key)),
+                    'type' => $fieldMap[$key]['type'] ?? 'text',
+                    'position' => $index,
+                ]);
+            }
+        }
+
+        // Delete any remaining filters that were not in submittedKeys
+        if ($existingFilters->isNotEmpty()) {
+            $form->filters()->whereIn('field_key', $existingFilters->keys())->delete();
+        }
+
+        return response()->json(['success' => true]);
+    }
+
 
 
 }

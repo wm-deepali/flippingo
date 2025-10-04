@@ -52,8 +52,8 @@
     }
 
     /* #my-form {
-                                                                          height: 100vh;
-                                                                      } */
+                                                                              height: 100vh;
+                                                                          } */
 
     /* Modal button styling */
     .modal-footer .btn {
@@ -195,7 +195,8 @@
       background: rgba(0, 123, 255, 0.05);
       transition: all 0.2s ease-in-out;
     }
-     .reorder-placeholder {
+
+    .reorder-placeholder {
       height: 50px;
       border: 2px dashed #007bff;
       border-radius: 6px;
@@ -248,17 +249,20 @@
                 <div id="tab-settings" class="tab-pane show active fade card-padding">
                   <form id="settings-form">
 
-                    <div class="form-group">
-                      <label for="category_id" class="form-label"><strong>Category</strong></label>
-                      <select class="form-control" id="category_id" name="category_id">
-                        @foreach($categories as $category)
-                          <option value="{{ $category->id }}">{{ $category->name }}</option>
-                        @endforeach
-                      </select>
-                      <div id="categoryHelp" class="form-text">
-                        Select a category for the form.
+                    @if (!$isTemplate)
+                      {{-- Template mode: --}}
+                      <div class="form-group">
+                        <label for="category_id" class="form-label"><strong>Category</strong></label>
+                        <select class="form-control" id="category_id" name="category_id">
+                          @foreach($categories as $category)
+                            <option value="{{ $category->id }}">{{ $category->name }}</option>
+                          @endforeach
+                        </select>
+                        <div id="categoryHelp" class="form-text">
+                          Select a category for the form.
+                        </div>
                       </div>
-                    </div>
+                    @endif
 
 
                     <div class="form-group">
@@ -304,44 +308,45 @@
 
           <!-- Middle: Canvas -->
           <div id="ef-main" class="col-md-5 d-none">
+
+            <!-- Canvas -->
             <div id="canvas">
               <form id="my-form" class="row">
                 @csrf
               </form>
             </div>
 
-            <div class="mt-3">
-              @if (!empty($isTemplate) && $isTemplate)
-                {{-- Template mode: Only show Save Template --}}
-                <button id="save-template-btn" type="button" class="btn btn-secondary">
-                  <i class="fas fa-copy me-2"></i> Save Template
-                </button>
-              @else
-                {{-- Form mode: Only show Save Form --}}
-                <button id="save-form-btn" type="button" class="btn btn-success me-2">
-                  <i class="fas fa-check me-2"></i> Save Form
-                </button>
-                <button id="save-template-btn" type="button" class="btn btn-secondary">
-                  <i class="fas fa-copy me-2"></i> Save as Template
-                </button>
-              @endif
-            </div>
+            <!-- Buttons after canvas -->
 
 
+          </div>
+          <div class="d-flex justify-content-center gap-2 mt-3 mb-3">
+            @if (!empty($isTemplate) && $isTemplate)
+              <button id="save-template-btn" type="button" class="btn btn-secondary">
+                <i class="fas fa-copy me-1"></i> Save Template
+              </button>
+            @else
+              <button id="save-form-btn" type="button" class="btn btn-success">
+                <i class="fas fa-check me-1"></i> Save Form
+              </button>
+              <button id="save-template-btn" type="button" class="btn btn-secondary">
+                <i class="fas fa-copy me-1"></i> Save as Template
+              </button>
+            @endif
           </div>
 
           <!-- Right Sidebar: Styles -->
           <!-- <div id="ef-styles" class="col-md-3 d-none">
-                                  <div class="ef-sidebar-outer p-2">
-                                    <h5>Design</h5>
-                                    <div id="styles-panel">
-                                    </div>
-                                    <div class="mt-2">
-                                      <a href="#" id="collapse-styles">Collapse All</a> |
-                                      <a href="#" id="expand-styles">Expand All</a>
-                                    </div>
-                                  </div>
-                                </div> -->
+                                      <div class="ef-sidebar-outer p-2">
+                                        <h5>Design</h5>
+                                        <div id="styles-panel">
+                                        </div>
+                                        <div class="mt-2">
+                                          <a href="#" id="collapse-styles">Collapse All</a> |
+                                          <a href="#" id="expand-styles">Expand All</a>
+                                        </div>
+                                      </div>
+                                    </div> -->
 
         </div>
 

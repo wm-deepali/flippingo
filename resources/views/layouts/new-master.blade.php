@@ -270,6 +270,10 @@
       </div>
       <!-- end container-fluid -->
     </div>
+    @php
+      use App\Models\Category;
+      $categories = Category::where('status', 'active')->get();
+    @endphp
     <div class="top-header">
       <div class="top-header-list">
         <nav class="main-menu " style="width: 100%;">
@@ -277,13 +281,9 @@
             <li>
               <a href="{{ Route('listing-list') }}">Browse <span class="fal fa-angle-down"></span></a>
               <ul class="dropdown-menu-item">
-                <li><a href="{{ Route('listing-list') }}">Website</a></li>
-                <li><a href="{{ Route('listing-list') }}">YouTube Channel</a></li>
-                <li><a href="{{ Route('listing-list') }}">Instagram Pages </a></li>
-                <li>
-                  <a href="{{ Route('listing-list') }}">Telegram Account</a>
-                </li>
-                <li><a href="{{ Route('listing-list') }}">Facebook Account</a></li>
+                @foreach($categories as $category)
+                  <li><a href="{{ Route('listing-list') }}">{{  $category->name}}</a></li>
+                @endforeach
               </ul>
             </li>
             <li>

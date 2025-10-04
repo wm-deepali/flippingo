@@ -2228,73 +2228,220 @@
     display: block;
     margin: 0 auto 10px;
   }
+
+  .tabs-wrapper {
+    display: flex;
+    align-items: center;
+    position: relative;
+    max-width: 100%;
+    overflow: hidden;
+  }
+
+  .tabs-container {
+    display: flex;
+    overflow-x: auto;
+    scroll-behavior: smooth;
+    gap: 10px;
+    scrollbar-width: none;
+    /* Firefox */
+  }
+
+  .tabs-container::-webkit-scrollbar {
+    display: none;
+    /* Chrome, Safari */
+  }
+
+  .tab-btn {
+    white-space: nowrap;
+    padding: 10px 15px;
+    border: none;
+    background: #f3f3f3;
+    border-radius: 5px;
+    font-weight: bold;
+    cursor: pointer;
+  }
+
+  .scroll-btn {
+    background: black;
+    color: white;
+    border: none;
+    padding: 8px 12px;
+    cursor: pointer;
+    font-size: 18px;
+  }
+
+  .scroll-btn.prev {
+    margin-right: 5px;
+  }
+
+  .scroll-btn.next {
+    margin-left: 5px;
+  }
+
+  .text-slider {
+    /*text-align: center;*/
+    /*border-bottom: 2px solid #000;*/
+    display: inline-block;
+  }
+
+  .text-slider h1 {
+    color: white;
+    font-weight: 700;
+    font-size: 45px;
+    margin: 0;
+    display: flex;
+    flex-direction: column;
+    /*justify-content: center;*/
+    gap: 8px;
+  }
+
+  #slider-content {
+    display: inline-block;
+    overflow: hidden;
+    height: 63px;
+    /* adjust as per font size */
+    vertical-align: bottom;
+  }
+
+  #slider-content span {
+    /*margin-left:63px;*/
+    /*margin-bottom:10px;*/
+    width: fit-content;
+    display: block;
+    line-height: 55px;
+    border-bottom: 2px solid #fff;
+    animation: slideText 10s infinite;
+  }
+
+  @keyframes slideText {
+    0% {
+      transform: translateY(0%);
+    }
+
+    15% {
+      transform: translateY(0%);
+    }
+
+    20% {
+      transform: translateY(-100%);
+    }
+
+    35% {
+      transform: translateY(-100%);
+    }
+
+    40% {
+      transform: translateY(-200%);
+    }
+
+    55% {
+      transform: translateY(-200%);
+    }
+
+    60% {
+      transform: translateY(-300%);
+    }
+
+    75% {
+      transform: translateY(-300%);
+    }
+
+    80% {
+      transform: translateY(-400%);
+    }
+
+    100% {
+      transform: translateY(-400%);
+    }
+  }
+
+  .right-form-card {
+    height: fit-content;
+  }
+
+  .review-section {
+    height: fit-content;
+  }
 </style>
+
 
 @section('content')
 
   <!-- ================================
-                                                                                              START HERO-WRAPPER AREA
-                                                                                              ================================= -->
+                                                                                                            START HERO-WRAPPER AREA
+                                                                                                            ================================= -->
   <!-- <section class="hero-wrapper hero-bg">
-                                                                                              <div class="overlay"></div>
+                                                                                                            <div class="overlay"></div>
 
-                                                                                              <div class="container">
-                                                                                                <div class="hero-heading text-center">
-                                                                                                <h2 class="sec__title text-white cd-headline zoom">
-                                                                                                What are you interested in
-                                                                                                <span class="cd-words-wrapper">
-                                                                                                <b class="is-visible">Monetized Website</b>
-                                                                                                <b>Mobile Applications</b>
-                                                                                                <b>Adwords Accounts</b>
-                                                                                                <b>Facebook </b>
-                                                                                                <b>Instagram</b>
-                                                                                                <b>Telegram Groups</b>
+                                                                                                            <div class="container">
+                                                                                                              <div class="hero-heading text-center">
+                                                                                                              <h2 class="sec__title text-white cd-headline zoom">
+                                                                                                              What are you interested in
+                                                                                                              <span class="cd-words-wrapper">
+                                                                                                              <b class="is-visible">Monetized Website</b>
+                                                                                                              <b>Mobile Applications</b>
+                                                                                                              <b>Adwords Accounts</b>
+                                                                                                              <b>Facebook </b>
+                                                                                                              <b>Instagram</b>
+                                                                                                              <b>Telegram Groups</b>
 
-                                                                                                </span>
-                                                                                                </h2>
+                                                                                                              </span>
+                                                                                                              </h2>
 
-                                                                                                </div>
-                                                                                                <div class="highlighted-categories text-center mt-5">
-                                                                                                <p class="highlighted__title text-white">
-                                                                                                Or browse featured categories:
-                                                                                                </p>
-                                                                                                <div class="highlight-lists d-flex flex-wrap justify-content-center mt-4">
-                                                                                                <a href="#" class="highlight-category">
-                                                                                                <span class="fal fa-building icon-element d-block mx-auto"></span>
-                                                                                                Monetized Website
-                                                                                                </a>
-                                                                                                <a href="#" class="highlight-category">
-                                                                                                <span class="fal fa-utensils icon-element d-block mx-auto"></span>
-                                                                                                Mobile Applications
-                                                                                                </a>
-                                                                                                <a href="#" class="highlight-category">
-                                                                                                <span class="fal fa-plane icon-element d-block mx-auto"></span>
-                                                                                                Adwords Accounts
-                                                                                                </a>
-                                                                                                <a href="#" class="highlight-category">
-                                                                                                <span class="fal fa-music icon-element d-block mx-auto"></span>
-                                                                                                Facebook 
-                                                                                                </a>
-                                                                                                <a href="#" class="highlight-category">
-                                                                                                <span class="fal fa-dumbbell icon-element d-block mx-auto"></span>
-                                                                                                Instagram
-                                                                                                </a>
-                                                                                                <a href="#" class="highlight-category">
-                                                                                                <span class="fal fa-hotel icon-element d-block mx-auto"></span>
-                                                                                                Telegram Groups
-                                                                                                </a>
-                                                                                                </div>
-                                                                                                </div>
+                                                                                                              </div>
+                                                                                                              <div class="highlighted-categories text-center mt-5">
+                                                                                                              <p class="highlighted__title text-white">
+                                                                                                              Or browse featured categories:
+                                                                                                              </p>
+                                                                                                              <div class="highlight-lists d-flex flex-wrap justify-content-center mt-4">
+                                                                                                              <a href="#" class="highlight-category">
+                                                                                                              <span class="fal fa-building icon-element d-block mx-auto"></span>
+                                                                                                              Monetized Website
+                                                                                                              </a>
+                                                                                                              <a href="#" class="highlight-category">
+                                                                                                              <span class="fal fa-utensils icon-element d-block mx-auto"></span>
+                                                                                                              Mobile Applications
+                                                                                                              </a>
+                                                                                                              <a href="#" class="highlight-category">
+                                                                                                              <span class="fal fa-plane icon-element d-block mx-auto"></span>
+                                                                                                              Adwords Accounts
+                                                                                                              </a>
+                                                                                                              <a href="#" class="highlight-category">
+                                                                                                              <span class="fal fa-music icon-element d-block mx-auto"></span>
+                                                                                                              Facebook 
+                                                                                                              </a>
+                                                                                                              <a href="#" class="highlight-category">
+                                                                                                              <span class="fal fa-dumbbell icon-element d-block mx-auto"></span>
+                                                                                                              Instagram
+                                                                                                              </a>
+                                                                                                              <a href="#" class="highlight-category">
+                                                                                                              <span class="fal fa-hotel icon-element d-block mx-auto"></span>
+                                                                                                              Telegram Groups
+                                                                                                              </a>
+                                                                                                              </div>
+                                                                                                              </div>
 
-                                                                                              </div>
+                                                                                                            </div>
 
-                                                                                              </section> -->
+                                                                                                            </section> -->
   <section class="hero-section" id="home" style="margin-top: 90px;">
     <div class="container">
-      <div class="row align-items-center">
+      <div class="row ">
         <div class="col-xl-6">
           <div class="hero-section-text">
-            <h1>#1 Platform to Buy & Sell Digital Assets</h1>
+            <!--<h1>#1 Platform to Buy & Sell Digital Assets</h1>-->
+            <div class="text-slider">
+              <h1>
+                #1 Platform to Buy & Sell
+                <span id="slider-content">
+                  @foreach($categories as $category)
+                    <span>{{ $category->name }}</span>
+                  @endforeach
+                </span>
+              </h1>
+            </div>
+
+
             <p>Flippingo is a platform for Posting Free Ads - it only takes a few simple steps! Select the right
               category and publish your classified ad for free.</p>
             <div class="video">
@@ -2387,7 +2534,7 @@
             </div>
             <div class="review-section">
               <div class="swiper reviewSwiper">
-                <div class="swiper-wrapper" style="padding: 20px 20px;">
+                <div class="swiper-wrapper">
                   <div class="review-sectio-host">
                     <div class="col-md-6 col-12">
                       <div class="review-card">
@@ -2430,39 +2577,39 @@
                   <!-- Review 1 -->
                   <!-- <div class="swiper-slide review-card">
 
-                                                                                                <div class="platform-name"><img
-                                                                                                src="https://upload.wikimedia.org/wikipedia/commons/thumb/2/2f/Google_2015_logo.svg/800px-Google_2015_logo.svg.png "
-                                                                                                alt="">
-                                                                                                </div>
-                                                                                                <div class="stars">★★★☆☆</div>
-                                                                                                <p style="color: #000000; padding-bottom: 0px; padding-top: 10px;">Scan the QR code below to leave
-                                                                                                us a review</p>
-                                                                                                <div class="qr-code">
-                                                                                                <img src="{{ asset('assets') }}/images/qr.png">
+                                                                                                              <div class="platform-name"><img
+                                                                                                              src="https://upload.wikimedia.org/wikipedia/commons/thumb/2/2f/Google_2015_logo.svg/800px-Google_2015_logo.svg.png "
+                                                                                                              alt="">
+                                                                                                              </div>
+                                                                                                              <div class="stars">★★★☆☆</div>
+                                                                                                              <p style="color: #000000; padding-bottom: 0px; padding-top: 10px;">Scan the QR code below to leave
+                                                                                                              us a review</p>
+                                                                                                              <div class="qr-code">
+                                                                                                              <img src="{{ asset('assets') }}/images/qr.png">
 
-                                                                                                </div>
-                                                                                                <p class="review-summary text-center mt-1"> 265 Review</p>
+                                                                                                              </div>
+                                                                                                              <p class="review-summary text-center mt-1"> 265 Review</p>
 
 
 
-                                                                                                </div> -->
+                                                                                                              </div> -->
 
                   <!-- Review 2 -->
                   <!-- <div class="swiper-slide review-card">
 
 
-                                                                                                <div class="platform-name"><img
-                                                                                                src="https://upload.wikimedia.org/wikipedia/commons/5/5c/Trustpilot_logo.png " alt="">
-                                                                                                </div>
-                                                                                                <div class="stars">★★☆☆☆</div>
-                                                                                                <p style="color: #000000; padding-bottom: 0px; padding-top: 10px;">Scan the QR code below to leave
-                                                                                                us a review</p>
-                                                                                                <div class="qr-code">
-                                                                                                <img src="{{ asset('assets') }}/images/qr.png">
+                                                                                                              <div class="platform-name"><img
+                                                                                                              src="https://upload.wikimedia.org/wikipedia/commons/5/5c/Trustpilot_logo.png " alt="">
+                                                                                                              </div>
+                                                                                                              <div class="stars">★★☆☆☆</div>
+                                                                                                              <p style="color: #000000; padding-bottom: 0px; padding-top: 10px;">Scan the QR code below to leave
+                                                                                                              us a review</p>
+                                                                                                              <div class="qr-code">
+                                                                                                              <img src="{{ asset('assets') }}/images/qr.png">
 
-                                                                                                </div>
-                                                                                                <p class="review-summary text-center mt-1 "> 265 Review</p>
-                                                                                                </div> -->
+                                                                                                              </div>
+                                                                                                              <p class="review-summary text-center mt-1 "> 265 Review</p>
+                                                                                                              </div> -->
 
                   <!-- Add more reviews -->
                 </div>
@@ -2475,7 +2622,7 @@
 
 
             <div class="play-button" style="margin-top: 30px;  width: 180px; border-radius: 25px;">
-              <a class="batton" href="{{ Route('listing-details') }}">View Listing</a>
+              <a class="batton" href="{{ Route('listing-list') }}">View Listing</a>
             </div>
             <!--<img alt="img" class="dots" src="{{ asset('site_assets') }}/img/dots.png">-->
             <img alt="img" class="landing-slider" src="{{ asset('site_assets') }}/img/landing-slider.png">
@@ -2483,157 +2630,146 @@
         </div>
         <div class="col-xl-6" style="display: flex; justify-content: end;">
           <!-- <form role="form" class="get-a-quote" id="contact-form" method="post">
-                                                                                                <div class="mb-lg-3 mb-3 d-flex align-items-center">
-                                                                                                <i>
-                                                                                                <svg enable-background="new 0 0 124 124" height="52" viewbox="0 0 124 124" width="52" xmlns="http://www.w3.org/2000/svg"><path d="m82.899 50.646c-6.059 0-10.988-4.918-10.988-10.963s4.929-10.963 10.988-10.963 10.988 4.918 10.988 10.963-4.929 10.963-10.988 10.963zm0-17.979c-3.877 0-7.031 3.147-7.031 7.015s3.154 7.015 7.031 7.015 7.031-3.147 7.031-7.015-3.154-7.015-7.031-7.015z"></path><path d="m122.558 2.183c-.069-.986-.853-1.773-1.841-1.848-14.728-1.125-41.975-.347-58.941 17.482-.002.002-.005.004-.007.007-2.3 2.441-4.418 5.209-6.382 8.136-24.65 8.882-35.589 25.07-38.168 33.298-.376 1.202.496 2.487 1.756 2.582l17.94 1.359c-1.478 3.901-2.824 7.823-4.017 11.748-.215.706-.02 1.472.504 1.992l11.995 11.891c.513.508 1.288.703 1.98.495 4-1.194 7.996-2.545 11.97-4.027l1.381 17.923c.097 1.253 1.377 2.122 2.581 1.752 7.562-2.328 24.216-13.247 33.545-37.919 2.953-1.954 5.73-4.064 8.153-6.359 17.668-16.682 18.58-43.82 17.551-58.512-.07-.987 1.029 14.692 0 0zm-3.878 2.008c.413 7.551.219 17.908-2.38 28.202l-26.124-25.897c10.42-2.625 20.888-2.767 28.504-2.305zm-96.722 53.877c3.21-7.053 12.265-18.732 29.892-26.418-2.945 5.084-5.502 10.331-7.777 15.002-2.04 4.172-3.917 8.403-5.638 12.665zm42.549 42.183-1.267-16.452c4.264-1.695 8.496-3.541 12.668-5.545 4.732-2.244 10.045-4.763 15.169-7.669-7.959 17.563-19.588 26.513-26.57 29.666zm37.752-42.448c-7.489 7.094-18.422 12.277-28.076 16.854-8.762 4.212-17.778 7.744-26.816 10.507l-10.293-10.205c2.785-8.95 6.346-17.879 10.592-26.562 4.394-9.022 9.862-20.251 17.01-27.839 5.992-6.295 13.426-10.299 21.11-12.794l29.252 28.998c-2.497 7.687-6.497 15.108-12.779 21.041z"></path><path d="m4.185 122.808c-1.728 0-2.631-2.145-1.437-3.378l27.357-28.26c1.788-1.841 4.666.918 2.874 2.77l-27.357 28.259c-.392.405-.914.609-1.437.609z"></path><path d="m23.435 124c-1.688 0-2.609-2.063-1.493-3.318l17.73-19.91c1.71-1.913 4.7.723 2.987 2.648l-17.73 19.91c-.394.444-.943.67-1.494.67z"></path><path d="m2.982 104.917c-1.688 0-2.609-2.063-1.493-3.318l17.731-19.91c1.709-1.914 4.7.724 2.987 2.648l-17.731 19.91c-.395.444-.943.67-1.494.67z"></path></svg>
-                                                                                                </i>
-                                                                                                <div>
-                                                                                                <p class="p-0">Marketing Business campaign</p>
-                                                                                                <h2>Search Listing</h2>
-                                                                                                </div>
-                                                                                                </div>
-                                                                                                <div class="group-img">
-                                                                                                <svg width="18" height="18" viewbox="0 0 18 18" fill="none" xmlns="http://www.w3.org/2000/svg">
-                                                                                                <path d="M15.364 11.636C14.3837 10.6558 13.217 9.93013 11.9439 9.49085C13.3074 8.55179 14.2031 6.9802 14.2031 5.20312C14.2031 2.33413 11.869 0 9 0C6.131 0 3.79688 2.33413 3.79688 5.20312C3.79688 6.9802 4.69262 8.55179 6.05609 9.49085C4.78308 9.93013 3.61631 10.6558 2.63605 11.636C0.936176 13.3359 0 15.596 0 18H1.40625C1.40625 13.8128 4.81279 10.4062 9 10.4062C13.1872 10.4062 16.5938 13.8128 16.5938 18H18C18 15.596 17.0638 13.3359 15.364 11.636ZM9 9C6.90641 9 5.20312 7.29675 5.20312 5.20312C5.20312 3.1095 6.90641 1.40625 9 1.40625C11.0936 1.40625 12.7969 3.1095 12.7969 5.20312C12.7969 7.29675 11.0936 9 9 9Z" fill="#555555"></path>
-                                                                                                </svg>
-                                                                                                <input type="text" name="name" placeholder="I am looking for..." required="">
-                                                                                                </div>
-                                                                                                <div class="group-img">
-                                                                                                <svg width="22" height="18" viewbox="0 0 22 18" fill="none" xmlns="http://www.w3.org/2000/svg">
-                                                                                                <path d="M15.8649 18H6.13513C2.58377 18 0.540527 15.9568 0.540527 12.4054V5.5946C0.540527 2.04324 2.58377 0 6.13513 0H15.8649C19.4162 0 21.4595 2.04324 21.4595 5.5946V12.4054C21.4595 15.9568 19.4162 18 15.8649 18ZM6.13513 1.45946C3.35242 1.45946 1.99999 2.81189 1.99999 5.5946V12.4054C1.99999 15.1881 3.35242 16.5406 6.13513 16.5406H15.8649C18.6476 16.5406 20 15.1881 20 12.4054V5.5946C20 2.81189 18.6476 1.45946 15.8649 1.45946H6.13513Z" fill="#444444"></path>
-                                                                                                <path d="M10.9988 9.8465C10.1815 9.8465 9.35452 9.59352 8.72208 9.07785L5.67668 6.64539C5.36532 6.39241 5.30696 5.93511 5.55992 5.62376C5.8129 5.31241 6.2702 5.25403 6.58155 5.50701L9.62695 7.93947C10.3664 8.53298 11.6215 8.53298 12.361 7.93947L15.4064 5.50701C15.7178 5.25403 16.1848 5.30268 16.428 5.62376C16.681 5.93511 16.6324 6.40214 16.3113 6.64539L13.2659 9.07785C12.6432 9.59352 11.8161 9.8465 10.9988 9.8465Z" fill="#444444"></path>
-                                                                                                </svg>
-                                                                                                <input type="text" name="email" placeholder="Email Address" required="">
-                                                                                                </div>
-                                                                                                <div class="group-img">
-                                                                                                <svg fill="none" height="112" viewbox="0 0 24 24" width="112" xmlns="http://www.w3.org/2000/svg"><g clip-rule="evenodd" fill="rgb(0,0,0)" fill-rule="evenodd"><path d="m7 2.75c-.41421 0-.75.33579-.75.75v17c0 .4142.33579.75.75.75h10c.4142 0 .75-.3358.75-.75v-17c0-.41421-.3358-.75-.75-.75zm-2.25.75c0-1.24264 1.00736-2.25 2.25-2.25h10c1.2426 0 2.25 1.00736 2.25 2.25v17c0 1.2426-1.0074 2.25-2.25 2.25h-10c-1.24264 0-2.25-1.0074-2.25-2.25z"></path><path d="m10.25 5c0-.41421.3358-.75.75-.75h2c.4142 0 .75.33579.75.75s-.3358.75-.75.75h-2c-.4142 0-.75-.33579-.75-.75z"></path><path d="m9.25 19c0-.4142.33579-.75.75-.75h4c.4142 0 .75.3358.75.75s-.3358.75-.75.75h-4c-.41421 0-.75-.3358-.75-.75z"></path></g></svg>
-                                                                                                <input type="text" name="mobile" placeholder="Mobile Number" required="">
-                                                                                                <input type="hidden" name="form_type" value="banner">               
-                                                                                                 </div>
-                                                                                                <div class="group-img">
-                                                                                                <img src="{{ asset('site_assets') }}/img/dropdown.svg"/>
-                                                                                                <select id="#" class="minimal" name="course">
-                                                                                                <option value="Websites">Websites</option>
+                                                                                                              <div class="mb-lg-3 mb-3 d-flex align-items-center">
+                                                                                                              <i>
+                                                                                                              <svg enable-background="new 0 0 124 124" height="52" viewbox="0 0 124 124" width="52" xmlns="http://www.w3.org/2000/svg"><path d="m82.899 50.646c-6.059 0-10.988-4.918-10.988-10.963s4.929-10.963 10.988-10.963 10.988 4.918 10.988 10.963-4.929 10.963-10.988 10.963zm0-17.979c-3.877 0-7.031 3.147-7.031 7.015s3.154 7.015 7.031 7.015 7.031-3.147 7.031-7.015-3.154-7.015-7.031-7.015z"></path><path d="m122.558 2.183c-.069-.986-.853-1.773-1.841-1.848-14.728-1.125-41.975-.347-58.941 17.482-.002.002-.005.004-.007.007-2.3 2.441-4.418 5.209-6.382 8.136-24.65 8.882-35.589 25.07-38.168 33.298-.376 1.202.496 2.487 1.756 2.582l17.94 1.359c-1.478 3.901-2.824 7.823-4.017 11.748-.215.706-.02 1.472.504 1.992l11.995 11.891c.513.508 1.288.703 1.98.495 4-1.194 7.996-2.545 11.97-4.027l1.381 17.923c.097 1.253 1.377 2.122 2.581 1.752 7.562-2.328 24.216-13.247 33.545-37.919 2.953-1.954 5.73-4.064 8.153-6.359 17.668-16.682 18.58-43.82 17.551-58.512-.07-.987 1.029 14.692 0 0zm-3.878 2.008c.413 7.551.219 17.908-2.38 28.202l-26.124-25.897c10.42-2.625 20.888-2.767 28.504-2.305zm-96.722 53.877c3.21-7.053 12.265-18.732 29.892-26.418-2.945 5.084-5.502 10.331-7.777 15.002-2.04 4.172-3.917 8.403-5.638 12.665zm42.549 42.183-1.267-16.452c4.264-1.695 8.496-3.541 12.668-5.545 4.732-2.244 10.045-4.763 15.169-7.669-7.959 17.563-19.588 26.513-26.57 29.666zm37.752-42.448c-7.489 7.094-18.422 12.277-28.076 16.854-8.762 4.212-17.778 7.744-26.816 10.507l-10.293-10.205c2.785-8.95 6.346-17.879 10.592-26.562 4.394-9.022 9.862-20.251 17.01-27.839 5.992-6.295 13.426-10.299 21.11-12.794l29.252 28.998c-2.497 7.687-6.497 15.108-12.779 21.041z"></path><path d="m4.185 122.808c-1.728 0-2.631-2.145-1.437-3.378l27.357-28.26c1.788-1.841 4.666.918 2.874 2.77l-27.357 28.259c-.392.405-.914.609-1.437.609z"></path><path d="m23.435 124c-1.688 0-2.609-2.063-1.493-3.318l17.73-19.91c1.71-1.913 4.7.723 2.987 2.648l-17.73 19.91c-.394.444-.943.67-1.494.67z"></path><path d="m2.982 104.917c-1.688 0-2.609-2.063-1.493-3.318l17.731-19.91c1.709-1.914 4.7.724 2.987 2.648l-17.731 19.91c-.395.444-.943.67-1.494.67z"></path></svg>
+                                                                                                              </i>
+                                                                                                              <div>
+                                                                                                              <p class="p-0">Marketing Business campaign</p>
+                                                                                                              <h2>Search Listing</h2>
+                                                                                                              </div>
+                                                                                                              </div>
+                                                                                                              <div class="group-img">
+                                                                                                              <svg width="18" height="18" viewbox="0 0 18 18" fill="none" xmlns="http://www.w3.org/2000/svg">
+                                                                                                              <path d="M15.364 11.636C14.3837 10.6558 13.217 9.93013 11.9439 9.49085C13.3074 8.55179 14.2031 6.9802 14.2031 5.20312C14.2031 2.33413 11.869 0 9 0C6.131 0 3.79688 2.33413 3.79688 5.20312C3.79688 6.9802 4.69262 8.55179 6.05609 9.49085C4.78308 9.93013 3.61631 10.6558 2.63605 11.636C0.936176 13.3359 0 15.596 0 18H1.40625C1.40625 13.8128 4.81279 10.4062 9 10.4062C13.1872 10.4062 16.5938 13.8128 16.5938 18H18C18 15.596 17.0638 13.3359 15.364 11.636ZM9 9C6.90641 9 5.20312 7.29675 5.20312 5.20312C5.20312 3.1095 6.90641 1.40625 9 1.40625C11.0936 1.40625 12.7969 3.1095 12.7969 5.20312C12.7969 7.29675 11.0936 9 9 9Z" fill="#555555"></path>
+                                                                                                              </svg>
+                                                                                                              <input type="text" name="name" placeholder="I am looking for..." required="">
+                                                                                                              </div>
+                                                                                                              <div class="group-img">
+                                                                                                              <svg width="22" height="18" viewbox="0 0 22 18" fill="none" xmlns="http://www.w3.org/2000/svg">
+                                                                                                              <path d="M15.8649 18H6.13513C2.58377 18 0.540527 15.9568 0.540527 12.4054V5.5946C0.540527 2.04324 2.58377 0 6.13513 0H15.8649C19.4162 0 21.4595 2.04324 21.4595 5.5946V12.4054C21.4595 15.9568 19.4162 18 15.8649 18ZM6.13513 1.45946C3.35242 1.45946 1.99999 2.81189 1.99999 5.5946V12.4054C1.99999 15.1881 3.35242 16.5406 6.13513 16.5406H15.8649C18.6476 16.5406 20 15.1881 20 12.4054V5.5946C20 2.81189 18.6476 1.45946 15.8649 1.45946H6.13513Z" fill="#444444"></path>
+                                                                                                              <path d="M10.9988 9.8465C10.1815 9.8465 9.35452 9.59352 8.72208 9.07785L5.67668 6.64539C5.36532 6.39241 5.30696 5.93511 5.55992 5.62376C5.8129 5.31241 6.2702 5.25403 6.58155 5.50701L9.62695 7.93947C10.3664 8.53298 11.6215 8.53298 12.361 7.93947L15.4064 5.50701C15.7178 5.25403 16.1848 5.30268 16.428 5.62376C16.681 5.93511 16.6324 6.40214 16.3113 6.64539L13.2659 9.07785C12.6432 9.59352 11.8161 9.8465 10.9988 9.8465Z" fill="#444444"></path>
+                                                                                                              </svg>
+                                                                                                              <input type="text" name="email" placeholder="Email Address" required="">
+                                                                                                              </div>
+                                                                                                              <div class="group-img">
+                                                                                                              <svg fill="none" height="112" viewbox="0 0 24 24" width="112" xmlns="http://www.w3.org/2000/svg"><g clip-rule="evenodd" fill="rgb(0,0,0)" fill-rule="evenodd"><path d="m7 2.75c-.41421 0-.75.33579-.75.75v17c0 .4142.33579.75.75.75h10c.4142 0 .75-.3358.75-.75v-17c0-.41421-.3358-.75-.75-.75zm-2.25.75c0-1.24264 1.00736-2.25 2.25-2.25h10c1.2426 0 2.25 1.00736 2.25 2.25v17c0 1.2426-1.0074 2.25-2.25 2.25h-10c-1.24264 0-2.25-1.0074-2.25-2.25z"></path><path d="m10.25 5c0-.41421.3358-.75.75-.75h2c.4142 0 .75.33579.75.75s-.3358.75-.75.75h-2c-.4142 0-.75-.33579-.75-.75z"></path><path d="m9.25 19c0-.4142.33579-.75.75-.75h4c.4142 0 .75.3358.75.75s-.3358.75-.75.75h-4c-.41421 0-.75-.3358-.75-.75z"></path></g></svg>
+                                                                                                              <input type="text" name="mobile" placeholder="Mobile Number" required="">
+                                                                                                              <input type="hidden" name="form_type" value="banner">               
+                                                                                                               </div>
+                                                                                                              <div class="group-img">
+                                                                                                              <img src="{{ asset('site_assets') }}/img/dropdown.svg"/>
+                                                                                                              <select id="#" class="minimal" name="course">
+                                                                                                              <option value="Websites">Websites</option>
 
-                                                                                                <option value="Theme And Scripts">Theme And Scripts</option>
-                                                                                                <option value="Twitter Account">Twitter Account</option>
-                                                                                                <option value="Instagram Pages">Instagram Pages</option>
-                                                                                                <option value="Facebook Account">Facebook Account</option>
+                                                                                                              <option value="Theme And Scripts">Theme And Scripts</option>
+                                                                                                              <option value="Twitter Account">Twitter Account</option>
+                                                                                                              <option value="Instagram Pages">Instagram Pages</option>
+                                                                                                              <option value="Facebook Account">Facebook Account</option>
 
-                                                                                                <option value="Facebook Account">Telegram Account</option>
-                                                                                                 <option value="Facebook Account">Youtube Channel</option>
-                                                                                                </select>
-                                                                                                </div>
+                                                                                                              <option value="Facebook Account">Telegram Account</option>
+                                                                                                               <option value="Facebook Account">Youtube Channel</option>
+                                                                                                              </select>
+                                                                                                              </div>
 
-                                                                                                <button type="submit" name="submit" class="btn batton" style="background-color: #0062ef; width: 100%; text-align: center;display: flex;justify-content: center;">Submit</button>
-                                                                                                </form>
-                                                                                                <div class="row mobile-v">
-                                                                                                <div class="col-6">
-                                                                                                <div class="btn-wh">
-                                                                                                <div class="bttn w">
-                                                                                                <a href="https://wa.me/+918809772278" target="_blank">
-                                                                                                <img src="{{ asset('site_assets') }}/img/wb.png"></a>
-                                                                                                </div>
-                                                                                                </div>
-                                                                                                </div>
-                                                                                                <div class="col-6">
-                                                                                                <div class="btn-wh ">
-                                                                                                <div class="bttn ">
-                                                                                                <a href="tel:+918809772278">
+                                                                                                              <button type="submit" name="submit" class="btn batton" style="background-color: #0062ef; width: 100%; text-align: center;display: flex;justify-content: center;">Submit</button>
+                                                                                                              </form>
+                                                                                                              <div class="row mobile-v">
+                                                                                                              <div class="col-6">
+                                                                                                              <div class="btn-wh">
+                                                                                                              <div class="bttn w">
+                                                                                                              <a href="https://wa.me/+918809772278" target="_blank">
+                                                                                                              <img src="{{ asset('site_assets') }}/img/wb.png"></a>
+                                                                                                              </div>
+                                                                                                              </div>
+                                                                                                              </div>
+                                                                                                              <div class="col-6">
+                                                                                                              <div class="btn-wh ">
+                                                                                                              <div class="bttn ">
+                                                                                                              <a href="tel:+918809772278">
 
-                                                                                                <img src="./{{ asset('site_assets') }}/img/cb.png">
-                                                                                               </a>
+                                                                                                              <img src="./{{ asset('site_assets') }}/img/cb.png">
+                                                                                                             </a>
 
-                                                                                                </div>
-                                                                                                </div>
-                                                                                                </div>
-                                                                                                </div> -->
+                                                                                                              </div>
+                                                                                                              </div>
+                                                                                                              </div>
+                                                                                                              </div> -->
           <div class="right-form-card">
             <h3>Search Listings</h3>
 
-            <!-- Search Input -->
-            <div class="form-group icon-input">
-              <i class="fas fa-search"></i>
-              <input type="text" placeholder="I'm looking for..." />
-            </div>
-            <div class="form-group country-dropdown">
-              <div class="dropdown-toggle" id="countryDropdownToggle">
-                <div>
-                  <i class="fa-solid fa-globe"
-                    style="color: #ffffff; font-size: 14px; background: black; padding: 4px; border-radius: 3px; margin-right: 5px;"></i>
-                  <span id="selectedCountry" style="font-weight: 300; color: #000;">Country</span>
+            <form action="{{ route('listing-list') }}" method="GET" id="searchForm">
+
+              <!-- Search Input -->
+              <div class="form-group icon-input">
+                <i class="fas fa-search"></i>
+                <input type="text" placeholder="I'm looking for..." name="search" id="searchInput" />
+              </div>
+
+              <!-- Country Dropdown -->
+              <div class="form-group country-dropdown">
+                <div class="dropdown-toggle" id="countryDropdownToggle" onclick="toggleCountryDropdown(event)">
+                  <div>
+                    <i class="fa-solid fa-globe"
+                      style="color: #ffffff; font-size: 14px; background: black; padding: 4px; border-radius: 3px; margin-right: 5px;"></i>
+                    <span id="selectedCountry" style="font-weight: 300; color: #000;">Country</span>
+                  </div>
+                </div>
+
+                <div class="dropdown-menu" id="countryDropdownMenu" style="display: none;">
+                  <input type="text" placeholder="Search country..." class="dropdown-search"
+                    oninput="filterCountries(this.value)" />
+                  <ul id="countryList" style="padding-left: 20px;">
+                    @foreach($countries as $country)
+                      <li onclick="selectCountry(this)">{{ $country->name }}</li>
+                    @endforeach
+                  </ul>
+                </div>
+
+                <!-- Hidden input for form submission -->
+                <input type="hidden" name="country" id="countryInput" />
+              </div>
+
+              <!-- Category Dropdown -->
+              <div class="form-group category-dropdown">
+                <div class="dropdown-toggle" onclick="toggleCategoryDropdown()">
+                  <div>
+                    <i class="fas fa-tags"
+                      style="color: #ffffff; font-size: 14px; background: black; padding: 4px; border-radius: 3px; margin-right: 5px;"></i>
+                    <span id="selectedCategory" style="font-weight: 300; color: #000;">Category</span>
+                  </div>
+                </div>
+
+                <div class="dropdown-menu" id="categoryDropdownMenu" style="display: none;">
+                  <input type="text" placeholder="Search..." class="dropdown-search"
+                    oninput="filterCategories(this.value)" />
+                  <ul id="categoryList">
+                    @foreach($categories as $category)
+                      <li onclick="selectCategory(this)" data-value="{{ $category->slug }}">
+                        {{ $category->name }} <span class="badge">{{ $categorySubmissionCounts[$category->id] ?? 0 }}</span>
+                      </li>
+                    @endforeach
+                  </ul>
+
+                </div>
+
+                <!-- Hidden input for form submission -->
+                <input type="hidden" name="category" id="categoryInput" />
+              </div>
+
+              <!-- Price Range -->
+              <div class="form-group price-range">
+                <div class="icon-input">
+                  <input type="number" placeholder="Min Price" name="price_min" id="minPrice" />
+                </div>
+                <span>-</span>
+                <div class="icon-input">
+                  <input type="number" placeholder="Max Price" name="price_max" id="maxPrice" />
                 </div>
               </div>
 
-              <div class="dropdown-menu" id="countryDropdownMenu">
-                <ul style="padding-left: 20px;">
-                  <li onclick="selectCountry(this)" data-disabled="false">India</li>
-                  <li onclick="selectCountry(this)" data-disabled="false">America</li>
-                  <li onclick="selectCountry(this)" data-disabled="false">England</li>
-                </ul>
-              </div>
-            </div>
-
-            <!-- Category Dropdown -->
-            <div class="form-group category-dropdown">
-              <div class="dropdown-toggle" onclick="toggleDropdown()">
-                <div>
-                  <i class="fas fa-tags" style=" color: #ffffff;
-                                                                                              font-size: 14px;
-                                                                                              background: black;
-                                                                                              padding: 4px;
-                                                                                              border-radius: 3px; 
-                                                                                              margin-right: 5px;"></i>
-                  <span id="selectedCategory" style="font-weight: 300; color: #000;">Category</span>
-                </div>
-                <!-- <i class="fas fa-chevron-down arrow-icon"></i> -->
-
-              </div>
-
-              <div class="dropdown-menu" id="dropdownMenu">
-                <input type="text" placeholder="Search..." class="dropdown-search"
-                  oninput="filterCategories(this.value)" />
-                <ul id="categoryList">
-                  <li onclick="selectCategory(this)" data-disabled="false">
-                    Websites <span class="badge">1</span>
-                  </li>
-                  <li onclick="selectCategory(this)" data-disabled="true" class="disabled">
-                    Facebook Account <span class="badge">0</span>
-                  </li>
-                  <li onclick="selectCategory(this)" data-disabled="false">
-                    Instagram Pages <span class="badge">0</span>
-                  </li>
-                  <li onclick="selectCategory(this)" data-disabled="false">
-                    Telegram Account <span class="badge">0</span>
-                  </li>
-                  <li onclick="selectCategory(this)" data-disabled="false">
-                    Theme And Scripts <span class="badge">0</span>
-                  </li>
-                  <li onclick="selectCategory(this)" data-disabled="false">
-                    Twitter Account <span class="badge">0</span>
-                  </li>
-                  <li onclick="selectCategory(this)" data-disabled="false">
-                    YouTube Channel <span class="badge">0</span>
-                  </li>
-                </ul>
-              </div>
-            </div>
-
-
-            <!-- Price Range -->
-            <div class="form-group price-range">
-              <div class="icon-input">
-                <!-- <i class="fas fa-dollar-sign"></i> -->
-                <input type="number" placeholder="Min Price" />
-              </div>
-              <span>-</span>
-              <div class="icon-input">
-                <!-- <i class="fas fa-dollar-sign"></i> -->
-                <input type="number" placeholder="Max Price" />
-              </div>
-            </div>
-
-            <button class="search-btn">Search</button>
+              <button type="submit" class="search-btn">Search</button>
+            </form>
           </div>
 
 
@@ -2643,21 +2779,21 @@
   </section>
   <!-- end hero-wrapper -->
   <!-- ================================
-                                                                                              END HERO-WRAPPER AREA
-                                                                                              ================================= -->
+                                                                                                            END HERO-WRAPPER AREA
+                                                                                                            ================================= -->
 
   <!-- ================================
-                                                                                              START CAT AREA
-                                                                                              ================================= -->
+                                                                                                            START CAT AREA
+                                                                                                            ================================= -->
 
 
   <section class="cat-area section--padding">
     <div class="container">
       <div class="text-center mb-4">
-        <h2 class="sec__title mb-3">Categories</h2>
+        <h2 class="sec__title mb-3">Explore Top Digital Assets</h2>
         <p class="sec__desc">
-          Morbi convallis bibendum urna ut viverra. Maecenas quis consequat libero, <br />
-          a feugiat eros. Nunc ut lacinia tortors.
+          Discover the most in-demand categories, from social accounts to apps, blogs, and more. Find trusted sellers and
+          start browsing digital products that match your business needs.
         </p>
       </div>
 
@@ -2675,7 +2811,7 @@
             <h3>{{ $category->name }}</h3>
             <pre>{{ print_r($categorySubmissionCounts) }}</pre>
             <p>{{ $categorySubmissionCounts[$category->id] ?? 0
-                      }} Accounts</p>
+                                                  }} Listings</p>
           </div>
         @endforeach
       </div>
@@ -2710,12 +2846,12 @@
         div.classList.add('social-media-icon-section');
         const imgSrc = category.image ? `/storage/${category.image}` : '/images/default-category.png';
         div.innerHTML = `
-              <div class="s-image-card">
-                <img src="${imgSrc}" alt="${category.name} Icon" />
-              </div>
-              <h3>${category.name}</h3>
-              <p>${categorySubmissionCounts[category.id] ?? 0} Accounts</p>
-            `;
+                            <div class="s-image-card">
+                              <img src="${imgSrc}" alt="${category.name} Icon" />
+                            </div>
+                            <h3>${category.name}</h3>
+                            <p>${categorySubmissionCounts[category.id] ?? 0} Listings</p>
+                          `;
         container.appendChild(div);
       });
     }
@@ -2739,19 +2875,19 @@
 
   <!-- end cat-area -->
   <!-- ================================
-                                                                                              END CAT AREA
-                                                                                              ================================= -->
+                                                                                                            END CAT AREA
+                                                                                                            ================================= -->
 
   <!-- ================================
-                                                                                              START HIW AREA
-                                                                                              ================================= -->
+                                                                                                            START HIW AREA
+                                                                                                            ================================= -->
   <section class="hiw-area bg-gray section--padding">
     <div class="container">
       <div class="">
-        <h2 class="sec__title mb-3 text-center">How to Buy a Business on Flippa</h2>
+        <h2 class="sec__title mb-3 text-center">Buy Your Next Digital Asset on Flippingo</h2>
         <p class="sec__desc text-center">
-          Discover the simple steps to find, evaluate, and purchase your dream online business. <br />
-          Whether you're a first-time buyer or seasoned investor, we make the process smooth.
+          Explore verified listings of businesses, accounts, websites, and apps.
+          Compare options, connect with sellers, and purchase securely—all in one place.
         </p>
       </div>
       <!-- end section-heading -->
@@ -2847,32 +2983,45 @@
 
   <!-- end hiw-area -->
   <!-- ================================
-                                                                                              END HIW AREA
-                                                                                              ================================= -->
+                                                                                                            END HIW AREA
+                                                                                                            ================================= -->
 
   <!-- ================================
-                                                                                              START CARD AREA
-                                                                                              ================================= -->
+                                                                                                            START CARD AREA
+                                                                                                            ================================= -->
 
   <section class="card-area section-padding">
     <div class="container">
       <div class="">
-        <h2 class="sec__title mb-3 text-center">Most Searched Businesses</h2>
+        <h2 class="sec__title mb-3 text-center">Most Searched Businesses & Digital Products Availale for Sale</h2>
         <p class="sec__desc text-center">
-          Morbi convallis bibendum urna ut viverra. Maecenas quis consequat
-          libero, <br />
-          a feugiat eros. Nunc ut lacinia tortors.
+          View current listings of businesses and digital products from verified sellers. Start exploring, and Choose what
+          fits your goals and begin your journey today.
         </p>
       </div>
 
-      <!-- Tabs -->
-      <div class="my-4">
-        <button class="tab-btn active" data-category="all">All</button>
-        @foreach($categories->where('is_popular', 1)->take(8) as $category)
-          <button class="tab-btn" data-category="{{ $category->slug }}">{{ $category->name }}</button>
-        @endforeach
+      <div class="tabs-wrapper">
+        <button class="scroll-btn prev" onclick="scrollTabs(-200)">&#10094;</button>
 
+        <div class="tabs-container" id="tabsContainer">
+          <button class="tab-btn active" data-category="all">All Categories</button>
+          @foreach($categories->where('is_popular', 1)->take(8) as $category)
+            <button class="tab-btn" data-category="{{ $category->slug }}">{{ $category->name }}</button>
+          @endforeach
+        </div>
+
+        <button class="scroll-btn next" onclick="scrollTabs(200)">&#10095;</button>
       </div>
+
+
+      <!-- Tabs -->
+      <!--<div class="my-4">-->
+      <!--  <button class="tab-btn active" data-category="all">All</button>-->
+      <!--  @foreach($categories->where('is_popular', 1)->take(8) as $category)-->
+      <!--    <button class="tab-btn" data-category="{{ $category->slug }}">{{ $category->name }}</button>-->
+      <!--  @endforeach-->
+
+      <!--</div>-->
 
       <div id="submissions-container">
 
@@ -3225,8 +3374,8 @@
 
   <!-- end card-area -->
   <!-- ================================
-                                                                                              END CARD AREA
-                                                                                              ================================= -->
+                                                                                                            END CARD AREA
+                                                                                                            ================================= -->
   <section class="hiw-area text-center" style="padding: 80px 0; background: #f9fafc;">
     <div class="container">
       <h2 class="sec__title mb-3">How It Works</h2>
@@ -3276,8 +3425,8 @@
   </section>
 
   <!-- ================================
-                                                                                              START FUN-FACT AREA
-                                                                                              ================================= -->
+                                                                                                            START FUN-FACT AREA
+                                                                                                            ================================= -->
   <section class="prt-row home03-fid-section bg-base-grey clearfix">
     <div class="container">
       <div class="row">
@@ -3375,12 +3524,12 @@
   </section>
   <!-- end funfact-area -->
   <!-- ================================
-                                                                                              END FUN-FACT AREA
-                                                                                              ================================= -->
+                                                                                                            END FUN-FACT AREA
+                                                                                                            ================================= -->
 
   <!-- ================================
-                                                                                              START HIW AREA
-                                                                                              ================================= -->
+                                                                                                            START HIW AREA
+                                                                                                            ================================= -->
   <section class="hiw-area section--padding text-center">
     <div class="container">
       <!-- Heading -->
@@ -3444,12 +3593,12 @@
 
   <!-- end hiw-area -->
   <!-- ================================
-                                                                                              END HIW AREA
-                                                                                              ================================= -->
+                                                                                                            END HIW AREA
+                                                                                                            ================================= -->
 
   <!-- ================================
-                                                                                              START CTA AREA
-                                                                                              ================================= -->
+                                                                                                            START CTA AREA
+                                                                                                            ================================= -->
   <section class="cta-area bg-gray padding-top-80px padding-bottom-80px position-relative">
     <img src="{{ asset('assets') }}/images/symble1.png" alt="" class="symble-img" />
     <img src="{{ asset('assets') }}/images/symble2.png" alt="" class="symble-img" />
@@ -3474,19 +3623,18 @@
   </section>
   <!-- end cta-area -->
   <!-- ================================
-                                                                                              END CTA AREA
-                                                                                              ================================= -->
+                                                                                                            END CTA AREA
+                                                                                                            ================================= -->
 
   <!-- ================================
-                                                                                                 START TESTIMONIAL AREA
-                                                                                              ================================= -->
+                                                                                                               START TESTIMONIAL AREA
+                                                                                                            ================================= -->
   <section class="hiw-area section--padding text-center" style="background-color: #fff; padding-bottom: 0px;">
     <div class="container">
       <h2 class="sec__title mb-3">Testimonial</h2>
       <p class="sec__desc">
-        Explore a range of digital assets ready to buy or sell — from premium domains to full-fledged websites,
-        <br>digital
-        templates, and more.
+        Real stories from buyers and sellers who have successfully grown with us, we at Flippingo helped creators,
+        founders, and investors find the right digital opportunities.
       </p>
 
     </div>
@@ -3528,7 +3676,8 @@
     <div class="container">
       <h2 class="sec__title mb-3 text-center">Reels</h2>
       <p class="sec__desc text-center">
-        Explore a range of digital assets ready to buy or sell
+        Our buyers and sellers share their experiences of growing, scaling, and succeeding with Flippingo. From first-time
+        entrepreneurs to seasoned business owners, trust is what keeps them coming back.
       </p>
       <div class="row g-4 justify-content-center" id="reels-container">
         <p class="text-center text-muted">Loading reels...</p>
@@ -3538,8 +3687,8 @@
 
 
   <!-- ================================
-                                                                                                 START TESTIMONIAL AREA
-                                                                                              ================================= -->
+                                                                                                               START TESTIMONIAL AREA
+                                                                                                            ================================= -->
 
   <section class="mobile-area section-padding bg-gray position-relative mt-5">
     <img src="{{ asset('assets') }}/images/symble1.png" alt="" class="symble-img" />
@@ -3608,8 +3757,8 @@
   </section>
 
   <!-- ================================
-                                                                                                 START BLOG AREA
-                                                                                              ================================= -->
+                                                                                                               START BLOG AREA
+                                                                                                            ================================= -->
   <section class="blog-area section--padding">
     <div class="container">
       <div class="d-flex flex-wrap align-items-center justify-content-between">
@@ -3661,30 +3810,30 @@
 
   <!-- end blog-area -->
   <!-- ================================
-                                                                                                 START BLOG AREA
-                                                                                              ================================= -->
+                                                                                                               START BLOG AREA
+                                                                                                            ================================= -->
 
   <!-- ================================
-                                                                                              START MOBILE AREA
-                                                                                              ================================= -->
+                                                                                                            START MOBILE AREA
+                                                                                                            ================================= -->
 
   <!-- end mobile-area -->
   <!-- ================================
-                                                                                              END MOBILE AREA
-                                                                                              ================================= -->
+                                                                                                            END MOBILE AREA
+                                                                                                            ================================= -->
 
   <!-- ================================
-                                                                                                 START CLIENTLOGO AREA
-                                                                                              ================================= -->
+                                                                                                               START CLIENTLOGO AREA
+                                                                                                            ================================= -->
 
   <!-- end clientlogo-area -->
   <!-- ================================
-                                                                                                 START CLIENTLOGO AREA
-                                                                                              ================================= -->
+                                                                                                               START CLIENTLOGO AREA
+                                                                                                            ================================= -->
 
   <!-- ================================
-                                                                                              START SUBSCRIBER AREA
-                                                                                              ================================= -->
+                                                                                                            START SUBSCRIBER AREA
+                                                                                                            ================================= -->
   <section class="subscriber-area mb-n5 position-relative z-index-2">
     <div class="container">
       <div class="subscriber-box d-flex flex-wrap align-items-center justify-content-between bg-dark overflow-hidden">
@@ -3711,10 +3860,73 @@
   </section>
   <!-- end subscriber-area -->
   <!-- ================================
-                                                                                              END SUBSCRIBER AREA
-                                                                                              ================================= -->
+                                                                                                            END SUBSCRIBER AREA
+                                                                                                            ================================= -->
 
 
+  <script>
+
+    function toggleCountryDropdown(event) {
+      event.stopPropagation(); // Prevent click from closing immediately
+      const menu = document.getElementById('countryDropdownMenu');
+      menu.style.display = menu.style.display === 'block' ? 'none' : 'block';
+    }
+
+    function selectCountry(element) {
+      const value = element.innerText.trim();
+      document.getElementById('selectedCountry').textContent = value;
+      document.getElementById('countryInput').value = value; // <-- set hidden input
+      document.getElementById('countryDropdownMenu').style.display = 'none';
+    }
+
+    function selectCategory(element) {
+      const value = element.dataset.value; // use slug/value for form
+      const text = element.firstChild.textContent.trim(); // show only name
+      document.getElementById('selectedCategory').textContent = text;
+      document.getElementById('categoryInput').value = value; // <-- pass slug/value
+      document.getElementById('categoryDropdownMenu').style.display = 'none';
+    }
+
+
+    function filterCountries(searchText) {
+      const items = document.querySelectorAll('#countryList li');
+      items.forEach(item => {
+        const text = item.innerText.toLowerCase();
+        item.style.display = text.includes(searchText.toLowerCase()) ? 'flex' : 'none';
+      });
+    }
+
+
+
+    function toggleCategoryDropdown() {
+      const menu = document.getElementById('categoryDropdownMenu');
+      menu.style.display = menu.style.display === 'block' ? 'none' : 'block';
+    }
+
+
+    function filterCategories(searchText) {
+      const items = document.querySelectorAll('#categoryList li');
+      items.forEach(item => {
+        const text = item.innerText.toLowerCase();
+        item.style.display = text.includes(searchText.toLowerCase()) ? 'flex' : 'none';
+      });
+    }
+
+    // Close dropdowns if clicked outside
+    document.addEventListener('click', function (event) {
+      const countryDropdown = document.getElementById('countryDropdownToggle');
+      const countryMenu = document.getElementById('countryDropdownMenu');
+      if (!countryDropdown.contains(event.target) && !countryMenu.contains(event.target)) {
+        countryMenu.style.display = 'none';
+      }
+
+      const categoryDropdown = document.querySelector('.category-dropdown .dropdown-toggle');
+      const categoryMenu = document.getElementById('categoryDropdownMenu');
+      if (!categoryDropdown.contains(event.target) && !categoryMenu.contains(event.target)) {
+        categoryMenu.style.display = 'none';
+      }
+    });
+  </script>
   <script>
     document.querySelectorAll('.tab-btn').forEach(btn => {
       btn.addEventListener('click', () => {
@@ -3779,57 +3991,6 @@
     });
   </script>
 
-  <script>
-    function toggleDropdown() {
-      document.getElementById('dropdownMenu').style.display =
-        document.getElementById('dropdownMenu').style.display === 'block' ? 'none' : 'block';
-    }
-
-    function selectCategory(element) {
-      if (element.dataset.disabled === "true") return;
-      document.getElementById('selectedCategory').textContent = element.innerText.trim();
-      document.getElementById('dropdownMenu').style.display = 'none';
-    }
-
-    function filterCategories(searchText) {
-      const items = document.querySelectorAll('#categoryList li');
-      items.forEach(item => {
-        const text = item.innerText.toLowerCase();
-        item.style.display = text.includes(searchText.toLowerCase()) ? 'flex' : 'none';
-      });
-    }
-
-    // Hide dropdown when clicking outside
-    document.addEventListener('click', function (e) {
-      const dropdown = document.querySelector('.category-dropdown');
-      if (!dropdown.contains(e.target)) {
-        document.getElementById('dropdownMenu').style.display = 'none';
-      }
-    });
-  </script>
-  <script>
-    // Toggle country dropdown
-    document.getElementById('countryDropdownToggle').addEventListener('click', function (e) {
-      e.stopPropagation(); // Prevent closing from document click
-      const menu = document.getElementById('countryDropdownMenu');
-      menu.style.display = menu.style.display === 'block' ? 'none' : 'block';
-    });
-
-    // Select a country from dropdown
-    function selectCountry(element) {
-      if (element.dataset.disabled === "true") return;
-      document.getElementById('selectedCountry').textContent = element.innerText.trim();
-      document.getElementById('countryDropdownMenu').style.display = 'none';
-    }
-
-    // Close on outside click
-    document.addEventListener('click', function (e) {
-      const dropdown = document.querySelector('.country-dropdown');
-      if (!dropdown.contains(e.target)) {
-        document.getElementById('countryDropdownMenu').style.display = 'none';
-      }
-    });
-  </script>
 
 
   <script>
@@ -3990,10 +4151,10 @@
             let reelHtml = '';
             if (reel.reel_type === "upload" && reel.video_file) {
               reelHtml = `
-                                                              <video controls loop muted autoplay playsinline>
-                                                                <source src="/storage/${reel.video_file}" type="video/mp4">
-                                                                Your browser does not support video.
-                                                              </video>`;
+                                                                            <video controls loop muted autoplay playsinline>
+                                                                              <source src="/storage/${reel.video_file}" type="video/mp4">
+                                                                              Your browser does not support video.
+                                                                            </video>`;
             } else if (reel.reel_type === "youtube" && reel.youtube_url) {
               // Ensure YouTube embed URL with autoplay, mute & loop
               let ytUrl = reel.youtube_url;
@@ -4002,28 +4163,28 @@
                 ytUrl = `https://www.youtube.com/embed/${videoId}?autoplay=1&mute=1&loop=1&playlist=${videoId}`;
               }
               reelHtml = `
-                                                              <div class="video ratio ratio-16x9">
-                                                                <iframe src="${ytUrl}" frameborder="0"
-                                                                  allow="autoplay; encrypted-media" allowfullscreen></iframe>
-                                                              </div>`;
+                                                                            <div class="video ratio ratio-16x9">
+                                                                              <iframe src="${ytUrl}" frameborder="0"
+                                                                                allow="autoplay; encrypted-media" allowfullscreen></iframe>
+                                                                            </div>`;
             } else if (reel.reel_type === "facebook" && reel.facebook_url) {
               // Facebook embed with autoplay & loop
               let fbUrl = `https://www.facebook.com/plugins/video.php?href=${encodeURIComponent(reel.facebook_url)}&autoplay=1&mute=1&loop=1&show_text=false`;
               reelHtml = `
-                                                              <div class="video ratio ratio-16x9">
-                                                                <iframe src="${fbUrl}" frameborder="0"
-                                                                  allow="autoplay; clipboard-write; encrypted-media; picture-in-picture"
-                                                                  allowfullscreen></iframe>
-                                                              </div>`;
+                                                                            <div class="video ratio ratio-16x9">
+                                                                              <iframe src="${fbUrl}" frameborder="0"
+                                                                                allow="autoplay; clipboard-write; encrypted-media; picture-in-picture"
+                                                                                allowfullscreen></iframe>
+                                                                            </div>`;
             } else {
               reelHtml = `<p class="text-muted text-center">Invalid reel</p>`;
             }
 
             container.insertAdjacentHTML("beforeend", `
-                                                                                <div class="col-md-3 col-sm-6">
-                                                                                  <div class="reel-card video">${reelHtml}</div>
-                                                                                </div>
-                                                                              `);
+                                                                                              <div class="col-md-3 col-sm-6">
+                                                                                                <div class="reel-card video">${reelHtml}</div>
+                                                                                              </div>
+                                                                                            `);
           });
         })
         .catch(error => {
@@ -4033,6 +4194,14 @@
         });
     });
   </script>
+
+  <script>
+    function scrollTabs(amount) {
+      const container = document.getElementById("tabsContainer");
+      container.scrollBy({ left: amount, behavior: "smooth" });
+    }
+  </script>
+
 
 
 @endsection

@@ -117,7 +117,10 @@ Route::group(['middleware' => 'auth'], function () {
             ->name('form.settings');
         Route::post('form/{id}/settings', [FormController::class, 'updateSettings'])
             ->name('form.settings.update');
-
+        Route::get('form/{form}/create-filter', [FormController::class, 'createFilter'])
+            ->name('form.create-filter');
+        Route::post('forms/{form}/filters', [FormController::class, 'storeFilter'])
+            ->name('form.filter.store');
 
 
         // for template route
@@ -189,8 +192,8 @@ Route::group(['middleware' => 'auth'], function () {
 
 
         // product orders and their routes
-             Route::resource('order_cancellation_reasons', \App\Http\Controllers\Admin\OrderCancellationReasonController::class);
-             
+        Route::resource('order_cancellation_reasons', \App\Http\Controllers\Admin\OrderCancellationReasonController::class);
+
         Route::get('product-orders/cancellation-requests', [ProductOrderController::class, 'cancellationRequests'])->name('product-orders.cancellationRequests');
         Route::post('product-orders/{subscription}/approve-cancellation', [ProductOrderController::class, 'approveCancellation'])
             ->name('product-orders.approveCancellation');
