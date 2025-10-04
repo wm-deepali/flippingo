@@ -101,15 +101,35 @@ class FormController extends Controller
                         'containerClass' => ['label' => 'component.containerClass', 'type' => 'input', 'value' => 'col-12'],
                     ],
                 ],
-                [
-                    'name' => 'paragraph',
-                    'fields' => [
-                        'id' => ['label' => 'component.id', 'type' => 'input', 'value' => 'paragraph_0'],
-                        'text' => ['label' => 'component.text', 'type' => 'textarea', 'value' => $i18n['thisIsMyForm']],
-                        'cssClass' => ['label' => 'component.cssClass', 'type' => 'input', 'value' => ''],
-                        'containerClass' => ['label' => 'component.containerClass', 'type' => 'input', 'value' => 'col-12'],
-                    ],
-                ],
+
+                // [
+                //     "name" => "paragraph",
+                //     "title" => "paragraph.title",
+                //     "fields" => [
+                //         "id" => [
+                //             "label" => "component.id",
+                //             "type" => "input",
+                //             "value" => "paragraph",
+                //         ],
+                //         "text" => [
+                //             "label" => "component.text",
+                //             "type" => "textarea",
+                //             "value" => $i18n['paragraphText'],
+                //         ],
+                //         "cssClass" => [
+                //             "label" => "component.cssClass",
+                //             "type" => "input",
+                //             "value" => "",
+                //             "advanced" => true,
+                //         ],
+                //         "containerClass" => [
+                //             "label" => "component.containerClass",
+                //             "type" => "input",
+                //             "value" => "col-12",
+                //             "advanced" => true,
+                //         ],
+                //     ],
+                // ],
                 // Product Title Field
                 [
                     'name' => 'text',
