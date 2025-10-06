@@ -218,20 +218,27 @@
                 <div class="card-body d-flex flex-wrap align-items-center justify-content-between">
                     <p class="card-text py-2">Showing 1 to 6 of 30 entries</p>
                     <div class="d-flex align-items-center">
-                       <form id="sortForm" method="GET" action="<?php echo e(url()->current()); ?>" class="d-inline">
+                     <form id="sortForm" method="GET" action="<?php echo e(url()->current()); ?>" class="d-inline">
     <?php $__currentLoopData = request()->except('sort'); $__env->addLoop($__currentLoopData); foreach($__currentLoopData as $key => $value): $__env->incrementLoopIndices(); $loop = $__env->getLastLoop(); ?>
-        <input type="hidden" name="<?php echo e($key); ?>" value="<?php echo e($value); ?>">
+        <?php if(is_array($value)): ?>
+            <?php $__currentLoopData = $value; $__env->addLoop($__currentLoopData); foreach($__currentLoopData as $subValue): $__env->incrementLoopIndices(); $loop = $__env->getLastLoop(); ?>
+                <input type="hidden" name="<?php echo e($key); ?>[]" value="<?php echo e($subValue); ?>">
+            <?php endforeach; $__env->popLoop(); $loop = $__env->getLastLoop(); ?>
+        <?php else: ?>
+            <input type="hidden" name="<?php echo e($key); ?>" value="<?php echo e($value); ?>">
+        <?php endif; ?>
     <?php endforeach; $__env->popLoop(); $loop = $__env->getLastLoop(); ?>
 
-        <select class="form-select" id="sort" name="sort" onchange="this.form.submit()">
-            <option value="">Default</option>
-            <option value="price-low-to-high" <?php echo e(request('sort') == 'price-low-to-high' ? 'selected' : ''); ?>>Price: Low to High</option>
-            <option value="price-high-to-low" <?php echo e(request('sort') == 'price-high-to-low' ? 'selected' : ''); ?>>Price: High to Low</option>
-            <option value="new-first" <?php echo e(request('sort') == 'new-first' ? 'selected' : ''); ?>>Newest Listings</option>
-            <option value="most-popular" <?php echo e(request('sort') == 'most-popular' ? 'selected' : ''); ?>>Most Popular</option>
-            <option value="most-rated" <?php echo e(request('sort') == 'most-rated' ? 'selected' : ''); ?>>Most Rated</option>
-        </select>
+    <select class="form-select" id="sort" name="sort" onchange="this.form.submit()">
+        <option value="">Default</option>
+        <option value="price-low-to-high" <?php echo e(request('sort') == 'price-low-to-high' ? 'selected' : ''); ?>>Price: Low to High</option>
+        <option value="price-high-to-low" <?php echo e(request('sort') == 'price-high-to-low' ? 'selected' : ''); ?>>Price: High to Low</option>
+        <option value="new-first" <?php echo e(request('sort') == 'new-first' ? 'selected' : ''); ?>>Newest Listings</option>
+        <option value="most-popular" <?php echo e(request('sort') == 'most-popular' ? 'selected' : ''); ?>>Most Popular</option>
+        <option value="most-rated" <?php echo e(request('sort') == 'most-rated' ? 'selected' : ''); ?>>Most Rated</option>
+    </select>
 </form>
+
 
                         <ul class="filter-nav ms-2">
                             <li>
@@ -826,6 +833,17 @@
     // Get URL parameters
     const params = new URLSearchParams(window.location.search);
     const selectedCategory = params.get('category') || 'all'; // default to 'all' if none
+
+    if (params.get('category')) {
+  const form = document.querySelector('#filter-form'); // adjust selector as needed
+  if (form && !form.querySelector('input[name="category"]')) {
+    const input = document.createElement('input');
+    input.type = 'hidden';
+    input.name = 'category';
+    input.value = selectedCategory;
+    form.appendChild(input);
+  }
+}
 
     // Trigger click on the corresponding tab
     const tabToOpen = document.querySelector(`.tab-btn[data-category="${selectedCategory}"]`);

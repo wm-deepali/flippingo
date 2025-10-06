@@ -279,11 +279,13 @@
         <nav class="main-menu " style="width: 100%;">
           <ul class="d-flex justify-content-between">
             <li>
-              <a href="{{ Route('listing-list') }}">Browse <span class="fal fa-angle-down"></span></a>
+              <a href="#">Browse <span class="fal fa-angle-down"></span></a>
               <ul class="dropdown-menu-item">
                 @foreach($categories as $category)
-                  <li><a href="{{ Route('listing-list') }}">{{  $category->name}}</a></li>
+                  <li><a href="{{ route('listing-list', ['category' => $category->slug]) }}">{{ $category->name }}</a>
+                  </li>
                 @endforeach
+
               </ul>
             </li>
             <li>

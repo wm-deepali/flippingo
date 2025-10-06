@@ -280,11 +280,13 @@
         <nav class="main-menu " style="width: 100%;">
           <ul class="d-flex justify-content-between">
             <li>
-              <a href="<?php echo e(Route('listing-list')); ?>">Browse <span class="fal fa-angle-down"></span></a>
+              <a href="#">Browse <span class="fal fa-angle-down"></span></a>
               <ul class="dropdown-menu-item">
                 <?php $__currentLoopData = $categories; $__env->addLoop($__currentLoopData); foreach($__currentLoopData as $category): $__env->incrementLoopIndices(); $loop = $__env->getLastLoop(); ?>
-                  <li><a href="<?php echo e(Route('listing-list')); ?>"><?php echo e($category->name); ?></a></li>
+                  <li><a href="<?php echo e(route('listing-list', ['category' => $category->slug])); ?>"><?php echo e($category->name); ?></a>
+                  </li>
                 <?php endforeach; $__env->popLoop(); $loop = $__env->getLastLoop(); ?>
+
               </ul>
             </li>
             <li>
