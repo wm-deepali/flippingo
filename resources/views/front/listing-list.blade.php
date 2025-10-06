@@ -217,18 +217,21 @@
                 <div class="card-body d-flex flex-wrap align-items-center justify-content-between">
                     <p class="card-text py-2">Showing 1 to 6 of 30 entries</p>
                     <div class="d-flex align-items-center">
-                        <select class="select-picker select-picker-sm me-3" data-width="160" data-size="5">
-                            <option value="">Short by</option>
-                            <option value="short-by-default">Short by default</option>
-                            <option value="high-rated">High Rated</option>
-                            <option value="most-reviewed">Most Reviewed</option>
-                            <option value="popular-Listing">Popular Listing</option>
-                            <option value="newest-Listing">Newest Listing</option>
-                            <option value="older-Listing">Older Listing</option>
-                            <option value="price-low-to-high">Price: low to high</option>
-                            <option value="price-high-to-low">Price: high to low</option>
-                            <option value="random-listing">Random listing</option>
-                        </select>
+                       <form id="sortForm" method="GET" action="{{ url()->current() }}" class="d-inline">
+    @foreach(request()->except('sort') as $key => $value)
+        <input type="hidden" name="{{ $key }}" value="{{ $value }}">
+    @endforeach
+
+        <select class="form-select" id="sort" name="sort" onchange="this.form.submit()">
+            <option value="">Default</option>
+            <option value="price-low-to-high" {{ request('sort') == 'price-low-to-high' ? 'selected' : '' }}>Price: Low to High</option>
+            <option value="price-high-to-low" {{ request('sort') == 'price-high-to-low' ? 'selected' : '' }}>Price: High to Low</option>
+            <option value="new-first" {{ request('sort') == 'new-first' ? 'selected' : '' }}>Newest Listings</option>
+            <option value="most-popular" {{ request('sort') == 'most-popular' ? 'selected' : '' }}>Most Popular</option>
+            <option value="most-rated" {{ request('sort') == 'most-rated' ? 'selected' : '' }}>Most Rated</option>
+        </select>
+</form>
+
                         <ul class="filter-nav ms-2">
                             <li>
                                 <a href="" class="active icon-element icon-element-sm"><i class="fal fa-list"></i></a>

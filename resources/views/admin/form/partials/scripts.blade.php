@@ -620,122 +620,139 @@
     }
 
 
-    document.addEventListener('DOMContentLoaded', function () {
-        let dragged = null;
-        let $reorderPlaceholder = $('<div class="reorder-placeholder"></div>');
-        let $newFieldPlaceholder = $('<div class="drop-placeholder"></div>');
+  document.addEventListener('DOMContentLoaded', function () {
+    let dragged = null;
+    let dragType = null;
+    let $reorderPlaceholder = $('<div class="reorder-placeholder"></div>');
+    let $newFieldPlaceholder = $('<div class="drop-placeholder"></div>');
 
-        // ===== 1. REORDER EXISTING FIELDS =====
-        $('#my-form').on('mouseenter', '.form-group', function () {
-            $(this).attr('draggable', true);
-        });
-
-        $('#my-form').on('dragstart', '.form-group', function (e) {
-            dragged = $(this);
-            e.originalEvent.dataTransfer.effectAllowed = 'move';
-            e.originalEvent.dataTransfer.setData('drag-type', 'reorder');
-            dragged.addClass('dragging');
-        });
-
-        $('#my-form').on('dragover', '.form-group', function (e) {
-            e.preventDefault();
-            if (!dragged) return;
-
-            const $this = $(this);
-            const mouseY = e.originalEvent.pageY;
-            const mid = $this.offset().top + $this.outerHeight() / 2;
-
-            $reorderPlaceholder.detach();
-            $newFieldPlaceholder.detach();
-            if (mouseY < mid) {
-                $reorderPlaceholder.insertBefore($this);
-            } else {
-                $reorderPlaceholder.insertAfter($this);
-            }
-        });
-
-        $('#my-form').on('drop', function (e) {
-            e.preventDefault();
-            const dragType = e.originalEvent.dataTransfer.getData('drag-type');
-            if (dragType === 'reorder' && dragged) {
-                $reorderPlaceholder.replaceWith(dragged);
-                $newFieldPlaceholder.detach();
-                dragged.removeClass('dragging');
-                dragged = null;
-                updateCodePreview();
-            }
-        });
-
-        $('#my-form').on('dragend', '.form-group', function () {
-            if (dragged) dragged.removeClass('dragging');
-            dragged = null;
-            $reorderPlaceholder.detach();
-            $newFieldPlaceholder.detach();
-        });
-
-        // ===== 2. ADD NEW FIELDS =====
-        $(document).on('dragstart', '.builder-item', function (e) {
-            e.originalEvent.dataTransfer.setData('drag-type', 'new-field');
-            e.originalEvent.dataTransfer.setData('field-type', $(this).data('type'));
-            $(this).addClass('dragging');
-        });
-
-        $(document).on('dragend', '.builder-item', function () {
-            $(this).removeClass('dragging');
-            $newFieldPlaceholder.detach();
-        });
-
-        $('#canvas').on('dragover', function (e) {
-            e.preventDefault();
-            const mouseY = e.originalEvent.pageY - $(this).offset().top;
-            let $closest = null;
-            let insertBefore = false;
-
-            $('#my-form .form-group').each(function () {
-                const $el = $(this);
-                const mid = $el.position().top + $el.outerHeight() / 2;
-                if (Math.abs(mouseY - mid) < Math.abs(mouseY - ($closest ? $closest.position().top + $closest.outerHeight() / 2 : Infinity))) {
-                    $closest = $el;
-                    insertBefore = mouseY < mid;
-                }
-            });
-
-            $newFieldPlaceholder.detach();
-            if ($closest) {
-                if (insertBefore) $newFieldPlaceholder.insertBefore($closest);
-                else $newFieldPlaceholder.insertAfter($closest);
-            } else {
-                $('#my-form').append($newFieldPlaceholder);
-            }
-        });
-
-        $('#canvas').on('drop', function (e) {
-            e.preventDefault();
-            const dragType = e.originalEvent.dataTransfer.getData('drag-type');
-            if (dragType !== 'new-field') return;
-
-            const fieldType = e.originalEvent.dataTransfer.getData('field-type');
-            const fieldId = generateSimpleFieldId(fieldType);
-            const fieldHtml = getFieldHtml(fieldType, fieldId);
-
-            const $fieldElement = $(`<div class="form-group" data-field-id="${fieldId}" data-field-type="${fieldType}">${fieldHtml}</div>`);
-            const defaultsConfig = (window.FIELD_CONFIGS || {})[fieldType] || {};
-            const defaults = {};
-            Object.entries(defaultsConfig).forEach(([k, v]) => {
-                if (k === 'id') return;
-                defaults[k] = v.type === 'select' ? getSelectedOptionValue(v.value) : v.value;
-            });
-
-            setFieldData($fieldElement, defaults);
-            applyConfigToField($fieldElement, fieldType, defaults, fieldId);
-            if (fieldType === 'signature') initSignaturePad(fieldId);
-
-            if ($newFieldPlaceholder.parent().length) $newFieldPlaceholder.replaceWith($fieldElement);
-            else $('#my-form').append($fieldElement);
-
-            updateCodePreview();
-        });
+    // ===== 1. REORDER EXISTING FIELDS =====
+    $('#my-form').on('mouseenter', '.form-group', function () {
+        $(this).attr('draggable', true);
     });
+
+    $('#my-form').on('dragstart', '.form-group', function (e) {
+        dragged = $(this);
+        dragType = 'reorder';
+        e.originalEvent.dataTransfer.effectAllowed = 'move';
+        e.originalEvent.dataTransfer.setData('drag-type', dragType);
+        dragged.addClass('dragging');
+    });
+
+    $('#my-form').on('dragover', '.form-group', function (e) {
+        e.preventDefault();
+        if (!dragged || dragType !== 'reorder') return;
+
+        $newFieldPlaceholder.detach(); // remove new field placeholder if present
+
+        const $this = $(this);
+        const mouseY = e.originalEvent.pageY;
+        const mid = $this.offset().top + $this.outerHeight() / 2;
+
+        $reorderPlaceholder.detach();
+        if (mouseY < mid) {
+            $reorderPlaceholder.insertBefore($this);
+        } else {
+            $reorderPlaceholder.insertAfter($this);
+        }
+    });
+
+    $('#my-form').on('drop', function (e) {
+        e.preventDefault();
+        const dropDragType = e.originalEvent.dataTransfer.getData('drag-type');
+        if (dropDragType === 'reorder' && dragged) {
+            $reorderPlaceholder.replaceWith(dragged);
+            $newFieldPlaceholder.detach();
+            dragged.removeClass('dragging');
+            dragged = null;
+            dragType = null;
+            updateCodePreview();
+        }
+    });
+
+    $('#my-form').on('dragend', '.form-group', function () {
+        if (dragged) dragged.removeClass('dragging');
+        dragged = null;
+        dragType = null;
+        $reorderPlaceholder.detach();
+        $newFieldPlaceholder.detach();
+    });
+
+    // ===== 2. ADD NEW FIELDS =====
+    $(document).on('dragstart', '.builder-item', function (e) {
+        dragType = 'new-field';
+        e.originalEvent.dataTransfer.setData('drag-type', dragType);
+        e.originalEvent.dataTransfer.setData('field-type', $(this).data('type'));
+        $(this).addClass('dragging');
+    });
+
+    $(document).on('dragend', '.builder-item', function () {
+        $(this).removeClass('dragging');
+        dragType = null;
+        $newFieldPlaceholder.detach();
+    });
+
+    $('#canvas').on('dragover', function (e) {
+        e.preventDefault();
+        if (dragType !== 'new-field') {
+            $newFieldPlaceholder.detach();
+            return;
+        }
+        $reorderPlaceholder.detach(); // remove reorder placeholder if present
+
+        const mouseY = e.originalEvent.pageY - $(this).offset().top;
+        let $closest = null;
+        let insertBefore = false;
+
+        $('#my-form .form-group').each(function () {
+            const $el = $(this);
+            const mid = $el.position().top + $el.outerHeight() / 2;
+            if (
+                !$closest ||
+                Math.abs(mouseY - mid) < Math.abs(mouseY - ($closest.position().top + $closest.outerHeight() / 2))
+            ) {
+                $closest = $el;
+                insertBefore = mouseY < mid;
+            }
+        });
+
+        $newFieldPlaceholder.detach();
+        if ($closest) {
+            if (insertBefore) $newFieldPlaceholder.insertBefore($closest);
+            else $newFieldPlaceholder.insertAfter($closest);
+        } else {
+            $('#my-form').append($newFieldPlaceholder);
+        }
+    });
+
+    $('#canvas').on('drop', function (e) {
+        e.preventDefault();
+        const dropDragType = e.originalEvent.dataTransfer.getData('drag-type');
+        if (dropDragType !== 'new-field') return;
+
+        const fieldType = e.originalEvent.dataTransfer.getData('field-type');
+        const fieldId = generateSimpleFieldId(fieldType);
+        const fieldHtml = getFieldHtml(fieldType, fieldId);
+
+        const $fieldElement = $(`<div class="form-group" data-field-id="${fieldId}" data-field-type="${fieldType}">${fieldHtml}</div>`);
+        const defaultsConfig = (window.FIELD_CONFIGS || {})[fieldType] || {};
+        const defaults = {};
+        Object.entries(defaultsConfig).forEach(([k, v]) => {
+            if (k === 'id') return;
+            defaults[k] = v.type === 'select' ? getSelectedOptionValue(v.value) : v.value;
+        });
+
+        setFieldData($fieldElement, defaults);
+        applyConfigToField($fieldElement, fieldType, defaults, fieldId);
+        if (fieldType === 'signature') initSignaturePad(fieldId);
+
+        if ($newFieldPlaceholder.parent().length) $newFieldPlaceholder.replaceWith($fieldElement);
+        else $('#my-form').append($fieldElement);
+
+        dragType = null;
+        updateCodePreview();
+    });
+});
 
     // Escape helper
     function escapeHtml(str) {

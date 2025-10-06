@@ -233,22 +233,17 @@ class SiteController extends Controller
             });
 
             // Apply sorting
-            $sort = $request->input('sort', 'latest');
-            $filtered = $filtered->sortBy(function ($submission) use ($sort) {
-                $data = is_array($submission->data) ? $submission->data : json_decode($submission->data, true);
-                switch ($sort) {
-                    case 'high-rated':
-                        return -($data['rating']['value'] ?? 0);
-                    case 'price-low-to-high':
-                        return $data['mrp']['value'] ?? 0;
-                    case 'price-high-to-low':
-                        return -($data['mrp']['value'] ?? 0);
-                    case 'latest':
-                    default:
-                        return strtotime($submission->created_at);
-                }
-            });
+            // Get sort option from request, default to 'new-first'
+            $sort = $request->input('sort', 'default');
 
+            $filtered = match ($sort) {
+                'price-low-to-high' => $filtered->sortBy(fn($s) => floatval(data_get(json_decode($s->data, true), 'mrp.value', 0))),
+                'price-high-to-low' => $filtered->sortByDesc(fn($s) => floatval(data_get(json_decode($s->data, true), 'mrp.value', 0))),
+                'most-rated' => $filtered->sortByDesc(fn($s) => floatval(data_get(json_decode($s->data, true), 'rating.value', 0))),
+                'most-popular' => $filtered->sortByDesc(fn($s) => $s->total_views ?? 0),
+                'new-first' => $filtered->sortByDesc(fn($s) => $s->created_at), // ascending = oldest first
+                default => $filtered->sortByDesc(fn($s) => $s->created_at),
+            };
             // Map summary fields
             $allSubmissionsMapped = $filtered->map(function ($submission) {
                 $fields = is_array($submission->data) ? $submission->data : json_decode($submission->data, true);
@@ -304,8 +299,6 @@ class SiteController extends Controller
         $countries = DB::table('countries')->orderBy('name')->get();
         return view('front.listing-list', compact('categories', 'submissionsByCategory', 'allSubmissions', 'countries'));
     }
-
-
 
 
 }
