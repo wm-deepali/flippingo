@@ -206,13 +206,38 @@ class ListingController extends Controller
         // Get all non-file inputs except tokens and form_id
         $rawInputData = $request->except(['_token', '_method', 'form_id']);
 
-        // Build structured input data with id, label, and value for each field
         $inputDataWithMeta = [];
+
         foreach ($rawInputData as $fieldId => $value) {
+            // Handle cascading dropdown child fields
+            if (str_contains($fieldId, '_child')) {
+                $parentFieldId = str_replace('_child', '', $fieldId);
+
+                if (isset($inputDataWithMeta[$parentFieldId])) {
+                    $inputDataWithMeta[$parentFieldId]['child_value'] = $value;
+                } else {
+                    $fieldDef = collect($fieldsDefinition)->firstWhere('id', $parentFieldId);
+                    $fieldLabel = $fieldDef['properties']['label'] ?? $parentFieldId;
+                    $showOnSummary = $fieldDef['properties']['show_on_summary'] ?? false;
+                    $icon = $fieldDef['properties']['icon'] ?? '';
+
+                    $inputDataWithMeta[$parentFieldId] = [
+                        'field_id' => $parentFieldId,
+                        'label' => $fieldLabel,
+                        'value' => null,
+                        'child_value' => $value,
+                        'show_on_summary' => $showOnSummary,
+                        'icon' => $icon,
+                    ];
+                }
+                continue; // skip normal handling
+            }
+
+            // Normal fields
             $fieldDef = collect($fieldsDefinition)->firstWhere('id', $fieldId);
             $fieldLabel = $fieldDef['properties']['label'] ?? $fieldId;
             $showOnSummary = $fieldDef['properties']['show_on_summary'] ?? false;
-            $icon = $fieldDef['properties']['icon'] ?? '';  // fetch icon here
+            $icon = $fieldDef['properties']['icon'] ?? '';
 
             $inputDataWithMeta[$fieldId] = [
                 'field_id' => $fieldId,
@@ -223,20 +248,19 @@ class ListingController extends Controller
             ];
         }
 
+        // Handle uploaded files
         $uploadedFiles = [];
-
         foreach ($request->allFiles() as $fieldName => $fileOrFiles) {
-            // Handle multiple files (array or collection)
+            $fieldDef = collect($fieldsDefinition)->firstWhere('id', $fieldName);
+            $fieldLabel = $fieldDef['properties']['label'] ?? $fieldName;
+            $showOnSummary = $fieldDef['properties']['show_on_summary'] ?? false;
+
             if (is_array($fileOrFiles) || $fileOrFiles instanceof \Illuminate\Support\Collection) {
                 foreach ($fileOrFiles as $file) {
                     if ($file->isValid()) {
                         $path = $file->store('uploads', 'public');
-                        $fieldLabel = collect($fieldsDefinition)
-                            ->firstWhere('id', $fieldName)['properties']['label'] ?? $fieldName;
-                        $showOnSummary = $fieldDef['properties']['show_on_summary'] ?? false;
-
                         $uploadedFiles[] = [
-                            'field_id' => $fieldId,
+                            'field_id' => $fieldName,
                             'field_label' => $fieldLabel,
                             'file_path' => $path,
                             'original_name' => $file->getClientOriginalName(),
@@ -246,16 +270,9 @@ class ListingController extends Controller
                         ];
                     }
                 }
-            }
-            // Handle single file upload
-            elseif ($fileOrFiles instanceof \Illuminate\Http\UploadedFile) {
+            } elseif ($fileOrFiles instanceof \Illuminate\Http\UploadedFile) {
                 if ($fileOrFiles->isValid()) {
                     $path = $fileOrFiles->store('uploads', 'public');
-                    $fieldLabel = collect($fieldsDefinition)
-                        ->firstWhere('id', $fieldName)['properties']['label'] ?? $fieldName;
-
-                    $showOnSummary = $fieldDef['properties']['show_on_summary'] ?? false;
-
                     $uploadedFiles[] = [
                         'field_id' => $fieldName,
                         'field_label' => $fieldLabel,
@@ -265,14 +282,14 @@ class ListingController extends Controller
                         'size' => $fileOrFiles->getSize(),
                         'show_on_summary' => $showOnSummary,
                     ];
-
                 }
             }
 
-            // Remove file input from inputDataWithMeta to avoid JSON encoding issues
+            // Remove from normal fields
             unset($inputDataWithMeta[$fieldName]);
         }
 
+        // Subscription expiry & sponsor dates
         $customer = Auth::guard('customer')->user();
         $subscription = $customer->activeSubscription;
 
@@ -280,48 +297,43 @@ class ListingController extends Controller
         $sponsorDisplayUntil = null;
         if ($subscription && $subscription->package) {
             $package = $subscription->package;
-
             $expiresAt = now();
+
             switch ($package->listing_duration_unit) {
                 case 'days':
-                    $expiresAt = $expiresAt->addDays($package->listing_duration);
+                    $expiresAt->addDays($package->listing_duration);
                     break;
                 case 'months':
-                    $expiresAt = $expiresAt->addMonths($package->listing_duration);
+                    $expiresAt->addMonths($package->listing_duration);
                     break;
                 case 'years':
-                    $expiresAt = $expiresAt->addYears($package->listing_duration);
+                    $expiresAt->addYears($package->listing_duration);
                     break;
                 default:
-                    $expiresAt = $expiresAt->addDays($package->listing_duration);
+                    $expiresAt->addDays($package->listing_duration);
             }
 
-            if ($subscription->package->sponsored) {
-                $frequency = $subscription->package->sponsored_frequency ?? 1;
-                $unit = $subscription->package->sponsored_unit ?? 'days';
-
-                $now = now();
-
-                // Calculate sponsor display expiry: now + frequency in the specified unit
-                $sponsorDisplayUntil = $now->copy()->add($unit, $frequency);
+            if ($package->sponsored) {
+                $frequency = $package->sponsored_frequency ?? 1;
+                $unit = $package->sponsored_unit ?? 'days';
+                $sponsorDisplayUntil = now()->copy()->add($unit, $frequency);
             }
-
         }
 
+        // Save submission
         $submission = FormSubmission::create([
             'form_id' => $formId,
             'customer_id' => $customerId,
-            'data' => json_encode($inputDataWithMeta),
-            'status' => 'pending', // initial status
+            'data' => json_encode($inputDataWithMeta, JSON_PRETTY_PRINT),
+            'status' => 'pending',
             'expires_at' => $expiresAt,
             'sponsor_display_until' => $sponsorDisplayUntil,
         ]);
 
-
-        // Log initial history
+        // History
         $submission->addHistory('pending', 'Submission created', $customerId);
 
-        // Save uploaded files details associated with this submission
+        // Save uploaded files
         foreach ($uploadedFiles as $fileData) {
             $submission->files()->create([
                 'field_id' => $fileData['field_id'],
@@ -334,14 +346,14 @@ class ListingController extends Controller
             ]);
         }
 
-        // **Update used_listings count on subscription**
+        // Update subscription usage
         if ($subscription) {
             $subscription->increment('used_listings');
         }
 
-
         return response()->json(['success' => true, 'message' => 'Form submitted successfully']);
     }
+
 
     public function show($id)
     {
@@ -355,14 +367,15 @@ class ListingController extends Controller
         foreach ($submittedData as $fieldId => $fieldData) {
             $label = $fieldData['label'] ?? $fieldId;
             $value = $fieldData['value'] ?? null;
+            $childValue = $fieldData['child_value'] ?? null; // <- add this
             $showOnSummary = $fieldData['show_on_summary'] ?? false;
 
             $mappedData[$label] = [
                 'value' => $value,
+                'child_value' => $childValue,   // <- include child_value here
                 'show_on_summary' => $showOnSummary,
             ];
         }
-
         return view('user.listing.show', compact('submission', 'mappedData'));
     }
 
@@ -407,6 +420,14 @@ class ListingController extends Controller
             // Update non-file fields
             $rawInputData = $request->except(['_token', '_method', 'form_id', 'delete_files']);
             foreach ($rawInputData as $fieldId => $value) {
+                // Handle child fields of cascading dropdowns
+                if (str_ends_with($fieldId, '_child')) {
+                    $parentKey = str_replace('_child', '', $fieldId);
+                    $inputDataWithMeta[$parentKey]['child_value'] = $value;
+                    continue;
+                }
+
+
                 $fieldDef = collect($fieldsDefinition)->firstWhere('id', $fieldId);
                 $fieldLabel = $fieldDef['properties']['label'] ?? $fieldId;
                 $showOnSummary = $fieldDef['properties']['show_on_summary'] ?? false;

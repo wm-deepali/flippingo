@@ -27,10 +27,9 @@
                             <form id="edit-submission-form" enctype="multipart/form-data"
                                 data-action="{{ route('listing.update', $submission->id) }}">@csrf
                                 @method('PUT')
-                @php
-                    $inputTypes = ['text', 'email', 'number', 'select', 'dropdown', 'file', 'signature', 'textarea', 'date', 'checkbox', 'radio']; // Add all form input types you support
-                @endphp
-
+                      @php
+                        $inputTypes = ['text', 'email', 'number', 'select', 'dropdown', 'file', 'signature', 'textarea', 'date', 'checkbox', 'radio', 'cascadingDropdown']; // Add all form input types you support
+                    @endphp
                                 @foreach($formData->fields as $field)
                                     @if(in_array($field['type'], $inputTypes))
                                         @php
@@ -90,7 +89,35 @@
                                                         </option>
                                                     @endforeach
                                                 </select>
-                                            @else
+                                                 @elseif($type === 'cascadingDropdown')
+    @php
+        $parentValue = $existingData[$fieldKey]['value'] ?? '';
+        $childValue = $existingData[$fieldKey]['child_value'] ?? '';
+        $parentOptions = $field['properties']['parentOptions'] ?? [];
+        $childMapping = $field['properties']['parentChildMapping'] ?? [];
+    @endphp
+
+    <div class="mb-3">
+        {{-- Parent Dropdown --}}
+        <select class="form-control parent-dropdown" name="{{ $fieldKey }}">
+            <option value="">Select parent</option>
+            @foreach($parentOptions as $option)
+                <option value="{{ $option }}" @if($option == $parentValue) selected @endif>{{ $option }}</option>
+            @endforeach
+        </select>
+
+        {{-- Child Dropdown --}}
+        <select class="form-control mt-2 child-dropdown" name="{{ $fieldKey }}_child">
+            <option value="">Select child</option>
+            @if($parentValue && isset($childMapping[$parentValue]))
+                @foreach($childMapping[$parentValue] as $childOption)
+                    <option value="{{ $childOption }}" @if($childOption == $childValue) selected @endif>{{ $childOption }}</option>
+                @endforeach
+            @endif
+        </select>
+    </div>
+
+@else
                                                 <input type="{{ $type }}" name="{{ $fieldKey }}" value="{{ $value }}"
                                                     class="form-control">
                                             @endif
@@ -114,7 +141,40 @@
     <script>
 
 
-        $(document).ready(function () {
+$(document).ready(function() {
+    // Prepare child mappings for all cascading dropdowns
+    const childMapping = {};
+    @foreach($formData->fields as $field)
+        @if($field['type'] === 'cascadingDropdown')
+            childMapping['{{ $field['properties']['id'] ?? $field['id'] }}'] = @json($field['properties']['parentChildMapping'] ?? []);
+        @endif
+    @endforeach
+
+    // Initialize cascading dropdowns
+    $('.parent-dropdown').each(function() {
+        const parent = $(this);
+        const fieldName = parent.attr('name');
+        const child = $(`select[name="${fieldName}_child"]`);
+
+        // Hide child initially if no parent selected
+        if (!parent.val()) child.closest('.mb-3').find('.child-dropdown').hide();
+
+        parent.off('change').on('change', function() {
+            const selectedParent = $(this).val();
+            child.empty().append('<option value="">Select child</option>');
+
+            if (selectedParent && childMapping[fieldName] && childMapping[fieldName][selectedParent]) {
+                childMapping[fieldName][selectedParent].forEach(function(opt) {
+                    child.append(`<option value="${opt}">${opt}</option>`);
+                });
+                child.closest('.mb-3').find('.child-dropdown').show();
+            } else {
+                child.closest('.mb-3').find('.child-dropdown').hide();
+            }
+        });
+    });
+
+    
             $('#edit-submission-form').on('submit', function (e) {
                 e.preventDefault();
 

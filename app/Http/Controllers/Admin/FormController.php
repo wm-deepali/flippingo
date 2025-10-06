@@ -42,11 +42,13 @@ class FormController extends Controller
 
         // If form HTML is stored in form_data table under 'html'
         $html = $formData ? $formData->html : '';
-
+// dd($formData->fields);
         // Respond with HTML content to be injected
         return response()->json([
             'success' => true,
             'html' => $html,
+            'formdata' => $formData,
+            'fields' => $formData ? $formData->fields : [],
             'form_id' => $form->id,
             'form_name' => $form->name,
         ]);

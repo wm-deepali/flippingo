@@ -2095,6 +2095,104 @@ class FormBuilderController extends Controller
                 ]
 
             ],
+
+            [
+                "name" => "cascadingDropdown",
+                "title" => "cascadingDropdown.title",
+                "fields" => [
+                    "id" => [
+                        "label" => "component.id",
+                        "type" => "input",
+                        "value" => "cascadingDropdown",
+                    ],
+                    "label" => [
+                        "label" => "component.label",
+                        "type" => "input",
+                        "value" => $i18n['selectAChoice'],
+                    ],
+                    "parentOptions" => [
+                        "label" => "component.parentOptions",
+                        "type" => "choice", // list of parent dropdown values
+                        "value" => [
+                            "Option 1",
+                            "Option 2",
+                            "Option 3",
+                        ],
+                    ],
+                    "parentChildMapping" => [
+                        "label" => "component.parentChildMapping",
+                        "type" => "json", // JSON object mapping parent to children
+                        "value" => [
+                            "Option 1" => ["Child 1", "Child 2"],
+                            "Option 2" => ["Child A", "Child B"],
+                            "Option 3" => ["Child X", "Child Y"],
+                        ],
+                    ],
+                    "placeholder" => [
+                        "label" => "component.placeholder",
+                        "type" => "input",
+                        "value" => "Select an option",
+                    ],
+                    "helpText" => [
+                        "label" => "component.helpText",
+                        "type" => "textarea",
+                        "value" => "",
+                        "advanced" => true,
+                    ],
+                    "helpTextPlacement" => [
+                        "label" => "component.helpTextPlacement",
+                        "type" => "select",
+                        "value" => [
+                            ["value" => "below", "label" => "component.belowInputs", "selected" => true],
+                            ["value" => "above", "label" => "component.aboveInputs", "selected" => false],
+                        ],
+                        "advanced" => true,
+                    ],
+                    "cssClass" => [
+                        "label" => "component.cssClass",
+                        "type" => "input",
+                        "value" => "form-control parent-dropdown",
+                        "advanced" => true,
+                    ],
+                    "labelClass" => [
+                        "label" => "component.labelClass",
+                        "type" => "input",
+                        "value" => "form-label",
+                        "advanced" => true,
+                    ],
+                    "containerClass" => [
+                        "label" => "component.containerClass",
+                        "type" => "input",
+                        "value" => "col-12",
+                        "advanced" => true,
+                    ],
+                    "alias" => [
+                        "label" => "component.alias",
+                        "type" => "input",
+                        "value" => "",
+                        "advanced" => true,
+                    ],
+                    "customAttributes" => [
+                        "label" => "component.customAttributes",
+                        "type" => "choice",
+                        "value" => [""],
+                        "advanced" => true,
+                    ],
+                    "required" => [
+                        "label" => "component.required",
+                        "type" => "checkbox",
+                        "value" => false,
+                        "advanced" => true,
+                    ],
+                    "disabled" => [
+                        "label" => "component.disabled",
+                        "type" => "checkbox",
+                        "value" => false,
+                        "advanced" => true,
+                    ],
+                ],
+            ],
+
             // Add further components here if your original JSON had more
         ];
 
@@ -2215,6 +2313,7 @@ class FormBuilderController extends Controller
                 "checkbox.title" => __('Checkbox'),
                 "radio.title" => __('Radio'),
                 "selectlist.title" => __('Select List'),
+                "cascadingDropdown.title" => __('Cascading Dropdown'),
                 "hidden.title" => __('Hidden'),
                 "file.title" => __('File Upload'),
                 "snippet.title" => __('Snippet'),

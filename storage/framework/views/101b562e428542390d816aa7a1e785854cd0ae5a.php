@@ -68,34 +68,37 @@
                 </div>
             </div>
 
-            <div class="card mt-4">
-                <div class="card-header">
-                    <h4>Submission Data</h4>
-                </div>
-                <div class="card-body">
-                    <?php if(!empty($mappedData)): ?>
-                        <dl class="row">
-                            <?php $__currentLoopData = $mappedData; $__env->addLoop($__currentLoopData); foreach($__currentLoopData as $label => $data): $__env->incrementLoopIndices(); $loop = $__env->getLastLoop(); ?>
-                                <dt class="col-sm-4"><?php echo e($label); ?> :</dt>
-                                <?php $val = $data['value'] ?? $data; ?>
-                                <dd class="col-sm-8">
-                                    <?php if(is_array($val) || is_object($val)): ?>
-                                        <pre><?php echo e(json_encode($val, JSON_PRETTY_PRINT)); ?></pre>
-                                    <?php else: ?>
-                                        <?php echo e($val); ?>
+           <div class="card mt-4">
+    <div class="card-header">
+        <h4>Submission Data</h4>
+    </div>
+    <div class="card-body">
+        <?php if(!empty($mappedData)): ?>
+            <dl class="row">
+                <?php $__currentLoopData = $mappedData; $__env->addLoop($__currentLoopData); foreach($__currentLoopData as $label => $data): $__env->incrementLoopIndices(); $loop = $__env->getLastLoop(); ?>
+                   <?php
+    $val = $data['value'] ?? '';
+    if (!empty($data['child_value'])) {
+        $val .= ' → ' . $data['child_value'];
+    }
+?>
+                    <dt class="col-sm-4"><?php echo e($label); ?> :</dt>
+                    <dd class="col-sm-8">
+                        <?php if(is_array($val) || is_object($val)): ?>
+                            <pre><?php echo e(json_encode($val, JSON_PRETTY_PRINT)); ?></pre>
+                        <?php else: ?>
+                            <?php echo e($val); ?>
 
-                                    <?php endif; ?>
+                        <?php endif; ?>
+                    </dd>
+                <?php endforeach; $__env->popLoop(); $loop = $__env->getLastLoop(); ?>
+            </dl>
+        <?php else: ?>
+            <p>No submission data available.</p>
+        <?php endif; ?>
+    </div>
+</div>
 
-                                </dd>
-                            <?php endforeach; $__env->popLoop(); $loop = $__env->getLastLoop(); ?>
-
-
-                        </dl>
-                    <?php else: ?>
-                        <p>No submission data available.</p>
-                    <?php endif; ?>
-                </div>
-            </div>
 
 
             <!-- Files Section -->

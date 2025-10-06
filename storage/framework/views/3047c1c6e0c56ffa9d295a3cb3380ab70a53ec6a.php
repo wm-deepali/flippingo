@@ -210,7 +210,6 @@
         border-radius: 8px;
         cursor: pointer;
         font-size: 14px;
-        transition: background 0.2s ease;
     }
 
     .subscription-btn:hover {

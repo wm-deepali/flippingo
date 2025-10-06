@@ -13,8 +13,8 @@
 
 @section('content')
     <!-- ================================
-                                                                                START BREADCRUMB AREA
-                                                                            ================================= -->
+                                                                                    START BREADCRUMB AREA
+                                                                                ================================= -->
     <section class="breadcrumb-area bread-bg">
         <div class="overlay"></div>
         <!-- end overlay -->
@@ -39,12 +39,12 @@
     </section>
     <!-- end breadcrumb-area -->
     <!-- ================================
-                                                                                END BREADCRUMB AREA
-                                                                            ================================= -->
+                                                                                    END BREADCRUMB AREA
+                                                                                ================================= -->
 
     <!-- ================================
-                                                                                START ADD-LISTING AREA
-                                                                            ================================= -->
+                                                                                    START ADD-LISTING AREA
+                                                                                ================================= -->
     <section class="add-listing-area padding-top-60px padding-bottom-90px">
         <div class="container">
             <div class="row justify-content-center">
@@ -183,6 +183,9 @@
                             }
                         });
 
+                        // Initialize cascading dropdowns
+                        initializeCascadingDropdowns(data.fields);
+
                     } else {
                         container.html('<p>No form available.</p>');
                     }
@@ -216,6 +219,100 @@
                 toggleOfferedPrice();
             });
         });
+
+        // Initialize cascading dropdown functionality
+        function initializeCascadingDropdowns(formData) {
+            // Find all cascading dropdown fields in the form
+            const cascadingFields = [];
+
+            // Access fields correctly - formData is actually the fields array directly
+            let fields = [];
+            if (Array.isArray(formData)) {
+                fields = formData;
+            } else if (formData && Array.isArray(formData.fields)) {
+                fields = formData.fields;
+            }
+
+
+            // Loop through fields to find cascading dropdown types
+            if (Array.isArray(fields)) {
+                fields.forEach(field => {
+                    if (field.type === 'cascadingDropdown' && field.properties) {
+                        cascadingFields.push({
+                            fieldId: field.id,
+                            properties: field.properties
+                        });
+                    }
+                });
+            }
+
+            // Initialize each cascading dropdown
+            cascadingFields.forEach(field => {
+                const parentDropdown = $(`.parent-dropdown[name="${field.fieldId}"]`)[0];
+                const childDropdown = $(`.child-dropdown[name="${field.fieldId}_child"]`)[0];
+
+                if (parentDropdown && childDropdown) {
+                    const parentOptions = field.properties.parentOptions || [];
+                    const parentChildMapping = field.properties.parentChildMapping || {};
+
+                    // Clear existing options
+                    $(parentDropdown).empty();
+                    $(childDropdown).empty();
+
+                    // Add default option to parent dropdown
+                    $(parentDropdown).append($('<option>', {
+                        value: '',
+                        text: 'Select an option'
+                    }));
+
+                    // Populate parent dropdown
+                    parentOptions.forEach(option => {
+                        $(parentDropdown).append($('<option>', {
+                            value: option,
+                            text: option
+                        }));
+                    });
+
+                    // Add default option to child dropdown
+                    $(childDropdown).append($('<option>', {
+                        value: '',
+                        text: 'Select an option'
+                    }));
+
+                    // 🔹 Hide child dropdown initially
+                    $(childDropdown).closest('.form-group, .form-control, div').hide();
+
+                    // Handle parent dropdown change
+                    $(parentDropdown).off('change.cascading').on('change.cascading', function () {
+                        const selectedParent = $(this).val();
+
+                        // Clear child dropdown except default option
+                        $(childDropdown).empty();
+                        $(childDropdown).append($('<option>', {
+                            value: '',
+                            text: 'Select child'
+                        }));
+
+                        if (selectedParent && parentChildMapping[selectedParent]) {
+                            const childOptions = parentChildMapping[selectedParent];
+                            childOptions.forEach(option => {
+                                $(childDropdown).append($('<option>', {
+                                    value: option,
+                                    text: option
+                                }));
+                            });
+
+                            // 🔹 Show child dropdown only when parent is chosen
+                            $(childDropdown).closest('.form-group, .form-control, div').show();
+                        } else {
+                            // 🔹 Hide again if no valid parent
+                            $(childDropdown).closest('.form-group, .form-control, div').hide();
+                        }
+                    });
+                }
+            });
+
+        }
 
     </script>
 

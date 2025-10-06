@@ -464,50 +464,57 @@
                 </div>
 
                 <div class="details-card">
-                  @php
-  $assocFields = [];
-  foreach ($fields as $field) {
+        @php
+$assocFields = [];
+foreach ($fields as $field) {
     $assocFields[$field['id']] = $field;
-  }
-                  @endphp
+}
+@endphp
 
-                  @if(isset($layout) && is_array($layout) && $assocFields)
-                 @foreach($layout as $row)
-  @foreach($row as $fieldId)
-    @php
-      $field = $assocFields[$fieldId] ?? null;
-      if (!$field) continue;
+@if(isset($layout) && is_array($layout) && $assocFields)
+    @foreach($layout as $row)
+        @foreach($row as $fieldId)
+            @php
+                $field = $assocFields[$fieldId] ?? null;
+                if (!$field) continue;
 
-      $type = $field['type'] ?? 'text';
+                $type = $field['type'] ?? 'text';
+                $label = '';
+                $value = '';
 
-      if ($type === 'heading') {
-          // Show heading only once
-          $label = $field['properties']['text'] ?? '';
-      } elseif ($type === 'paragraph') {
-          // Show paragraph only once
-          $label = $field['properties']['text'] ?? '';
-      } else {
-          // Normal fields with label and value
-          $label = $field['properties']['label'] ?? $field['label'] ?? '';
-          $FieldData = $submittedValues[$fieldId] ?? null;
-          $value = is_array($FieldData) ? ($FieldData['value'] ?? '') : '';
-      }
-    @endphp
+                if ($type === 'heading') {
+                    $label = $field['properties']['text'] ?? '';
+                } elseif ($type === 'paragraph') {
+                    $label = $field['properties']['text'] ?? '';
+                } else {
+                    $label = $field['properties']['label'] ?? $field['label'] ?? '';
+                    $FieldData = $submittedValues[$fieldId] ?? null;
 
-    @if ($type === 'heading')
-      <h4 class="font-size-26 font-weight-semi-bold mb-2 mt-2">{{ $label }}</h4>
-    @elseif ($type === 'paragraph')
-      <p class="mb-3">{{ $label }}</p>
-    @else
-      <button class="details-card-button">{{ $label }}: {{ $value }}</button>
-    @endif
-  @endforeach
-@endforeach
+                    if (is_array($FieldData)) {
+                        $value = $FieldData['value'] ?? '';
+                        if (!empty($FieldData['child_value'])) {
+                            $value .= ' → ' . $FieldData['child_value'];
+                        }
+                    } else {
+                        $value = $FieldData;
+                    }
+                }
+            @endphp
+
+            @if ($type === 'heading')
+                <h4 class="font-size-26 font-weight-semi-bold mb-2 mt-2">{{ $label }}</h4>
+            @elseif ($type === 'paragraph')
+                <p class="mb-3">{{ $label }}</p>
+            @else
+                <button class="details-card-button">{{ $label }}: {{ $value }}</button>
+            @endif
+        @endforeach
+    @endforeach
+@else
+    <p>No details available.</p>
+@endif
 
 
-                  @else
-                    <p>No details available.</p>
-                  @endif
                 </div>
 
 

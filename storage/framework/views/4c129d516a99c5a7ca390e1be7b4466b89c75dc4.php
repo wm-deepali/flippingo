@@ -28,10 +28,9 @@
                             <form id="edit-submission-form" enctype="multipart/form-data"
                                 data-action="<?php echo e(route('listing.update', $submission->id)); ?>"><?php echo csrf_field(); ?>
                                 <?php echo method_field('PUT'); ?>
-                <?php
-                    $inputTypes = ['text', 'email', 'number', 'select', 'dropdown', 'file', 'signature', 'textarea', 'date', 'checkbox', 'radio']; // Add all form input types you support
-                ?>
-
+                      <?php
+                        $inputTypes = ['text', 'email', 'number', 'select', 'dropdown', 'file', 'signature', 'textarea', 'date', 'checkbox', 'radio', 'cascadingDropdown']; // Add all form input types you support
+                    ?>
                                 <?php $__currentLoopData = $formData->fields; $__env->addLoop($__currentLoopData); foreach($__currentLoopData as $field): $__env->incrementLoopIndices(); $loop = $__env->getLastLoop(); ?>
                                     <?php if(in_array($field['type'], $inputTypes)): ?>
                                         <?php
@@ -94,7 +93,35 @@
                                                         </option>
                                                     <?php endforeach; $__env->popLoop(); $loop = $__env->getLastLoop(); ?>
                                                 </select>
-                                            <?php else: ?>
+                                                 <?php elseif($type === 'cascadingDropdown'): ?>
+    <?php
+        $parentValue = $existingData[$fieldKey]['value'] ?? '';
+        $childValue = $existingData[$fieldKey]['child_value'] ?? '';
+        $parentOptions = $field['properties']['parentOptions'] ?? [];
+        $childMapping = $field['properties']['parentChildMapping'] ?? [];
+    ?>
+
+    <div class="mb-3">
+        
+        <select class="form-control parent-dropdown" name="<?php echo e($fieldKey); ?>">
+            <option value="">Select parent</option>
+            <?php $__currentLoopData = $parentOptions; $__env->addLoop($__currentLoopData); foreach($__currentLoopData as $option): $__env->incrementLoopIndices(); $loop = $__env->getLastLoop(); ?>
+                <option value="<?php echo e($option); ?>" <?php if($option == $parentValue): ?> selected <?php endif; ?>><?php echo e($option); ?></option>
+            <?php endforeach; $__env->popLoop(); $loop = $__env->getLastLoop(); ?>
+        </select>
+
+        
+        <select class="form-control mt-2 child-dropdown" name="<?php echo e($fieldKey); ?>_child">
+            <option value="">Select child</option>
+            <?php if($parentValue && isset($childMapping[$parentValue])): ?>
+                <?php $__currentLoopData = $childMapping[$parentValue]; $__env->addLoop($__currentLoopData); foreach($__currentLoopData as $childOption): $__env->incrementLoopIndices(); $loop = $__env->getLastLoop(); ?>
+                    <option value="<?php echo e($childOption); ?>" <?php if($childOption == $childValue): ?> selected <?php endif; ?>><?php echo e($childOption); ?></option>
+                <?php endforeach; $__env->popLoop(); $loop = $__env->getLastLoop(); ?>
+            <?php endif; ?>
+        </select>
+    </div>
+
+<?php else: ?>
                                                 <input type="<?php echo e($type); ?>" name="<?php echo e($fieldKey); ?>" value="<?php echo e($value); ?>"
                                                     class="form-control">
                                             <?php endif; ?>
@@ -118,7 +145,40 @@
     <script>
 
 
-        $(document).ready(function () {
+$(document).ready(function() {
+    // Prepare child mappings for all cascading dropdowns
+    const childMapping = {};
+    <?php $__currentLoopData = $formData->fields; $__env->addLoop($__currentLoopData); foreach($__currentLoopData as $field): $__env->incrementLoopIndices(); $loop = $__env->getLastLoop(); ?>
+        <?php if($field['type'] === 'cascadingDropdown'): ?>
+            childMapping['<?php echo e($field['properties']['id'] ?? $field['id']); ?>'] = <?php echo json_encode($field['properties']['parentChildMapping'] ?? [], 15, 512) ?>;
+        <?php endif; ?>
+    <?php endforeach; $__env->popLoop(); $loop = $__env->getLastLoop(); ?>
+
+    // Initialize cascading dropdowns
+    $('.parent-dropdown').each(function() {
+        const parent = $(this);
+        const fieldName = parent.attr('name');
+        const child = $(`select[name="${fieldName}_child"]`);
+
+        // Hide child initially if no parent selected
+        if (!parent.val()) child.closest('.mb-3').find('.child-dropdown').hide();
+
+        parent.off('change').on('change', function() {
+            const selectedParent = $(this).val();
+            child.empty().append('<option value="">Select child</option>');
+
+            if (selectedParent && childMapping[fieldName] && childMapping[fieldName][selectedParent]) {
+                childMapping[fieldName][selectedParent].forEach(function(opt) {
+                    child.append(`<option value="${opt}">${opt}</option>`);
+                });
+                child.closest('.mb-3').find('.child-dropdown').show();
+            } else {
+                child.closest('.mb-3').find('.child-dropdown').hide();
+            }
+        });
+    });
+
+    
             $('#edit-submission-form').on('submit', function (e) {
                 e.preventDefault();
 

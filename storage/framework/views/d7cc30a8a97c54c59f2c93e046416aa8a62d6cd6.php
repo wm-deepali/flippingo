@@ -536,6 +536,8 @@
         };
         fields.push(fieldData);
       });
+      // console.log(fields, 'fields');
+      // return
       formData.append('fields', JSON.stringify(fields));
 
       // 2️ Get full HTML preview from canvas

@@ -14,8 +14,8 @@
 
 <?php $__env->startSection('content'); ?>
     <!-- ================================
-                                                                            START BREADCRUMB AREA
-                                                                        ================================= -->
+                                                                                    START BREADCRUMB AREA
+                                                                                ================================= -->
     <section class="breadcrumb-area bread-bg">
         <div class="overlay"></div>
         <!-- end overlay -->
@@ -40,12 +40,12 @@
     </section>
     <!-- end breadcrumb-area -->
     <!-- ================================
-                                                                            END BREADCRUMB AREA
-                                                                        ================================= -->
+                                                                                    END BREADCRUMB AREA
+                                                                                ================================= -->
 
     <!-- ================================
-                                                                            START ADD-LISTING AREA
-                                                                        ================================= -->
+                                                                                    START ADD-LISTING AREA
+                                                                                ================================= -->
     <section class="add-listing-area padding-top-60px padding-bottom-90px">
         <div class="container">
             <div class="row justify-content-center">
@@ -158,66 +158,163 @@
             const baseUrl = "<?php echo e(route('forms', ['id' => 'FORM_ID'])); ?>".replace('FORM_ID', formId);
 
             fetch(baseUrl)
-    .then(response => {
-        if (!response.ok) throw new Error('Network error fetching form.');
-        return response.json(); // make sure your controller returns JSON
-    })
-    .then(data => {
-        if (data.success && data.html.trim()) {
-            container.html(data.html);
+                .then(response => {
+                    if (!response.ok) throw new Error('Network error fetching form.');
+                    return response.json(); // make sure your controller returns JSON
+                })
+                .then(data => {
+                    if (data.success && data.html.trim()) {
+                        container.html(data.html);
 
-            // =============================
-            // After loading the form, handle offered_price visibility
-            // =============================
-            const urgentSale = $('#urgent_sale').val(); // get current value
-            if (urgentSale === 'Yes') {
-                $('#offered_price').closest('.form-group').show();
-            } else {
-                $('#offered_price').closest('.form-group').hide();
-            }
+                        // =============================
+                        // After loading the form, handle offered_price visibility
+                        // =============================
+                        const urgentSale = $('#urgent_sale').val(); // get current value
+                        if (urgentSale === 'Yes') {
+                            $('#offered_price').closest('.form-group').show();
+                        } else {
+                            $('#offered_price').closest('.form-group').hide();
+                        }
 
-            // Also bind change event for future updates
-            $(document).on('change', '#urgent_sale', function () {
-                if ($(this).val() === 'Yes') {
+                        // Also bind change event for future updates
+                        $(document).on('change', '#urgent_sale', function () {
+                            if ($(this).val() === 'Yes') {
+                                $('#offered_price').closest('.form-group').show();
+                            } else {
+                                $('#offered_price').closest('.form-group').hide();
+                            }
+                        });
+
+                        // Initialize cascading dropdowns
+                        initializeCascadingDropdowns(data.fields);
+
+                    } else {
+                        container.html('<p>No form available.</p>');
+                    }
+                })
+                .catch(err => {
+                    container.html(`<p class="text-danger">${err.message}</p>`);
+                    console.error(err);
+                });
+
+        }
+
+
+        $(document).ready(function () {
+            // Function to update visibility
+            function toggleOfferedPrice() {
+                const val = $('#urgent_sale').val();
+                if (val === 'Yes') {
                     $('#offered_price').closest('.form-group').show();
                 } else {
                     $('#offered_price').closest('.form-group').hide();
                 }
+            }
+
+            // Run on change
+            $(document).on('change', '#urgent_sale', function () {
+                toggleOfferedPrice();
             });
 
-        } else {
-            container.html('<p>No form available.</p>');
-        }
-    })
-    .catch(err => {
-        container.html(`<p class="text-danger">${err.message}</p>`);
-        console.error(err);
-    });
+            // Run immediately after form is loaded dynamically
+            $(document).on('DOMNodeInserted', '#dynamicFormContainer', function () {
+                toggleOfferedPrice();
+            });
+        });
+
+        // Initialize cascading dropdown functionality
+        function initializeCascadingDropdowns(formData) {
+            // Find all cascading dropdown fields in the form
+            const cascadingFields = [];
+
+            // Access fields correctly - formData is actually the fields array directly
+            let fields = [];
+            if (Array.isArray(formData)) {
+                fields = formData;
+            } else if (formData && Array.isArray(formData.fields)) {
+                fields = formData.fields;
+            }
+
+
+            // Loop through fields to find cascading dropdown types
+            if (Array.isArray(fields)) {
+                fields.forEach(field => {
+                    if (field.type === 'cascadingDropdown' && field.properties) {
+                        cascadingFields.push({
+                            fieldId: field.id,
+                            properties: field.properties
+                        });
+                    }
+                });
+            }
+
+            // Initialize each cascading dropdown
+            cascadingFields.forEach(field => {
+                const parentDropdown = $(`.parent-dropdown[name="${field.fieldId}"]`)[0];
+                const childDropdown = $(`.child-dropdown[name="${field.fieldId}_child"]`)[0];
+
+                if (parentDropdown && childDropdown) {
+                    const parentOptions = field.properties.parentOptions || [];
+                    const parentChildMapping = field.properties.parentChildMapping || {};
+
+                    // Clear existing options
+                    $(parentDropdown).empty();
+                    $(childDropdown).empty();
+
+                    // Add default option to parent dropdown
+                    $(parentDropdown).append($('<option>', {
+                        value: '',
+                        text: 'Select parent'
+                    }));
+
+                    // Populate parent dropdown
+                    parentOptions.forEach(option => {
+                        $(parentDropdown).append($('<option>', {
+                            value: option,
+                            text: option
+                        }));
+                    });
+
+                    // Add default option to child dropdown
+                    $(childDropdown).append($('<option>', {
+                        value: '',
+                        text: 'Select child'
+                    }));
+
+                    // 🔹 Hide child dropdown initially
+                    $(childDropdown).closest('.form-group, .form-control, div').hide();
+
+                    // Handle parent dropdown change
+                    $(parentDropdown).off('change.cascading').on('change.cascading', function () {
+                        const selectedParent = $(this).val();
+
+                        // Clear child dropdown except default option
+                        $(childDropdown).empty();
+                        $(childDropdown).append($('<option>', {
+                            value: '',
+                            text: 'Select child'
+                        }));
+
+                        if (selectedParent && parentChildMapping[selectedParent]) {
+                            const childOptions = parentChildMapping[selectedParent];
+                            childOptions.forEach(option => {
+                                $(childDropdown).append($('<option>', {
+                                    value: option,
+                                    text: option
+                                }));
+                            });
+
+                            // 🔹 Show child dropdown only when parent is chosen
+                            $(childDropdown).closest('.form-group, .form-control, div').show();
+                        } else {
+                            // 🔹 Hide again if no valid parent
+                            $(childDropdown).closest('.form-group, .form-control, div').hide();
+                        }
+                    });
+                }
+            });
 
         }
-
-
-$(document).ready(function () {
-    // Function to update visibility
-    function toggleOfferedPrice() {
-        const val = $('#urgent_sale').val();
-        if (val === 'Yes') {
-            $('#offered_price').closest('.form-group').show();
-        } else {
-            $('#offered_price').closest('.form-group').hide();
-        }
-    }
-
-    // Run on change
-    $(document).on('change', '#urgent_sale', function () {
-        toggleOfferedPrice();
-    });
-
-    // Run immediately after form is loaded dynamically
-    $(document).on('DOMNodeInserted', '#dynamicFormContainer', function () {
-        toggleOfferedPrice();
-    });
-});
 
     </script>
 
@@ -279,35 +376,35 @@ $(document).ready(function () {
         });
     </script>
 
-<script>
-    $(document).ready(function () {
-        // Event delegation for dynamically loaded form
-        $(document).on('change', 'select[name="urgent_sale"]', function () {
-            const value = $(this).val(); // get selected value
-            const $offeredPriceField = $('#offered_price_field'); // the field wrapper div
+    <script>
+        $(document).ready(function () {
+            // Event delegation for dynamically loaded form
+            $(document).on('change', 'select[name="urgent_sale"]', function () {
+                const value = $(this).val(); // get selected value
+                const $offeredPriceField = $('#offered_price_field'); // the field wrapper div
 
-            if (value === 'yes') {
-                $offeredPriceField.show();
-            } else {
-                $offeredPriceField.hide();
-            }
-        });
-
-        // Optional: hide initially if urgent_sale is not yes
-        $(document).on('DOMSubtreeModified', '#dynamicFormContainer', function () {
-            const $select = $(this).find('select[name="urgent_sale"]');
-            const $offeredPriceField = $(this).find('#offered_price_field');
-
-            if ($select.length && $offeredPriceField.length) {
-                if ($select.val() === 'yes') {
+                if (value === 'yes') {
                     $offeredPriceField.show();
                 } else {
                     $offeredPriceField.hide();
                 }
-            }
+            });
+
+            // Optional: hide initially if urgent_sale is not yes
+            $(document).on('DOMSubtreeModified', '#dynamicFormContainer', function () {
+                const $select = $(this).find('select[name="urgent_sale"]');
+                const $offeredPriceField = $(this).find('#offered_price_field');
+
+                if ($select.length && $offeredPriceField.length) {
+                    if ($select.val() === 'yes') {
+                        $offeredPriceField.show();
+                    } else {
+                        $offeredPriceField.hide();
+                    }
+                }
+            });
         });
-    });
-</script>
+    </script>
 
     <script src="https://cdn.jsdelivr.net/npm/signature_pad@4.0.0/dist/signature_pad.umd.min.js"></script>
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">

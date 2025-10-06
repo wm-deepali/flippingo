@@ -465,50 +465,57 @@
                 </div>
 
                 <div class="details-card">
-                  <?php
-  $assocFields = [];
-  foreach ($fields as $field) {
+        <?php
+$assocFields = [];
+foreach ($fields as $field) {
     $assocFields[$field['id']] = $field;
-  }
-                  ?>
+}
+?>
 
-                  <?php if(isset($layout) && is_array($layout) && $assocFields): ?>
-                 <?php $__currentLoopData = $layout; $__env->addLoop($__currentLoopData); foreach($__currentLoopData as $row): $__env->incrementLoopIndices(); $loop = $__env->getLastLoop(); ?>
-  <?php $__currentLoopData = $row; $__env->addLoop($__currentLoopData); foreach($__currentLoopData as $fieldId): $__env->incrementLoopIndices(); $loop = $__env->getLastLoop(); ?>
-    <?php
-      $field = $assocFields[$fieldId] ?? null;
-      if (!$field) continue;
+<?php if(isset($layout) && is_array($layout) && $assocFields): ?>
+    <?php $__currentLoopData = $layout; $__env->addLoop($__currentLoopData); foreach($__currentLoopData as $row): $__env->incrementLoopIndices(); $loop = $__env->getLastLoop(); ?>
+        <?php $__currentLoopData = $row; $__env->addLoop($__currentLoopData); foreach($__currentLoopData as $fieldId): $__env->incrementLoopIndices(); $loop = $__env->getLastLoop(); ?>
+            <?php
+                $field = $assocFields[$fieldId] ?? null;
+                if (!$field) continue;
 
-      $type = $field['type'] ?? 'text';
+                $type = $field['type'] ?? 'text';
+                $label = '';
+                $value = '';
 
-      if ($type === 'heading') {
-          // Show heading only once
-          $label = $field['properties']['text'] ?? '';
-      } elseif ($type === 'paragraph') {
-          // Show paragraph only once
-          $label = $field['properties']['text'] ?? '';
-      } else {
-          // Normal fields with label and value
-          $label = $field['properties']['label'] ?? $field['label'] ?? '';
-          $FieldData = $submittedValues[$fieldId] ?? null;
-          $value = is_array($FieldData) ? ($FieldData['value'] ?? '') : '';
-      }
-    ?>
+                if ($type === 'heading') {
+                    $label = $field['properties']['text'] ?? '';
+                } elseif ($type === 'paragraph') {
+                    $label = $field['properties']['text'] ?? '';
+                } else {
+                    $label = $field['properties']['label'] ?? $field['label'] ?? '';
+                    $FieldData = $submittedValues[$fieldId] ?? null;
 
-    <?php if($type === 'heading'): ?>
-      <h4 class="font-size-26 font-weight-semi-bold mb-2 mt-2"><?php echo e($label); ?></h4>
-    <?php elseif($type === 'paragraph'): ?>
-      <p class="mb-3"><?php echo e($label); ?></p>
-    <?php else: ?>
-      <button class="details-card-button"><?php echo e($label); ?>: <?php echo e($value); ?></button>
-    <?php endif; ?>
-  <?php endforeach; $__env->popLoop(); $loop = $__env->getLastLoop(); ?>
-<?php endforeach; $__env->popLoop(); $loop = $__env->getLastLoop(); ?>
+                    if (is_array($FieldData)) {
+                        $value = $FieldData['value'] ?? '';
+                        if (!empty($FieldData['child_value'])) {
+                            $value .= ' → ' . $FieldData['child_value'];
+                        }
+                    } else {
+                        $value = $FieldData;
+                    }
+                }
+            ?>
+
+            <?php if($type === 'heading'): ?>
+                <h4 class="font-size-26 font-weight-semi-bold mb-2 mt-2"><?php echo e($label); ?></h4>
+            <?php elseif($type === 'paragraph'): ?>
+                <p class="mb-3"><?php echo e($label); ?></p>
+            <?php else: ?>
+                <button class="details-card-button"><?php echo e($label); ?>: <?php echo e($value); ?></button>
+            <?php endif; ?>
+        <?php endforeach; $__env->popLoop(); $loop = $__env->getLastLoop(); ?>
+    <?php endforeach; $__env->popLoop(); $loop = $__env->getLastLoop(); ?>
+<?php else: ?>
+    <p>No details available.</p>
+<?php endif; ?>
 
 
-                  <?php else: ?>
-                    <p>No details available.</p>
-                  <?php endif; ?>
                 </div>
 
 

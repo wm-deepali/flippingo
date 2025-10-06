@@ -63,25 +63,30 @@
                 <div class="card-header">
                     <h4>Submission Data</h4>
                 </div>
-                <div class="card-body">
-                    @if(!empty($mappedData))
-                        <dl class="row">
-                            @foreach($mappedData as $label => $data)
-                                <dt class="col-sm-4">{{ $label }} :</dt>
-                                @php $val = $data['value'] ?? $data; @endphp
-                                <dd class="col-sm-8">
-                                    @if(is_array($val) || is_object($val))
-                                        <pre>{{ json_encode($val, JSON_PRETTY_PRINT) }}</pre>
-                                    @else
-                                        {{ $val }}
-                                    @endif
-                                </dd>
-                            @endforeach
-                        </dl>
-                    @else
-                        <p>No submission data available.</p>
-                    @endif
-                </div>
+              <div class="card-body">
+        @if(!empty($mappedData))
+            <dl class="row">
+                @foreach($mappedData as $label => $data)
+                   @php
+    $val = $data['value'] ?? '';
+    if (!empty($data['child_value'])) {
+        $val .= ' → ' . $data['child_value'];
+    }
+@endphp
+                    <dt class="col-sm-4">{{ $label }} :</dt>
+                    <dd class="col-sm-8">
+                        @if(is_array($val) || is_object($val))
+                            <pre>{{ json_encode($val, JSON_PRETTY_PRINT) }}</pre>
+                        @else
+                            {{ $val }}
+                        @endif
+                    </dd>
+                @endforeach
+            </dl>
+        @else
+            <p>No submission data available.</p>
+        @endif
+    </div>
             </div>
 
             <!-- Files Section -->
