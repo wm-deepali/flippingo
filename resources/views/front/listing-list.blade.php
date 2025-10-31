@@ -821,61 +821,57 @@
                                                                                                                                       
 
     <script>
-        document.addEventListener('DOMContentLoaded', function() {
-    // Get URL parameters
+      document.addEventListener('DOMContentLoaded', function() {
     const params = new URLSearchParams(window.location.search);
-    const selectedCategory = params.get('category') || 'all'; // default to 'all' if none
+    let selectedCategory =  localStorage.getItem('selectedCategory') || 'all';
 
-    if (params.get('category')) {
-  const form = document.querySelector('#filter-form'); // adjust selector as needed
-  if (form && !form.querySelector('input[name="category"]')) {
-    const input = document.createElement('input');
-    input.type = 'hidden';
-    input.name = 'category';
-    input.value = selectedCategory;
-    form.appendChild(input);
-  }
-}
-
-    // Trigger click on the corresponding tab
-    const tabToOpen = document.querySelector(`.tab-btn[data-category="${selectedCategory}"]`);
-    if (tabToOpen) {
-        tabToOpen.click();
-    } else {
-        // fallback to all
-        document.querySelector('.tab-btn[data-category="all"]').click();
+    // Add hidden input if not exists
+    const form = document.querySelector('#filter-form');
+    if (form && !form.querySelector('input[name="category"]')) {
+        const input = document.createElement('input');
+        input.type = 'hidden';
+        input.name = 'category';
+        input.value = selectedCategory;
+        form.appendChild(input);
     }
+
+    // Open correct tab
+    const tabToOpen = document.querySelector(`.tab-btn[data-category="${selectedCategory}"]`);
+    (tabToOpen || document.querySelector('.tab-btn[data-category="all"]'))?.click();
 });
 
 document.querySelectorAll('.tab-btn').forEach(btn => {
     btn.addEventListener('click', () => {
-        // Remove active class from all buttons
         document.querySelectorAll('.tab-btn').forEach(b => b.classList.remove('active'));
         btn.classList.add('active');
 
         const category = btn.getAttribute('data-category');
+        localStorage.setItem('selectedCategory', category); // ✅ save choice
+
+        // Update URL (no reload)
+        const url = new URL(window.location);
+        url.searchParams.set('category', category);
+        window.history.replaceState({}, '', url);
+
         const groups = document.querySelectorAll('.submission-group');
         const filters = document.querySelectorAll('.category-filters');
 
-        // Show/hide submissions
         groups.forEach(group => {
-            if (category === 'all') {
-                group.style.display = group.getAttribute('data-group') === 'all' ? '' : 'none';
-            } else {
-                group.style.display = group.getAttribute('data-group') === category ? '' : 'none';
-            }
+            group.style.display =
+                category === 'all' || group.getAttribute('data-group') === category
+                    ? ''
+                    : 'none';
         });
 
-        // Show/hide filters
         filters.forEach(div => {
-            if (category === 'all' || div.getAttribute('data-category') === category) {
-                div.style.display = '';
-            } else {
-                div.style.display = 'none';
-            }
+            div.style.display =
+                category === 'all' || div.getAttribute('data-category') === category
+                    ? ''
+                    : 'none';
         });
     });
 });
+
 
 function scrollTabs(amount) {
     const container = document.getElementById("tabsContainer");

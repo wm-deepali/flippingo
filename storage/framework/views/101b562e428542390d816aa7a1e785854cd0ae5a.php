@@ -76,12 +76,20 @@
         <?php if(!empty($mappedData)): ?>
             <dl class="row">
                 <?php $__currentLoopData = $mappedData; $__env->addLoop($__currentLoopData); foreach($__currentLoopData as $label => $data): $__env->incrementLoopIndices(); $loop = $__env->getLastLoop(); ?>
-                   <?php
+                  <?php
     $val = $data['value'] ?? '';
+
+    // If there’s a child dropdown selection
     if (!empty($data['child_value'])) {
         $val .= ' → ' . $data['child_value'];
     }
+
+    // If "Other" is chosen and a custom value exists
+    if (($data['value'] ?? '') === 'Other' && !empty($data['child_custom_value'])) {
+        $val .= ' → ' . $data['child_custom_value'];
+    }
 ?>
+
                     <dt class="col-sm-4"><?php echo e($label); ?> :</dt>
                     <dd class="col-sm-8">
                         <?php if(is_array($val) || is_object($val)): ?>

@@ -116,9 +116,10 @@ class FormSubmission extends Model
 
     public function getProductPhotoAttribute()
     {
-        $file = $this->files()
-            ? $this->files()->where('show_on_summary', true)->first()
-            : null;
+        $files = collect($this->files);
+        $file = $files->firstWhere('show_on_summary', true)
+                    ?? $files->first()
+                    ?? null;
 
         return $file ? $file->file_path : null;
     }

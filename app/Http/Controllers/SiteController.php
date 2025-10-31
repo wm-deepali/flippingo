@@ -28,6 +28,7 @@ class SiteController extends Controller
                 // ->whereNotNull('sponsor_display_until')
                 // ->where('sponsor_display_until', '>', $now)
                 ->with('form.category', 'form.formData', 'customer', 'files')
+                ->where('status', 'published')
                 ->latest()
                 ->get();
 
@@ -54,8 +55,11 @@ class SiteController extends Controller
 
                     $submission->summaryFields = $summaryFields;
                     $submission->category = $submission->form->category;
-                    $submission->imageFile = collect($submission->files)->firstWhere('show_on_summary', true);
+                    $files = collect($submission->files);
 
+                    $submission->imageFile = $files->firstWhere('show_on_summary', true)
+                        ?? $files->first()
+                        ?? null;
                     return $submission;
                 });
 
@@ -165,65 +169,90 @@ class SiteController extends Controller
             // Fetch all submissions for the category
             $submissions = FormSubmission::whereHas('form', function ($q) use ($category) {
                 $q->where('category_id', $category->id);
-            })->with(['form.category', 'form.formData', 'customer', 'files'])->get();
+            })->with(['form.category', 'form.formData', 'customer', 'files'])
+                ->where('status', 'published')
+                ->get();
 
             // Apply filters using collection
             $filtered = $submissions->filter(function ($submission) use ($request) {
                 $data = is_array($submission->data) ? $submission->data : json_decode($submission->data, true);
 
-                // Search filter
+                // 🔍 Search filter
                 if ($request->filled('search')) {
                     $search = strtolower($request->search);
                     $found = false;
+
                     foreach ($data as $field) {
-                        if (isset($field['value']) && str_contains(strtolower($field['value']), $search)) {
+                        if (!isset($field['value']))
+                            continue;
+
+                        $fieldValue = $field['value'];
+
+                        if (is_array($fieldValue)) {
+                            $fieldValue = implode(' ', array_map('strval', $fieldValue));
+                        }
+
+                        if (str_contains(strtolower($fieldValue), $search)) {
                             $found = true;
                             break;
                         }
                     }
-                    if (!$found)
+
+                    if (!$found) {
                         return false;
+                    }
                 }
 
-                // Price filters
+                // 💰 Price filters
                 $mrp = floatval($data['mrp']['value'] ?? 0);
                 if ($request->filled('price_min') && $mrp < $request->price_min)
                     return false;
                 if ($request->filled('price_max') && $mrp > $request->price_max)
                     return false;
 
-                // Rating filter
+                // ⭐ Rating filter
                 $rating = floatval($data['rating']['value'] ?? 0);
                 if ($request->filled('rating') && $rating < $request->rating)
                     return false;
 
-                // Country filter (customer->country)
+                // 🌍 Country filter
                 if ($request->filled('country')) {
                     $customerCountry = optional($submission->customer)->country ?? null;
-                    if (strtolower($customerCountry) !== strtolower($request->country))
+                    if (strtolower((string) $customerCountry) !== strtolower($request->country))
                         return false;
                 }
 
-                // For Sale filter (urgent_sale: Yes/No)
+                // 🏷️ For Sale filter
                 if ($request->filled('for_sale')) {
                     $urgentSale = $data['urgent_sale']['value'] ?? 'No';
-                    if (strtolower($urgentSale) !== strtolower($request->for_sale))
+                    if (strtolower((string) $urgentSale) !== strtolower($request->for_sale))
                         return false;
                 }
 
-                // Dynamic filters
+                // ⚙️ Dynamic filters
                 if ($request->has('filters') && is_array($request->filters)) {
                     foreach ($request->filters as $field => $value) {
                         if (empty($value))
                             continue;
 
-                        $fieldValue = strtolower($data[$field]['value'] ?? '');
+                        $fieldValue = $data[$field]['value'] ?? '';
+
+                        // Handle array field values safely
+                        if (is_array($fieldValue)) {
+                            $fieldValue = implode(' ', array_map('strval', $fieldValue));
+                        }
+
+                        $fieldValue = strtolower((string) $fieldValue);
+
                         if (is_array($value)) {
-                            $matches = collect($value)->map(fn($v) => strtolower($v))->contains($fieldValue);
+                            $matches = collect($value)
+                                ->map(fn($v) => strtolower((string) $v))
+                                ->contains($fieldValue);
+
                             if (!$matches)
                                 return false;
                         } else {
-                            if ($fieldValue !== strtolower($value))
+                            if ($fieldValue !== strtolower((string) $value))
                                 return false;
                         }
                     }
@@ -232,21 +261,19 @@ class SiteController extends Controller
                 return true;
             });
 
-            // Apply sorting
-            // Get sort option from request, default to 'new-first'
-            $sort = $request->input('sort', 'default');
 
-            $filtered = match ($sort) {
-                'price-low-to-high' => $filtered->sortBy(fn($s) => floatval(data_get(json_decode($s->data, true), 'mrp.value', 0))),
-                'price-high-to-low' => $filtered->sortByDesc(fn($s) => floatval(data_get(json_decode($s->data, true), 'mrp.value', 0))),
-                'most-rated' => $filtered->sortByDesc(fn($s) => floatval(data_get(json_decode($s->data, true), 'rating.value', 0))),
-                'most-popular' => $filtered->sortByDesc(fn($s) => $s->total_views ?? 0),
-                'new-first' => $filtered->sortByDesc(fn($s) => $s->created_at), // ascending = oldest first
-                default => $filtered->sortByDesc(fn($s) => $s->created_at),
-            };
+
             // Map summary fields
             $allSubmissionsMapped = $filtered->map(function ($submission) {
-                $fields = is_array($submission->data) ? $submission->data : json_decode($submission->data, true);
+                // Decode safely
+                $fields = $submission->data;
+                if (!is_array($fields)) {
+                    $fields = json_decode($fields, true);
+                }
+
+                // Ensure array
+                $fields = is_array($fields) ? $fields : [];
+
                 $formFields = collect(data_get($submission, 'form.formData.fields', []));
                 $summaryFields = [];
 
@@ -264,10 +291,15 @@ class SiteController extends Controller
 
                 $submission->summaryFields = $summaryFields;
                 $submission->category = $submission->form->category;
-                $submission->imageFile = collect($submission->files)->firstWhere('show_on_summary', true);
+                $files = collect($submission->files);
+
+                $submission->imageFile = $files->firstWhere('show_on_summary', true)
+                    ?? $files->first()
+                    ?? null;
 
                 return $submission;
             });
+
 
             if ($allSubmissionsMapped->isNotEmpty()) {
                 $submissionsByCategory[$category->id] = $allSubmissionsMapped;
@@ -296,6 +328,19 @@ class SiteController extends Controller
         }
 
         $allSubmissions = collect($allSubmissionsFlat);
+
+        // Apply global sorting here
+        $sort = $request->input('sort', 'default');
+
+        $allSubmissions = match ($sort) {
+            'price-low-to-high' => $allSubmissions->sortBy(fn($s) => floatval(data_get(json_decode($s['data'] ?? '[]', true), 'mrp.value', 0))),
+            'price-high-to-low' => $allSubmissions->sortByDesc(fn($s) => floatval(data_get(json_decode($s['data'] ?? '[]', true), 'mrp.value', 0))),
+            'most-rated' => $allSubmissions->sortByDesc(fn($s) => floatval(data_get(json_decode($s['data'] ?? '[]', true), 'rating.value', 0))),
+            'most-popular' => $allSubmissions->sortByDesc(fn($s) => $s['total_views'] ?? 0),
+            'new-first' => $allSubmissions->sortByDesc(fn($s) => $s['created_at']),
+            default => $allSubmissions->sortByDesc(fn($s) => $s['created_at']),
+        };
+
         $countries = DB::table('countries')->orderBy('name')->get();
         return view('front.listing-list', compact('categories', 'submissionsByCategory', 'allSubmissions', 'countries'));
     }

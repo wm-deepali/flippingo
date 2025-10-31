@@ -28,7 +28,7 @@
                                 data-action="{{ route('listing.update', $submission->id) }}">@csrf
                                 @method('PUT')
                       @php
-                        $inputTypes = ['text', 'email', 'number', 'select', 'dropdown', 'file', 'signature', 'textarea', 'date', 'checkbox', 'radio', 'cascadingDropdown']; // Add all form input types you support
+                        $inputTypes = ['text', 'email', 'number', 'selectlist', 'dropdown', 'file', 'signature', 'textarea', 'date', 'checkbox', 'radio', 'cascadingDropdown']; // Add all form input types you support
                     @endphp
                                 @foreach($formData->fields as $field)
                                     @if(in_array($field['type'], $inputTypes))
@@ -81,14 +81,31 @@
                                                     value="{{ $value }}">
                                                 <button type="button" class="btn btn-secondary btn-sm mt-1"
                                                     id="clear_signature_{{ $fieldKey }}">Clear</button>
-                                            @elseif(in_array($type, ['select', 'dropdown']))
-                                                <select name="{{ $fieldKey }}" class="form-control">
-                                                    @foreach($field['properties']['options'] ?? [] as $optionValue => $optionLabel)
-                                                        <option value="{{ $optionValue }}" @if($optionValue == $value) selected @endif>
-                                                            {{ $optionLabel }}
-                                                        </option>
-                                                    @endforeach
-                                                </select>
+                                             @elseif(in_array($type, ['selectlist', 'dropdown']))
+    @php
+        $options = $field['properties']['options'] ?? [];
+    @endphp
+    <select name="{{ $fieldKey }}" class="form-control">
+        @foreach($options as $option)
+            @php
+                // Split option by "|selected"
+                $isSelectedDefault = false;
+                $optionLabel = $option;
+
+                if (str_contains($option, '|selected')) {
+                    $optionLabel = str_replace('|selected', '', $option);
+                    $isSelectedDefault = true;
+                }
+
+                // Determine selected: from existing data or default option
+                $selected = ($value == $optionLabel) || (!$value && $isSelectedDefault);
+            @endphp
+
+            <option value="{{ $optionLabel }}" @if($selected) selected @endif>
+                {{ $optionLabel }}
+            </option>
+        @endforeach
+    </select>
                                                  @elseif($type === 'cascadingDropdown')
     @php
         $parentValue = $existingData[$fieldKey]['value'] ?? '';
@@ -98,13 +115,20 @@
     @endphp
 
     <div class="mb-3">
-        {{-- Parent Dropdown --}}
-        <select class="form-control parent-dropdown" name="{{ $fieldKey }}">
-            <option value="">Select parent</option>
-            @foreach($parentOptions as $option)
-                <option value="{{ $option }}" @if($option == $parentValue) selected @endif>{{ $option }}</option>
-            @endforeach
-        </select>
+                                                              {{-- Parent Dropdown --}}
+<select class="form-control parent-dropdown" name="{{ $fieldKey }}">
+    <option value="">Select parent</option>
+    @foreach($parentOptions as $option)
+        <option value="{{ $option }}" @if($option == $parentValue) selected @endif>
+            {{ $option }}
+        </option>
+    @endforeach
+
+    @if(!empty($field['properties']['enableParentOther']) && $field['properties']['enableParentOther'] == true)
+        <option value="Other" @if($parentValue == 'Other') selected @endif>Other</option>
+    @endif
+</select>
+
 
         {{-- Child Dropdown --}}
         <select class="form-control mt-2 child-dropdown" name="{{ $fieldKey }}_child">
@@ -116,7 +140,65 @@
             @endif
         </select>
     </div>
+  @elseif($type === 'textarea')
+                                                    <textarea name="{{ $fieldKey }}" class="form-control"
+                                                        rows="3">{{ is_array($value) ? implode(', ', $value) : $value }}</textarea>
 
+                                               @elseif($type === 'checkbox')
+    <label class="form-label fw-bold">{{ $field['properties']['label'] ?? '' }}</label>
+
+    @foreach($field['properties']['checkboxes'] ?? [] as $checkbox)
+        @php
+            // Split by "|" and trim spaces
+            $parts = array_map('trim', explode('|', $checkbox));
+
+            // Label and value
+            $label = $parts[0] ?? '';
+            $value = $parts[1] ?? $label; // fallback if no value part
+            $isSelected = isset($parts[2]) && strtolower($parts[2]) === 'selected';
+        @endphp
+
+        <div class="form-check">
+            <input class="form-check-input"
+                type="checkbox"
+                name="{{ $field['properties']['field_id'] ?? '' }}[]"
+                value="{{ $value }}"
+                @if((is_array($value ?? null) && in_array($value, $value ?? [])) || $isSelected) checked @endif
+            >
+            <label class="form-check-label">{{ $label }}</label>
+        </div>
+    @endforeach
+                                               @elseif($type === 'radio')
+    <label class="form-label fw-bold">{{ $field['properties']['label'] ?? '' }}</label>
+
+    @foreach($field['properties']['radios'] ?? [] as $radio)
+        @php
+            // Split the radio string (Label | Value | selected)
+            $parts = array_map('trim', explode('|', $radio));
+
+            $label = $parts[0] ?? '';
+            $optionValue = $parts[1] ?? $label; // fallback if value not given
+            $isSelected = isset($parts[2]) && strtolower($parts[2]) === 'selected';
+        @endphp
+
+        <div class="form-check">
+            <input
+                class="form-check-input"
+                type="radio"
+                name="{{ $field['properties']['field_id'] ?? $fieldKey }}"
+                value="{{ $optionValue }}"
+                @if(($value ?? '') == $optionValue || $isSelected) checked @endif
+            >
+            <label class="form-check-label">{{ $label }}</label>
+        </div>
+    @endforeach
+
+
+                                                @elseif($type === 'date')
+                                                    <input type="date" name="{{ $fieldKey }}"
+                                                        value="{{ is_array($value) ? '' : $value }}" class="form-control">
+
+                                                
 @else
                                                 <input type="{{ $type }}" name="{{ $fieldKey }}" value="{{ $value }}"
                                                     class="form-control">
@@ -141,8 +223,8 @@
     <script>
 
 
-$(document).ready(function() {
-    // Prepare child mappings for all cascading dropdowns
+$(document).ready(function () {
+    // Build mapping for all cascading dropdowns
     const childMapping = {};
     @foreach($formData->fields as $field)
         @if($field['type'] === 'cascadingDropdown')
@@ -150,25 +232,66 @@ $(document).ready(function() {
         @endif
     @endforeach
 
-    // Initialize cascading dropdowns
-    $('.parent-dropdown').each(function() {
+    $('.parent-dropdown').each(function () {
         const parent = $(this);
         const fieldName = parent.attr('name');
         const child = $(`select[name="${fieldName}_child"]`);
 
-        // Hide child initially if no parent selected
-        if (!parent.val()) child.closest('.mb-3').find('.child-dropdown').hide();
+        // Existing values (for edit mode)
+        const parentValue = parent.val();
+        const customValue = @json($existingData)[fieldName]?.child_custom_value ?? null;
 
-        parent.off('change').on('change', function() {
+        // Hide child dropdown if no parent
+        if (!parentValue) child.closest('.mb-3').find('.child-dropdown').hide();
+
+        // --- Handle edit mode for "Other" ---
+        if (parentValue === 'Other') {
+            child.closest('.mb-3').find('.child-dropdown').hide();
+
+            const existingVal = customValue ? customValue.replace(/^,/, '') : '';
+            const inputHtml = `
+                <div class="form-group mt-2" id="parent-other-group-${fieldName}">
+                    <input type="text" class="form-control"
+                           id="parent-other-input-${fieldName}"
+                           name="${fieldName}_child_custom"
+                           value="${existingVal}"
+                           placeholder="Enter your option">
+                </div>`;
+            if (!$(`#parent-other-group-${fieldName}`).length) {
+                child.closest('.mb-3').append(inputHtml);
+            }
+        }
+
+        // --- Handle change dynamically ---
+        parent.off('change').on('change', function () {
             const selectedParent = $(this).val();
-            child.empty().append('<option value="">Select child</option>');
 
-            if (selectedParent && childMapping[fieldName] && childMapping[fieldName][selectedParent]) {
-                childMapping[fieldName][selectedParent].forEach(function(opt) {
+            // Remove custom input if any
+            $(`#parent-other-group-${fieldName}`).remove();
+
+            // Handle "Other"
+            if (selectedParent === 'Other') {
+                child.closest('.mb-3').find('.child-dropdown').hide();
+                const inputHtml = `
+                    <div class="form-group mt-2" id="parent-other-group-${fieldName}">
+                        <input type="text" class="form-control"
+                               id="parent-other-input-${fieldName}"
+                               name="${fieldName}_child_custom"
+                               placeholder="Enter your option">
+                    </div>`;
+                child.closest('.mb-3').append(inputHtml);
+            }
+            // Handle normal parent-child mapping
+            else if (selectedParent && childMapping[fieldName] && childMapping[fieldName][selectedParent]) {
+                $(`#parent-other-group-${fieldName}`).remove();
+                child.empty().append('<option value="">Select child</option>');
+                childMapping[fieldName][selectedParent].forEach(opt => {
                     child.append(`<option value="${opt}">${opt}</option>`);
                 });
                 child.closest('.mb-3').find('.child-dropdown').show();
-            } else {
+            }
+            // Handle empty parent
+            else {
                 child.closest('.mb-3').find('.child-dropdown').hide();
             }
         });

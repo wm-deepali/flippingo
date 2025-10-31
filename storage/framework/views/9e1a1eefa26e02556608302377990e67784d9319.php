@@ -269,7 +269,7 @@
         <div class="order-invoice">
             <!-- Order Tabs -->
 
-           <div class="order-tabs">
+            <div class="order-tabs">
                 <div class="order-card recent">
                     <h4>Recent Orders</h4>
                     <p><?php echo e($counts['recent']); ?></p>
@@ -328,14 +328,22 @@
             <form id="cancelOrderForm">
                 <?php echo csrf_field(); ?>
                 <input type="hidden" name="order_id" id="cancelOrderId">
-
                 <div class="form-group">
                     <label>Reason</label>
                     <select name="reason" class="form-control" required>
                         <option value="">Select reason</option>
-                        <option value="wrong_item">Ordered wrong item</option>
-                        <option value="delay">Delay in delivery</option>
-                        <option value="other">Other</option>
+                        <?php $__currentLoopData = $reasons; $__env->addLoop($__currentLoopData); foreach($__currentLoopData as $reason): $__env->incrementLoopIndices(); $loop = $__env->getLastLoop(); ?>
+                            <option value="<?php echo e($reason->id); ?>"><?php echo e($reason->reason); ?></option>
+                        <?php endforeach; $__env->popLoop(); $loop = $__env->getLastLoop(); ?>
+                    </select>
+                </div>
+
+                <div class="form-group">
+                    <label>Reason</label>
+                    <select name="reason" class="form-control" required>
+                        <?php $__currentLoopData = $reasons; $__env->addLoop($__currentLoopData); foreach($__currentLoopData as $id => $reason): $__env->incrementLoopIndices(); $loop = $__env->getLastLoop(); ?>
+                            <option value="<?php echo e($id); ?>"><?php echo e($reason); ?></option>
+                        <?php endforeach; $__env->popLoop(); $loop = $__env->getLastLoop(); ?>
                     </select>
                 </div>
 

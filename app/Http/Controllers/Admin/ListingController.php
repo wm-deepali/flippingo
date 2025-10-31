@@ -49,6 +49,8 @@ class ListingController extends Controller
             return $submission;
         });
 
+        // dd($submissions->toArray());
+
         return view('admin.form_submissions.index', compact('submissions'));
     }
     public function show($id)
@@ -69,6 +71,7 @@ class ListingController extends Controller
             $mappedData[$label] = [
                 'value' => $value,
                 'child_value' => $childValue,   // <- include child_value here
+                'child_custom_value' => $fieldData['child_custom_value'] ?? null,
                 'show_on_summary' => $showOnSummary,
             ];
         }
@@ -88,7 +91,7 @@ class ListingController extends Controller
         $existingData = json_decode($submission->data, true) ?? [];
         $uploadedFiles = $submission->files;
 
-        // dd($formData->fields);
+        // dd($existingData,$formData->fields);
         return view('admin.form_submissions.edit', [
             'submission' => $submission,
             'formData' => $formData,
@@ -97,131 +100,141 @@ class ListingController extends Controller
         ]);
     }
 
-   public function update(Request $request, $id)
-{
-    $submission = FormSubmission::with('form')->findOrFail($id);
+    public function update(Request $request, $id)
+    {
+        $submission = FormSubmission::with('form')->findOrFail($id);
 
-    try {
-        $form = $submission->form;
-        if (!$form) {
-            return response()->json([
-                'success' => false,
-                'message' => 'Form not found.'
-            ], 404);
-        }
-
-        $formData = FormData::where('form_id', $form->id)->first();
-        $fieldsDefinition = $formData ? $formData->fields : [];
-
-        // Existing structured input data
-        $inputDataWithMeta = $submission->data ? json_decode($submission->data, true) : [];
-
-        // Update non-file fields
-        $rawInputData = $request->except(['_token', '_method', 'form_id', 'delete_files']);
-        foreach ($rawInputData as $fieldId => $value) {
-
-            // Handle child fields of cascading dropdowns
-            if (str_ends_with($fieldId, '_child')) {
-                $parentKey = str_replace('_child', '', $fieldId);
-                $inputDataWithMeta[$parentKey]['child_value'] = $value;
-                continue;
+        try {
+            $form = $submission->form;
+            if (!$form) {
+                return response()->json([
+                    'success' => false,
+                    'message' => 'Form not found.'
+                ], 404);
             }
 
-            $fieldDef = collect($fieldsDefinition)->firstWhere('id', $fieldId);
-            $fieldLabel = $fieldDef['properties']['label'] ?? $fieldId;
-            $showOnSummary = $fieldDef['properties']['show_on_summary'] ?? false;
-            $icon = $fieldDef['properties']['icon'] ?? '';
+            $formData = FormData::where('form_id', $form->id)->first();
+            $fieldsDefinition = $formData ? $formData->fields : [];
 
-            $inputDataWithMeta[$fieldId] = [
-                'field_id' => $fieldId,
-                'label' => $fieldLabel,
-                'value' => $value,
-                'show_on_summary' => $showOnSummary,
-                'icon' => $icon,
-            ];
-        }
+            // Existing structured input data
+            $inputDataWithMeta = $submission->data ? json_decode($submission->data, true) : [];
 
-        // Handle file deletions
-        if ($request->has('delete_files')) {
-            foreach ($request->delete_files as $fileId) {
-                $file = $submission->files()->find($fileId);
-                if ($file) {
-                    Storage::disk('public')->delete($file->file_path);
-                    $file->delete();
+            // Update non-file fields
+            $rawInputData = $request->except(['_token', '_method', 'form_id', 'delete_files']);
+            // dd($rawInputData);
+            foreach ($rawInputData as $fieldId => $value) {
+
+                // Handle child fields of cascading dropdowns
+                // Handle child fields of cascading dropdowns
+                if (str_ends_with($fieldId, '_child')) {
+                    $parentKey = str_replace('_child', '', $fieldId);
+                    $inputDataWithMeta[$parentKey]['child_value'] = $value;
+                    continue;
+                }
+
+                // Handle "Other" custom input for cascading dropdowns
+                if (str_ends_with($fieldId, '_child_custom')) {
+                    $parentKey = str_replace('_child_custom', '', $fieldId);
+                    $inputDataWithMeta[$parentKey]['child_custom_value'] = $value;
+                    continue;
+                }
+
+
+                $fieldDef = collect($fieldsDefinition)->firstWhere('id', $fieldId);
+                $fieldLabel = $fieldDef['properties']['label'] ?? $fieldId;
+                $showOnSummary = $fieldDef['properties']['show_on_summary'] ?? false;
+                $icon = $fieldDef['properties']['icon'] ?? '';
+
+                $inputDataWithMeta[$fieldId] = [
+                    'field_id' => $fieldId,
+                    'label' => $fieldLabel,
+                    'value' => $value,
+                    'show_on_summary' => $showOnSummary,
+                    'icon' => $icon,
+                ];
+            }
+
+            // Handle file deletions
+            if ($request->has('delete_files')) {
+                foreach ($request->delete_files as $fileId) {
+                    $file = $submission->files()->find($fileId);
+                    if ($file) {
+                        Storage::disk('public')->delete($file->file_path);
+                        $file->delete();
+                    }
                 }
             }
-        }
 
-        // Handle new file uploads (replace old ones for same field)
-        foreach ($request->allFiles() as $fieldName => $fileOrFiles) {
-            $fieldDef = collect($fieldsDefinition)
-                ->firstWhere('id', $fieldName)
-                ?? collect($fieldsDefinition)->firstWhere('name', $fieldName);
+            // Handle new file uploads (replace old ones for same field)
+            foreach ($request->allFiles() as $fieldName => $fileOrFiles) {
+                $fieldDef = collect($fieldsDefinition)
+                    ->firstWhere('id', $fieldName)
+                    ?? collect($fieldsDefinition)->firstWhere('name', $fieldName);
 
-            $fieldLabel = $fieldDef['properties']['label'] ?? $fieldName;
-            $showOnSummary = $fieldDef['properties']['show_on_summary'] ?? false;
+                $fieldLabel = $fieldDef['properties']['label'] ?? $fieldName;
+                $showOnSummary = $fieldDef['properties']['show_on_summary'] ?? false;
 
-            // Delete old files for this field
-            $oldFiles = $submission->files()->where('field_id', $fieldName)->get();
-            foreach ($oldFiles as $oldFile) {
-                Storage::disk('public')->delete($oldFile->file_path);
-                $oldFile->delete();
-            }
+                // Delete old files for this field
+                $oldFiles = $submission->files()->where('field_id', $fieldName)->get();
+                foreach ($oldFiles as $oldFile) {
+                    Storage::disk('public')->delete($oldFile->file_path);
+                    $oldFile->delete();
+                }
 
-            // Save new file(s)
-            if (is_array($fileOrFiles)) {
-                foreach ($fileOrFiles as $file) {
-                    if ($file->isValid()) {
-                        $path = $file->store('uploads', 'public');
+                // Save new file(s)
+                if (is_array($fileOrFiles)) {
+                    foreach ($fileOrFiles as $file) {
+                        if ($file->isValid()) {
+                            $path = $file->store('uploads', 'public');
+                            $submission->files()->create([
+                                'field_id' => $fieldName,
+                                'field_name' => $fieldLabel,
+                                'file_path' => $path,
+                                'original_name' => $file->getClientOriginalName(),
+                                'mime_type' => $file->getMimeType(),
+                                'size' => $file->getSize(),
+                                'show_on_summary' => $showOnSummary,
+                            ]);
+                        }
+                    }
+                } elseif ($fileOrFiles instanceof \Illuminate\Http\UploadedFile) {
+                    if ($fileOrFiles->isValid()) {
+                        $path = $fileOrFiles->store('uploads', 'public');
                         $submission->files()->create([
                             'field_id' => $fieldName,
                             'field_name' => $fieldLabel,
                             'file_path' => $path,
-                            'original_name' => $file->getClientOriginalName(),
-                            'mime_type' => $file->getMimeType(),
-                            'size' => $file->getSize(),
+                            'original_name' => $fileOrFiles->getClientOriginalName(),
+                            'mime_type' => $fileOrFiles->getMimeType(),
+                            'size' => $fileOrFiles->getSize(),
                             'show_on_summary' => $showOnSummary,
                         ]);
                     }
                 }
-            } elseif ($fileOrFiles instanceof \Illuminate\Http\UploadedFile) {
-                if ($fileOrFiles->isValid()) {
-                    $path = $fileOrFiles->store('uploads', 'public');
-                    $submission->files()->create([
-                        'field_id' => $fieldName,
-                        'field_name' => $fieldLabel,
-                        'file_path' => $path,
-                        'original_name' => $fileOrFiles->getClientOriginalName(),
-                        'mime_type' => $fileOrFiles->getMimeType(),
-                        'size' => $fileOrFiles->getSize(),
-                        'show_on_summary' => $showOnSummary,
-                    ]);
-                }
+
+                unset($inputDataWithMeta[$fieldName]); // avoid JSON conflict
             }
 
-            unset($inputDataWithMeta[$fieldName]); // avoid JSON conflict
+            // Update submission JSON data
+            $submission->update([
+                'data' => json_encode($inputDataWithMeta),
+            ]);
+
+            // Add history
+            $submission->addHistory($submission->status, 'Submission updated', auth()->id());
+
+            return response()->json([
+                'success' => true,
+                'message' => 'Submission updated successfully.'
+            ]);
+
+        } catch (\Exception $e) {
+            return response()->json([
+                'success' => false,
+                'message' => $e->getMessage()
+            ], 500);
         }
-
-        // Update submission JSON data
-        $submission->update([
-            'data' => json_encode($inputDataWithMeta),
-        ]);
-
-        // Add history
-        $submission->addHistory($submission->status, 'Submission updated', auth()->id());
-
-        return response()->json([
-            'success' => true,
-            'message' => 'Submission updated successfully.'
-        ]);
-
-    } catch (\Exception $e) {
-        return response()->json([
-            'success' => false,
-            'message' => $e->getMessage()
-        ], 500);
     }
-}
 
 
 

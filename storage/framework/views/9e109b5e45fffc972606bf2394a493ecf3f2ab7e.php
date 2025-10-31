@@ -491,14 +491,22 @@ foreach ($fields as $field) {
                     $label = $field['properties']['label'] ?? $field['label'] ?? '';
                     $FieldData = $submittedValues[$fieldId] ?? null;
 
-                    if (is_array($FieldData)) {
-                        $value = $FieldData['value'] ?? '';
-                        if (!empty($FieldData['child_value'])) {
-                            $value .= ' → ' . $FieldData['child_value'];
-                        }
-                    } else {
-                        $value = $FieldData;
-                    }
+                  if (is_array($FieldData)) {
+    $value = $FieldData['value'] ?? '';
+
+    // Include child dropdown value if exists
+    if (!empty($FieldData['child_value'])) {
+        $value .= ' → ' . $FieldData['child_value'];
+    }
+
+    // Include custom 'Other' input if "Other" is selected and a custom value exists
+    if (($FieldData['value'] ?? '') === 'Other' && !empty($FieldData['child_custom_value'])) {
+        $value .= ' → ' . $FieldData['child_custom_value'];
+    }
+} else {
+    $value = $FieldData;
+}
+
                 }
             ?>
 

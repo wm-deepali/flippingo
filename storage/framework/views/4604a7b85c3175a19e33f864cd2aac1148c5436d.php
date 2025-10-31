@@ -1,5 +1,3 @@
-
-
 <?php $__env->startSection('title'); ?>
     <?php echo e($page->meta_title ?? 'Flippingo'); ?>
 
@@ -14,8 +12,8 @@
 
 <?php $__env->startSection('content'); ?>
     <!-- ================================
-                                                                                    START BREADCRUMB AREA
-                                                                                ================================= -->
+                                                                                        START BREADCRUMB AREA
+                                                                                    ================================= -->
     <section class="breadcrumb-area bread-bg">
         <div class="overlay"></div>
         <!-- end overlay -->
@@ -40,12 +38,12 @@
     </section>
     <!-- end breadcrumb-area -->
     <!-- ================================
-                                                                                    END BREADCRUMB AREA
-                                                                                ================================= -->
+                                                                                        END BREADCRUMB AREA
+                                                                                    ================================= -->
 
     <!-- ================================
-                                                                                    START ADD-LISTING AREA
-                                                                                ================================= -->
+                                                                                        START ADD-LISTING AREA
+                                                                                    ================================= -->
     <section class="add-listing-area padding-top-60px padding-bottom-90px">
         <div class="container">
             <div class="row justify-content-center">
@@ -223,98 +221,87 @@
         });
 
         // Initialize cascading dropdown functionality
-        function initializeCascadingDropdowns(formData) {
-            // Find all cascading dropdown fields in the form
-            const cascadingFields = [];
+       function initializeCascadingDropdowns(formData) {
+  const cascadingFields = [];
 
-            // Access fields correctly - formData is actually the fields array directly
-            let fields = [];
-            if (Array.isArray(formData)) {
-                fields = formData;
-            } else if (formData && Array.isArray(formData.fields)) {
-                fields = formData.fields;
-            }
+  let fields = [];
+  if (Array.isArray(formData)) {
+    fields = formData;
+  } else if (formData && Array.isArray(formData.fields)) {
+    fields = formData.fields;
+  }
 
+  if (Array.isArray(fields)) {
+    fields.forEach(field => {
+      if (field.type === 'cascadingDropdown' && field.properties) {
+        cascadingFields.push({
+          fieldId: field.id,
+          properties: field.properties
+        });
+      }
+    });
+  }
 
-            // Loop through fields to find cascading dropdown types
-            if (Array.isArray(fields)) {
-                fields.forEach(field => {
-                    if (field.type === 'cascadingDropdown' && field.properties) {
-                        cascadingFields.push({
-                            fieldId: field.id,
-                            properties: field.properties
-                        });
-                    }
-                });
-            }
+  cascadingFields.forEach(field => {
+    const parentDropdown = $(`.parent-dropdown[name="${field.fieldId}"]`);
+    const childDropdown = $(`.child-dropdown[name="${field.fieldId}_child"]`);
+    const parentOptions = [...(field.properties.parentOptions || [])];
 
-            // Initialize each cascading dropdown
-            cascadingFields.forEach(field => {
-                const parentDropdown = $(`.parent-dropdown[name="${field.fieldId}"]`)[0];
-                const childDropdown = $(`.child-dropdown[name="${field.fieldId}_child"]`)[0];
+    // Add "Other" option if enabled
+    if (field.properties.enableParentOther) {
+      parentOptions.push("Other");
+    }
 
-                if (parentDropdown && childDropdown) {
-                    const parentOptions = field.properties.parentOptions || [];
-                    const parentChildMapping = field.properties.parentChildMapping || {};
+    parentDropdown.empty();
+    childDropdown.empty();
 
-                    // Clear existing options
-                    $(parentDropdown).empty();
-                    $(childDropdown).empty();
+    // Default parent option placeholder
+    parentDropdown.append($('<option>', { value: '', text: field.properties.placeholder || 'Select an option' }));
 
-                    // Add default option to parent dropdown
-                    $(parentDropdown).append($('<option>', {
-                        value: '',
-                        text: 'Select parent'
-                    }));
+    // Populate parent options with "Other"
+    parentOptions.forEach(option => {
+      parentDropdown.append($('<option>', { value: option, text: option }));
+    });
 
-                    // Populate parent dropdown
-                    parentOptions.forEach(option => {
-                        $(parentDropdown).append($('<option>', {
-                            value: option,
-                            text: option
-                        }));
-                    });
+    // Default child dropdown option
+    childDropdown.append($('<option>', { value: '', text: 'Select a child' }));
 
-                    // Add default option to child dropdown
-                    $(childDropdown).append($('<option>', {
-                        value: '',
-                        text: 'Select child'
-                    }));
+    // Hide child dropdown initially
+    childDropdown.closest('.form-group, .form-control, div').hide();
 
-                    // 🔹 Hide child dropdown initially
-                    $(childDropdown).closest('.form-group, .form-control, div').hide();
+    parentDropdown.off('change.cascading').on('change.cascading', function () {
+      const selectedParent = $(this).val();
 
-                    // Handle parent dropdown change
-                    $(parentDropdown).off('change.cascading').on('change.cascading', function () {
-                        const selectedParent = $(this).val();
+      // Remove any existing custom input
+      $(`#parent-other-group-${field.fieldId}`).remove();
 
-                        // Clear child dropdown except default option
-                        $(childDropdown).empty();
-                        $(childDropdown).append($('<option>', {
-                            value: '',
-                            text: 'Select child'
-                        }));
+      if (field.properties.enableParentOther && selectedParent === "Other") {
+        // Hide child dropdown
+        childDropdown.closest('.form-group, .form-control, div').hide();
 
-                        if (selectedParent && parentChildMapping[selectedParent]) {
-                            const childOptions = parentChildMapping[selectedParent];
-                            childOptions.forEach(option => {
-                                $(childDropdown).append($('<option>', {
-                                    value: option,
-                                    text: option
-                                }));
-                            });
-
-                            // 🔹 Show child dropdown only when parent is chosen
-                            $(childDropdown).closest('.form-group, .form-control, div').show();
-                        } else {
-                            // 🔹 Hide again if no valid parent
-                            $(childDropdown).closest('.form-group, .form-control, div').hide();
-                        }
-                    });
-                }
-            });
-
+        // Add input field for child value
+        if (!$(`#parent-other-input-${field.fieldId}`).length) {
+          const inputHtml = `<input type="text" class="form-control" id="parent-other-input-${field.fieldId}" name="${field.fieldId}_child_custom" placeholder="Enter your option">`;
+          childDropdown.closest('.form-group, .form-control, div').after(`<div class="form-group mt-2" id="parent-other-group-${field.fieldId}">${inputHtml}</div>`);
         }
+      } else if (selectedParent && field.properties.parentChildMapping[selectedParent]) {
+        // Show and populate child dropdown based on mapping
+        childDropdown.empty();
+        childDropdown.append($('<option>', { value: '', text: 'Select a child' }));
+
+        const childOptions = field.properties.parentChildMapping[selectedParent];
+        childOptions.forEach(option => {
+          childDropdown.append($('<option>', { value: option, text: option }));
+        });
+
+        childDropdown.closest('.form-group, .form-control, div').show();
+      } else {
+        // Hide child dropdown, remove custom input
+        childDropdown.closest('.form-group, .form-control, div').hide();
+      }
+    });
+  });
+}
 
     </script>
 

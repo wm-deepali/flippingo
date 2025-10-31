@@ -52,8 +52,8 @@
     }
 
     /* #my-form {
-                                                                              height: 100vh;
-                                                                          } */
+                                                                                  height: 100vh;
+                                                                              } */
 
     /* Modal button styling */
     .modal-footer .btn {
@@ -337,16 +337,16 @@
 
           <!-- Right Sidebar: Styles -->
           <!-- <div id="ef-styles" class="col-md-3 d-none">
-                                      <div class="ef-sidebar-outer p-2">
-                                        <h5>Design</h5>
-                                        <div id="styles-panel">
-                                        </div>
-                                        <div class="mt-2">
-                                          <a href="#" id="collapse-styles">Collapse All</a> |
-                                          <a href="#" id="expand-styles">Expand All</a>
-                                        </div>
-                                      </div>
-                                    </div> -->
+                                          <div class="ef-sidebar-outer p-2">
+                                            <h5>Design</h5>
+                                            <div id="styles-panel">
+                                            </div>
+                                            <div class="mt-2">
+                                              <a href="#" id="collapse-styles">Collapse All</a> |
+                                              <a href="#" id="expand-styles">Expand All</a>
+                                            </div>
+                                          </div>
+                                        </div> -->
 
         </div>
 
@@ -408,7 +408,14 @@
 
     function addFieldFromConfig(type, config = {}) {
       // Generate ID
-      const fieldId = generateSimpleFieldId(type);
+      // Special: For essential fields, mark as non-deletable and disable deletion and dragging
+      const nonDeletableFields = ['product_title', 'mrp', 'urgent_sale', 'offered_price'];
+      let fieldId = generateSimpleFieldId(type);
+      const configId = (config.id && config.id.value) || (config.alias && config.alias.value) || '';
+      if (nonDeletableFields.includes(String(configId).toLowerCase())) {
+        fieldId = configId;
+      }
+
 
       // Generate HTML for the field
       const fieldHtml = getFieldHtml(type, fieldId);
@@ -450,11 +457,8 @@
       }
 
 
-      // Special: For essential fields, mark as non-deletable and disable deletion and dragging
-      const nonDeletableFields = ['product_title', 'mrp', 'urgent_sale', 'offered_price'];
-      // console.log(config, 'config');
 
-      const configId = (config.id && config.id.value) || (config.alias && config.alias.value) || '';
+      // console.log(config, 'config');
       if (nonDeletableFields.includes(String(configId).toLowerCase())) {
         $field.attr('data-non-deletable', 'true');
         $field.addClass('non-deletable-field');

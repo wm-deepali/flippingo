@@ -338,13 +338,13 @@
 
             // Initialize child dropdown
             $childSelect.empty().append('<option value="">Select an option</option>');
-            
+
             // For preview, populate child dropdown with all possible child options
             const allChildOptions = new Set();
             Object.values(parentChildMapping).forEach(children => {
                 children.forEach(child => allChildOptions.add(child));
             });
-            
+
             allChildOptions.forEach(child => {
                 $childSelect.append(`<option value="${child}">${child}</option>`);
             });
@@ -425,7 +425,6 @@
             copyLink.textContent = 'Copied!';
             setTimeout(() => { copyLink.textContent = original; }, 1500);
         }).catch(err => {
-            console.error('Failed to copy code:', err);
             alert('Failed to copy code to clipboard');
         });
     }
@@ -620,139 +619,139 @@
     }
 
 
-  document.addEventListener('DOMContentLoaded', function () {
-    let dragged = null;
-    let dragType = null;
-    let $reorderPlaceholder = $('<div class="reorder-placeholder"></div>');
-    let $newFieldPlaceholder = $('<div class="drop-placeholder"></div>');
+    document.addEventListener('DOMContentLoaded', function () {
+        let dragged = null;
+        let dragType = null;
+        let $reorderPlaceholder = $('<div class="reorder-placeholder"></div>');
+        let $newFieldPlaceholder = $('<div class="drop-placeholder"></div>');
 
-    // ===== 1. REORDER EXISTING FIELDS =====
-    $('#my-form').on('mouseenter', '.form-group', function () {
-        $(this).attr('draggable', true);
-    });
+        // ===== 1. REORDER EXISTING FIELDS =====
+        $('#my-form').on('mouseenter', '.form-group', function () {
+            $(this).attr('draggable', true);
+        });
 
-    $('#my-form').on('dragstart', '.form-group', function (e) {
-        dragged = $(this);
-        dragType = 'reorder';
-        e.originalEvent.dataTransfer.effectAllowed = 'move';
-        e.originalEvent.dataTransfer.setData('drag-type', dragType);
-        dragged.addClass('dragging');
-    });
+        $('#my-form').on('dragstart', '.form-group', function (e) {
+            dragged = $(this);
+            dragType = 'reorder';
+            e.originalEvent.dataTransfer.effectAllowed = 'move';
+            e.originalEvent.dataTransfer.setData('drag-type', dragType);
+            dragged.addClass('dragging');
+        });
 
-    $('#my-form').on('dragover', '.form-group', function (e) {
-        e.preventDefault();
-        if (!dragged || dragType !== 'reorder') return;
+        $('#my-form').on('dragover', '.form-group', function (e) {
+            e.preventDefault();
+            if (!dragged || dragType !== 'reorder') return;
 
-        $newFieldPlaceholder.detach(); // remove new field placeholder if present
+            $newFieldPlaceholder.detach(); // remove new field placeholder if present
 
-        const $this = $(this);
-        const mouseY = e.originalEvent.pageY;
-        const mid = $this.offset().top + $this.outerHeight() / 2;
+            const $this = $(this);
+            const mouseY = e.originalEvent.pageY;
+            const mid = $this.offset().top + $this.outerHeight() / 2;
 
-        $reorderPlaceholder.detach();
-        if (mouseY < mid) {
-            $reorderPlaceholder.insertBefore($this);
-        } else {
-            $reorderPlaceholder.insertAfter($this);
-        }
-    });
-
-    $('#my-form').on('drop', function (e) {
-        e.preventDefault();
-        const dropDragType = e.originalEvent.dataTransfer.getData('drag-type');
-        if (dropDragType === 'reorder' && dragged) {
-            $reorderPlaceholder.replaceWith(dragged);
-            $newFieldPlaceholder.detach();
-            dragged.removeClass('dragging');
-            dragged = null;
-            dragType = null;
-            updateCodePreview();
-        }
-    });
-
-    $('#my-form').on('dragend', '.form-group', function () {
-        if (dragged) dragged.removeClass('dragging');
-        dragged = null;
-        dragType = null;
-        $reorderPlaceholder.detach();
-        $newFieldPlaceholder.detach();
-    });
-
-    // ===== 2. ADD NEW FIELDS =====
-    $(document).on('dragstart', '.builder-item', function (e) {
-        dragType = 'new-field';
-        e.originalEvent.dataTransfer.setData('drag-type', dragType);
-        e.originalEvent.dataTransfer.setData('field-type', $(this).data('type'));
-        $(this).addClass('dragging');
-    });
-
-    $(document).on('dragend', '.builder-item', function () {
-        $(this).removeClass('dragging');
-        dragType = null;
-        $newFieldPlaceholder.detach();
-    });
-
-    $('#canvas').on('dragover', function (e) {
-        e.preventDefault();
-        if (dragType !== 'new-field') {
-            $newFieldPlaceholder.detach();
-            return;
-        }
-        $reorderPlaceholder.detach(); // remove reorder placeholder if present
-
-        const mouseY = e.originalEvent.pageY - $(this).offset().top;
-        let $closest = null;
-        let insertBefore = false;
-
-        $('#my-form .form-group').each(function () {
-            const $el = $(this);
-            const mid = $el.position().top + $el.outerHeight() / 2;
-            if (
-                !$closest ||
-                Math.abs(mouseY - mid) < Math.abs(mouseY - ($closest.position().top + $closest.outerHeight() / 2))
-            ) {
-                $closest = $el;
-                insertBefore = mouseY < mid;
+            $reorderPlaceholder.detach();
+            if (mouseY < mid) {
+                $reorderPlaceholder.insertBefore($this);
+            } else {
+                $reorderPlaceholder.insertAfter($this);
             }
         });
 
-        $newFieldPlaceholder.detach();
-        if ($closest) {
-            if (insertBefore) $newFieldPlaceholder.insertBefore($closest);
-            else $newFieldPlaceholder.insertAfter($closest);
-        } else {
-            $('#my-form').append($newFieldPlaceholder);
-        }
-    });
-
-    $('#canvas').on('drop', function (e) {
-        e.preventDefault();
-        const dropDragType = e.originalEvent.dataTransfer.getData('drag-type');
-        if (dropDragType !== 'new-field') return;
-
-        const fieldType = e.originalEvent.dataTransfer.getData('field-type');
-        const fieldId = generateSimpleFieldId(fieldType);
-        const fieldHtml = getFieldHtml(fieldType, fieldId);
-
-        const $fieldElement = $(`<div class="form-group" data-field-id="${fieldId}" data-field-type="${fieldType}">${fieldHtml}</div>`);
-        const defaultsConfig = (window.FIELD_CONFIGS || {})[fieldType] || {};
-        const defaults = {};
-        Object.entries(defaultsConfig).forEach(([k, v]) => {
-            if (k === 'id') return;
-            defaults[k] = v.type === 'select' ? getSelectedOptionValue(v.value) : v.value;
+        $('#my-form').on('drop', function (e) {
+            e.preventDefault();
+            const dropDragType = e.originalEvent.dataTransfer.getData('drag-type');
+            if (dropDragType === 'reorder' && dragged) {
+                $reorderPlaceholder.replaceWith(dragged);
+                $newFieldPlaceholder.detach();
+                dragged.removeClass('dragging');
+                dragged = null;
+                dragType = null;
+                updateCodePreview();
+            }
         });
 
-        setFieldData($fieldElement, defaults);
-        applyConfigToField($fieldElement, fieldType, defaults, fieldId);
-        if (fieldType === 'signature') initSignaturePad(fieldId);
+        $('#my-form').on('dragend', '.form-group', function () {
+            if (dragged) dragged.removeClass('dragging');
+            dragged = null;
+            dragType = null;
+            $reorderPlaceholder.detach();
+            $newFieldPlaceholder.detach();
+        });
 
-        if ($newFieldPlaceholder.parent().length) $newFieldPlaceholder.replaceWith($fieldElement);
-        else $('#my-form').append($fieldElement);
+        // ===== 2. ADD NEW FIELDS =====
+        $(document).on('dragstart', '.builder-item', function (e) {
+            dragType = 'new-field';
+            e.originalEvent.dataTransfer.setData('drag-type', dragType);
+            e.originalEvent.dataTransfer.setData('field-type', $(this).data('type'));
+            $(this).addClass('dragging');
+        });
 
-        dragType = null;
-        updateCodePreview();
+        $(document).on('dragend', '.builder-item', function () {
+            $(this).removeClass('dragging');
+            dragType = null;
+            $newFieldPlaceholder.detach();
+        });
+
+        $('#canvas').on('dragover', function (e) {
+            e.preventDefault();
+            if (dragType !== 'new-field') {
+                $newFieldPlaceholder.detach();
+                return;
+            }
+            $reorderPlaceholder.detach(); // remove reorder placeholder if present
+
+            const mouseY = e.originalEvent.pageY - $(this).offset().top;
+            let $closest = null;
+            let insertBefore = false;
+
+            $('#my-form .form-group').each(function () {
+                const $el = $(this);
+                const mid = $el.position().top + $el.outerHeight() / 2;
+                if (
+                    !$closest ||
+                    Math.abs(mouseY - mid) < Math.abs(mouseY - ($closest.position().top + $closest.outerHeight() / 2))
+                ) {
+                    $closest = $el;
+                    insertBefore = mouseY < mid;
+                }
+            });
+
+            $newFieldPlaceholder.detach();
+            if ($closest) {
+                if (insertBefore) $newFieldPlaceholder.insertBefore($closest);
+                else $newFieldPlaceholder.insertAfter($closest);
+            } else {
+                $('#my-form').append($newFieldPlaceholder);
+            }
+        });
+
+        $('#canvas').on('drop', function (e) {
+            e.preventDefault();
+            const dropDragType = e.originalEvent.dataTransfer.getData('drag-type');
+            if (dropDragType !== 'new-field') return;
+
+            const fieldType = e.originalEvent.dataTransfer.getData('field-type');
+            const fieldId = generateSimpleFieldId(fieldType);
+            const fieldHtml = getFieldHtml(fieldType, fieldId);
+
+            const $fieldElement = $(`<div class="form-group" data-field-id="${fieldId}" data-field-type="${fieldType}">${fieldHtml}</div>`);
+            const defaultsConfig = (window.FIELD_CONFIGS || {})[fieldType] || {};
+            const defaults = {};
+            Object.entries(defaultsConfig).forEach(([k, v]) => {
+                if (k === 'id') return;
+                defaults[k] = v.type === 'select' ? getSelectedOptionValue(v.value) : v.value;
+            });
+
+            setFieldData($fieldElement, defaults);
+            applyConfigToField($fieldElement, fieldType, defaults, fieldId);
+            if (fieldType === 'signature') initSignaturePad(fieldId);
+
+            if ($newFieldPlaceholder.parent().length) $newFieldPlaceholder.replaceWith($fieldElement);
+            else $('#my-form').append($fieldElement);
+
+            dragType = null;
+            updateCodePreview();
+        });
     });
-});
 
     // Escape helper
     function escapeHtml(str) {
@@ -947,89 +946,92 @@
         $('#fieldEditModal').data('editingField', $field);
 
         // Handle modal close - save current state to prevent data loss
-        $('#fieldEditModal').off('hidden.bs.modal.cascading').on('hidden.bs.modal.cascading', function () {
-            // Save current form state to field data to prevent loss
-            const currentFormData = {};
-            $('#fieldEditForm').find('input, textarea, select').each(function () {
-                const $el = $(this);
-                const name = $el.attr('name');
-                if (!name) return;
+        if (fieldType === 'cascadingDropdown') {
+            $('#fieldEditModal').off('hidden.bs.modal.cascading').on('hidden.bs.modal.cascading', function () {
+                // Save current form state to field data to prevent loss
+                const currentFormData = {};
+                $('#fieldEditForm').find('input, textarea, select').each(function () {
+                    const $el = $(this);
+                    const name = $el.attr('name');
+                    if (!name) return;
 
-                if ($el.attr('type') === 'checkbox') {
-                    if (name.endsWith('[]')) {
-                        const baseName = name.replace('[]', '');
-                        if (!currentFormData[baseName]) {
-                            currentFormData[baseName] = [];
+                    if ($el.attr('type') === 'checkbox') {
+                        if (name.endsWith('[]')) {
+                            const baseName = name.replace('[]', '');
+                            if (!currentFormData[baseName]) {
+                                currentFormData[baseName] = [];
+                            }
+                            if ($el.prop('checked')) {
+                                currentFormData[baseName].push($el.val());
+                            }
+                        } else {
+                            currentFormData[name] = $el.prop('checked');
                         }
-                        if ($el.prop('checked')) {
-                            currentFormData[baseName].push($el.val());
-                        }
-                    } else {
-                        currentFormData[name] = $el.prop('checked');
-                    }
-                } else if ($el.attr('type') === 'radio') {
-                    if (name.endsWith('[]')) {
-                        const baseName = name.replace('[]', '');
-                        if (!currentFormData[baseName]) {
-                            currentFormData[baseName] = [];
-                        }
-                        if ($el.prop('checked')) {
-                            currentFormData[baseName].push($el.val());
+                    } else if ($el.attr('type') === 'radio') {
+                        if (name.endsWith('[]')) {
+                            const baseName = name.replace('[]', '');
+                            if (!currentFormData[baseName]) {
+                                currentFormData[baseName] = [];
+                            }
+                            if ($el.prop('checked')) {
+                                currentFormData[baseName].push($el.val());
+                            }
+                        } else {
+                            currentFormData[name] = $el.val();
                         }
                     } else {
                         currentFormData[name] = $el.val();
                     }
-                } else {
-                    currentFormData[name] = $el.val();
-                }
-            });
+                });
 
-            // Special handling for choice fields (parentOptions)
-            const choiceFields = ['parentOptions'];
-            choiceFields.forEach(fieldKey => {
-                const options = [];
-                $('#fieldEditModal').find(`[name="${fieldKey}[]"]`).each(function () {
-                    const checkbox = $(this);
-                    const textInput = checkbox.closest('.choice-option-row').find('input[type="text"]');
-                    if (textInput.length) {
-                        let optionValue = textInput.val();
-                        if (checkbox.prop('checked')) {
-                            optionValue += '|selected';
+                // Special handling for choice fields (parentOptions)
+                const choiceFields = ['parentOptions'];
+                choiceFields.forEach(fieldKey => {
+                    const options = [];
+                    $('#fieldEditModal').find(`[name="${fieldKey}[]"]`).each(function () {
+                        const checkbox = $(this);
+                        const textInput = checkbox.closest('.choice-option-row').find('input[type="text"]');
+                        if (textInput.length) {
+                            let optionValue = textInput.val();
+                            if (checkbox.prop('checked')) {
+                                optionValue += '|selected';
+                            }
+                            options.push(optionValue);
                         }
-                        options.push(optionValue);
-                    }
-                });
-                if (options.length > 0) {
-                    currentFormData[fieldKey] = options;
-                }
-            });
-
-            // Handle parentChildMapping from visual interface
-            const parentChildMapping = {};
-            $('#fieldEditModal').find('.parent-child-mapping').each(function () {
-                const parentContainer = $(this);
-                const parentName = parentContainer.find('h6').text().trim();
-                const childOptions = [];
-
-                parentContainer.find('.child-option-input').each(function () {
-                    const childValue = ($(this).val() || '').trim();
-                    if (childValue) {
-                        childOptions.push(childValue);
+                    });
+                    if (options.length > 0) {
+                        currentFormData[fieldKey] = options;
                     }
                 });
 
-                if (parentName && childOptions.length > 0) {
-                    parentChildMapping[parentName] = childOptions;
+                // Handle parentChildMapping from visual interface
+                const parentChildMapping = {};
+                $('#fieldEditModal').find('.parent-child-mapping').each(function () {
+                    const parentContainer = $(this);
+                    const parentName = parentContainer.find('h6').text().trim();
+                    const childOptions = [];
+
+                    parentContainer.find('.child-option-input').each(function () {
+                        const childValue = ($(this).val() || '').trim();
+                        if (childValue) {
+                            childOptions.push(childValue);
+                        }
+                    });
+
+                    if (parentName && childOptions.length > 0) {
+                        parentChildMapping[parentName] = childOptions;
+                    }
+                });
+
+                if (Object.keys(parentChildMapping).length > 0) {
+                    currentFormData.parentChildMapping = parentChildMapping;
                 }
+
+                // Update field data with current state
+                setFieldData($field, currentFormData);
             });
+        }
 
-            if (Object.keys(parentChildMapping).length > 0) {
-                currentFormData.parentChildMapping = parentChildMapping;
-            }
-
-            // Update field data with current state
-            setFieldData($field, currentFormData);
-        });
 
         // Add event handlers for dynamic choice option management
         $('#fieldEditModal').find('.add-choice-option-btn').on('click', function () {
@@ -1080,10 +1082,10 @@
         $('#fieldEditModal').find('.remove-choice-option-btn').on('click', function () {
             const $row = $(this).closest('.choice-option-row');
             const fieldKey = $row.find('input[type="checkbox"]').attr('name');
-            
+
             // Remove the row
             $row.remove();
-            
+
             // Trigger mapping update if it's a parent option
             if (fieldKey && fieldKey.includes('parentOptions')) {
                 setTimeout(updateParentChildMappingPreview, 100);
@@ -1159,10 +1161,10 @@
 
 
         function updateParentChildMappingPreview() {
-            const $mappingContainer = $('#fieldEditModal').find('.form-group').filter(function() {
+            const $mappingContainer = $('#fieldEditModal').find('.form-group').filter(function () {
                 return $(this).find('label').text().includes('Parent Child Mapping');
             });
-            
+
             if (!$mappingContainer.length) return;
 
             // Get current parent options
@@ -1180,14 +1182,14 @@
                 const parentContainer = $(this);
                 const parentName = parentContainer.find('h6').text().trim();
                 const childOptions = [];
-                
+
                 parentContainer.find('.child-option-input').each(function () {
                     const childValue = ($(this).val() || '').trim();
                     if (childValue) {
                         childOptions.push(childValue);
                     }
                 });
-                
+
                 if (parentName && childOptions.length > 0) {
                     currentMapping[parentName] = childOptions;
                 }
@@ -1198,10 +1200,10 @@
         }
 
         function refreshVisualMappingInterface(parentOptions, currentMapping = {}) {
-            const $mappingContainer = $('#fieldEditModal').find('.form-group').filter(function() {
+            const $mappingContainer = $('#fieldEditModal').find('.form-group').filter(function () {
                 return $(this).find('label').text().includes('Parent Child Mapping');
             });
-            
+
             if (!$mappingContainer.length) return;
 
             // Store current mapping data
@@ -1210,14 +1212,14 @@
                 const parentContainer = $(this);
                 const parentName = parentContainer.find('h6').text().trim();
                 const childOptions = [];
-                
+
                 parentContainer.find('.child-option-input').each(function () {
                     const childValue = ($(this).val() || '').trim();
                     if (childValue) {
                         childOptions.push(childValue);
                     }
                 });
-                
+
                 if (parentName && childOptions.length > 0) {
                     existingMapping[parentName] = childOptions;
                 }
@@ -1236,22 +1238,22 @@
                 mappingHtml += `<div class="parent-child-mapping mb-3 p-3 border rounded">`;
                 mappingHtml += `<h6 class="mb-2"><i class="fas fa-sitemap me-1"></i>${escapeHtml(parent)}</h6>`;
                 mappingHtml += `<div class="child-options-container" data-parent="${escapeHtml(parent)}">`;
-                
+
                 // Get existing child options for this parent (preserve unchanged parents)
                 const existingChildren = existingMapping[parent] || currentMapping[parent] || [];
-                
+
                 existingChildren.forEach((child, childIndex) => {
                     mappingHtml += `<div class="child-option-row d-flex align-items-center mb-2" data-index="${childIndex}">`;
                     mappingHtml += `<input type="text" class="form-control me-2 child-option-input" placeholder="Child option" value="${escapeHtml(child)}" style="flex: 1;">`;
                     mappingHtml += `<button type="button" class="btn btn-sm btn-outline-danger remove-child-option" title="Remove"><i class="fas fa-minus"></i></button>`;
                     mappingHtml += `</div>`;
                 });
-                
+
                 mappingHtml += `<button type="button" class="btn btn-sm btn-outline-primary add-child-option" data-parent="${escapeHtml(parent)}">`;
                 mappingHtml += `<i class="fas fa-plus me-1"></i> Add Child Option</button>`;
                 mappingHtml += `</div></div>`;
             });
-            
+
             // Append new sections after the info alert
             $mappingContainer.find('.alert-info').after(mappingHtml);
         }
@@ -1349,21 +1351,20 @@
 
         // Special handling for cascading dropdown to set ID/name on both select elements
         if (fieldType === 'cascadingdropdown') {
-            console.log('here');
-            
+
             const $parentSelect = $field.find('.parent-dropdown').first();
             const $childSelect = $field.find('.child-dropdown').first();
-            
+
             if ($parentSelect.length) {
                 $parentSelect.attr('id', inputId);
                 $parentSelect.attr('name', inputName);
-                
+
                 // Update label 'for' attribute to match parent select
                 if ($label.length) {
                     $label.attr('for', inputId);
                 }
             }
-            
+
             if ($childSelect.length) {
                 const childId = `${inputId}_child`;
                 const childName = `${inputName}_child`;
@@ -1448,27 +1449,27 @@
         if (fieldType === 'cascadingdropdown') {
             const $parentSelect = $field.find('.parent-dropdown').first();
             const $childSelect = $field.find('.child-dropdown').first();
-            
-            console.log('Debug - Parent select found:', $parentSelect.length);
-            console.log('Debug - Child select found:', $childSelect.length);
-            console.log('Debug - CSS Class data:', data.cssClass);
-            
+
+            // console.log('Debug - Parent select found:', $parentSelect.length);
+            // console.log('Debug - Child select found:', $childSelect.length);
+            // console.log('Debug - CSS Class data:', data.cssClass);
+
             if ($parentSelect.length) {
                 // Always set the correct classes for parent dropdown
-                const parentClass = typeof data.cssClass === 'string' && data.cssClass.trim() !== '' 
-                    ? `${data.cssClass} parent-dropdown ` 
+                const parentClass = typeof data.cssClass === 'string' && data.cssClass.trim() !== ''
+                    ? `${data.cssClass} parent-dropdown `
                     : 'form-control parent-dropdown ';
                 $parentSelect.removeClass().addClass(parentClass.trim());
-                console.log('Debug - Parent class set to:', $parentSelect.attr('class'));
+                // console.log('Debug - Parent class set to:', $parentSelect.attr('class'));
             }
-            
+
             if ($childSelect.length) {
                 // Always set the correct classes for child dropdown  
                 const childClass = typeof data.cssClass === 'string' && data.cssClass.trim() !== ''
                     ? `${data.cssClass} child-dropdown mt-2`
                     : 'form-control child-dropdown mt-2';
                 $childSelect.removeClass().addClass(childClass);
-                console.log('Debug - Child class set to:', $childSelect.attr('class'));
+                // console.log('Debug - Child class set to:', $childSelect.attr('class'));
             }
         } else {
             // Apply CSS classes if present, else default class (for non-cascading dropdown fields)
@@ -1774,10 +1775,10 @@
             // Event: when parent changes, filter child dropdown based on mapping
             $parent.off('change.cascading').on('change.cascading', function () {
                 const selectedParent = $(this).val();
-                
+
                 // Clear child dropdown
                 $child.empty().append('<option value="">Select an option</option>');
-                
+
                 // If parent is selected and mapping exists, populate child options
                 if (selectedParent && data.parentChildMapping && data.parentChildMapping[selectedParent]) {
                     const childOptions = data.parentChildMapping[selectedParent];
@@ -1808,6 +1809,8 @@
         const config = (window.FIELD_CONFIGS || {})[fieldType];
         if (!$field || !config) return;
         const formData = {};
+        const fieldId = $field.attr('data-field-id');
+        formData.id = fieldId;
         // Gather all values including checkboxes
         $('#fieldEditForm').find('input, textarea, select').each(function () {
             const $el = $(this);
@@ -1916,9 +1919,7 @@
         if (fieldType === 'heading' || fieldType === 'paragraph') {
             formData.text = $('#fieldEditForm').find('[name="text"]').val();
         }
-
         setFieldData($field, formData);
-        const fieldId = $field.attr('data-field-id');
         applyConfigToField($field, fieldType, formData, fieldId);
 
         $modal.modal('hide');
@@ -2033,7 +2034,6 @@
             }, 2000);
 
         } catch (error) {
-            console.error('Error copying field:', error);
             showToast('Error', 'Failed to copy field. Please try again.');
         }
     }

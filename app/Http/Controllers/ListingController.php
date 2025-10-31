@@ -86,8 +86,10 @@ class ListingController extends Controller
             // Track unique views by customer ID
             $userId = $user->id;
 
+            $ip = $request->ip();
+
             $hasViewed = \App\Models\FormSubmissionView::where('form_submission_id', $id)
-                ->where('customer_id', $userId)
+                ->where('ip_address', $ip)
                 ->where('view_date', $today)
                 ->exists();
 
@@ -95,13 +97,14 @@ class ListingController extends Controller
                 \App\Models\FormSubmissionView::create([
                     'form_submission_id' => $id,
                     'customer_id' => $userId,
-                    'ip_address' => $request->ip(),
+                    'ip_address' => $ip,
                     'view_date' => $today,
                 ]);
 
                 $submission->increment('unique_views');
                 $stat->increment('unique_views');
             }
+
 
         }
         // Else: no tracking if not logged in
@@ -210,11 +213,16 @@ class ListingController extends Controller
 
         foreach ($rawInputData as $fieldId => $value) {
             // Handle cascading dropdown child fields
-            if (str_contains($fieldId, '_child')) {
-                $parentFieldId = str_replace('_child', '', $fieldId);
+            if (str_contains($fieldId, '_child') || str_contains($fieldId, '_child_custom')) {
+                $parentFieldId = str_replace(['_child_custom', '_child'], '', $fieldId);
 
                 if (isset($inputDataWithMeta[$parentFieldId])) {
-                    $inputDataWithMeta[$parentFieldId]['child_value'] = $value;
+                    // Assign both child and custom child values
+                    if (str_contains($fieldId, '_child_custom')) {
+                        $inputDataWithMeta[$parentFieldId]['child_custom_value'] = $value;
+                    } else {
+                        $inputDataWithMeta[$parentFieldId]['child_value'] = $value;
+                    }
                 } else {
                     $fieldDef = collect($fieldsDefinition)->firstWhere('id', $parentFieldId);
                     $fieldLabel = $fieldDef['properties']['label'] ?? $parentFieldId;
@@ -225,12 +233,14 @@ class ListingController extends Controller
                         'field_id' => $parentFieldId,
                         'label' => $fieldLabel,
                         'value' => null,
-                        'child_value' => $value,
+                        'child_value' => str_contains($fieldId, '_child_custom') ? null : $value,
+                        'child_custom_value' => str_contains($fieldId, '_child_custom') ? $value : null,
                         'show_on_summary' => $showOnSummary,
                         'icon' => $icon,
                     ];
                 }
-                continue; // skip normal handling
+
+                continue;
             }
 
             // Normal fields
@@ -373,6 +383,7 @@ class ListingController extends Controller
             $mappedData[$label] = [
                 'value' => $value,
                 'child_value' => $childValue,   // <- include child_value here
+                'child_custom_value' => $fieldData['child_custom_value'] ?? null,
                 'show_on_summary' => $showOnSummary,
             ];
         }
@@ -424,6 +435,13 @@ class ListingController extends Controller
                 if (str_ends_with($fieldId, '_child')) {
                     $parentKey = str_replace('_child', '', $fieldId);
                     $inputDataWithMeta[$parentKey]['child_value'] = $value;
+                    continue;
+                }
+
+                // Handle "Other" custom input for cascading dropdowns
+                if (str_ends_with($fieldId, '_child_custom')) {
+                    $parentKey = str_replace('_child_custom', '', $fieldId);
+                    $inputDataWithMeta[$parentKey]['child_custom_value'] = $value;
                     continue;
                 }
 

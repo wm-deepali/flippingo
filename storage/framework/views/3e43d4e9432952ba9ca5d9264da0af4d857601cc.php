@@ -75,6 +75,10 @@
     if (!empty($data['child_value'])) {
         $val .= ' → ' . $data['child_value'];
     }
+     // If "Other" is chosen and a custom value exists
+    if (($data['value'] ?? '') === 'Other' && !empty($data['child_custom_value'])) {
+        $val .= ' → ' . $data['child_custom_value'];
+    }
 ?>
                     <dt class="col-sm-4"><?php echo e($label); ?> :</dt>
                     <dd class="col-sm-8">

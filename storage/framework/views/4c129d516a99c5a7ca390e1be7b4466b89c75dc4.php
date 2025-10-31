@@ -29,7 +29,7 @@
                                 data-action="<?php echo e(route('listing.update', $submission->id)); ?>"><?php echo csrf_field(); ?>
                                 <?php echo method_field('PUT'); ?>
                       <?php
-                        $inputTypes = ['text', 'email', 'number', 'select', 'dropdown', 'file', 'signature', 'textarea', 'date', 'checkbox', 'radio', 'cascadingDropdown']; // Add all form input types you support
+                        $inputTypes = ['text', 'email', 'number', 'selectlist', 'dropdown', 'file', 'signature', 'textarea', 'date', 'checkbox', 'radio', 'cascadingDropdown']; // Add all form input types you support
                     ?>
                                 <?php $__currentLoopData = $formData->fields; $__env->addLoop($__currentLoopData); foreach($__currentLoopData as $field): $__env->incrementLoopIndices(); $loop = $__env->getLastLoop(); ?>
                                     <?php if(in_array($field['type'], $inputTypes)): ?>
@@ -84,15 +84,32 @@
                                                     value="<?php echo e($value); ?>">
                                                 <button type="button" class="btn btn-secondary btn-sm mt-1"
                                                     id="clear_signature_<?php echo e($fieldKey); ?>">Clear</button>
-                                            <?php elseif(in_array($type, ['select', 'dropdown'])): ?>
-                                                <select name="<?php echo e($fieldKey); ?>" class="form-control">
-                                                    <?php $__currentLoopData = $field['properties']['options'] ?? []; $__env->addLoop($__currentLoopData); foreach($__currentLoopData as $optionValue => $optionLabel): $__env->incrementLoopIndices(); $loop = $__env->getLastLoop(); ?>
-                                                        <option value="<?php echo e($optionValue); ?>" <?php if($optionValue == $value): ?> selected <?php endif; ?>>
-                                                            <?php echo e($optionLabel); ?>
+                                             <?php elseif(in_array($type, ['selectlist', 'dropdown'])): ?>
+    <?php
+        $options = $field['properties']['options'] ?? [];
+    ?>
+    <select name="<?php echo e($fieldKey); ?>" class="form-control">
+        <?php $__currentLoopData = $options; $__env->addLoop($__currentLoopData); foreach($__currentLoopData as $option): $__env->incrementLoopIndices(); $loop = $__env->getLastLoop(); ?>
+            <?php
+                // Split option by "|selected"
+                $isSelectedDefault = false;
+                $optionLabel = $option;
 
-                                                        </option>
-                                                    <?php endforeach; $__env->popLoop(); $loop = $__env->getLastLoop(); ?>
-                                                </select>
+                if (str_contains($option, '|selected')) {
+                    $optionLabel = str_replace('|selected', '', $option);
+                    $isSelectedDefault = true;
+                }
+
+                // Determine selected: from existing data or default option
+                $selected = ($value == $optionLabel) || (!$value && $isSelectedDefault);
+            ?>
+
+            <option value="<?php echo e($optionLabel); ?>" <?php if($selected): ?> selected <?php endif; ?>>
+                <?php echo e($optionLabel); ?>
+
+            </option>
+        <?php endforeach; $__env->popLoop(); $loop = $__env->getLastLoop(); ?>
+    </select>
                                                  <?php elseif($type === 'cascadingDropdown'): ?>
     <?php
         $parentValue = $existingData[$fieldKey]['value'] ?? '';
@@ -102,13 +119,21 @@
     ?>
 
     <div class="mb-3">
-        
-        <select class="form-control parent-dropdown" name="<?php echo e($fieldKey); ?>">
-            <option value="">Select parent</option>
-            <?php $__currentLoopData = $parentOptions; $__env->addLoop($__currentLoopData); foreach($__currentLoopData as $option): $__env->incrementLoopIndices(); $loop = $__env->getLastLoop(); ?>
-                <option value="<?php echo e($option); ?>" <?php if($option == $parentValue): ?> selected <?php endif; ?>><?php echo e($option); ?></option>
-            <?php endforeach; $__env->popLoop(); $loop = $__env->getLastLoop(); ?>
-        </select>
+                                                              
+<select class="form-control parent-dropdown" name="<?php echo e($fieldKey); ?>">
+    <option value="">Select parent</option>
+    <?php $__currentLoopData = $parentOptions; $__env->addLoop($__currentLoopData); foreach($__currentLoopData as $option): $__env->incrementLoopIndices(); $loop = $__env->getLastLoop(); ?>
+        <option value="<?php echo e($option); ?>" <?php if($option == $parentValue): ?> selected <?php endif; ?>>
+            <?php echo e($option); ?>
+
+        </option>
+    <?php endforeach; $__env->popLoop(); $loop = $__env->getLastLoop(); ?>
+
+    <?php if(!empty($field['properties']['enableParentOther']) && $field['properties']['enableParentOther'] == true): ?>
+        <option value="Other" <?php if($parentValue == 'Other'): ?> selected <?php endif; ?>>Other</option>
+    <?php endif; ?>
+</select>
+
 
         
         <select class="form-control mt-2 child-dropdown" name="<?php echo e($fieldKey); ?>_child">
@@ -120,7 +145,65 @@
             <?php endif; ?>
         </select>
     </div>
+  <?php elseif($type === 'textarea'): ?>
+                                                    <textarea name="<?php echo e($fieldKey); ?>" class="form-control"
+                                                        rows="3"><?php echo e(is_array($value) ? implode(', ', $value) : $value); ?></textarea>
 
+                                               <?php elseif($type === 'checkbox'): ?>
+    <label class="form-label fw-bold"><?php echo e($field['properties']['label'] ?? ''); ?></label>
+
+    <?php $__currentLoopData = $field['properties']['checkboxes'] ?? []; $__env->addLoop($__currentLoopData); foreach($__currentLoopData as $checkbox): $__env->incrementLoopIndices(); $loop = $__env->getLastLoop(); ?>
+        <?php
+            // Split by "|" and trim spaces
+            $parts = array_map('trim', explode('|', $checkbox));
+
+            // Label and value
+            $label = $parts[0] ?? '';
+            $value = $parts[1] ?? $label; // fallback if no value part
+            $isSelected = isset($parts[2]) && strtolower($parts[2]) === 'selected';
+        ?>
+
+        <div class="form-check">
+            <input class="form-check-input"
+                type="checkbox"
+                name="<?php echo e($field['properties']['field_id'] ?? ''); ?>[]"
+                value="<?php echo e($value); ?>"
+                <?php if((is_array($value ?? null) && in_array($value, $value ?? [])) || $isSelected): ?> checked <?php endif; ?>
+            >
+            <label class="form-check-label"><?php echo e($label); ?></label>
+        </div>
+    <?php endforeach; $__env->popLoop(); $loop = $__env->getLastLoop(); ?>
+                                               <?php elseif($type === 'radio'): ?>
+    <label class="form-label fw-bold"><?php echo e($field['properties']['label'] ?? ''); ?></label>
+
+    <?php $__currentLoopData = $field['properties']['radios'] ?? []; $__env->addLoop($__currentLoopData); foreach($__currentLoopData as $radio): $__env->incrementLoopIndices(); $loop = $__env->getLastLoop(); ?>
+        <?php
+            // Split the radio string (Label | Value | selected)
+            $parts = array_map('trim', explode('|', $radio));
+
+            $label = $parts[0] ?? '';
+            $optionValue = $parts[1] ?? $label; // fallback if value not given
+            $isSelected = isset($parts[2]) && strtolower($parts[2]) === 'selected';
+        ?>
+
+        <div class="form-check">
+            <input
+                class="form-check-input"
+                type="radio"
+                name="<?php echo e($field['properties']['field_id'] ?? $fieldKey); ?>"
+                value="<?php echo e($optionValue); ?>"
+                <?php if(($value ?? '') == $optionValue || $isSelected): ?> checked <?php endif; ?>
+            >
+            <label class="form-check-label"><?php echo e($label); ?></label>
+        </div>
+    <?php endforeach; $__env->popLoop(); $loop = $__env->getLastLoop(); ?>
+
+
+                                                <?php elseif($type === 'date'): ?>
+                                                    <input type="date" name="<?php echo e($fieldKey); ?>"
+                                                        value="<?php echo e(is_array($value) ? '' : $value); ?>" class="form-control">
+
+                                                
 <?php else: ?>
                                                 <input type="<?php echo e($type); ?>" name="<?php echo e($fieldKey); ?>" value="<?php echo e($value); ?>"
                                                     class="form-control">
@@ -145,8 +228,8 @@
     <script>
 
 
-$(document).ready(function() {
-    // Prepare child mappings for all cascading dropdowns
+$(document).ready(function () {
+    // Build mapping for all cascading dropdowns
     const childMapping = {};
     <?php $__currentLoopData = $formData->fields; $__env->addLoop($__currentLoopData); foreach($__currentLoopData as $field): $__env->incrementLoopIndices(); $loop = $__env->getLastLoop(); ?>
         <?php if($field['type'] === 'cascadingDropdown'): ?>
@@ -154,25 +237,66 @@ $(document).ready(function() {
         <?php endif; ?>
     <?php endforeach; $__env->popLoop(); $loop = $__env->getLastLoop(); ?>
 
-    // Initialize cascading dropdowns
-    $('.parent-dropdown').each(function() {
+    $('.parent-dropdown').each(function () {
         const parent = $(this);
         const fieldName = parent.attr('name');
         const child = $(`select[name="${fieldName}_child"]`);
 
-        // Hide child initially if no parent selected
-        if (!parent.val()) child.closest('.mb-3').find('.child-dropdown').hide();
+        // Existing values (for edit mode)
+        const parentValue = parent.val();
+        const customValue = <?php echo json_encode($existingData, 15, 512) ?>[fieldName]?.child_custom_value ?? null;
 
-        parent.off('change').on('change', function() {
+        // Hide child dropdown if no parent
+        if (!parentValue) child.closest('.mb-3').find('.child-dropdown').hide();
+
+        // --- Handle edit mode for "Other" ---
+        if (parentValue === 'Other') {
+            child.closest('.mb-3').find('.child-dropdown').hide();
+
+            const existingVal = customValue ? customValue.replace(/^,/, '') : '';
+            const inputHtml = `
+                <div class="form-group mt-2" id="parent-other-group-${fieldName}">
+                    <input type="text" class="form-control"
+                           id="parent-other-input-${fieldName}"
+                           name="${fieldName}_child_custom"
+                           value="${existingVal}"
+                           placeholder="Enter your option">
+                </div>`;
+            if (!$(`#parent-other-group-${fieldName}`).length) {
+                child.closest('.mb-3').append(inputHtml);
+            }
+        }
+
+        // --- Handle change dynamically ---
+        parent.off('change').on('change', function () {
             const selectedParent = $(this).val();
-            child.empty().append('<option value="">Select child</option>');
 
-            if (selectedParent && childMapping[fieldName] && childMapping[fieldName][selectedParent]) {
-                childMapping[fieldName][selectedParent].forEach(function(opt) {
+            // Remove custom input if any
+            $(`#parent-other-group-${fieldName}`).remove();
+
+            // Handle "Other"
+            if (selectedParent === 'Other') {
+                child.closest('.mb-3').find('.child-dropdown').hide();
+                const inputHtml = `
+                    <div class="form-group mt-2" id="parent-other-group-${fieldName}">
+                        <input type="text" class="form-control"
+                               id="parent-other-input-${fieldName}"
+                               name="${fieldName}_child_custom"
+                               placeholder="Enter your option">
+                    </div>`;
+                child.closest('.mb-3').append(inputHtml);
+            }
+            // Handle normal parent-child mapping
+            else if (selectedParent && childMapping[fieldName] && childMapping[fieldName][selectedParent]) {
+                $(`#parent-other-group-${fieldName}`).remove();
+                child.empty().append('<option value="">Select child</option>');
+                childMapping[fieldName][selectedParent].forEach(opt => {
                     child.append(`<option value="${opt}">${opt}</option>`);
                 });
                 child.closest('.mb-3').find('.child-dropdown').show();
-            } else {
+            }
+            // Handle empty parent
+            else {
                 child.closest('.mb-3').find('.child-dropdown').hide();
             }
         });

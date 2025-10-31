@@ -2128,6 +2128,14 @@ class FormBuilderController extends Controller
                             "Option 3" => ["Child X", "Child Y"],
                         ],
                     ],
+                    // existing fields ...
+                    "enableParentOther" => [
+                        "label" => "Allow 'Other' in parent options?",
+                        "type" => "checkbox",
+                        "value" => false, // set to true if you want 'Other' option to appear
+                        "advanced" => true,
+                    ],
+
                     "placeholder" => [
                         "label" => "component.placeholder",
                         "type" => "input",
