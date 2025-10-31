@@ -205,6 +205,9 @@
                             @else
                                 <img src="{{'https://www.stockvault.net/data/2012/09/10/135306/thumb16.jpg' }}" alt="Product">
                             @endif
+                            @if($submission->is_sold)
+                        <span class="badge bg-danger position-absolute top-0 start-0 m-2 px-3 py-1 text-white">SOLD OUT</span>
+                          @endif
                             <div class="listing-info">
                                 <h3>{{ $submission['product_title']}}</h3>
 
@@ -265,6 +268,7 @@
                                 </div>
 
                                 <div class="listing-actions">
+                                
                                     <a href="{{ route('listing.edit', $submission['id']) }}" class="btn edit">Edit</a>
                                     <a href="#" class="btn analytics">View Analytics</a>
                                     <a href="{{ route('listing.show', $submission['id']) }}" class="btn details">View Detail</a>

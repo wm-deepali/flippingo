@@ -56,6 +56,19 @@
         margin: 0;
     }
 
+
+    .budge-soldout p {
+    background-color: #dc3545;
+    color: #fff;
+    border-radius: 20px;
+    padding: 3px 10px;
+    font-size: 14px;
+    font-weight: 600;
+    display: inline-flex;
+    align-items: center;
+    gap: 4px;
+}
+
     .wishlist-button {
         width: 100%;
         display: flex;
@@ -258,8 +271,7 @@
     <div class="sidebar">
         <!-- Search & Clear buttons at topmost -->
         <div class="d-flex justify-content-between mb-3">
-            <button type="submit" form="filter-form" class="theme-btn border-0 w-75">Search</button>
-            <button type="button" class="theme-btn border-0 w-20" id="clear-filters">Clear</button>
+            <button type="button" class="theme-btn border-0 w-100" id="clear-filters">Clear</button>
         </div>
 
         <form id="filter-form" method="GET" action="<?php echo e(route('listing-list')); ?>">
@@ -447,354 +459,7 @@
     <button class="scroll-btn next" onclick="scrollTabs(200)">&#10095;</button>
 </div>
 
-                    <div id="submissions-container">
-
-                        
-                        <div class="submission-group wishlist-card" data-group="all">
-                            <?php $__currentLoopData = $allSubmissions; $__env->addLoop($__currentLoopData); foreach($__currentLoopData as $submission): $__env->incrementLoopIndices(); $loop = $__env->getLastLoop(); ?>
-                                <?php
-                                    $catSlug = $submission['category']->slug ?? 'uncategorized';
-                                    $catName = $submission['category']->name ?? '';
-
-                                    $fields = json_decode($submission['data'], true);
-                                    $productTitle = $fields['product_title']['value'] ?? 'No Title';
-                                   $offeredPrice = ($fields['urgent_sale']['value'] ?? '') === 'Yes'
-    ? ($fields['offered_price']['value'] ?? '0')
-    : ($fields['mrp']['value'] ?? '0');
-
-
-                                   $imageFile = $submission['imageFile'] ?? null; 
-                                    $summaryFields = $submission['summaryFields'] ?? null;
-                                  ?>
-                                <div class="wishlist-product-card" data-category="<?php echo e($catSlug); ?>">
-                                    <?php if($imageFile): ?>
-                                        <img src="<?php echo e(asset('storage/' . $imageFile['file_path'])); ?>" />
-                                    <?php else: ?>
-                                        <img
-                                            src="https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcThez8EsMExS0cJzMTvAM6OlRj9d9SecStl6g&s">
-                                    <?php endif; ?>
-                                    <div class="wishlist-budge">
-                                        <div class="d-flex justify-content-between align-items-center">
-                                            <div class="budge-active">
-                                                <p><i class="fa-solid fa-circle-check"></i> Active</p>
-                                            </div>
-                                            <h4 class="m-0" style="font-size: 24px;padding-right: 15px;"><i
-                                                    class="fa-regular fa-heart"></i></h4>
-                                        </div>
-                                    </div>
-                                    <div class="product-details-hover">
-                                        <div class="wishlist-button">
-                                            <p><?php echo e($catName); ?></p>
-                                            <div class="budge-active1">
-                                                <p><i class="fa-solid fa-circle-check"></i> Verified</p>
-                                            </div>
-
-                                        </div>
-                                        <h3 class="mt-2 " style="color: #000;"><?php echo e($productTitle); ?></h3>
-                                        <div class="d-flex justify-content-between align-items-center">
-                                            <p class="m-0">By
-                                                <?php echo e(($submission['customer']['first_name'] ?? '') . ' ' . ($submission['customer']['last_name'] ?? '')); ?>
-
-                                            </p>
-
-                                            <p class="m-0" style="color: #007bff;"><i class="fa-solid fa-eye"></i> 10</p>
-                                        </div>
-                                        <div class="wishlist-item-card">
-                                  <?php if(!empty($summaryFields)): ?>
-    <?php
-        // Use array_filter when summaryFields is a plain array
-        $textFields = array_filter($summaryFields, function ($field) {
-            return
-                isset($field['field_id']) &&
-                Str::startsWith($field['field_id'], 'text_');
-        });
-    ?>
-
-    <?php if(!empty($textFields)): ?>
-        <?php $__currentLoopData = $textFields; $__env->addLoop($__currentLoopData); foreach($__currentLoopData as $field): $__env->incrementLoopIndices(); $loop = $__env->getLastLoop(); ?>
-            <div class="wishlist-left">
-                <p class="m-0" style="color: green;">
-                    <i class="<?php echo e($field['icon'] ?? ''); ?>"></i>
-                </p>
-                <div class="d-flex flex-column">
-                    <p class="m-0" style="font-size: 16px;"><?php echo e($field['label'] ?? ''); ?></p>
-                    <h5 class="m-0" style="color: #000; font-size: 16px;"><?php echo e($field['value'] ?? ''); ?></h5>
-                </div>
-            </div>
-        <?php endforeach; $__env->popLoop(); $loop = $__env->getLastLoop(); ?>
-    <?php endif; ?>
-<?php endif; ?>
-
-
-                                        </div>
-                                        <div class="wishlist-price d-flex justify-content-between mt-3">
-                                            <h2 style="color: #000;"><i
-                                                    class="fa-solid fa-indian-rupee-sign"></i><?php echo e($offeredPrice); ?></h2>
-                                            <button type="button" class="btn btn-dark"
-                                                onclick="window.location.href='<?php echo e(route('listing-details', ['id' => $submission['id']])); ?>'">
-                                                View Detail
-                                            </button>
-                                        </div>
-
-                                    </div>
-                                    <div class="more-info" data-aos="fade-up" data-aos-duration="500">
-                                        <div class="wishlist-button">
-                                            <p><?php echo e($catName); ?></p>
-                                            <div class="budge-active1">
-                                                <p><i class="fa-solid fa-circle-check"></i> Verified</p>
-                                            </div>
-
-                                        </div>
-                                        <h3 class="mt-2" style="color: #000;"><?php echo e($productTitle ?? ''); ?></h3>
-                                       <?php if(!empty($summaryFields)): ?>
-    <?php
-        // Filter textarea fields using array_filter
-        $textareaFields = array_filter($summaryFields, function($field) {
-            return
-                isset($field['field_id']) &&
-                Str::startsWith($field['field_id'], 'textarea');
-        });
-    ?>
-
-    <?php if(!empty($textareaFields)): ?>
-        <p style="font-size: 13px;">
-            <?php $__currentLoopData = $textareaFields; $__env->addLoop($__currentLoopData); foreach($__currentLoopData as $index => $field): $__env->incrementLoopIndices(); $loop = $__env->getLastLoop(); ?>
-                <?php if(!empty($field['icon'])): ?>
-                    <i class="<?php echo e($field['icon']); ?>" style="margin-right: 4px;"></i>
-                <?php endif; ?>
-                <?php echo e(\Illuminate\Support\Str::limit($field['value'], 100, '...')); ?>
-
-
-                
-                <?php if($index !== array_key_last($textareaFields)): ?>
-                    &nbsp;|&nbsp;
-                <?php endif; ?>
-            <?php endforeach; $__env->popLoop(); $loop = $__env->getLastLoop(); ?>
-        </p>
-    <?php endif; ?>
-<?php endif; ?>
-
-                                        <div class="d-flex justify-content-between align-items-center">
-                                            <p class="m-0">By
-                                                <?php echo e(($submission['customer']['first_name'] ?? '') . ' ' . ($submission['customer']['last_name'] ?? '')); ?>
-
-                                            </pre>
-                                            <p class="m-0" style="color: #007bff;"><i class="fa-solid fa-eye"></i> 10</p>
-                                        </div>
-                                        <div class="wishlist-item-card">
-                                              <?php if(!empty($summaryFields)): ?>
-    <?php
-        // Use array_filter when summaryFields is a plain array
-        $textFields = array_filter($summaryFields, function ($field) {
-            return
-                isset($field['field_id']) &&
-                Str::startsWith($field['field_id'], 'text_');
-        });
-    ?>
-
-    <?php if(!empty($textFields)): ?>
-        <?php $__currentLoopData = $textFields; $__env->addLoop($__currentLoopData); foreach($__currentLoopData as $field): $__env->incrementLoopIndices(); $loop = $__env->getLastLoop(); ?>
-            <div class="wishlist-left">
-                <p class="m-0" style="color: green;">
-                    <i class="<?php echo e($field['icon'] ?? ''); ?>"></i>
-                </p>
-                <div class="d-flex flex-column">
-                    <p class="m-0" style="font-size: 16px;"><?php echo e($field['label'] ?? ''); ?></p>
-                    <h5 class="m-0" style="color: #000; font-size: 16px;"><?php echo e($field['value'] ?? ''); ?></h5>
-                </div>
-            </div>
-        <?php endforeach; $__env->popLoop(); $loop = $__env->getLastLoop(); ?>
-    <?php endif; ?>
-<?php endif; ?>
-                                        </div>
-                                        <div class="wishlist-price d-flex justify-content-between mt-3">
-                                            <h2 style="color: #000;"><i
-                                                    class="fa-solid fa-indian-rupee-sign"></i><?php echo e($offeredPrice); ?></h2>
-                                            <button type="button" class="btn btn-dark"
-                                                onclick="window.location.href='<?php echo e(route('listing-details', ['id' => $submission['id']])); ?>'">
-                                                View Detail
-                                            </button>
-                                        </div>
-                                    </div>
-                                </div>
-
-                            <?php endforeach; $__env->popLoop(); $loop = $__env->getLastLoop(); ?>
-                        </div>
-
-                        
-                        <?php $__currentLoopData = $categories; $__env->addLoop($__currentLoopData); foreach($__currentLoopData as $category): $__env->incrementLoopIndices(); $loop = $__env->getLastLoop(); ?>
-                            <div class="submission-group wishlist-card" data-group="<?php echo e($category->slug); ?>"
-                                style="display:none;">
-                                <?php if(isset($submissionsByCategory[$category->id])): ?>
-                                    <?php $__currentLoopData = $submissionsByCategory[$category->id]; $__env->addLoop($__currentLoopData); foreach($__currentLoopData as $submission): $__env->incrementLoopIndices(); $loop = $__env->getLastLoop(); ?>
-                                        <?php
-                                            $fields = json_decode($submission->data, true);
-                                            $productTitle = $fields['product_title']['value'] ?? 'No Title';
-                                             $offeredPrice = ($fields['urgent_sale']['value'] ?? '') === 'Yes'
-    ? ($fields['offered_price']['value'] ?? '0')
-    : ($fields['mrp']['value'] ?? '0');
-
-                                    $imageFile = $submission->imageFile ?? null; 
-                                    $summaryFields = $submission->summaryFields ?? null;
-
-                                        ?>
-                                        <div class="wishlist-product-card" data-category="<?php echo e($category->slug); ?>">
-                                            <?php if($imageFile): ?>
-                                                <img src="<?php echo e(asset('storage/' . $imageFile['file_path'])); ?>" />
-                                            <?php else: ?>
-                                                <img
-                                                    src="https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcThez8EsMExS0cJzMTvAM6OlRj9d9SecStl6g&s">
-                                            <?php endif; ?>
-                                            <div class="wishlist-budge">
-                                                <div class="d-flex justify-content-between align-items-center">
-                                                    <div class="budge-active">
-                                                        <p><i class="fa-solid fa-circle-check"></i> Active</p>
-                                                    </div>
-                                                    <h4 class="m-0" style="font-size: 24px;padding-right: 15px;"><i
-                                                            class="fa-regular fa-heart"></i></h4>
-                                                </div>
-                                            </div>
-                                            <div class="product-details-hover">
-                                                <div class="wishlist-button">
-                                                    <p><?php echo e($category->name); ?></p>
-                                                    <div class="budge-active1">
-                                                        <p><i class="fa-solid fa-circle-check"></i> Verified</p>
-                                                    </div>
-                                                </div>
-                                                <h3 class="mt-2 " style="color: #000;"><?php echo e($productTitle); ?></h3>
-                                                <div class="d-flex justify-content-between align-items-center">
-                                                    <p class="m-0">By
-                                                        <?php echo e(($submission['customer']->first_name ?? '') . ' ' . ($submission['customer']->last_name ?? '')); ?>
-
-                                                    </p>
-                                                    <p class="m-0" style="color: #007bff;"><i class="fa-solid fa-eye"></i> 10</p>
-                                                </div>
-                                                <div class="wishlist-item-card">
-                                                    <?php if(!empty($summaryFields)): ?>
-                                                    <?php
-        // Use array_filter when summaryFields is a plain array
-        $textFields = array_filter($summaryFields, function ($field) {
-            return
-                isset($field['field_id']) &&
-                Str::startsWith($field['field_id'], 'text_');
-        });
-    ?>
-
-    <?php if(!empty($textFields)): ?>
-        <?php $__currentLoopData = $textFields; $__env->addLoop($__currentLoopData); foreach($__currentLoopData as $field): $__env->incrementLoopIndices(); $loop = $__env->getLastLoop(); ?>
-            <div class="wishlist-left">
-                <p class="m-0" style="color: green;">
-                    <i class="<?php echo e($field['icon'] ?? ''); ?>"></i>
-                </p>
-                <div class="d-flex flex-column">
-                    <p class="m-0" style="font-size: 16px;"><?php echo e($field['label'] ?? ''); ?></p>
-                    <h5 class="m-0" style="color: #000; font-size: 16px;"><?php echo e($field['value'] ?? ''); ?></h5>
-                </div>
-            </div>
-        <?php endforeach; $__env->popLoop(); $loop = $__env->getLastLoop(); ?>
-   <?php endif; ?>
-<?php endif; ?>
-                                                </div>
-                                                <div class="wishlist-price d-flex justify-content-between mt-3">
-                                                    <h2 style="color: #000;"><i
-                                                            class="fa-solid fa-indian-rupee-sign"></i><?php echo e($offeredPrice); ?></h2>
-                                                    <button type="button" class="btn btn-dark"
-                                                        onclick="window.location.href='<?php echo e(route('listing-details', ['id' => $submission['id']])); ?>'">
-                                                        View Detail
-                                                    </button>
-                                                </div>
-
-                                            </div>
-                                            <div class="more-info" data-aos="fade-up" data-aos-duration="500">
-                                                <div class="wishlist-button">
-                                                    <p><?php echo e($category->name); ?></p>
-                                                    <div class="budge-active1">
-                                                        <p><i class="fa-solid fa-circle-check"></i> Verified</p>
-                                                    </div>
-
-                                                </div>
-                                                <h3 class="mt-2" style="color: #000;"><?php echo e($productTitle ?? ''); ?></h3>
-                                                <?php if(!empty($summaryFields)): ?>
-    <?php
-        // Filter textarea fields using array_filter
-        $textareaFields = array_filter($summaryFields, function($field) {
-            return
-                isset($field['field_id']) &&
-                Str::startsWith($field['field_id'], 'textarea');
-        });
-    ?>
-
-    <?php if(!empty($textareaFields)): ?>
-        <p style="font-size: 13px;">
-            <?php $__currentLoopData = $textareaFields; $__env->addLoop($__currentLoopData); foreach($__currentLoopData as $index => $field): $__env->incrementLoopIndices(); $loop = $__env->getLastLoop(); ?>
-                <?php if(!empty($field['icon'])): ?>
-                    <i class="<?php echo e($field['icon']); ?>" style="margin-right: 4px;"></i>
-                <?php endif; ?>
-                <?php echo e(\Illuminate\Support\Str::limit($field['value'], 100, '...')); ?>
-
-
-                
-                <?php if($index !== array_key_last($textareaFields)): ?>
-                    &nbsp;|&nbsp;
-                <?php endif; ?>
-            <?php endforeach; $__env->popLoop(); $loop = $__env->getLastLoop(); ?>
-        </p>
-    <?php endif; ?>
-<?php endif; ?>
-
-                                                <div class="d-flex justify-content-between align-items-center">
-                                                    <p class="m-0">By
-                                                        <?php echo e(($submission['customer']->first_name ?? '') . ' ' . ($submission['customer']->last_name ?? '')); ?>
-
-                                                    </p>
-                                                    <p class="m-0" style="color: #007bff;"><i class="fa-solid fa-eye"></i> 10</p>
-                                                </div>
-                                                <div class="wishlist-item-card">
-                                               <?php if(!empty($summaryFields)): ?>
-    <?php
-        // Use array_filter when summaryFields is a plain array
-        $textFields = array_filter($summaryFields, function ($field) {
-            return
-                isset($field['field_id']) &&
-                Str::startsWith($field['field_id'], 'text_');
-        });
-    ?>
-
-    <?php if(!empty($textFields)): ?>
-        <?php $__currentLoopData = $textFields; $__env->addLoop($__currentLoopData); foreach($__currentLoopData as $field): $__env->incrementLoopIndices(); $loop = $__env->getLastLoop(); ?>
-            <div class="wishlist-left">
-                <p class="m-0" style="color: green;">
-                    <i class="<?php echo e($field['icon'] ?? ''); ?>"></i>
-                </p>
-                <div class="d-flex flex-column">
-                    <p class="m-0" style="font-size: 16px;"><?php echo e($field['label'] ?? ''); ?></p>
-                    <h5 class="m-0" style="color: #000; font-size: 16px;"><?php echo e($field['value'] ?? ''); ?></h5>
-                </div>
-            </div>
-        <?php endforeach; $__env->popLoop(); $loop = $__env->getLastLoop(); ?>
-           <?php endif; ?>
-<?php endif; ?>
-
-                                                </div>
-                                                <div class="wishlist-price d-flex justify-content-between mt-3">
-                                                    <h2 style="color: #000;"><i
-                                                            class="fa-solid fa-indian-rupee-sign"></i><?php echo e($offeredPrice); ?></h2>
-                                                    <button type="button" class="btn btn-dark"
-                                                        onclick="window.location.href='<?php echo e(route('listing-details', ['id' => $submission['id']])); ?>'">
-                                                        View Detail
-                                                    </button>
-
-                                                </div>
-                                            </div>
-                                        </div>
-                                    <?php endforeach; $__env->popLoop(); $loop = $__env->getLastLoop(); ?>
-                                <?php else: ?>
-                                    <p>No submission available.</p>
-                                <?php endif; ?>
-                            </div>
-                        <?php endforeach; $__env->popLoop(); $loop = $__env->getLastLoop(); ?>
-
-                    </div>
+                    <?php echo $__env->make('front.partials.filtered-listings', ['allSubmissions' => $allSubmissions, 'categories' => $categories, 'submissionsByCategory' => $submissionsByCategory, 'soldSubmissionIds'=> $soldSubmissionIds], \Illuminate\Support\Arr::except(get_defined_vars(), ['__data', '__path']))->render(); ?>
                 </div>
                 <!-- end col-lg-8 -->
             </div>
@@ -827,7 +492,6 @@
         <!-- end container -->
     </section>
                                                                                                                                       
-
     <script>
       document.addEventListener('DOMContentLoaded', function() {
     const params = new URLSearchParams(window.location.search);
@@ -846,7 +510,6 @@
     // Open correct tab
     const tabToOpen = document.querySelector(`.tab-btn[data-category="${selectedCategory}"]`);
     (tabToOpen || document.querySelector('.tab-btn[data-category="all"]'))?.click();
-});
 
 document.querySelectorAll('.tab-btn').forEach(btn => {
     btn.addEventListener('click', () => {
@@ -861,25 +524,14 @@ document.querySelectorAll('.tab-btn').forEach(btn => {
         url.searchParams.set('category', category);
         window.history.replaceState({}, '', url);
 
-        const groups = document.querySelectorAll('.submission-group');
-        const filters = document.querySelectorAll('.category-filters');
-
-        groups.forEach(group => {
-            group.style.display =
-                category === 'all' || group.getAttribute('data-group') === category
-                    ? ''
-                    : 'none';
-        });
-
-        filters.forEach(div => {
-            div.style.display =
-                category === 'all' || div.getAttribute('data-category') === category
-                    ? ''
-                    : 'none';
-        });
+    const categoryInput = form.querySelector('input[name="category"]');
+    if (categoryInput) {
+      categoryInput.value = category;
+    }
+    showCategoryGroups(category);
+      
     });
 });
-
 
 function scrollTabs(amount) {
     const container = document.getElementById("tabsContainer");
@@ -894,6 +546,68 @@ document.getElementById('clear-filters').addEventListener('click', function() {
 
     const url = window.location.href.split('?')[0];
     window.location.href = url;
+});
+
+
+  const resultsContainer = document.getElementById('submissions-container');
+
+  // Function to fetch and update results via AJAX
+  function fetchFilteredResults() {
+    const formData = new FormData(form);
+    const params = new URLSearchParams(formData).toString();
+
+    fetch(form.action + '?' + params, {
+      method: 'GET', // or 'POST' if your route expects POST
+      headers: {
+        'X-Requested-With': 'XMLHttpRequest',
+        'Accept': 'application/json',
+      },
+    })
+      .then(response => response.json())
+      .then(data => {
+        resultsContainer.innerHTML = data.html;
+
+        const categoryInput = form.querySelector('input[name="category"]');
+        const selectedCategory = categoryInput ? categoryInput.value : 'all';
+        showCategoryGroups(selectedCategory);
+      })
+      .catch(error => {
+        console.error('Error:', error);
+      });
+  }
+
+  // Submit form on any change in input/select/textarea immediately
+  form.querySelectorAll('input, select, textarea').forEach(input => {
+    input.addEventListener('change', fetchFilteredResults);
+  });
+
+  // Optional: prevent default submit on form submit to avoid page reload if user presses enter
+  form.addEventListener('submit', function(e) {
+    e.preventDefault();
+    fetchFilteredResults();
+  });
+
+  // Your existing showCategoryGroups function here or make sure it's globally available
+  function showCategoryGroups(category) {
+    const groups = document.querySelectorAll('.submission-group');
+    const filters = document.querySelectorAll('.category-filters');
+
+    groups.forEach(group => {
+      if (category === 'all') {
+        group.style.display = group.getAttribute('data-group') === 'all' ? '' : 'none';
+      } else {
+        group.style.display = group.getAttribute('data-group') === category ? '' : 'none';
+      }
+    });
+
+    filters.forEach(div => {
+      if (category === 'all' || div.getAttribute('data-category') === category) {
+        div.style.display = '';
+      } else {
+        div.style.display = 'none';
+      }
+    });
+  }
 });
 
 </script>

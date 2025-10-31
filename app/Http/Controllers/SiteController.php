@@ -78,8 +78,9 @@ class SiteController extends Controller
 
         $testimonials = Testimonial::where('status', 'active')->get();
         $countries = DB::table('countries')->orderBy('name')->get();
+        $soldSubmissionIds = \App\Models\ProductOrder::pluck('submission_id')->toArray();
         // dd($categorySubmissionCounts);
-        return view('front.index', compact('categories', 'submissionsByCategory', 'allSubmissions', 'blogs', 'testimonials', 'categorySubmissionCounts', 'countries'));
+        return view('front.index', compact('categories', 'submissionsByCategory', 'allSubmissions', 'blogs', 'testimonials', 'categorySubmissionCounts', 'countries', 'soldSubmissionIds'));
     }
 
 
@@ -342,8 +343,23 @@ class SiteController extends Controller
         };
 
         $countries = DB::table('countries')->orderBy('name')->get();
-        return view('front.listing-list', compact('categories', 'submissionsByCategory', 'allSubmissions', 'countries'));
-    }
+        // ✅ Fetch all sold submission IDs
+        $soldSubmissionIds = \App\Models\ProductOrder::pluck('submission_id')->toArray();
 
+        if ($request->ajax()) {
+            // Prepare the partial view only with the filtered results
+            $html = view('front.partials.filtered-listings', compact('submissionsByCategory', 'allSubmissions', 'soldSubmissionIds', 'categories'))->render();
+            return response()->json(['html' => $html]);
+        }
+
+
+        return view('front.listing-list', compact(
+            'categories',
+            'submissionsByCategory',
+            'allSubmissions',
+            'countries',
+            'soldSubmissionIds'
+        ));
+    }
 
 }

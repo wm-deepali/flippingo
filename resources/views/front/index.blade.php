@@ -1,9 +1,244 @@
 @extends('layouts.new-master')
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
 
+    <!-- Alpine.js -->
+    <script defer src="https://unpkg.com/alpinejs@3.x.x/dist/cdn.min.js"></script>
 @section('title')
   {{ $page->meta_title ?? 'Flippingo' }}
 @endsection
+<style>
+        :root {
+            --flippingo-blue: #2563eb;
+            --flippingo-blue-light: #dbeafe;
+            --flippingo-gray: #6b7280;
+        }
 
+        /* === UNIQUE PREFIX: flippingo-hiw- === */
+        .flippingo-hiw-section {
+            padding: 5rem 0;
+            background: linear-gradient(to bottom, #f0f9ff, #ffffff);
+        }
+
+        .flippingo-hiw-container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 0 1.5rem;
+        }
+
+        .flippingo-hiw-full-slider {
+            position: relative;
+            overflow: hidden;
+            border-radius: 1.5rem;
+            box-shadow: 0 20px 40px rgba(0,0,0,0.1);
+        }
+
+        .flippingo-hiw-full-slides {
+            display: flex;
+            width: 100%; /* 3 slides */
+            transition: transform 0.8s ease;
+        }
+
+        .flippingo-hiw-full-slide {
+            min-width: 100%;
+            display: grid;
+            grid-template-columns: 1fr;
+            gap: 2rem;
+            padding: 3rem;
+            align-items: center;
+        }
+        @media (min-width: 1024px) {
+            .flippingo-hiw-full-slide {
+                grid-template-columns: 1fr 1fr;
+                gap: 3rem;
+            }
+        }
+
+        /* Left Content */
+        .flippingo-hiw-content h2 {
+            font-size: 2rem;
+            font-weight: 800;
+            line-height: 1.2;
+            margin-bottom: 1rem;
+            color: #1f2937;
+        }
+        @media (min-width: 768px) {
+            .flippingo-hiw-content h2 { font-size: rem; }
+        }
+
+        .flippingo-hiw-content p {
+            font-size: 1.125rem;
+            color: var(--flippingo-gray);
+            margin-bottom: 1.5rem;
+        }
+
+        .flippingo-hiw-content p span {
+            display: block;
+            color: var(--flippingo-blue);
+            font-weight: 600;
+            margin-top: 0.5rem;
+        }
+
+        .flippingo-hiw-steps {
+            display: flex;
+            flex-direction: column;
+            gap: 1rem;
+            margin: 1.5rem 0;
+        }
+
+        .flippingo-hiw-step {
+            display: flex;
+            gap: 1rem;
+            padding: 1rem;
+            border-radius: 1rem;
+            background: white;
+            box-shadow: 0 4px 12px rgba(0,0,0,0.05);
+            transition: transform 0.3s ease;
+        }
+
+        .flippingo-hiw-step:hover {
+            transform: translateY(-4px);
+        }
+
+        .flippingo-hiw-step-icon {
+            width: 3rem;
+            height: 3rem;
+            background: linear-gradient(135deg, var(--flippingo-blue), #3b82f6);
+            color: white;
+            border-radius: 9999px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            flex-shrink: 0;
+            font-size: 1.25rem;
+        }
+
+        .flippingo-hiw-step h4 {
+            font-weight: 600;
+            margin-bottom: 0.25rem;
+            color: #1f2937;
+        }
+
+        .flippingo-hiw-step p {
+            font-size: 0.875rem;
+            color: var(--flippingo-gray);
+            margin: 0;
+        }
+
+        /* Buttons */
+        .flippingo-hiw-btn-group {
+            display: flex;
+            flex-direction: column;
+            gap: 1rem;
+        }
+        @media (min-width: 640px) {
+            .flippingo-hiw-btn-group { flex-direction: row; }
+        }
+
+        .flippingo-hiw-btn {
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            gap: 0.5rem;
+            padding: 0.75rem 1.5rem;
+            font-weight: 600;
+            border-radius: 0.5rem;
+            transition: all 0.3s ease;
+            text-decoration: none;
+            font-size: 1rem;
+        }
+
+        .flippingo-hiw-btn-primary {
+            background: var(--flippingo-blue);
+            color: white;
+            box-shadow: 0 4px 14px rgba(37, 99, 235, 0.3);
+        }
+        .flippingo-hiw-btn-primary:hover {
+            background: #1d4ed8;
+            transform: translateY(-2px);
+        }
+
+        .flippingo-hiw-btn-secondary {
+            border: 2px solid var(--flippingo-blue);
+            color: var(--flippingo-blue);
+            background: transparent;
+        }
+        .flippingo-hiw-btn-secondary:hover {
+            background: #dbeafe;
+        }
+
+        /* Right Image */
+        .flippingo-hiw-image {
+            border-radius: 1.5rem;
+            overflow: hidden;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.1);
+            height: 400px;
+        }
+        @media (max-width: 1024px) { .flippingo-hiw-image { height: 350px; } }
+        @media (max-width: 768px) { .flippingo-hiw-image { height: 280px; margin-top: 1rem; } }
+
+        .flippingo-hiw-image img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+            transition: transform 0.6s ease;
+        }
+
+        .flippingo-hiw-image:hover img {
+            transform: scale(1.05);
+        }
+
+        /* Arrows */
+        .flippingo-hiw-arrow {
+            position: absolute;
+            top: 50%;
+            transform: translateY(-50%);
+            width: 3rem;
+            height: 3rem;
+            background: white;
+            border-radius: 9999px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            cursor: pointer;
+            z-index: 10;
+            box-shadow: 0 4px 12px rgba(0,0,0,0.15);
+            transition: all 0.3s ease;
+        }
+
+        .flippingo-hiw-arrow:hover {
+            background: var(--flippingo-blue);
+            color: white;
+            transform: translateY(-50%) scale(1.1);
+        }
+
+        .flippingo-hiw-arrow-left { left: 0rem; }
+        .flippingo-hiw-arrow-right { right: 0rem; }
+
+        /* Dots */
+        .flippingo-hiw-dots {
+            position: absolute;
+            bottom: 1.5rem;
+            left: 50%;
+            transform: translateX(-50%);
+            display: flex;
+            gap: 0.5rem;
+            z-index: 10;
+        }
+
+        .flippingo-hiw-dot {
+            width: 0.75rem;
+            height: 0.75rem;
+            border-radius: 9999px;
+            background: rgba(255,255,255,0.5);
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+
+        .flippingo-hiw-dot.active {
+            background: white;
+            width: 2rem;
+        }
+    </style>
 <style>
   .get-a-quote:before,
   .swal-modal:before {
@@ -2102,6 +2337,19 @@
   .budge-active p {
     margin: 0;
   }
+  
+   .budge-soldout p {
+    background-color: #dc3545;
+    color: #fff;
+    border-radius: 20px;
+    padding: 3px 10px;
+    font-size: 14px;
+    font-weight: 600;
+    display: inline-flex;
+    align-items: center;
+    gap: 4px;
+  }
+
 
   .wishlist-button {
     width: 100%;
@@ -2313,6 +2561,11 @@
     animation: slideText 10s infinite;
   }
 
+
+  #slider-content span a {
+    color: #fff !important;
+  }
+  
   @keyframes slideText {
     0% {
       transform: translateY(0%);
@@ -2434,8 +2687,12 @@
               <h1>
                 #1 Platform to Buy & Sell
                 <span id="slider-content">
-                  @foreach($categories as $category)
-                    <span>{{ $category->name }}</span>
+                 @foreach($categories as $category)
+                    <span>
+                      <a href="{{ route('listing-list', ['category' => $category->slug]) }}" class="category-link">
+                        {{ $category->name }}
+                      </a>
+                    </span>
                   @endforeach
                 </span>
               </h1>
@@ -2891,105 +3148,197 @@ function renderCategories(categories) {
   <!-- ================================
                                                                                                               START HIW AREA
                                                                                                               ================================= -->
-  <section class="hiw-area bg-gray section--padding">
-    <div class="container">
-      <div class="">
-        <h2 class="sec__title mb-3 text-center">Buy Your Next Digital Asset on Flippingo</h2>
-        <p class="sec__desc text-center">
-          Explore verified listings of businesses, accounts, websites, and apps.
-          Compare options, connect with sellers, and purchase securely—all in one place.
-        </p>
-      </div>
+  <!--<section class="hiw-area bg-gray section--padding">-->
+  <!--  <div class="container">-->
+  <!--    <div class="">-->
+  <!--      <h2 class="sec__title mb-3 text-center">Buy Your Next Digital Asset on Flippingo</h2>-->
+  <!--      <p class="sec__desc text-center">-->
+  <!--        Explore verified listings of businesses, accounts, websites, and apps.-->
+  <!--        Compare options, connect with sellers, and purchase securely—all in one place.-->
+  <!--      </p>-->
+  <!--    </div>-->
       <!-- end section-heading -->
-      <div class="row mt-5">
+  <!--    <div class="row mt-5">-->
         <!-- Card 1 -->
-        <div class="col-lg-3 col-md-6">
-          <div class="flip-card">
-            <div class="flip-card-inner">
+  <!--      <div class="col-lg-3 col-md-6">-->
+  <!--        <div class="flip-card">-->
+  <!--          <div class="flip-card-inner">-->
               <!-- Front -->
-              <div class="flip-card-front">
-                <img src="{{ asset('assets') }}/images/deal.png" width="74px" />
-                <h4 class="mt-3">Apply For Sponsorship</h4>
-              </div>
+  <!--            <div class="flip-card-front">-->
+  <!--              <img src="{{ asset('assets') }}/images/deal.png" width="74px" />-->
+  <!--              <h4 class="mt-3">Apply For Sponsorship</h4>-->
+  <!--            </div>-->
               <!-- Back -->
-              <div class="flip-card-back">
-                <p>
-                  If you want to get sponsorship from us kindly read our requirements first,
-                  then apply by clicking on get sponsorship button.
-                </p>
-                <button>View More</button>
-              </div>
-            </div>
-          </div>
-        </div>
+  <!--            <div class="flip-card-back">-->
+  <!--              <p>-->
+  <!--                If you want to get sponsorship from us kindly read our requirements first,-->
+  <!--                then apply by clicking on get sponsorship button.-->
+  <!--              </p>-->
+  <!--              <button>View More</button>-->
+  <!--            </div>-->
+  <!--          </div>-->
+  <!--        </div>-->
+  <!--      </div>-->
 
         <!-- Card 2 -->
-        <div class="col-lg-3 col-md-6">
-          <div class="flip-card">
-            <div class="flip-card-inner">
+  <!--      <div class="col-lg-3 col-md-6">-->
+  <!--        <div class="flip-card">-->
+  <!--          <div class="flip-card-inner">-->
               <!-- Front -->
-              <div class="flip-card-front">
-                <img src="{{ asset('assets') }}/images/approved.png" width="74px" />
-                <h4 class="mt-3">Wait For Approval</h4>
-              </div>
+  <!--            <div class="flip-card-front">-->
+  <!--              <img src="{{ asset('assets') }}/images/approved.png" width="74px" />-->
+  <!--              <h4 class="mt-3">Wait For Approval</h4>-->
+  <!--            </div>-->
               <!-- Back -->
-              <div class="flip-card-back">
-                <p>
-                  After applying for sponsorship for your page or channel, please wait for our approval.
-                  Once you are approved, then proceed further.
-                </p>
-                <button>View More</button>
-              </div>
-            </div>
-          </div>
-        </div>
+  <!--            <div class="flip-card-back">-->
+  <!--              <p>-->
+  <!--                After applying for sponsorship for your page or channel, please wait for our approval.-->
+  <!--                Once you are approved, then proceed further.-->
+  <!--              </p>-->
+  <!--              <button>View More</button>-->
+  <!--            </div>-->
+  <!--          </div>-->
+  <!--        </div>-->
+  <!--      </div>-->
 
         <!-- Card 3 -->
-        <div class="col-lg-3 col-md-6">
-          <div class="flip-card">
-            <div class="flip-card-inner">
+  <!--      <div class="col-lg-3 col-md-6">-->
+  <!--        <div class="flip-card">-->
+  <!--          <div class="flip-card-inner">-->
               <!-- Front -->
-              <div class="flip-card-front">
-                <img src="{{ asset('assets') }}/images/brand.png" width="74px" />
-                <h4 class="mt-3">Start Promoting Brand</h4>
-              </div>
+  <!--            <div class="flip-card-front">-->
+  <!--              <img src="{{ asset('assets') }}/images/brand.png" width="74px" />-->
+  <!--              <h4 class="mt-3">Start Promoting Brand</h4>-->
+  <!--            </div>-->
               <!-- Back -->
-              <div class="flip-card-back">
-                <p>
-                  Start promoting brand logo, links, tools, & services. Earn money by promoting the brand’s
-                  content and products.
-                </p>
-                <button>View More</button>
-              </div>
-            </div>
-          </div>
-        </div>
+  <!--            <div class="flip-card-back">-->
+  <!--              <p>-->
+  <!--                Start promoting brand logo, links, tools, & services. Earn money by promoting the brand’s-->
+  <!--                content and products.-->
+  <!--              </p>-->
+  <!--              <button>View More</button>-->
+  <!--            </div>-->
+  <!--          </div>-->
+  <!--        </div>-->
+  <!--      </div>-->
 
         <!-- Card 4 -->
-        <div class="col-lg-3 col-md-6">
-          <div class="flip-card">
-            <div class="flip-card-inner">
+  <!--      <div class="col-lg-3 col-md-6">-->
+  <!--        <div class="flip-card">-->
+  <!--          <div class="flip-card-inner">-->
               <!-- Front -->
-              <div class="flip-card-front">
-                <img src="{{ asset('assets') }}/images/banking.png" width="74px" />
-                <h4 class="mt-3">Get Paid For Promotion</h4>
-              </div>
+  <!--            <div class="flip-card-front">-->
+  <!--              <img src="{{ asset('assets') }}/images/banking.png" width="74px" />-->
+  <!--              <h4 class="mt-3">Get Paid For Promotion</h4>-->
+  <!--            </div>-->
               <!-- Back -->
-              <div class="flip-card-back">
-                <p>
-                  Get paid for promotion. We provide instant, daily, and weekly payments
-                  to our influencers.
-                </p>
-                <button>View More</button>
-              </div>
-            </div>
-          </div>
-        </div>
-      </div>
+  <!--            <div class="flip-card-back">-->
+  <!--              <p>-->
+  <!--                Get paid for promotion. We provide instant, daily, and weekly payments-->
+  <!--                to our influencers.-->
+  <!--              </p>-->
+  <!--              <button>View More</button>-->
+  <!--            </div>-->
+  <!--          </div>-->
+  <!--        </div>-->
+  <!--      </div>-->
+  <!--    </div>-->
       <!-- end row -->
-    </div>
+  <!--  </div>-->
     <!-- end container -->
-  </section>
+  <!--</section>-->
+  <section class="flippingo-hiw-section">
+    <div class="flippingo-hiw-container">
+        
+        <!-- FULL SLIDER (Content + Image) -->
+        <div x-data="flippingoHiwSlider()" class="flippingo-hiw-full-slider">
+            
+            <!-- Slides -->
+            <div class="flippingo-hiw-full-slides" :style="{ transform: `translateX(-${current * 100}%)` }">
+                
+              @php
+    $slides = [
+        [
+            'title' => 'How to Start Selling Business on Flippingo Marketplace',
+            'desc' => 'Sell your business, website, app, or social account on Flippingo with ease. List your digital asset in minutes, connect with serious buyers, and close deals securely through escrow. Get verified fast, set your price, and receive payments instantly. Turn your hard work into cash with a trusted marketplace built for entrepreneurs.',
+            'highlight' => 'Get verified → List → Sell → Get Paid.',
+            'btn1' => ['text' => 'Start selling', 'icon' => 'fas fa-plus'],
+            'btn2' => ['text' => 'View listings', 'icon' => 'fas fa-eye'],
+            'img' => 'https://images.unsplash.com/photo-1460925895917-afdab827c52f?w=800&h=600&fit=crop'
+        ],
+        [
+            'title' => 'Buy Your Next Digital Asset',
+            'desc' => 'Discover thousands of verified businesses, websites, apps, and social accounts ready for sale. Compare options, chat directly with sellers, and negotiate confidently. Every deal is protected by secure escrow until ownership is fully transferred. Buy with zero risk and take over profitable digital assets instantly.',
+            'highlight' => 'Compare options, connect with sellers, and purchase securely.',
+            'btn1' => ['text' => 'Browse Now', 'icon' => 'fas fa-search'],
+            'btn2' => ['text' => 'Learn More', 'icon' => 'fas fa-info-circle'],
+            'img' => 'https://images.unsplash.com/photo-1552664730-d307ca884978?w=800&h=600&fit=crop'
+        ],
+        [
+            'title' => 'Monetize Your Digital Assets',
+            'desc' => 'Turn your website, mobile app, or social media account into real cash. List your asset in under 5 minutes, attract serious buyers, and close deals fast. Get paid securely via escrow and transfer ownership smoothly. Join thousands of sellers who’ve successfully monetized their digital projects.',
+            'highlight' => 'List in minutes → Get offers → Sell fast.',
+            'btn1' => ['text' => 'List Asset', 'icon' => 'fas fa-plus-circle'],
+            'btn2' => ['text' => 'See Examples', 'icon' => 'fas fa-images'],
+            'img' => 'https://images.unsplash.com/photo-1516321310766-90ab77e47b3a?w=800&h=600&fit=crop'
+        ]
+    ];
+@endphp
+
+                @foreach($slides as $index => $slide)
+                <div class="flippingo-hiw-full-slide">
+                    <!-- Left: Content -->
+                    <div class="flippingo-hiw-content">
+                        <h2>{{ $slide['title'] }}</h2>
+                        <p>
+                            {{ $slide['desc'] }}
+                            <span>{{ $slide['highlight'] }}</span>
+                        </p>
+
+                       
+
+                        <div class="flippingo-hiw-btn-group">
+                            <a href="#" class="flippingo-hiw-btn flippingo-hiw-btn-primary">
+                                <i class="{{ $slide['btn1']['icon'] }}"></i>
+                                {{ $slide['btn1']['text'] }}
+                            </a>
+                            <a href="#" class="flippingo-hiw-btn flippingo-hiw-btn-secondary">
+                                <i class="{{ $slide['btn2']['icon'] }}"></i>
+                                {{ $slide['btn2']['text'] }}
+                            </a>
+                        </div>
+                    </div>
+
+                    <!-- Right: Image -->
+                    <div class="flippingo-hiw-image">
+                        <img src="{{ $slide['img'] }}" alt="Slide {{ $index + 1 }}">
+                    </div>
+                </div>
+                @endforeach
+            </div>
+
+            <!-- Arrows -->
+            <div class="flippingo-hiw-arrow flippingo-hiw-arrow-left" @click="prev()">
+                <i class="fas fa-chevron-left"></i>
+            </div>
+            <div class="flippingo-hiw-arrow flippingo-hiw-arrow-right" @click="next()">
+                <i class="fas fa-chevron-right"></i>
+            </div>
+
+            <!-- Dots -->
+            <div class="flippingo-hiw-dots">
+                <template x-for="(slide, index) in 3" :key="index">
+                    <div class="flippingo-hiw-dot" 
+                         :class="{ 'active': current === index }"
+                         @click="current = index"></div>
+                </template>
+            </div>
+        </div>
+    </div>
+</section>
+
+<!-- SLIDER JS -->
+
 
   <!-- end hiw-area -->
   <!-- ================================
@@ -3059,9 +3408,17 @@ function renderCategories(categories) {
                 @endif
                 <div class="wishlist-budge">
                   <div class="d-flex justify-content-between align-items-center">
-                    <div class="budge-active">
-                      <p><i class="fa-solid fa-circle-check"></i> Active</p>
-                    </div>
+                    @if(in_array($submission['id'], $soldSubmissionIds))
+                      {{-- SOLD OUT badge --}}
+                      <div class="budge-soldout">
+                        <p><i class="fa-solid fa-ban"></i> Sold Out</p>
+                      </div>
+                    @else
+                      {{-- ACTIVE badge --}}
+                      <div class="budge-active">
+                        <p><i class="fa-solid fa-circle-check"></i> Active</p>
+                      </div>
+                    @endif
                     <h4 class="m-0" style="font-size: 24px;padding-right: 15px;"><i class="fa-regular fa-heart"></i></h4>
 
                   </div>
@@ -3230,9 +3587,17 @@ function renderCategories(categories) {
                   @endif
                   <div class="wishlist-budge">
                     <div class="d-flex justify-content-between align-items-center">
-                      <div class="budge-active">
-                        <p><i class="fa-solid fa-circle-check"></i> Active</p>
-                      </div>
+                     @if(in_array($submission['id'], $soldSubmissionIds))
+                        {{-- SOLD OUT badge --}}
+                        <div class="budge-soldout">
+                          <p><i class="fa-solid fa-ban"></i> Sold Out</p>
+                        </div>
+                      @else
+                        {{-- ACTIVE badge --}}
+                        <div class="budge-active">
+                          <p><i class="fa-solid fa-circle-check"></i> Active</p>
+                        </div>
+                      @endif
                       <h4 class="m-0" style="font-size: 24px;padding-right: 15px;"><i class="fa-regular fa-heart"></i></h4>
 
                     </div>
@@ -4212,6 +4577,37 @@ function renderCategories(categories) {
     }
   </script>
 
+<script>
+    function flippingoHiwSlider() {
+        return {
+            current: 0,
+            total: 3,
+            autoplay: null,
 
+            init() {
+                this.startAutoplay();
+            },
+
+            next() {
+                this.current = (this.current + 1) % this.total;
+                this.resetAutoplay();
+            },
+
+            prev() {
+                this.current = (this.current - 1 + this.total) % this.total;
+                this.resetAutoplay();
+            },
+
+            startAutoplay() {
+                this.autoplay = setInterval(() => this.next(), 5000);
+            },
+
+            resetAutoplay() {
+                clearInterval(this.autoplay);
+                this.startAutoplay();
+            }
+        }
+    }
+</script>
 
 @endsection

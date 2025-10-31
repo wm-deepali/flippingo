@@ -41,6 +41,7 @@ class ListingController extends Controller
             }
 
             // Attach summary fields for use in blade
+            $submission->is_sold = \App\Models\ProductOrder::where('submission_id', $submission->id)->exists();
             $submission->summaryFields = $summaryFields;
             return $submission;
         });
@@ -62,19 +63,17 @@ class ListingController extends Controller
         $id = $request->get('id');
         $user = auth('customer')->user();
 
-        // Fetch submission with relations
         $submission = FormSubmission::with(['form.category', 'customer.wallet', 'files'])
             ->findOrFail($id);
 
         if ($user) {
-            // Track total views
             $today = now()->toDateString();
 
-            // --- Lifetime Tracking ---
+            // Lifetime Tracking
             $submission->increment('total_views');
             $submission->increment('total_clicks');
 
-            // --- Daily Tracking ---
+            // Daily Tracking
             $stat = FormSubmissionStat::firstOrCreate(
                 ['form_submission_id' => $submission->id, 'date' => $today],
                 ['views' => 0, 'clicks' => 0, 'unique_views' => 0]
@@ -83,11 +82,8 @@ class ListingController extends Controller
             $stat->increment('views');
             $stat->increment('clicks');
 
-            // Track unique views by customer ID
-            $userId = $user->id;
-
+            // Unique views tracking
             $ip = $request->ip();
-
             $hasViewed = \App\Models\FormSubmissionView::where('form_submission_id', $id)
                 ->where('ip_address', $ip)
                 ->where('view_date', $today)
@@ -96,7 +92,7 @@ class ListingController extends Controller
             if (!$hasViewed) {
                 \App\Models\FormSubmissionView::create([
                     'form_submission_id' => $id,
-                    'customer_id' => $userId,
+                    'customer_id' => $user->id,
                     'ip_address' => $ip,
                     'view_date' => $today,
                 ]);
@@ -104,18 +100,13 @@ class ListingController extends Controller
                 $submission->increment('unique_views');
                 $stat->increment('unique_views');
             }
-
-
         }
-        // Else: no tracking if not logged in
 
         // Fetch form layout and fields
         $formData = \App\Models\FormData::where('form_id', $submission->form_id)->first();
+        $layout = $formData->field_layout ?? [];
+        $fields = $formData->fields ?? [];
 
-        $layout = $formData && !empty($formData->field_layout) ? $formData->field_layout : [];
-        $fields = $formData && !empty($formData->fields) ? $formData->fields : [];
-
-        // Prepare summary fields to show
         $submittedData = json_decode($submission->data, true) ?? [];
         $formFields = collect($fields);
 
@@ -141,15 +132,33 @@ class ListingController extends Controller
                 ->exists();
         }
 
+        // ✅ Fetch other submissions by same seller
+        $otherSubmissions = FormSubmission::with('files')
+            ->where('customer_id', $submission->customer_id)
+            ->where('id', '!=', $submission->id)
+            ->latest()
+            ->take(6)
+            ->get();
+
+        // ✅ Preload sold submission IDs in one go (no per-item queries)
+        $soldSubmissionIds = \App\Models\ProductOrder::pluck('submission_id')->toArray();
+
+
+        $isSold = \App\Models\ProductOrder::where('submission_id', $submission->id)->exists();
+
         return view('front.listing-details', compact(
             'submission',
             'layout',
             'fields',
             'walletBalance',
             'summaryFields',
-            'isInWishlist'
+            'isInWishlist',
+            'otherSubmissions',
+            'isSold',
+            'soldSubmissionIds'
         ));
     }
+
 
 
     public function sendEnquiry(Request $request)

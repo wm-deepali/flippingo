@@ -213,7 +213,7 @@
                 <a href="#" class="d-flex align-items-center profile-link" id="profileDropdown" data-bs-toggle="dropdown"
                   aria-expanded="false">
                   <img
-                    src="{{ $customer->profile_pic ? asset('storage/' . $customer->profile_pic) : asset('default-profile.png') }}"
+                   src="{{ $customer->profile_pic ? asset('storage/' . $customer->profile_pic) : asset('user_assets/images/users/profile-pic.jpg')  }}"
                     alt="Profile Photo" class="rounded-circle me-2" style="width:43px; height:43px; object-fit:cover;">
                   <span class="profile-name" style="color:#fff;">{{ $customer->first_name ?? 'User' }}
                     {{ $customer->last_name ?? '' }}</span>

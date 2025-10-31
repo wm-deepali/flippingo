@@ -34,7 +34,13 @@
 
   <td><?php echo e($submission->id); ?></td>
                 <td><?php echo e($submission->product_title); ?></td>
-                <td><?php echo e($submission->offered_price); ?></td>
+                <td>
+                    <?php echo e($submission->offered_price); ?>
+
+     
+
+</td>
+
                <td><?php echo e($submission->total_sales); ?></td>
 
                    <td><?php echo e(\Carbon\Carbon::parse($submission->expires_at)->format('Y-m-d H:i')); ?></td>
@@ -57,6 +63,10 @@
                             <?php default: ?>
                                 <span class="badge badge-light"><?php echo e(ucfirst($submission->status)); ?></span>
                         <?php endswitch; ?>
+                          <?php if(!empty($submission->is_sold) && $submission->is_sold): ?>
+        <br>
+        <span class="badge bg-danger mt-1">Sold Out</span>
+    <?php endif; ?>
                     </td>
 
                 

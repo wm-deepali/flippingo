@@ -45,6 +45,7 @@ class ListingController extends Controller
             $submission->category_name = optional($submission->form->category)->name ?? '';
             $submission->total_sales = $submission->orders->count();
             $submission->is_expired = $submission->status === 'expired';
+            $submission->is_sold = \App\Models\ProductOrder::where('submission_id', $submission->id)->exists();
 
             return $submission;
         });

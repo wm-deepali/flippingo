@@ -33,7 +33,12 @@
 
   <td>{{ $submission->id}}</td>
                 <td>{{ $submission->product_title }}</td>
-                <td>{{  $submission->offered_price}}</td>
+                <td>
+                    {{ $submission->offered_price }}
+     
+
+</td>
+
                <td>{{ $submission->total_sales }}</td>
 
                    <td>{{ \Carbon\Carbon::parse($submission->expires_at)->format('Y-m-d H:i') }}</td>
@@ -56,6 +61,10 @@
                             @default
                                 <span class="badge badge-light">{{ ucfirst($submission->status) }}</span>
                         @endswitch
+                          @if(!empty($submission->is_sold) && $submission->is_sold)
+        <br>
+        <span class="badge bg-danger mt-1">Sold Out</span>
+    @endif
                     </td>
 
                 {{-- Rejected-specific columns --}}

@@ -55,6 +55,19 @@
         margin: 0;
     }
 
+
+    .budge-soldout p {
+    background-color: #dc3545;
+    color: #fff;
+    border-radius: 20px;
+    padding: 3px 10px;
+    font-size: 14px;
+    font-weight: 600;
+    display: inline-flex;
+    align-items: center;
+    gap: 4px;
+}
+
     .wishlist-button {
         width: 100%;
         display: flex;
@@ -257,8 +270,7 @@
     <div class="sidebar">
         <!-- Search & Clear buttons at topmost -->
         <div class="d-flex justify-content-between mb-3">
-            <button type="submit" form="filter-form" class="theme-btn border-0 w-75">Search</button>
-            <button type="button" class="theme-btn border-0 w-20" id="clear-filters">Clear</button>
+            <button type="button" class="theme-btn border-0 w-100" id="clear-filters">Clear</button>
         </div>
 
         <form id="filter-form" method="GET" action="{{ route('listing-list') }}">
@@ -445,348 +457,7 @@
     <button class="scroll-btn next" onclick="scrollTabs(200)">&#10095;</button>
 </div>
 
-                    <div id="submissions-container">
-
-                        {{-- All submissions (for All tab) --}}
-                        <div class="submission-group wishlist-card" data-group="all">
-                            @foreach($allSubmissions as $submission)
-                                @php
-                                    $catSlug = $submission['category']->slug ?? 'uncategorized';
-                                    $catName = $submission['category']->name ?? '';
-
-                                    $fields = json_decode($submission['data'], true);
-                                    $productTitle = $fields['product_title']['value'] ?? 'No Title';
-                                   $offeredPrice = ($fields['urgent_sale']['value'] ?? '') === 'Yes'
-    ? ($fields['offered_price']['value'] ?? '0')
-    : ($fields['mrp']['value'] ?? '0');
-
-
-                                   $imageFile = $submission['imageFile'] ?? null; 
-                                    $summaryFields = $submission['summaryFields'] ?? null;
-                                  @endphp
-                                <div class="wishlist-product-card" data-category="{{ $catSlug }}">
-                                    @if($imageFile)
-                                        <img src="{{ asset('storage/' . $imageFile['file_path']) }}" />
-                                    @else
-                                        <img
-                                            src="https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcThez8EsMExS0cJzMTvAM6OlRj9d9SecStl6g&s">
-                                    @endif
-                                    <div class="wishlist-budge">
-                                        <div class="d-flex justify-content-between align-items-center">
-                                            <div class="budge-active">
-                                                <p><i class="fa-solid fa-circle-check"></i> Active</p>
-                                            </div>
-                                            <h4 class="m-0" style="font-size: 24px;padding-right: 15px;"><i
-                                                    class="fa-regular fa-heart"></i></h4>
-                                        </div>
-                                    </div>
-                                    <div class="product-details-hover">
-                                        <div class="wishlist-button">
-                                            <p>{{ $catName }}</p>
-                                            <div class="budge-active1">
-                                                <p><i class="fa-solid fa-circle-check"></i> Verified</p>
-                                            </div>
-
-                                        </div>
-                                        <h3 class="mt-2 " style="color: #000;">{{ $productTitle }}</h3>
-                                        <div class="d-flex justify-content-between align-items-center">
-                                            <p class="m-0">By
-                                                {{ ($submission['customer']['first_name'] ?? '') . ' ' . ($submission['customer']['last_name'] ?? '') }}
-                                            </p>
-
-                                            <p class="m-0" style="color: #007bff;"><i class="fa-solid fa-eye"></i> 10</p>
-                                        </div>
-                                        <div class="wishlist-item-card">
-                                  @if(!empty($summaryFields))
-    @php
-        // Use array_filter when summaryFields is a plain array
-        $textFields = array_filter($summaryFields, function ($field) {
-            return
-                isset($field['field_id']) &&
-                Str::startsWith($field['field_id'], 'text_');
-        });
-    @endphp
-
-    @if(!empty($textFields))
-        @foreach($textFields as $field)
-            <div class="wishlist-left">
-                <p class="m-0" style="color: green;">
-                    <i class="{{ $field['icon'] ?? '' }}"></i>
-                </p>
-                <div class="d-flex flex-column">
-                    <p class="m-0" style="font-size: 16px;">{{ $field['label'] ?? '' }}</p>
-                    <h5 class="m-0" style="color: #000; font-size: 16px;">{{ $field['value'] ?? '' }}</h5>
-                </div>
-            </div>
-        @endforeach
-    @endif
-@endif
-
-
-                                        </div>
-                                        <div class="wishlist-price d-flex justify-content-between mt-3">
-                                            <h2 style="color: #000;"><i
-                                                    class="fa-solid fa-indian-rupee-sign"></i>{{ $offeredPrice }}</h2>
-                                            <button type="button" class="btn btn-dark"
-                                                onclick="window.location.href='{{ route('listing-details', ['id' => $submission['id']]) }}'">
-                                                View Detail
-                                            </button>
-                                        </div>
-
-                                    </div>
-                                    <div class="more-info" data-aos="fade-up" data-aos-duration="500">
-                                        <div class="wishlist-button">
-                                            <p>{{ $catName }}</p>
-                                            <div class="budge-active1">
-                                                <p><i class="fa-solid fa-circle-check"></i> Verified</p>
-                                            </div>
-
-                                        </div>
-                                        <h3 class="mt-2" style="color: #000;">{{ $productTitle ?? '' }}</h3>
-                                       @if(!empty($summaryFields))
-    @php
-        // Filter textarea fields using array_filter
-        $textareaFields = array_filter($summaryFields, function($field) {
-            return
-                isset($field['field_id']) &&
-                Str::startsWith($field['field_id'], 'textarea');
-        });
-    @endphp
-
-    @if(!empty($textareaFields))
-        <p style="font-size: 13px;">
-            @foreach($textareaFields as $index => $field)
-                @if(!empty($field['icon']))
-                    <i class="{{ $field['icon'] }}" style="margin-right: 4px;"></i>
-                @endif
-                {{ \Illuminate\Support\Str::limit($field['value'], 100, '...') }}
-
-                {{-- Separator except for last item --}}
-                @if($index !== array_key_last($textareaFields))
-                    &nbsp;|&nbsp;
-                @endif
-            @endforeach
-        </p>
-    @endif
-@endif
-
-                                        <div class="d-flex justify-content-between align-items-center">
-                                            <p class="m-0">By
-                                                {{ ($submission['customer']['first_name'] ?? '') . ' ' . ($submission['customer']['last_name'] ?? '') }}
-                                            </pre>
-                                            <p class="m-0" style="color: #007bff;"><i class="fa-solid fa-eye"></i> 10</p>
-                                        </div>
-                                        <div class="wishlist-item-card">
-                                              @if(!empty($summaryFields))
-    @php
-        // Use array_filter when summaryFields is a plain array
-        $textFields = array_filter($summaryFields, function ($field) {
-            return
-                isset($field['field_id']) &&
-                Str::startsWith($field['field_id'], 'text_');
-        });
-    @endphp
-
-    @if(!empty($textFields))
-        @foreach($textFields as $field)
-            <div class="wishlist-left">
-                <p class="m-0" style="color: green;">
-                    <i class="{{ $field['icon'] ?? '' }}"></i>
-                </p>
-                <div class="d-flex flex-column">
-                    <p class="m-0" style="font-size: 16px;">{{ $field['label'] ?? '' }}</p>
-                    <h5 class="m-0" style="color: #000; font-size: 16px;">{{ $field['value'] ?? '' }}</h5>
-                </div>
-            </div>
-        @endforeach
-    @endif
-@endif
-                                        </div>
-                                        <div class="wishlist-price d-flex justify-content-between mt-3">
-                                            <h2 style="color: #000;"><i
-                                                    class="fa-solid fa-indian-rupee-sign"></i>{{ $offeredPrice }}</h2>
-                                            <button type="button" class="btn btn-dark"
-                                                onclick="window.location.href='{{ route('listing-details', ['id' => $submission['id']]) }}'">
-                                                View Detail
-                                            </button>
-                                        </div>
-                                    </div>
-                                </div>
-
-                            @endforeach
-                        </div>
-
-                        {{-- Submission per category --}}
-                        @foreach($categories as $category)
-                            <div class="submission-group wishlist-card" data-group="{{ $category->slug }}"
-                                style="display:none;">
-                                @if(isset($submissionsByCategory[$category->id]))
-                                    @foreach($submissionsByCategory[$category->id] as $submission)
-                                        @php
-                                            $fields = json_decode($submission->data, true);
-                                            $productTitle = $fields['product_title']['value'] ?? 'No Title';
-                                             $offeredPrice = ($fields['urgent_sale']['value'] ?? '') === 'Yes'
-    ? ($fields['offered_price']['value'] ?? '0')
-    : ($fields['mrp']['value'] ?? '0');
-
-                                    $imageFile = $submission->imageFile ?? null; 
-                                    $summaryFields = $submission->summaryFields ?? null;
-
-                                        @endphp
-                                        <div class="wishlist-product-card" data-category="{{ $category->slug }}">
-                                            @if($imageFile)
-                                                <img src="{{ asset('storage/' . $imageFile['file_path']) }}" />
-                                            @else
-                                                <img
-                                                    src="https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcThez8EsMExS0cJzMTvAM6OlRj9d9SecStl6g&s">
-                                            @endif
-                                            <div class="wishlist-budge">
-                                                <div class="d-flex justify-content-between align-items-center">
-                                                    <div class="budge-active">
-                                                        <p><i class="fa-solid fa-circle-check"></i> Active</p>
-                                                    </div>
-                                                    <h4 class="m-0" style="font-size: 24px;padding-right: 15px;"><i
-                                                            class="fa-regular fa-heart"></i></h4>
-                                                </div>
-                                            </div>
-                                            <div class="product-details-hover">
-                                                <div class="wishlist-button">
-                                                    <p>{{ $category->name }}</p>
-                                                    <div class="budge-active1">
-                                                        <p><i class="fa-solid fa-circle-check"></i> Verified</p>
-                                                    </div>
-                                                </div>
-                                                <h3 class="mt-2 " style="color: #000;">{{ $productTitle }}</h3>
-                                                <div class="d-flex justify-content-between align-items-center">
-                                                    <p class="m-0">By
-                                                        {{ ($submission['customer']->first_name ?? '') . ' ' . ($submission['customer']->last_name ?? '') }}
-                                                    </p>
-                                                    <p class="m-0" style="color: #007bff;"><i class="fa-solid fa-eye"></i> 10</p>
-                                                </div>
-                                                <div class="wishlist-item-card">
-                                                    @if(!empty($summaryFields))
-                                                    @php
-        // Use array_filter when summaryFields is a plain array
-        $textFields = array_filter($summaryFields, function ($field) {
-            return
-                isset($field['field_id']) &&
-                Str::startsWith($field['field_id'], 'text_');
-        });
-    @endphp
-
-    @if(!empty($textFields))
-        @foreach($textFields as $field)
-            <div class="wishlist-left">
-                <p class="m-0" style="color: green;">
-                    <i class="{{ $field['icon'] ?? '' }}"></i>
-                </p>
-                <div class="d-flex flex-column">
-                    <p class="m-0" style="font-size: 16px;">{{ $field['label'] ?? '' }}</p>
-                    <h5 class="m-0" style="color: #000; font-size: 16px;">{{ $field['value'] ?? '' }}</h5>
-                </div>
-            </div>
-        @endforeach
-   @endif
-@endif
-                                                </div>
-                                                <div class="wishlist-price d-flex justify-content-between mt-3">
-                                                    <h2 style="color: #000;"><i
-                                                            class="fa-solid fa-indian-rupee-sign"></i>{{ $offeredPrice }}</h2>
-                                                    <button type="button" class="btn btn-dark"
-                                                        onclick="window.location.href='{{ route('listing-details', ['id' => $submission['id']]) }}'">
-                                                        View Detail
-                                                    </button>
-                                                </div>
-
-                                            </div>
-                                            <div class="more-info" data-aos="fade-up" data-aos-duration="500">
-                                                <div class="wishlist-button">
-                                                    <p>{{ $category->name }}</p>
-                                                    <div class="budge-active1">
-                                                        <p><i class="fa-solid fa-circle-check"></i> Verified</p>
-                                                    </div>
-
-                                                </div>
-                                                <h3 class="mt-2" style="color: #000;">{{ $productTitle ?? '' }}</h3>
-                                                @if(!empty($summaryFields))
-    @php
-        // Filter textarea fields using array_filter
-        $textareaFields = array_filter($summaryFields, function($field) {
-            return
-                isset($field['field_id']) &&
-                Str::startsWith($field['field_id'], 'textarea');
-        });
-    @endphp
-
-    @if(!empty($textareaFields))
-        <p style="font-size: 13px;">
-            @foreach($textareaFields as $index => $field)
-                @if(!empty($field['icon']))
-                    <i class="{{ $field['icon'] }}" style="margin-right: 4px;"></i>
-                @endif
-                {{ \Illuminate\Support\Str::limit($field['value'], 100, '...') }}
-
-                {{-- Separator except for last item --}}
-                @if($index !== array_key_last($textareaFields))
-                    &nbsp;|&nbsp;
-                @endif
-            @endforeach
-        </p>
-    @endif
-@endif
-
-                                                <div class="d-flex justify-content-between align-items-center">
-                                                    <p class="m-0">By
-                                                        {{ ($submission['customer']->first_name ?? '') . ' ' . ($submission['customer']->last_name ?? '') }}
-                                                    </p>
-                                                    <p class="m-0" style="color: #007bff;"><i class="fa-solid fa-eye"></i> 10</p>
-                                                </div>
-                                                <div class="wishlist-item-card">
-                                               @if(!empty($summaryFields))
-    @php
-        // Use array_filter when summaryFields is a plain array
-        $textFields = array_filter($summaryFields, function ($field) {
-            return
-                isset($field['field_id']) &&
-                Str::startsWith($field['field_id'], 'text_');
-        });
-    @endphp
-
-    @if(!empty($textFields))
-        @foreach($textFields as $field)
-            <div class="wishlist-left">
-                <p class="m-0" style="color: green;">
-                    <i class="{{ $field['icon'] ?? '' }}"></i>
-                </p>
-                <div class="d-flex flex-column">
-                    <p class="m-0" style="font-size: 16px;">{{ $field['label'] ?? '' }}</p>
-                    <h5 class="m-0" style="color: #000; font-size: 16px;">{{ $field['value'] ?? '' }}</h5>
-                </div>
-            </div>
-        @endforeach
-           @endif
-@endif
-
-                                                </div>
-                                                <div class="wishlist-price d-flex justify-content-between mt-3">
-                                                    <h2 style="color: #000;"><i
-                                                            class="fa-solid fa-indian-rupee-sign"></i>{{ $offeredPrice }}</h2>
-                                                    <button type="button" class="btn btn-dark"
-                                                        onclick="window.location.href='{{ route('listing-details', ['id' => $submission['id']]) }}'">
-                                                        View Detail
-                                                    </button>
-
-                                                </div>
-                                            </div>
-                                        </div>
-                                    @endforeach
-                                @else
-                                    <p>No submission available.</p>
-                                @endif
-                            </div>
-                        @endforeach
-
-                    </div>
+                    @include('front.partials.filtered-listings', ['allSubmissions' => $allSubmissions, 'categories' => $categories, 'submissionsByCategory' => $submissionsByCategory, 'soldSubmissionIds'=> $soldSubmissionIds])
                 </div>
                 <!-- end col-lg-8 -->
             </div>
@@ -819,73 +490,123 @@
         <!-- end container -->
     </section>
                                                                                                                                       
-
     <script>
-      document.addEventListener('DOMContentLoaded', function() {
-    const params = new URLSearchParams(window.location.search);
-    let selectedCategory =  localStorage.getItem('selectedCategory') || 'all';
+ document.addEventListener('DOMContentLoaded', function() {
+  const form = document.querySelector('#filter-form');
+  const resultsContainer = document.getElementById('submissions-container');
+  let selectedCategory = localStorage.getItem('selectedCategory') || 'all';
 
-    // Add hidden input if not exists
-    const form = document.querySelector('#filter-form');
-    if (form && !form.querySelector('input[name="category"]')) {
-        const input = document.createElement('input');
-        input.type = 'hidden';
-        input.name = 'category';
-        input.value = selectedCategory;
-        form.appendChild(input);
-    }
+  // Add hidden input if not exists
+  if (form && !form.querySelector('input[name="category"]')) {
+    const input = document.createElement('input');
+    input.type = 'hidden';
+    input.name = 'category';
+    input.value = selectedCategory;
+    form.appendChild(input);
+  }
 
-    // Open correct tab
-    const tabToOpen = document.querySelector(`.tab-btn[data-category="${selectedCategory}"]`);
-    (tabToOpen || document.querySelector('.tab-btn[data-category="all"]'))?.click();
-});
+  // Open correct tab on load
+  const tabToOpen = document.querySelector(`.tab-btn[data-category="${selectedCategory}"]`);
+  (tabToOpen || document.querySelector('.tab-btn[data-category="all"]'))?.click();
 
-document.querySelectorAll('.tab-btn').forEach(btn => {
+  // Tab button click handler
+  document.querySelectorAll('.tab-btn').forEach(btn => {
     btn.addEventListener('click', () => {
-        document.querySelectorAll('.tab-btn').forEach(b => b.classList.remove('active'));
-        btn.classList.add('active');
+      document.querySelectorAll('.tab-btn').forEach(b => b.classList.remove('active'));
+      btn.classList.add('active');
 
-        const category = btn.getAttribute('data-category');
-        localStorage.setItem('selectedCategory', category); // ✅ save choice
+      const category = btn.getAttribute('data-category');
+      localStorage.setItem('selectedCategory', category);
 
-        // Update URL (no reload)
-        const url = new URL(window.location);
-        url.searchParams.set('category', category);
-        window.history.replaceState({}, '', url);
+      // Update URL (no reload)
+      const url = new URL(window.location);
+      url.searchParams.set('category', category);
+      window.history.replaceState({}, '', url);
 
-        const groups = document.querySelectorAll('.submission-group');
-        const filters = document.querySelectorAll('.category-filters');
+      // Update hidden input field
+      const categoryInput = form.querySelector('input[name="category"]');
+      if (categoryInput) {
+        categoryInput.value = category;
+      }
 
-        groups.forEach(group => {
-            group.style.display =
-                category === 'all' || group.getAttribute('data-group') === category
-                    ? ''
-                    : 'none';
-        });
-
-        filters.forEach(div => {
-            div.style.display =
-                category === 'all' || div.getAttribute('data-category') === category
-                    ? ''
-                    : 'none';
-        });
+      // Show/hide groups and filters for selected category
+      showCategoryGroups(category);
     });
-});
+  });
 
-
-function scrollTabs(amount) {
+  // Scroll tabs function
+  window.scrollTabs = function(amount) {
     const container = document.getElementById("tabsContainer");
     container.scrollBy({ left: amount, behavior: "smooth" });
-}
+  };
 
-document.getElementById('clear-filters').addEventListener('click', function() {
-    const form = document.getElementById('filter-form');
+  // Clear filters button
+  document.getElementById('clear-filters').addEventListener('click', function() {
     form.querySelectorAll('input[type="text"], input[type="number"], input[type="date"], input[type="email"], textarea, select')
-        .forEach(el => el.value = '');
+      .forEach(el => el.value = '');
     form.querySelectorAll('input[type="checkbox"], input[type="radio"]').forEach(el => el.checked = false);
 
     const url = window.location.href.split('?')[0];
     window.location.href = url;
+  });
+
+  // Function to fetch and update results via AJAX
+  function fetchFilteredResults() {
+    const formData = new FormData(form);
+    const params = new URLSearchParams(formData).toString();
+
+    fetch(form.action + '?' + params, {
+      method: 'GET',
+      headers: {
+        'X-Requested-With': 'XMLHttpRequest',
+        'Accept': 'application/json',
+      },
+    })
+      .then(response => response.json())
+      .then(data => {
+        resultsContainer.innerHTML = data.html;
+
+        const categoryInput = form.querySelector('input[name="category"]');
+        const selectedCategory = categoryInput ? categoryInput.value : 'all';
+        showCategoryGroups(selectedCategory);
+      })
+      .catch(error => {
+        console.error('Error:', error);
+      });
+  }
+
+  // Submit form on any change in input/select/textarea immediately
+  form.querySelectorAll('input, select, textarea').forEach(input => {
+    input.addEventListener('change', fetchFilteredResults);
+  });
+
+  // Prevent default form submit to avoid page reload, submit via AJAX instead
+  form.addEventListener('submit', function(e) {
+    e.preventDefault();
+    fetchFilteredResults();
+  });
+
+  // Show or hide submission groups and filters per category
+  function showCategoryGroups(category) {
+    const groups = document.querySelectorAll('.submission-group');
+    const filters = document.querySelectorAll('.category-filters');
+
+    groups.forEach(group => {
+      if (category === 'all') {
+        group.style.display = group.getAttribute('data-group') === 'all' ? '' : 'none';
+      } else {
+        group.style.display = group.getAttribute('data-group') === category ? '' : 'none';
+      }
+    });
+
+    filters.forEach(div => {
+      if (category === 'all' || div.getAttribute('data-category') === category) {
+        div.style.display = '';
+      } else {
+        div.style.display = 'none';
+      }
+    });
+  }
 });
 
 </script>
