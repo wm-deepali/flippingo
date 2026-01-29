@@ -57,6 +57,59 @@
     .dropdown-menu {
       min-width: 150px;
     }
+    .offcanvas-body {
+  padding: 20px;
+  background: #fff;
+}
+
+.menu-buttons {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+
+.menu-btn {
+  width: 100%;
+  background: #f8f9fa;
+  border: none;
+  padding: 12px 15px;
+  text-align: left;
+  font-size: 16px;
+  font-weight: 600;
+  color: #333;
+  border-radius: 6px;
+  transition: all 0.3s ease;
+}
+
+.menu-btn:hover {
+  background: #007bff;
+  color: #fff;
+}
+
+.dropdown-menu-item {
+  display: none;
+  list-style: none;
+  padding-left: 15px;
+  margin-top: 8px;
+}
+
+.menu-btn.dropdown-toggle:focus + .dropdown-menu-item {
+  display: block;
+}
+
+.dropdown-menu-item li a {
+  display: block;
+  padding: 8px 0;
+  color: #555;
+  font-size: 15px;
+  text-decoration: none;
+  transition: color 0.2s;
+}
+
+.dropdown-menu-item li a:hover {
+  color: #007bff;
+}
+
   </style>
 
 </head>
@@ -76,49 +129,14 @@
             START HEADER AREA
 ================================= -->
 
-  <header class="header-area border-bottom border-bottom-gray">
-    <!-- <div class="top-header" style="background-color: rgb(3, 157, 247);">
-      <div class="top-header-list">
-        <div class="d-flex align-items-center gap-4">
-        <div class="">
-          <p ><i class="fa-solid fa-envelope"></i>  demo@gmail.com</p>
-        </div>
-        <div class="line"></div>
-        <div class="">
-          <p><i class="fa-solid fa-phone"></i>  +91 0000000000</p>
-        </div>
-        <div class="line"></div>
-        <div class="">
-          <p><i class="fa-brands fa-facebook" style="color: #3b5998;"></i> &nbsp; <i class="fa-brands fa-whatsapp" style="color: #075e54;"></i> &nbsp; <i class="fa-brands fa-instagram" style="color: #c13584;"></i> &nbsp; <i class="fa-brands fa-x-twitter" style="color: #14171A ;"></i></p>
-        </div>
-        </div>
-        <div class="d-flex align-items-center gap-4">
-          <div class="">
-          <p> FAQ</p>
-        </div>
-       
-        <div class="line"></div>
-        <div class="">
-          <p style="border: 1px solid #fff; border-radius: 5px; padding: 5px 10px; cursor: pointer;"> Get a Call Back</p>
-        </div>
-       
-         <div class="line"></div>
-        
-        <div class="">
-          <p> Pricing</p>
-        </div></div>
-        
-
-
-      </div>
-
-    </div> -->
+  <header class="header-area border-bottom border-bottom-gray desktop-view">
+   
     <div class="main-header py-3">
       <div class="container" style="max-width: 1260px;">
         <div class="main-header-action-wrap d-flex justify-content-between">
           <div class="logo">
             <a href="{{ Route('home') }}"><img src="{{ asset('assets') }}/images/logo.png" alt="logo"
-                width="180px" /></a>
+                 /></a>
           </div>
 
           <div class="d-flex" style="width: 40%; align-items: center;margin-top: 15px;">
@@ -129,78 +147,10 @@
                   style="width: 105%;height:45px;" />
               </div>
             </div>
-            <!-- end col-lg-3 -->
-
-
-            <!-- end col-lg-3 -->
+            
 
           </div>
-          <!-- end col-lg-3 -->
-
-          <!-- end card-body -->
-
-          <!-- end logo -->
-          <!-- <nav class="main-menu me-4 ms-auto">
-            <ul>
-              <li>
-                <a href="#">Home </a>
-               
-              </li>
-              <li>
-                <a href="#">Services </a>
-                
-              </li>
-              <li>
-                <a href="list-left-sidebar.html">Listings </a>
-              
-              </li>
-             
-              <li>
-                <a href="pricing.html">Pricing </a>
-              </li>
-
-
-              <li>
-                <a href="list-left-sidebar.html">Resources </a>
-              </li>
-              <li>
-                <a href="contact.html">Contact Us </a>
-              </li>
-              <li>
-                <a href="#">Pages <span class="fal fa-angle-down"></span></a>
-                <ul class="dropdown-menu-item">
-                  <li><a href="user-profile.html">user profile</a></li>
-                  <li><a href="top-author.html">top authors </a></li>
-                  <li><a href="dashboard.html">dashboard</a></li>
-                  <li><a href="booking.html">booking </a></li>
-                  <li>
-                    <a href="booking-confirmation.html">booking confirmation
-                    </a>
-                  </li>
-                  <li><a href="invoice.html">invoice</a></li>
-                  <li><a href="pricing.html">pricing</a></li>
-                  <li><a href="about.html">about</a></li>
-                  <li><a href="faq.html">faq</a></li>
-                  <li><a href="contact.html">contact</a></li>
-                  <li><a href="page-404.html">404 page</a></li>
-                  <li><a href="recover.html">recover pass</a></li>
-                </ul>
-              </li>
-              <li>
-                <a href="#">Blog <span class="fal fa-angle-down"></span></a>
-                <ul class="dropdown-menu-item">
-                  <li><a href="blog-full-width.html">full width</a></li>
-                  <li><a href="blog-grid.html">blog grid</a></li>
-                  <li><a href="blog-left-sidebar.html">left sidebar </a></li>
-                  <li>
-                    <a href="blog-right-sidebar.html">right sidebar </a>
-                  </li>
-                  <li><a href="blog-single.html">blog detail</a></li>
-                </ul>
-              </li>
-            </ul>
-          </nav>  -->
-
+          
 
           <div class="nav-right-content d-flex align-items-center">
 
@@ -334,6 +284,171 @@
 
     <!-- end off-canvas -->
   </header>
+  <div class="mobile-menu">
+       <div class="main-header py-3">
+      <div class="container" >
+        <div class="main-header-action-wrap d-flex justify-content-between">
+             <div class="side-menu-open ms-2" data-bs-toggle="offcanvas" href="#offcanvasExample" role="button" aria-controls="offcanvasExample">
+              <i class="fal fa-bars"></i>
+            </div>
+          <div class="logo">
+            <a href="{{ Route('home') }}"><img src="{{ asset('assets') }}/images/logo.png" alt="logo"
+                 /></a>
+          </div>
+
+          
+          
+
+          <div class="nav-right-content d-flex align-items-center">
+               <a href="{{ Route('add-listing') }}" class="theme-btn ms-3" style="padding: 8px 35px;">
+              + Sell Now
+            </a>
+
+            @php
+              $customer = Auth::guard('customer')->user();
+            @endphp
+
+            @if($customer)
+              <div class="dropdown">
+                <a href="#" class="d-flex align-items-center profile-link" id="profileDropdown" data-bs-toggle="dropdown"
+                  aria-expanded="false">
+                  <img
+                   src="{{ $customer->profile_pic ? asset('storage/' . $customer->profile_pic) : asset('user_assets/images/users/profile-pic.jpg')  }}"
+                    alt="Profile Photo" class="rounded-circle me-2" style="width:43px; height:43px; object-fit:cover;">
+                  <span class="profile-name" style="color:#fff;">{{ $customer->first_name ?? 'User' }}
+                    {{ $customer->last_name ?? '' }}</span>
+                  <i class="fas fa-caret-down ms-2" style="color:#fff;"></i>
+                </a>
+                <ul class="dropdown-menu" aria-labelledby="profileDropdown">
+                  <li><a class="dropdown-item" href="{{ route('dashboard.index') }}">Dashboard</a></li>
+                  <li><a class="dropdown-item" href="{{ route('account-logout') }}">Logout</a></li>
+                </ul>
+              </div>
+            @else
+              <div class="author-access-list me-3">
+                <a href="{{ Route('authentication-signin')}}">Login</a>
+                <span class="or-text">or</span>
+                <a href="{{ Route('authentication-signup') }}">Sign Up</a>
+              </div>
+            @endif
+
+            <!-- Sell Now Button -->
+           
+
+            <!-- Side Menu -->
+           
+          </div>
+
+
+
+          <!--<div class="nav-right-content d-flex align-items-center">-->
+          <!--  <div class="author-access-list me-3">-->
+          <!--    <a href="{{ Route('authentication-signin')}}">Login</a>-->
+          <!--    <span class="or-text">or</span>-->
+          <!--    <a href="{{ Route('authentication-signup') }}">Sign Up</a>-->
+          <!--  </div>-->
+          <!--  <a href="{{ Route('add-listing') }}" class="theme-btn" style="padding: 10px 20px;">-->
+          <!-- <span class="fal fa-plus me-1"></span> -->
+          <!--    Sell Now-->
+          <!--  </a>-->
+          <!--  <div class="side-menu-open ms-2">-->
+          <!--    <i class="fal fa-bars"></i>-->
+          <!--  </div>-->
+          <!-- end side-menu-open -->
+          <!--</div>-->
+
+
+
+
+          <!-- end nav-right-content -->
+        </div>
+        <!-- end main-header-action-wrap -->
+      </div>
+      <!-- end container-fluid -->
+    </div>
+    
+     <div class="top-header">
+      <div class="top-header-list">
+<div class="d-flex" style="width: 100%; align-items: center;margin-top: 15px;">
+            <div class="col-12">
+              <div class="form-group">
+                <span class="fal fa-search form-icon"></span>
+                <input class="form-control form--control" type="text" placeholder="What are you looking for?"
+                  style="width: 100%;height:45px;" />
+              </div>
+            </div>
+            
+
+          </div>
+
+
+      </div>
+
+    </div>
+      
+  </div>
+  
+  <div class="offcanvas offcanvas-start" tabindex="-1" id="offcanvasExample" aria-labelledby="offcanvasExampleLabel">
+  <div class="offcanvas-header">
+    <h5 class="offcanvas-title" id="offcanvasExampleLabel">Category</h5>
+    <button type="button" class="btn-close text-reset" data-bs-dismiss="offcanvas" aria-label="Close"></button>
+  </div>
+  <div class="offcanvas-body">
+  <nav class="main-menu" style="width: 100%;">
+    <div class="menu-buttons">
+      <button class="menu-btn dropdown-toggle" type="button">
+        Browse 
+      </button>
+      <ul class="dropdown-menu-item">
+        @foreach($categories as $category)
+          <li>
+            <a href="{{ route('listing-list', ['category' => $category->slug]) }}">
+              {{ $category->name }}
+            </a>
+          </li>
+        @endforeach
+      </ul>
+
+      <button class="menu-btn" onclick="location.href='{{ Route('meet-our-team') }}'">
+        Meet Our Team
+      </button>
+
+      <button class="menu-btn">
+        Insight
+      </button>
+
+      <button class="menu-btn">
+        Buyers Mandate
+      </button>
+
+      <button class="menu-btn">
+        Why Flippingo
+      </button>
+
+      <button class="menu-btn" onclick="location.href='{{ Route('blogs') }}'">
+        Blogs
+      </button>
+
+      <button class="menu-btn">
+        Sell Digitally
+      </button>
+
+      <button class="menu-btn">
+        Services
+      </button>
+
+      <button class="menu-btn">
+        Resources
+      </button>
+
+      <button class="menu-btn" onclick="location.href='{{ Route('contact-us') }}'">
+        Contact Us
+      </button>
+    </div>
+  </nav>
+</div>
+
+</div>
 
   <!-- ================================
          END HEADER AREA

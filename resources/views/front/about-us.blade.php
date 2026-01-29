@@ -8,131 +8,17 @@
     <!-- ================================
     START BREADCRUMB AREA
 ================================= -->
-    <section class="breadcrumb-area bread-bg-2">
-      <div class="overlay"></div>
-      <!-- end overlay -->
-      <div class="container">
-        <div
-          class="breadcrumb-content d-flex flex-wrap align-items-center justify-content-between"
-        >
-          <h2 class="sec__title text-white my-2">
-            Dirto Connects People <br />
-            With Great Local <br />
-            Businesses
-          </h2>
-          <div class="video-play-btn">
-            <a
-              class="icon-element icon-element-lg bg-white text-black"
-              href="https://www.youtube.com/watch?v=DQMeTCtsLcU"
-              data-fancybox="preview-video"
-              title="Play Video"
-            >
-              Play
-            </a>
-          </div>
-        </div>
-        <!-- end breadcrumb-content -->
-      </div>
-      <!-- end container -->
-      <div class="bread-svg">
-        <svg viewBox="0 0 500 150" preserveAspectRatio="none">
-          <path
-            d="M-4.22,89.30 C280.19,26.14 324.21,125.81 511.00,41.94 L500.00,150.00 L0.00,150.00 Z"
-          ></path>
-        </svg>
-      </div>
-      <!-- end bread-svg -->
-    </section>
-    <!-- end breadcrumb-area -->
-    <!-- ================================
-    END BREADCRUMB AREA
-================================= -->
-
-    <!-- ================================
-       START BLOG AREA
-================================= -->
-    <section class="blog-area padding-top-60px padding-bottom-70px">
-      <div class="container">
-        <div class="row">
-          <div class="col-lg-4 col-md-6">
-            <a href="#" class="card hover-y">
-              <div class="card-image">
-                <img
-                  src="images/img-loading.jpg"
-                  data-src="images/img1.jpg"
-                  alt="blog image"
-                  class="card-img-top lazy"
-                />
-              </div>
-              <div class="card-body">
-                <h4 class="card-title">Careers</h4>
-                <p class="card-text mt-2 text-gray">
-                  Sed ut perspiciatis unde omnis iste natus error sit voluptatem
-                  eaque ipsa quae ab illo
-                </p>
-              </div>
-              <!-- end card-body --> </a
-            ><!-- end card -->
-          </div>
-          <!-- end col-lg-4 -->
-          <div class="col-lg-4 col-md-6">
-            <a href="#" class="card hover-y">
-              <div class="card-image">
-                <img
-                  src="images/img-loading.jpg"
-                  data-src="images/img2.jpg"
-                  alt="blog image"
-                  class="card-img-top lazy"
-                />
-              </div>
-              <div class="card-body">
-                <h4 class="card-title">Newsroom</h4>
-                <p class="card-text mt-2 text-gray">
-                  Sed ut perspiciatis unde omnis iste natus error sit voluptatem
-                  eaque ipsa quae ab illo
-                </p>
-              </div>
-              <!-- end card-body --> </a
-            ><!-- end card -->
-          </div>
-          <!-- end col-lg-4 -->
-          <div class="col-lg-4 col-md-6">
-            <a href="#" class="card hover-y">
-              <div class="card-image">
-                <img
-                  src="images/img-loading.jpg"
-                  data-src="images/img3.jpg"
-                  alt="blog image"
-                  class="card-img-top lazy"
-                />
-              </div>
-              <div class="card-body">
-                <h4 class="card-title">Investor Relations</h4>
-                <p class="card-text mt-2 text-gray">
-                  Sed ut perspiciatis unde omnis iste natus error sit voluptatem
-                  eaque ipsa quae ab illo
-                </p>
-              </div>
-              <!-- end card-body --> </a
-            ><!-- end card -->
-          </div>
-          <!-- end col-lg-4 -->
-        </div>
-        <!-- end row -->
-      </div>
-      <!-- end container -->
-    </section>
+   
     <!-- end blog-area -->
     <!-- ================================
        START BLOG AREA
 ================================= -->
 
-    <hr class="border-top-gray my-0" />
 
     <!-- ================================
     START ABOUT AREA
 ================================= -->
-    <section class="about-area section-padding">
+    <section class="about-area section-padding " style="margin-top:120px;">
       <div class="container">
         <div class="row align-items-center">
           <div class="col-lg-6">
@@ -158,28 +44,28 @@
             <div class="image-box row">
               <div class="col-lg-6 mt-lg-4">
                 <img
-                  src="images/img-loading.jpg"
-                  data-src="images/img4.jpg"
+                  src="{{ asset('site_assets') }}/img/img-loading.jpg"
+                  data-src="{{ asset('site_assets') }}/img/img4.jpg"
                   alt="about image"
                   class="w-100 rounded-12 mb-4 lazy"
                 />
                 <img
-                  src="images/img-loading.jpg"
-                  data-src="images/img5.jpg"
+                  src="{{ asset('site_assets') }}/img/img-loading.jpg"
+                  data-src="{{ asset('site_assets') }}/img/img5.jpg"
                   alt="about image"
                   class="w-100 rounded-12 mb-4 lazy"
                 />
               </div>
               <div class="col-lg-6">
                 <img
-                  src="images/img-loading.jpg"
-                  data-src="images/img6.jpg"
+                  src="{{ asset('site_assets') }}/img/img-loading.jpg"
+                  data-src="{{ asset('site_assets') }}/img/img6.jpg"
                   alt="about image"
                   class="w-100 rounded-12 mb-4 lazy"
                 />
                 <img
-                  src="images/img-loading.jpg"
-                  data-src="images/img7.jpg"
+                  src="{{ asset('site_assets') }}/img/img-loading.jpg"
+                  data-src="{{ asset('site_assets') }}/img/img7.jpg"
                   alt="about image"
                   class="w-100 rounded-12 mb-4 lazy"
                 />
@@ -472,8 +358,8 @@
             <div class="card hover-y text-center">
               <div class="card-image">
                 <img
-                  src="images/img-loading.jpg"
-                  data-src="images/team1.jpg"
+                  src="{{ asset('site_assets') }}/img/img-loading.jpg"
+                  data-src="{{ asset('site_assets') }}/img/team1.jpg"
                   alt="team image"
                   class="card-img-top lazy"
                 />
@@ -508,8 +394,8 @@
             <div class="card hover-y text-center">
               <div class="card-image">
                 <img
-                  src="images/img-loading.jpg"
-                  data-src="images/team2.jpg"
+                  src="{{ asset('site_assets') }}/img/img-loading.jpg"
+                  data-src="{{ asset('site_assets') }}/img/team2.jpg"
                   alt="team image"
                   class="card-img-top lazy"
                 />
@@ -544,8 +430,8 @@
             <div class="card hover-y text-center">
               <div class="card-image">
                 <img
-                  src="images/img-loading.jpg"
-                  data-src="images/team3.jpg"
+                  src="{{ asset('site_assets') }}/img/img-loading.jpg"
+                  data-src="{{ asset('site_assets') }}/img/team3.jpg"
                   alt="team image"
                   class="card-img-top lazy"
                 />
@@ -580,8 +466,8 @@
             <div class="card hover-y text-center">
               <div class="card-image">
                 <img
-                  src="images/img-loading.jpg"
-                  data-src="images/team4.jpg"
+                  src="{{ asset('site_assets') }}/img/img-loading.jpg"
+                  data-src="{{ asset('site_assets') }}/img/team4.jpg"
                   alt="team image"
                   class="card-img-top lazy"
                 />

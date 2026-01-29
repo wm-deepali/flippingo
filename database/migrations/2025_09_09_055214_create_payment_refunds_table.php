@@ -15,7 +15,7 @@ class CreatePaymentRefundsTable extends Migration
     {
         Schema::create('payment_refunds', function (Blueprint $table) {
             $table->id();
-            $table->foreignId('subscription_id')->nullable()->constrained()->onDelete('cascade');
+            $table->foreignId('subscription_id')->constrained()->onDelete('cascade')->nullable();
             $table->string('refund_method'); // 'source_account' or 'wallet'
             $table->date('payment_date')->nullable();
             $table->string('reference_id')->nullable();

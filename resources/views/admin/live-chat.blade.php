@@ -148,6 +148,7 @@
 @endsection
 
 @push('scripts')
+
     <script>
 
         // In Blade, create a "template" URL using placeholders
@@ -169,13 +170,13 @@
                     receiver_type: receiver_type
                 }, function (res) {
                     $('.chat-list').append(`
-                                                                                    <li class="chat-item odd list-style-none margin-1rem">
-                                                                                        <div class="chat-content text-right d-inline-block padding-1rem">
-                                                                                            <div class="box msg padding-2 d-inline-block mb-1">${res.message}</div>
-                                                                                        </div>
-                                                                                        <div class="chat-time text-right d-block font-10 margin-top-25 mr-0 margin-1rem-bottom">${res.created_at}</div>
-                                                                                    </li>
-                                                                                `);
+                                                                                <li class="chat-item odd list-style-none margin-1rem">
+                                                                                    <div class="chat-content text-right d-inline-block padding-1rem">
+                                                                                        <div class="box msg padding-2 d-inline-block mb-1">${res.message}</div>
+                                                                                    </div>
+                                                                                    <div class="chat-time text-right d-block font-10 margin-top-25 mr-0 margin-1rem-bottom">${res.created_at}</div>
+                                                                                </li>
+                                                                            `);
                     $("#textarea1").val('');
                     scrollToBottom();
 
@@ -226,7 +227,7 @@
 
         });
 
-        // Enable Pusher logging for debugging (optional)
+ // Enable Pusher logging for debugging (optional)
         Pusher.logToConsole = true;
 
         // Initialize Laravel Echo
@@ -236,9 +237,6 @@
             cluster: 'ap2',                 // your Pusher cluster
             forceTLS: true
         });
-
-
-
 
         window.Echo.channel('chat')
             .listen('MessageSent', (e) => {
@@ -269,19 +267,19 @@
 
         function renderMessage(msg, isOwn = false) {
             return `
-                                                                            <li class="chat-item ${isOwn ? 'odd text-right' : ''} list-style-none margin-1rem">
-                                                                                ${!isOwn ? `<div class="chat-img d-inline-block">
-                                                                                                <img src="${msg.sender_avatar ? '/storage/' + msg.sender_avatar : 'https://flippingo.store/user-dashboard/assets/images/users/1.jpg'}" class="rounded-circle" width="45">
-                                                                                            </div>` : ''}
-                                                                                <div class="chat-content d-inline-block padding-1rem ${isOwn ? 'text-right' : ''}">
-                                                                                    <h6 class="font-weight-medium">${msg.sender_name}</h6>
-                                                                                    <div class="box msg padding-2 d-inline-block mb-1">${msg.message}</div>
-                                                                                </div>
-                                                                                <div class="chat-time d-block font-10 margin-top-25 mr-0 margin-1rem-bottom ${isOwn ? 'text-right' : ''}">
-                                                                                    ${msg.created_at}
-                                                                                </div>
-                                                                            </li>
-                                                                        `;
+                                                                        <li class="chat-item ${isOwn ? 'odd text-right' : ''} list-style-none margin-1rem">
+                                                                            ${!isOwn ? `<div class="chat-img d-inline-block">
+                                                                                            <img src="${msg.sender_avatar ? '/storage/' + msg.sender_avatar : 'https://flippingo.store/user-dashboard/assets/images/users/1.jpg'}" class="rounded-circle" width="45">
+                                                                                        </div>` : ''}
+                                                                            <div class="chat-content d-inline-block padding-1rem ${isOwn ? 'text-right' : ''}">
+                                                                                <h6 class="font-weight-medium">${msg.sender_name}</h6>
+                                                                                <div class="box msg padding-2 d-inline-block mb-1">${msg.message}</div>
+                                                                            </div>
+                                                                            <div class="chat-time d-block font-10 margin-top-25 mr-0 margin-1rem-bottom ${isOwn ? 'text-right' : ''}">
+                                                                                ${msg.created_at}
+                                                                            </div>
+                                                                        </li>
+                                                                    `;
         }
 
         function scrollToBottom() {

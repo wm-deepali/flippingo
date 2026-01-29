@@ -20337,6 +20337,7 @@ ul.list-style-none li a:hover {
   margin-top: 50px;
 }
 
+/* Modal */
 .subscription-modal-overlay {
     display: none; /* hidden by default */
     position: fixed;

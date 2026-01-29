@@ -115,7 +115,30 @@
                             </ul>
                         </div>
                     </div>
-                    </div>
+                    <!-- <form action="#" method="POST" class="contact-form card">
+                            @csrf
+                            <div class="card-body">
+                                <h4 class="card-title">Still have a question?</h4>
+                                <hr class="border-top-gray" />
+                                <div class="form-group">
+                                    <label class="label-text">Your Name</label>
+                                    <input id="name" class="form-control form--control ps-3" type="text" name="name"
+                                        placeholder="Your name" required />
+                                </div>
+                                <div class="form-group">
+                                    <label class="label-text">Your Email</label>
+                                    <input id="email" class="form-control form--control ps-3" type="email" name="email"
+                                        placeholder="you@email.com" required />
+                                </div>
+                                <div class="form-group">
+                                    <label class="label-text">Message</label>
+                                    <textarea id="message" class="form-control form--control ps-3" rows="5" name="message"
+                                        placeholder="Write message" required></textarea>
+                                </div>
+                                <button id="send-message-btn" class="theme-btn border-0" type="submit">Send Message</button>
+                            </div>
+                        </form> -->
+                </div>
             </div>
         </div>
     </section>

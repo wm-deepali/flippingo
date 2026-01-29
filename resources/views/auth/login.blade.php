@@ -17,12 +17,16 @@
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.3/css/all.min.css">
 
 </head>
+<style>
+    .breadcrumb-area{
+        display:none;
+    }
+</style>
 
 <body class="horizontal-layout horizontal-menu blank-page navbar-floating footer-static" data-open="hover" data-menu="horizontal-menu" data-col="blank-page">
 
   <div class="app-content content">
-    <div class="content-overlay"></div>
-    <div class="header-navbar-shadow"></div>
+    
     <div class="content-wrapper">
       <div class="content-header row">
       </div>

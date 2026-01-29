@@ -13,14 +13,14 @@
             --flippingo-gray: #6b7280;
         }
 
-        /* === UNIQUE PREFIX: flippingo-hiw- === */
+       
         .flippingo-hiw-section {
             padding: 5rem 0;
             background: linear-gradient(to bottom, #f0f9ff, #ffffff);
         }
 
         .flippingo-hiw-container {
-            max-width: 1200px;
+            max-width: 1250px;
             margin: 0 auto;
             padding: 0 1.5rem;
         }
@@ -29,7 +29,7 @@
             position: relative;
             overflow: hidden;
             border-radius: 1.5rem;
-            box-shadow: 0 20px 40px rgba(0,0,0,0.1);
+            /*box-shadow: 0 20px 40px rgba(0,0,0,0.1);*/
         }
 
         .flippingo-hiw-full-slides {
@@ -153,24 +153,26 @@
             box-shadow: 0 4px 14px rgba(37, 99, 235, 0.3);
         }
         .flippingo-hiw-btn-primary:hover {
-            background: #1d4ed8;
-            transform: translateY(-2px);
+            background: #fff;
+            color: var(--flippingo-blue);
+            border: 2px solid var(--flippingo-blue);
         }
 
         .flippingo-hiw-btn-secondary {
-            border: 2px solid var(--flippingo-blue);
-            color: var(--flippingo-blue);
-            background: transparent;
+            border: 2px solid #000;
+            color: #fff;
+            background: #000;
         }
         .flippingo-hiw-btn-secondary:hover {
-            background: #dbeafe;
+            background: #fff;
+            color: #000;
         }
 
         /* Right Image */
         .flippingo-hiw-image {
             border-radius: 1.5rem;
             overflow: hidden;
-            box-shadow: 0 10px 30px rgba(0,0,0,0.1);
+            /*box-shadow: 0 10px 30px rgba(0,0,0,0.1);*/
             height: 400px;
         }
         @media (max-width: 1024px) { .flippingo-hiw-image { height: 350px; } }
@@ -194,14 +196,14 @@
             transform: translateY(-50%);
             width: 3rem;
             height: 3rem;
-            background: white;
+            /*background: white;*/
             border-radius: 9999px;
             display: flex;
             align-items: center;
             justify-content: center;
             cursor: pointer;
             z-index: 10;
-            box-shadow: 0 4px 12px rgba(0,0,0,0.15);
+            /*box-shadow: 0 4px 12px rgba(0,0,0,0.15);*/
             transition: all 0.3s ease;
         }
 
@@ -229,13 +231,13 @@
             width: 0.75rem;
             height: 0.75rem;
             border-radius: 9999px;
-            background: rgba(255,255,255,0.5);
+            background: #000000;
             cursor: pointer;
             transition: all 0.3s ease;
         }
 
         .flippingo-hiw-dot.active {
-            background: white;
+            background: blue;
             width: 2rem;
         }
     </style>
@@ -1947,7 +1949,7 @@
 
   @media only screen and (max-width: 768px) {
     #home {
-      padding-top: 190px !important;
+      padding-top: 60px !important;
     }
   }
 
@@ -2305,7 +2307,7 @@
 
   .wishlist-product-card {
     width: 100%;
-    height: 560px;
+    height: 470px;
     background: white;
     padding: 10px;
     border-radius: 10px;
@@ -2360,10 +2362,12 @@
   }
 
   .wishlist-button p {
-    width: 50%;
+    font-size: 14px;
+    width: fit-content;
+    border-radius: 3px;
     margin: 0;
     padding: 0px 10px;
-    border: 1px solid lightgray;
+    /* border: 1px solid lightgray; */
     background: #a19f9f33;
   }
 
@@ -2454,8 +2458,8 @@
   }
 
   #categories-list {
-    display: flex;
-    flex-wrap: wrap;
+    /*display: flex;*/
+    /*flex-wrap: wrap;*/
     /* allow multiple rows */
     gap: 20px;
     /* spacing between items */
@@ -2464,9 +2468,9 @@
   }
 
   .social-media-icon-section {
-    flex: 1 1 calc(100% / 7 - 20px);
+    /*flex: 1 1 calc(100% / 7 - 20px);*/
     /* 7 items per row minus gap */
-    max-width: calc(100% / 7 - 20px);
+    /*max-width: calc(100% / 7 - 20px);*/
     text-align: center;
   }
 
@@ -2677,7 +2681,7 @@
                                                                                                               </div>
 
                                                                                                               </section> -->
-  <section class="hero-section" id="home" style="margin-top: 90px;">
+  <section class="hero-section" id="home" >
     <div class="container">
       <div class="row ">
         <div class="col-xl-6">
@@ -2885,7 +2889,7 @@
             <img alt="img" class="landing-slider" src="{{ asset('site_assets') }}/img/landing-slider.png">
           </div>
         </div>
-        <div class="col-xl-6" style="display: flex; justify-content: end;">
+        <div class="col-12 col-xl-6" style="display: flex; justify-content: end;">
           <!-- <form role="form" class="get-a-quote" id="contact-form" method="post">
                                                                                                                 <div class="mb-lg-3 mb-3 d-flex align-items-center">
                                                                                                                 <i>
@@ -3035,13 +3039,7 @@
     </div>
   </section>
   <!-- end hero-wrapper -->
-  <!-- ================================
-                                                                                                              END HERO-WRAPPER AREA
-                                                                                                              ================================= -->
-
-  <!-- ================================
-                                                                                                              START CAT AREA
-                                                                                                              ================================= -->
+ 
 
 
   <section class="cat-area section--padding">
@@ -3260,7 +3258,10 @@ function renderCategories(categories) {
     $slides = [
         [
             'title' => 'How to Start Selling Business on Flippingo Marketplace',
-            'desc' => 'Sell your business, website, app, or social account on Flippingo with ease. List your digital asset in minutes, connect with serious buyers, and close deals securely through escrow. Get verified fast, set your price, and receive payments instantly. Turn your hard work into cash with a trusted marketplace built for entrepreneurs.',
+            'desc' => 'Sell your business, website, app, or social account on Flippingo with ease. ',
+            'desc1' => 'Sell your business, website, app, or social account on Flippingo with ease. ',
+            'desc2' => 'Sell your business, website, app, or social account on Flippingo with ease. ',
+            'desc3' => 'Sell your business, website, app, or social account on Flippingo with ease. ',
             'highlight' => 'Get verified → List → Sell → Get Paid.',
             'btn1' => ['text' => 'Start selling', 'icon' => 'fas fa-plus'],
             'btn2' => ['text' => 'View listings', 'icon' => 'fas fa-eye'],
@@ -3268,7 +3269,7 @@ function renderCategories(categories) {
         ],
         [
             'title' => 'Buy Your Next Digital Asset',
-            'desc' => 'Discover thousands of verified businesses, websites, apps, and social accounts ready for sale. Compare options, chat directly with sellers, and negotiate confidently. Every deal is protected by secure escrow until ownership is fully transferred. Buy with zero risk and take over profitable digital assets instantly.',
+            'desc' => 'Discover thousands of verified businesses, websites, apps, and social accounts ',
             'highlight' => 'Compare options, connect with sellers, and purchase securely.',
             'btn1' => ['text' => 'Browse Now', 'icon' => 'fas fa-search'],
             'btn2' => ['text' => 'Learn More', 'icon' => 'fas fa-info-circle'],
@@ -3276,7 +3277,7 @@ function renderCategories(categories) {
         ],
         [
             'title' => 'Monetize Your Digital Assets',
-            'desc' => 'Turn your website, mobile app, or social media account into real cash. List your asset in under 5 minutes, attract serious buyers, and close deals fast. Get paid securely via escrow and transfer ownership smoothly. Join thousands of sellers who’ve successfully monetized their digital projects.',
+            'desc' => 'Turn your website, mobile app, or social media account into real cash. ',
             'highlight' => 'List in minutes → Get offers → Sell fast.',
             'btn1' => ['text' => 'List Asset', 'icon' => 'fas fa-plus-circle'],
             'btn2' => ['text' => 'See Examples', 'icon' => 'fas fa-images'],
@@ -3289,22 +3290,31 @@ function renderCategories(categories) {
                 <div class="flippingo-hiw-full-slide">
                     <!-- Left: Content -->
                     <div class="flippingo-hiw-content">
-                        <h2>{{ $slide['title'] }}</h2>
-                        <p>
-                            {{ $slide['desc'] }}
-                            <span>{{ $slide['highlight'] }}</span>
+                        <h2>{{ $slide['title'] }} </h2>
+                        <p><span>{{ $slide['highlight'] }}</span>
+                           
+                            
                         </p>
+                        <p><i class="fa-solid fa-circle-check" style="color:blue;"></i>
+                            {{ $slide['desc'] }}
+                            
+                        </p>
+                        <p><i class="fa-solid fa-circle-check" style="color:blue;"></i>
+                            {{ $slide['desc'] }}
+                            
+                        </p>
+                        
 
                        
 
                         <div class="flippingo-hiw-btn-group">
                             <a href="#" class="flippingo-hiw-btn flippingo-hiw-btn-primary">
-                                <i class="{{ $slide['btn1']['icon'] }}"></i>
-                                {{ $slide['btn1']['text'] }}
+                                
+                                {{ $slide['btn1']['text'] }} <i class="fa-solid fa-arrow-right"></i>
                             </a>
                             <a href="#" class="flippingo-hiw-btn flippingo-hiw-btn-secondary">
                                 <i class="{{ $slide['btn2']['icon'] }}"></i>
-                                {{ $slide['btn2']['text'] }}
+                                {{ $slide['btn2']['text'] }} <i class="fa-solid fa-arrow-right"></i>
                             </a>
                         </div>
                     </div>

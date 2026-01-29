@@ -143,19 +143,13 @@
             <li><a class="dropdown-item d-flex align-items-center"
                 href="{{ route('admin.account_deletion_requests.index') }}"><span>Account Delete Request</span></a>
             </li>
-
-          </ul>
-        </li>
-        <li class="dropdown nav-item" data-menu="dropdown">
-          <a class="dropdown-toggle nav-link d-flex align-items-center" href="#" data-toggle="dropdown">
-            <span>Wallet</span>
-          </a>
-          <ul class="dropdown-menu">
+            
             <li>
               <a class="dropdown-item d-flex align-items-center" href="{{ route('admin.wallets.index') }}">
                 <span>Manage User Wallet</span>
               </a>
             </li>
+            
             <li>
               <a class="dropdown-item d-flex align-items-center" href="{{ route('admin.withdrawal-requests.index') }}">
                 <span>Withdrawal Request</span>
@@ -166,10 +160,10 @@
                 <span>Seller Payout</span>
               </a>
             </li>
+            
+
           </ul>
         </li>
-
-
         <li class="dropdown nav-item" data-menu="dropdown">
           <a class="dropdown-toggle nav-link d-flex align-items-center" href="#" data-toggle="dropdown">
             <span>Subscriptions & Orders</span>
@@ -258,7 +252,7 @@
 
         <li class="dropdown nav-item" data-menu="dropdown">
           <a class="dropdown-toggle nav-link d-flex align-items-center" href="#" data-toggle="dropdown">
-            <span>Tickets</span>
+            <span>Tickets & Notifications</span>
           </a>
           <ul class="dropdown-menu">
             <li>
@@ -271,16 +265,8 @@
                 Seller Tickets
               </a>
             </li>
-          </ul>
-
-        </li>
-
-        <li class="dropdown nav-item" data-menu="dropdown">
-          <a class="dropdown-toggle nav-link d-flex align-items-center" href="#" data-toggle="dropdown">
-            <span>Notifications</span>
-          </a>
-          <ul class="dropdown-menu">
-            <li>
+            
+             <li>
               <a class="dropdown-item d-flex align-items-center" href="{{ route('admin.notifications.events') }}">
                 Event-Based Notifications
               </a>
@@ -291,6 +277,7 @@
               </a>
             </li>
           </ul>
+
         </li>
 
         <li class="nav-item">
@@ -302,7 +289,7 @@
 
         <li class="dropdown nav-item" data-menu="dropdown">
           <a class="dropdown-toggle nav-link d-flex align-items-center" href="#" data-toggle="dropdown">
-            <span>Content Management</span>
+            <span>CMS</span>
           </a>
           <ul class="dropdown-menu">
             <li><a class="dropdown-item d-flex align-items-center"
@@ -323,15 +310,6 @@
             <li><a class="dropdown-item d-flex align-items-center"
                 href="{{ route('admin.deletion_reasons.index') }}"><span> Account Delete Reasons</span></a>
             </li>
-          </ul>
-        </li>
-
-
-        <li class="dropdown nav-item" data-menu="dropdown">
-          <a class="dropdown-toggle nav-link d-flex align-items-center" href="#" data-toggle="dropdown">
-            <span>FAQ & Blogs</span>
-          </a>
-          <ul class="dropdown-menu">
             <li><a class="dropdown-item d-flex align-items-center"
                 href="{{ route('admin.faq-categories.index') }}"><span>FAQ Category</span></a>
             </li>
@@ -346,6 +324,7 @@
             </li>
           </ul>
         </li>
+
 
 
       </ul>

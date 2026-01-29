@@ -24,13 +24,10 @@ use App\Http\Controllers\Admin\{
     ProductOrderController,
     TicketController,
     NotificationController,
+    WalletController,
     ChatController
 };
 
-
-use App\Http\Controllers\{
-    WalletController,
-};
 
 /*
 |--------------------------------------------------------------------------

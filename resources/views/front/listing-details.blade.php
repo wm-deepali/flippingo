@@ -349,6 +349,7 @@
     font-size: 12px;
     padding: 2px 6px;
     border-radius: 5px;
+    white-space:nowrap;
   }
 
   .seller-location {
@@ -408,19 +409,7 @@
     <div class="page-wrapper" style="position: relative;">
 
       @if(!$isLoggedIn)
-        <div class="blur-overlay" style="
-                                                                                            position: fixed;
-                                                                                            inset: 0;
-                                                                                            background: rgba(255,255,255,0.7);
-                                                                                            backdrop-filter: blur(8px);
-                                                                                            z-index: 9999;
-                                                                                            display: flex;
-                                                                                            justify-content: center;
-                                                                                            align-items: center;
-                                                                                            font-size: 1.5rem;
-                                                                                            color: #333;
-                                                                                            pointer-events: auto;
-                                                                                          ">
+        <div class="blur-overlay" style=" position: fixed; inset: 0; background: rgba(255,255,255,0.7); backdrop-filter: blur(8px); z-index: 9999; display: flex; justify-content: center; align-items: center; font-size: 1.5rem;color: #333; pointer-events: auto; ">
           Please <a href="{{ route('authentication-signin') }}" style="color: #007bff; text-decoration: underline;">login</a>
           to view
           this content.
@@ -429,7 +418,7 @@
 
 
 
-      <section class="card-area padding-top-60px padding-bottom-90px" style="margin-top: 150px;">
+      <section class="card-area padding-top-60px padding-bottom-90px detail-page-card" >
         <div class="container">
           <div class="row">
             <div class="col-lg-8 mb-4">
@@ -457,7 +446,7 @@
                     @endforeach
                   </div>
 
-                  <div class="d-flex justify-content-between">
+                  <div class="d-flex justify-content-between mt-1">
                     <p style="color: blue;">ID: {{ $submission->id }}</p>
                     <p style="color: blue;">Published: {{ $submission->created_at->format('F d, Y') }}</p>
                     <p style="color: blue;">Views: {{ $submission->views ?? 0 }}</p>
@@ -516,7 +505,7 @@ foreach ($fields as $field) {
             @elseif ($type === 'paragraph')
                 <p class="mb-3">{{ $label }}</p>
             @else
-                <button class="details-card-button">{{ $label }}: {{ $value }}</button>
+                <button class="details-card-button" style="text-align:start;">{{ $label }}: {{ $value }}</button>
             @endif
         @endforeach
     @endforeach

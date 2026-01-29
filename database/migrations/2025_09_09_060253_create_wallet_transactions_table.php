@@ -16,7 +16,7 @@ class CreateWalletTransactionsTable extends Migration
         Schema::create('wallet_transactions', function (Blueprint $table) {
             $table->id();
             $table->foreignId('wallet_id')->constrained()->onDelete('cascade');
-            $table->enum('type', ['credit', 'debit', 'hold']);
+            $table->enum('type', ['credit', 'debit']);
             $table->decimal('amount', 10, 2);
             $table->string('transaction_type'); // e.g., Refund, Purchase Subscription, Product Sale, Withdrawal Request
             $table->string('reference_id')->nullable(); // optional
