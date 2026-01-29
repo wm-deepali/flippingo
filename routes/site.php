@@ -69,6 +69,8 @@ Route::get('/reels', [ClientReelController::class, 'publicIndex'])->name('reels'
 Route::post('/listing/store', [ListingController::class, 'store'])->name('listing.store');
 Route::get('listing-details', [ListingController::class, 'apiShow'])->name('listing-details');
 Route::get('listing-list', [SiteController::class, 'FormSubmissionList'])->name('listing-list');
+// routes/api.php (recommended)
+Route::get('/listings/search', action: [ListingController::class, 'search'])->name('listings.search');
 
 Route::get('blogs', [BlogController::class, 'publicIndex'])->name('blogs');
 Route::get('/blog/{slug}', [BlogController::class, 'publicShow'])->name('blogs.show');
@@ -79,7 +81,18 @@ Route::get('/blogs/search', [BlogController::class, 'search'])->name('blogs.sear
 Route::get('faq', [FaqController::class, 'publicIndex'])->name('faq');
 Route::get('faq/category/{slug}', [FaqController::class, 'category'])->name('faq.category');
 
+Route::get('/test-google', function () {
+    $response = Http::get(
+        'https://maps.googleapis.com/maps/api/place/details/json',
+        [
+            'place_id' => config('services.google.place_id'),
+            'fields'   => 'rating,user_ratings_total,reviews',
+            'key'      => config('services.google.api_key'),
+        ]
+    );
 
+    return $response->json();
+});
 
 
 

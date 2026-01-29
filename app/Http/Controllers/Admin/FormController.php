@@ -42,7 +42,7 @@ class FormController extends Controller
 
         // If form HTML is stored in form_data table under 'html'
         $html = $formData ? $formData->html : '';
-// dd($formData->fields);
+        // dd($formData->fields);
         // Respond with HTML content to be injected
         return response()->json([
             'success' => true,
@@ -514,5 +514,81 @@ class FormController extends Controller
     }
 
 
+    public function summaryCard(Form $form)
+    {
+        $formData = FormData::where('form_id', $form->id)->first();
+        $fields = [];
+
+        if ($formData) {
+            $decodedFields = is_array($formData->fields)
+                ? $formData->fields
+                : json_decode($formData->fields, true);
+
+            foreach ($decodedFields ?? [] as $field) {
+                if (in_array($field['type'], ['heading', 'paragraph', 'button'])) {
+                    continue;
+                }
+
+                $props = $field['properties'] ?? [];
+
+                $fields[] = [
+                    'id' => $props['id'] ?? $field['id'],
+                    'label' => $props['label'] ?? ucfirst($field['type']),
+                    'type' => $field['type']
+                ];
+            }
+        }
+
+        $savedCards = $form->summaryCards()->get();
+
+        return view('admin.form.summary-card', compact(
+            'form',
+            'fields',
+            'savedCards'
+        ));
+    }
+    public function storeSummaryCard(Request $request, Form $form)
+    {
+        $request->validate([
+            'cards' => 'required|array'
+        ]);
+
+        // Existing cards keyed by field_key
+        $existing = $form->summaryCards()->get()->keyBy('field_key');
+
+        foreach ($request->cards as $index => $card) {
+
+            $fieldKey = $card['field_key']; // ✅ FIX HERE
+
+            if ($existing->has($fieldKey)) {
+                // Update existing
+                $existing[$fieldKey]->update([
+                    'icon' => $card['icon'] ?? null,
+                    'position' => $index,
+                ]);
+
+                // Mark as handled
+                $existing->forget($fieldKey);
+
+            } else {
+                // Create new
+                $form->summaryCards()->create([
+                    'field_key' => $fieldKey,
+                    'label' => $card['label'],
+                    'icon' => $card['icon'] ?? null,
+                    'position' => $index,
+                ]);
+            }
+        }
+
+        // Delete removed cards
+        if ($existing->isNotEmpty()) {
+            $form->summaryCards()
+                ->whereIn('field_key', $existing->keys())
+                ->delete();
+        }
+
+        return response()->json(['success' => true]);
+    }
 
 }

@@ -42,7 +42,13 @@
                         </label>
                     </div>
 
-
+                    <div class="form-group">
+                        <label>
+                            <input type="checkbox" name="show_in_hero" value="1">
+                            Show in Hero Section
+                        </label>
+                    </div>
+                    
                     <!-- Icon Image -->
                     <div class="form-group">
                         <label>Icon Image</label>

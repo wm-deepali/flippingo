@@ -494,7 +494,11 @@
  document.addEventListener('DOMContentLoaded', function() {
   const form = document.querySelector('#filter-form');
   const resultsContainer = document.getElementById('submissions-container');
-  let selectedCategory = localStorage.getItem('selectedCategory') || 'all';
+ const urlParams = new URLSearchParams(window.location.search);
+let selectedCategory =
+    urlParams.get('category') ||
+    localStorage.getItem('selectedCategory') ||
+    'all';
 
   // Add hidden input if not exists
   if (form && !form.querySelector('input[name="category"]')) {
@@ -506,8 +510,25 @@
   }
 
   // Open correct tab on load
-  const tabToOpen = document.querySelector(`.tab-btn[data-category="${selectedCategory}"]`);
-  (tabToOpen || document.querySelector('.tab-btn[data-category="all"]'))?.click();
+ const tabToOpen =
+    document.querySelector(`.tab-btn[data-category="${selectedCategory}"]`) ||
+    document.querySelector('.tab-btn[data-category="all"]');
+
+if (tabToOpen) {
+    tabToOpen.classList.add('active');
+    showCategoryGroups(selectedCategory);
+
+    const categoryInput = form.querySelector('input[name="category"]');
+    if (categoryInput) {
+        categoryInput.value = selectedCategory;
+    }
+
+    tabToOpen.scrollIntoView({
+        behavior: 'smooth',
+        inline: 'center',
+        block: 'nearest'
+    });
+}
 
   // Tab button click handler
   document.querySelectorAll('.tab-btn').forEach(btn => {

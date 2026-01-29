@@ -34,7 +34,11 @@ class Package extends Model
         'alerts_display',
         'is_popular',
         'status',
+        // ✅ NEW
+        'is_verified_seller',
+        'is_premium_seller',
     ];
+
 
     // Casts for correct data handling
     protected $casts = [
@@ -42,6 +46,8 @@ class Package extends Model
         'discount' => 'decimal:2',
         'offered_price' => 'decimal:2',
         'is_popular' => 'boolean',
+        'is_verified_seller' => 'boolean',
+        'is_premium_seller' => 'boolean',
     ];
 
 

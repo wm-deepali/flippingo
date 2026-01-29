@@ -46,6 +46,13 @@
                     </div>
 
                     <div class="form-group">
+                        <label>
+                            <input type="checkbox" name="show_in_hero" value="1" {{ $category->show_in_hero ? 'checked' : '' }}>
+                            Show in Hero Section
+                        </label>
+                    </div>
+
+                    <div class="form-group">
                         <label>Icon Image</label>
                         <input type="file" name="icon_image" class="form-control-file">
                         <div class="text-danger validation-err" id="icon_image-err"></div>

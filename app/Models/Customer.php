@@ -45,7 +45,11 @@ class Customer extends Authenticatable
         'last_active' => 'datetime'
     ];
 
-    protected $appends = ['listing_count'];  // Add this line to append listing_count
+    protected $appends = [
+        'listing_count',
+        'is_verified_seller',
+        'is_premium_seller',
+    ];  // Add this line to append listing_count
 
     public function countryname()
     {
@@ -181,4 +185,25 @@ class Customer extends Authenticatable
         return $query->whereHas('orders');
     }
 
+    public function getIsVerifiedSellerAttribute(): bool
+    {
+        $subscription = $this->activeSubscription;
+
+        if (!$subscription || !$subscription->package) {
+            return false;
+        }
+
+        return (bool) $subscription->package->is_verified_seller;
+    }
+
+    public function getIsPremiumSellerAttribute(): bool
+    {
+        $subscription = $this->activeSubscription;
+
+        if (!$subscription || !$subscription->package) {
+            return false;
+        }
+
+        return (bool) $subscription->package->is_premium_seller;
+    }
 }

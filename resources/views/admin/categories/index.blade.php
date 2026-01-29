@@ -43,6 +43,7 @@
                         <th>Image</th>
                         <th>Status</th>
                         <th>Popular</th>
+                        <th>Show in Hero</th>
                         <th>Created At</th>
                         <th width="100px">Action</th>
                       </tr>
@@ -67,6 +68,14 @@
                               <span class="badge badge-success">Popular</span>
                             @else
                               <span class="text-muted">—</span>
+                            @endif
+                          </td>
+
+                           <td>
+                            @if($category->show_in_hero)
+                              <span class="badge badge-success">Yes</span>
+                            @else
+                              <span class="text-muted">No</span>
                             @endif
                           </td>
 

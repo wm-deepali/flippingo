@@ -54,6 +54,8 @@ class PackageController extends Controller
             'alerts_display' => 'nullable|string|max:255',
             'is_popular' => 'required|in:0,1', // dropdown
             'status' => 'required|in:active,inactive',
+            'is_verified_seller' => 'nullable|boolean',
+            'is_premium_seller' => 'nullable|boolean',
         ]);
 
         // calculate offered price
@@ -61,6 +63,10 @@ class PackageController extends Controller
 
         // cast dropdowns correctly
         $data['is_popular'] = (int) $request->input('is_popular');
+
+        // ✅ Handle checkboxes
+        $data['is_verified_seller'] = $request->has('is_verified_seller');
+        $data['is_premium_seller'] = $request->has('is_premium_seller');
 
         Package::create($data);
 
@@ -98,10 +104,16 @@ class PackageController extends Controller
             'alerts_display' => 'nullable|string|max:255',
             'is_popular' => 'required|in:0,1',
             'status' => 'required|in:active,inactive',
+            'is_verified_seller' => 'nullable|boolean',
+            'is_premium_seller' => 'nullable|boolean',
         ]);
 
         $data['offered_price'] = $data['mrp'] - ($data['mrp'] * ($data['discount'] ?? 0) / 100);
         $data['is_popular'] = (int) $request->input('is_popular');
+
+        // ✅ Reset correctly when unchecked
+        $data['is_verified_seller'] = $request->has('is_verified_seller');
+        $data['is_premium_seller'] = $request->has('is_premium_seller');
 
         $package->update($data);
 
@@ -118,5 +130,5 @@ class PackageController extends Controller
 
     }
 
-   
+
 }

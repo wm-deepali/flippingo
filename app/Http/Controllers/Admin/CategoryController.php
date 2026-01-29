@@ -65,6 +65,7 @@ class CategoryController extends Controller
                     'slug' => $request->slug,
                     'status' => $request->status,
                     'is_popular' => $request->has('is_popular') ? 1 : 0,
+                    'show_in_hero' => $request->has('show_in_hero') ? 1 : 0,
                     'image' => $imagePath,
                 ]);
 
@@ -141,6 +142,7 @@ class CategoryController extends Controller
                     'slug' => $request->slug,
                     'status' => $request->status,
                     'is_popular' => $request->has('is_popular') ? 1 : 0,
+                    'show_in_hero' => $request->has('show_in_hero') ? 1 : 0,
                     'image' => $category->image,
                 ]);
 

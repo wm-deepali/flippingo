@@ -1,4 +1,5 @@
 <?php
+use App\Http\Controllers\Admin\HomeSlideController;
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\Admin\{
     HomeController,
@@ -118,7 +119,8 @@ Route::group(['middleware' => 'auth'], function () {
             ->name('form.create-filter');
         Route::post('forms/{form}/filters', [FormController::class, 'storeFilter'])
             ->name('form.filter.store');
-
+        Route::get('form/{form}/summary-card', [FormController::class, 'summaryCard'])->name('form.summary-card');
+        Route::post('form/{form}/summary-card', [FormController::class, 'storeSummaryCard'])->name('form.summary-card.store');
 
         // for template route
         Route::resource('/form-templates', FormTemplateController::class);
@@ -261,6 +263,8 @@ Route::group(['middleware' => 'auth'], function () {
         Route::resource('blogs', BlogController::class);
         Route::resource('client-reels', ClientReelController::class);
 
+        Route::resource('home-slides', HomeSlideController::class);
+        Route::post('home-slides/{homeSlide}/toggle', [HomeSlideController::class, 'toggleStatus']);
 
     });
 });

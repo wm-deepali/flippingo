@@ -173,6 +173,28 @@
                     </select>
                     <input type="text" class="form-control" name="alerts_display" value="{{ $package->alerts_display }}">
                   </div>
+
+                  <!-- Seller Type -->
+                  <div class="col-md-6 mt-2">
+                    <label>Seller Type</label>
+
+                    <div class="form-check">
+                      <input class="form-check-input" type="checkbox" name="is_verified_seller" value="1"
+                        id="verifiedSeller" {{ old('is_verified_seller', $package->is_verified_seller) ? 'checked' : '' }}>
+                      <label class="form-check-label" for="verifiedSeller">
+                        ✔ Verified Seller
+                      </label>
+                    </div>
+
+                    <div class="form-check mt-1">
+                      <input class="form-check-input" type="checkbox" name="is_premium_seller" value="1"
+                        id="premiumSeller" {{ old('is_premium_seller', $package->is_premium_seller) ? 'checked' : '' }}>
+                      <label class="form-check-label" for="premiumSeller">
+                        ⭐ Premium Seller
+                      </label>
+                    </div>
+                  </div>
+
                 </div>
               </div>
 

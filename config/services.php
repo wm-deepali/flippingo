@@ -46,4 +46,16 @@ return [
         'redirect' => env('GOOGLE_REDIRECT'),
     ],
 
+    'google_reviews' => [
+        'enabled' => env('GOOGLE_REVIEWS_ENABLED', false),
+        'api_key' => env('GOOGLE_API_KEY'),
+        'place_id' => env('GOOGLE_PLACE_ID'),
+    ],
+
+    'trustpilot' => [
+        'enabled' => env('TRUSTPILOT_ENABLED', false),
+        'api_key' => env('TRUSTPILOT_API_KEY'),
+        'api_secret' => env('TRUSTPILOT_API_SECRET'),
+        'business_unit_id' => env('TRUSTPILOT_BUSINESS_UNIT_ID'),
+    ],
 ];

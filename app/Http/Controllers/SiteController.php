@@ -5,13 +5,18 @@ use App\Models\Blog;
 use App\Models\FormSubmission;
 use App\Models\Category;
 use App\Models\Testimonial;
+use App\Models\HomeSlide;
+use App\Models\ProductOrder;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\DB;
+use App\Services\GoogleReviewsService;
+use App\Services\TrustpilotService;
+
 
 class SiteController extends Controller
 {
-    public function index()
+    public function index(GoogleReviewsService $googleReviews, TrustpilotService $trustpilot)
     {
         $categories = Category::where('status', 'active')->get();
 
@@ -76,11 +81,29 @@ class SiteController extends Controller
             ->take(3)
             ->get();
 
-        $testimonials = Testimonial::where('status', 'active')->get();
-        $countries = DB::table('countries')->orderBy('name')->get();
-        $soldSubmissionIds = \App\Models\ProductOrder::pluck('submission_id')->toArray();
-        // dd($categorySubmissionCounts);
-        return view('front.index', compact('categories', 'submissionsByCategory', 'allSubmissions', 'blogs', 'testimonials', 'categorySubmissionCounts', 'countries', 'soldSubmissionIds'));
+        $testimonials = Testimonial::where('status', 'active')
+            ->get();
+
+        $countries = DB::table('countries')
+            ->orderBy('name')
+            ->get();
+
+        $soldSubmissionIds = ProductOrder::pluck('submission_id')
+            ->toArray();
+
+        $heroCategories = Category::where('status', 'active')
+            ->where('show_in_hero', 1)
+            ->select('id', 'name', 'slug')
+            ->get();
+
+        $homeSlides = HomeSlide::where('is_active', 1)
+            ->orderBy('sort_order')
+            ->get();
+
+        // $reviews = $googleReviews->getReviews();
+        // $trustpilotReviews = $trustpilot->getReviews();
+
+        return view('front.index', compact('categories', 'submissionsByCategory', 'allSubmissions', 'blogs', 'testimonials', 'categorySubmissionCounts', 'countries', 'soldSubmissionIds', 'heroCategories', 'homeSlides'));
     }
 
 

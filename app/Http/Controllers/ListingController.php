@@ -808,6 +808,87 @@ class ListingController extends Controller
             'chartUniques'
         ));
     }
+    public function search(Request $request)
+    {
+        $search = strtolower(trim($request->q));
 
+        // 🔍 If empty or too short
+        if (!$search || strlen($search) < 2) {
+            return response()->json([
+                'type' => 'empty',
+                'message' => 'Type at least 2 characters to search',
+                'data' => []
+            ]);
+        }
+
+        $submissions = FormSubmission::with([
+            'customer.activeSubscription.package',
+            'files'
+        ])
+            ->where('status', 'published')
+            ->get()
+            ->filter(function ($submission) use ($search) {
+
+                $data = is_array($submission->data)
+                    ? $submission->data
+                    : json_decode($submission->data, true);
+
+                if (!is_array($data)) {
+                    return false;
+                }
+
+                foreach ($data as $field) {
+                    if (!isset($field['value'])) {
+                        continue;
+                    }
+
+                    $value = $field['value'];
+
+                    if (is_array($value)) {
+                        $value = implode(' ', array_map('strval', $value));
+                    }
+
+                    if (str_contains(strtolower((string) $value), $search)) {
+                        return true;
+                    }
+                }
+
+                return false;
+            })
+            ->take(8)
+            ->map(fn($s) => $this->mapListing($s))
+            ->values();
+
+        // ❌ No results found
+        if ($submissions->isEmpty()) {
+            return response()->json([
+                'type' => 'not_found',
+                'message' => 'No listings found',
+                'data' => []
+            ]);
+        }
+
+        // ✅ Results found
+        return response()->json([
+            'type' => 'search',
+            'data' => $submissions
+        ]);
+    }
+
+    private function mapListing($submission)
+    {
+        return [
+            'id' => $submission->id,
+            'title' => $submission->title ?? 'Listing',
+            'url' => route('listing-details', $submission->id),
+            'seller' => $submission->customer?->name,
+            'is_verified' => $submission->customer?->is_verified_seller ?? false,
+            'is_premium' => $submission->customer?->is_premium_seller ?? false,
+            'image' => optional(
+                collect($submission->files)
+                    ->firstWhere('show_on_summary', true)
+                ?? collect($submission->files)->first()
+            )->url,
+        ];
+    }
 }
-

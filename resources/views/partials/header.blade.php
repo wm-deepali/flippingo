@@ -292,6 +292,9 @@
             <span>CMS</span>
           </a>
           <ul class="dropdown-menu">
+              <li><a class="dropdown-item d-flex align-items-center"
+                href="{{ route('admin.home-slides.index') }}"><span>Home Sliders</span></a>
+            </li>
             <li><a class="dropdown-item d-flex align-items-center"
                 href="{{ route('admin.content.dynamic.pages') }}"><span>Dynamic Page Creations</span></a>
             </li>
@@ -331,3 +334,4 @@
     </div>
   </div>
 </div>
+

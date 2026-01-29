@@ -61,5 +61,10 @@ class Form extends Model
         return $this->hasMany(FormFilter::class);
     }
 
+    public function summaryCards()
+    {
+        return $this->hasMany(FormSummaryCard::class)->orderBy('position');
+    }
+
 }
 

@@ -91,11 +91,19 @@
                                   </a>
                                 </li>
 
+                                <!-- <li>
+                                      <a class="dropdown-item" href="{{ route('admin.form.settings', $form->id) }}">
+                                        <i class="fas fa-cog"></i> Settings
+                                      </a>
+                                    </li> -->
+
+                                {{-- ✅ NEW ACTION --}}
                                 <li>
-                                  <a class="dropdown-item" href="{{ route('admin.form.settings', $form->id) }}">
-                                    <i class="fas fa-cog"></i> Settings
+                                  <a class="dropdown-item" href="{{ route('admin.form.summary-card', $form->id) }}">
+                                    <i class="fas fa-id-card"></i> Summary Card
                                   </a>
                                 </li>
+
                                 <li>
                                   <a class="dropdown-item text-danger" href="javascript:void(0)"
                                     onclick="deleteConfirmation({{ $form->id }})">
