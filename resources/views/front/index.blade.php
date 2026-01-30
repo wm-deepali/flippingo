@@ -1,246 +1,272 @@
 @extends('layouts.new-master')
 <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
 
-    <!-- Alpine.js -->
-    <script defer src="https://unpkg.com/alpinejs@3.x.x/dist/cdn.min.js"></script>
+<!-- Alpine.js -->
+<script defer src="https://unpkg.com/alpinejs@3.x.x/dist/cdn.min.js"></script>
 @section('title')
   {{ $page->meta_title ?? 'Flippingo' }}
 @endsection
 <style>
-        :root {
-            --flippingo-blue: #2563eb;
-            --flippingo-blue-light: #dbeafe;
-            --flippingo-gray: #6b7280;
-        }
+  :root {
+    --flippingo-blue: #2563eb;
+    --flippingo-blue-light: #dbeafe;
+    --flippingo-gray: #6b7280;
+  }
 
-       
-        .flippingo-hiw-section {
-            padding: 5rem 0;
-            background: linear-gradient(to bottom, #f0f9ff, #ffffff);
-        }
 
-        .flippingo-hiw-container {
-            max-width: 1250px;
-            margin: 0 auto;
-            padding: 0 1.5rem;
-        }
+  .flippingo-hiw-section {
+    padding: 5rem 0;
+    background: linear-gradient(to bottom, #f0f9ff, #ffffff);
+  }
 
-        .flippingo-hiw-full-slider {
-            position: relative;
-            overflow: hidden;
-            border-radius: 1.5rem;
-            /*box-shadow: 0 20px 40px rgba(0,0,0,0.1);*/
-        }
+  .flippingo-hiw-container {
+    max-width: 1250px;
+    margin: 0 auto;
+    padding: 0 1.5rem;
+  }
 
-        .flippingo-hiw-full-slides {
-            display: flex;
-            width: 100%; /* 3 slides */
-            transition: transform 0.8s ease;
-        }
+  .flippingo-hiw-full-slider {
+    position: relative;
+    overflow: hidden;
+    border-radius: 1.5rem;
+    /*box-shadow: 0 20px 40px rgba(0,0,0,0.1);*/
+  }
 
-        .flippingo-hiw-full-slide {
-            min-width: 100%;
-            display: grid;
-            grid-template-columns: 1fr;
-            gap: 2rem;
-            padding: 3rem;
-            align-items: center;
-        }
-        @media (min-width: 1024px) {
-            .flippingo-hiw-full-slide {
-                grid-template-columns: 1fr 1fr;
-                gap: 3rem;
-            }
-        }
+  .flippingo-hiw-full-slides {
+    display: flex;
+    width: 100%;
+    /* 3 slides */
+    transition: transform 0.8s ease;
+  }
 
-        /* Left Content */
-        .flippingo-hiw-content h2 {
-            font-size: 2rem;
-            font-weight: 800;
-            line-height: 1.2;
-            margin-bottom: 1rem;
-            color: #1f2937;
-        }
-        @media (min-width: 768px) {
-            .flippingo-hiw-content h2 { font-size: rem; }
-        }
+  .flippingo-hiw-full-slide {
+    min-width: 100%;
+    display: grid;
+    grid-template-columns: 1fr;
+    gap: 2rem;
+    padding: 3rem;
+    align-items: center;
+  }
 
-        .flippingo-hiw-content p {
-            font-size: 1.125rem;
-            color: var(--flippingo-gray);
-            margin-bottom: 1.5rem;
-        }
+  @media (min-width: 1024px) {
+    .flippingo-hiw-full-slide {
+      grid-template-columns: 1fr 1fr;
+      gap: 3rem;
+    }
+  }
 
-        .flippingo-hiw-content p span {
-            display: block;
-            color: var(--flippingo-blue);
-            font-weight: 600;
-            margin-top: 0.5rem;
-        }
+  /* Left Content */
+  .flippingo-hiw-content h2 {
+    font-size: 2rem;
+    font-weight: 800;
+    line-height: 1.2;
+    margin-bottom: 1rem;
+    color: #1f2937;
+  }
 
-        .flippingo-hiw-steps {
-            display: flex;
-            flex-direction: column;
-            gap: 1rem;
-            margin: 1.5rem 0;
-        }
+  @media (min-width: 768px) {
+    .flippingo-hiw-content h2 {
+      font-size: rem;
+    }
+  }
 
-        .flippingo-hiw-step {
-            display: flex;
-            gap: 1rem;
-            padding: 1rem;
-            border-radius: 1rem;
-            background: white;
-            box-shadow: 0 4px 12px rgba(0,0,0,0.05);
-            transition: transform 0.3s ease;
-        }
+  .flippingo-hiw-content p {
+    font-size: 1.125rem;
+    color: var(--flippingo-gray);
+    margin-bottom: 1.5rem;
+  }
 
-        .flippingo-hiw-step:hover {
-            transform: translateY(-4px);
-        }
+  .flippingo-hiw-content p span {
+    display: block;
+    color: var(--flippingo-blue);
+    font-weight: 600;
+    margin-top: 0.5rem;
+  }
 
-        .flippingo-hiw-step-icon {
-            width: 3rem;
-            height: 3rem;
-            background: linear-gradient(135deg, var(--flippingo-blue), #3b82f6);
-            color: white;
-            border-radius: 9999px;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            flex-shrink: 0;
-            font-size: 1.25rem;
-        }
+  .flippingo-hiw-steps {
+    display: flex;
+    flex-direction: column;
+    gap: 1rem;
+    margin: 1.5rem 0;
+  }
 
-        .flippingo-hiw-step h4 {
-            font-weight: 600;
-            margin-bottom: 0.25rem;
-            color: #1f2937;
-        }
+  .flippingo-hiw-step {
+    display: flex;
+    gap: 1rem;
+    padding: 1rem;
+    border-radius: 1rem;
+    background: white;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.05);
+    transition: transform 0.3s ease;
+  }
 
-        .flippingo-hiw-step p {
-            font-size: 0.875rem;
-            color: var(--flippingo-gray);
-            margin: 0;
-        }
+  .flippingo-hiw-step:hover {
+    transform: translateY(-4px);
+  }
 
-        /* Buttons */
-        .flippingo-hiw-btn-group {
-            display: flex;
-            flex-direction: column;
-            gap: 1rem;
-        }
-        @media (min-width: 640px) {
-            .flippingo-hiw-btn-group { flex-direction: row; }
-        }
+  .flippingo-hiw-step-icon {
+    width: 3rem;
+    height: 3rem;
+    background: linear-gradient(135deg, var(--flippingo-blue), #3b82f6);
+    color: white;
+    border-radius: 9999px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    flex-shrink: 0;
+    font-size: 1.25rem;
+  }
 
-        .flippingo-hiw-btn {
-            display: inline-flex;
-            align-items: center;
-            justify-content: center;
-            gap: 0.5rem;
-            padding: 0.75rem 1.5rem;
-            font-weight: 600;
-            border-radius: 0.5rem;
-            transition: all 0.3s ease;
-            text-decoration: none;
-            font-size: 1rem;
-        }
+  .flippingo-hiw-step h4 {
+    font-weight: 600;
+    margin-bottom: 0.25rem;
+    color: #1f2937;
+  }
 
-        .flippingo-hiw-btn-primary {
-            background: var(--flippingo-blue);
-            color: white;
-            box-shadow: 0 4px 14px rgba(37, 99, 235, 0.3);
-        }
-        .flippingo-hiw-btn-primary:hover {
-            background: #fff;
-            color: var(--flippingo-blue);
-            border: 2px solid var(--flippingo-blue);
-        }
+  .flippingo-hiw-step p {
+    font-size: 0.875rem;
+    color: var(--flippingo-gray);
+    margin: 0;
+  }
 
-        .flippingo-hiw-btn-secondary {
-            border: 2px solid #000;
-            color: #fff;
-            background: #000;
-        }
-        .flippingo-hiw-btn-secondary:hover {
-            background: #fff;
-            color: #000;
-        }
+  /* Buttons */
+  .flippingo-hiw-btn-group {
+    display: flex;
+    flex-direction: column;
+    gap: 1rem;
+  }
 
-        /* Right Image */
-        .flippingo-hiw-image {
-            border-radius: 1.5rem;
-            overflow: hidden;
-            /*box-shadow: 0 10px 30px rgba(0,0,0,0.1);*/
-            height: 400px;
-        }
-        @media (max-width: 1024px) { .flippingo-hiw-image { height: 350px; } }
-        @media (max-width: 768px) { .flippingo-hiw-image { height: 280px; margin-top: 1rem; } }
+  @media (min-width: 640px) {
+    .flippingo-hiw-btn-group {
+      flex-direction: row;
+    }
+  }
 
-        .flippingo-hiw-image img {
-            width: 100%;
-            height: 100%;
-            object-fit: cover;
-            transition: transform 0.6s ease;
-        }
+  .flippingo-hiw-btn {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    gap: 0.5rem;
+    padding: 0.75rem 1.5rem;
+    font-weight: 600;
+    border-radius: 0.5rem;
+    transition: all 0.3s ease;
+    text-decoration: none;
+    font-size: 1rem;
+  }
 
-        .flippingo-hiw-image:hover img {
-            transform: scale(1.05);
-        }
+  .flippingo-hiw-btn-primary {
+    background: var(--flippingo-blue);
+    color: white;
+    box-shadow: 0 4px 14px rgba(37, 99, 235, 0.3);
+  }
 
-        /* Arrows */
-        .flippingo-hiw-arrow {
-            position: absolute;
-            top: 50%;
-            transform: translateY(-50%);
-            width: 3rem;
-            height: 3rem;
-            /*background: white;*/
-            border-radius: 9999px;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            cursor: pointer;
-            z-index: 10;
-            /*box-shadow: 0 4px 12px rgba(0,0,0,0.15);*/
-            transition: all 0.3s ease;
-        }
+  .flippingo-hiw-btn-primary:hover {
+    background: #fff;
+    color: var(--flippingo-blue);
+    border: 2px solid var(--flippingo-blue);
+  }
 
-        .flippingo-hiw-arrow:hover {
-            background: var(--flippingo-blue);
-            color: white;
-            transform: translateY(-50%) scale(1.1);
-        }
+  .flippingo-hiw-btn-secondary {
+    border: 2px solid #000;
+    color: #fff;
+    background: #000;
+  }
 
-        .flippingo-hiw-arrow-left { left: 0rem; }
-        .flippingo-hiw-arrow-right { right: 0rem; }
+  .flippingo-hiw-btn-secondary:hover {
+    background: #fff;
+    color: #000;
+  }
 
-        /* Dots */
-        .flippingo-hiw-dots {
-            position: absolute;
-            bottom: 1.5rem;
-            left: 50%;
-            transform: translateX(-50%);
-            display: flex;
-            gap: 0.5rem;
-            z-index: 10;
-        }
+  /* Right Image */
+  .flippingo-hiw-image {
+    border-radius: 1.5rem;
+    overflow: hidden;
+    /*box-shadow: 0 10px 30px rgba(0,0,0,0.1);*/
+    height: 400px;
+  }
 
-        .flippingo-hiw-dot {
-            width: 0.75rem;
-            height: 0.75rem;
-            border-radius: 9999px;
-            background: #000000;
-            cursor: pointer;
-            transition: all 0.3s ease;
-        }
+  @media (max-width: 1024px) {
+    .flippingo-hiw-image {
+      height: 350px;
+    }
+  }
 
-        .flippingo-hiw-dot.active {
-            background: blue;
-            width: 2rem;
-        }
-    </style>
+  @media (max-width: 768px) {
+    .flippingo-hiw-image {
+      height: 280px;
+      margin-top: 1rem;
+    }
+  }
+
+  .flippingo-hiw-image img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    transition: transform 0.6s ease;
+  }
+
+  .flippingo-hiw-image:hover img {
+    transform: scale(1.05);
+  }
+
+  /* Arrows */
+  .flippingo-hiw-arrow {
+    position: absolute;
+    top: 50%;
+    transform: translateY(-50%);
+    width: 3rem;
+    height: 3rem;
+    /*background: white;*/
+    border-radius: 9999px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    cursor: pointer;
+    z-index: 10;
+    /*box-shadow: 0 4px 12px rgba(0,0,0,0.15);*/
+    transition: all 0.3s ease;
+  }
+
+  .flippingo-hiw-arrow:hover {
+    background: var(--flippingo-blue);
+    color: white;
+    transform: translateY(-50%) scale(1.1);
+  }
+
+  .flippingo-hiw-arrow-left {
+    left: 0rem;
+  }
+
+  .flippingo-hiw-arrow-right {
+    right: 0rem;
+  }
+
+  /* Dots */
+  .flippingo-hiw-dots {
+    position: absolute;
+    bottom: 1.5rem;
+    left: 50%;
+    transform: translateX(-50%);
+    display: flex;
+    gap: 0.5rem;
+    z-index: 10;
+  }
+
+  .flippingo-hiw-dot {
+    width: 0.75rem;
+    height: 0.75rem;
+    border-radius: 9999px;
+    background: #000000;
+    cursor: pointer;
+    transition: all 0.3s ease;
+  }
+
+  .flippingo-hiw-dot.active {
+    background: blue;
+    width: 2rem;
+  }
+</style>
 <style>
   .get-a-quote:before,
   .swal-modal:before {
@@ -2339,8 +2365,8 @@
   .budge-active p {
     margin: 0;
   }
-  
-   .budge-soldout p {
+
+  .budge-soldout p {
     background-color: #dc3545;
     color: #fff;
     border-radius: 20px;
@@ -2481,6 +2507,18 @@
     margin: 0 auto 10px;
   }
 
+  .s-image-card {
+    width: 100%;
+    height: 150px;
+    display: flex;
+    border-radius: 4px;
+    background-color: #fff;
+    padding: 28px !important;
+    justify-content: center;
+    align-items: center;
+    box-shadow: rgba(0, 0, 0, 0.02) 0px 1px 3px 0px, rgba(27, 31, 35, 0.15) 0px 0px 0px 1px;
+  }
+
   .tabs-wrapper {
     display: flex;
     align-items: center;
@@ -2569,7 +2607,7 @@
   #slider-content span a {
     color: #fff !important;
   }
-  
+
   @keyframes slideText {
     0% {
       transform: translateY(0%);
@@ -2619,69 +2657,261 @@
   .review-section {
     height: fit-content;
   }
+
+  .section--padding {
+    padding-top: 50px !important;
+    padding-bottom: 70px;
+  }
+
+  .section-padding {
+    padding-top: 50px !important;
+    padding-bottom: 50px !important;
+  }
+
+  .flippingonew-inner-search {
+    position: relative;
+    z-index: 9;
+  }
+
+  .flippingonew-inner-dropdown {
+    position: absolute;
+    top: 110%;
+    left: 0;
+    width: 100%;
+    background: #fff;
+    border-radius: 10px;
+    box-shadow: 0 12px 30px rgba(0, 0, 0, 0.15);
+    overflow: hidden;
+  }
+
+  .flippingonew-inner-item {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    padding: 12px 16px;
+    cursor: pointer;
+    transition: 0.25s;
+    border-bottom: 1px solid #f1f1f1;
+  }
+
+  .flippingonew-inner-item:last-child {
+    border-bottom: none;
+  }
+
+  .flippingonew-inner-item:hover {
+    background: #f5f8ff;
+  }
+
+  .flippingonew-inner-icon {
+    width: 36px;
+    height: 36px;
+    border-radius: 8px;
+    color: #fff;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 18px;
+  }
+
+  .flippingonew-inner-title {
+    font-size: 15px;
+    font-weight: 600;
+    color: #333;
+  }
+
+  .social-media-icon-section p {
+    position: relative;
+    top: -208px;
+    left: 5px;
+    font-size: 12px;
+    font-weight: 600;
+    border: 1px solid #80808038;
+    width: fit-content;
+    padding: 0px 10px;
+    border-radius: 4px;
+  }
+
+  .sec__desc {
+    font-size: 16px;
+    color: #555;
+    max-width: 100% !important;
+    margin-left: 0px;
+
+  }
+
+  /* ===== SLIDER WRAPPER ===== */
+  .flippingonew-slider-wrapper {
+    position: relative;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    width: 100%;
+  }
+
+  /* ===== SLIDER TRACK ===== */
+  .flippingonew-slider-track {
+    display: flex;
+    gap: 14px;
+    overflow: hidden;
+    scroll-behavior: smooth;
+    width: 100%;
+  }
+
+  /* ===== CARD ===== */
+  .flippingonew-slider-card {
+    min-width: 135px;
+    background: #ffffff;
+    border-radius: 14px;
+    padding: 14px 10px 16px;
+    text-align: center;
+    position: relative;
+    /*box-shadow: 0 8px 22px rgba(0, 0, 0, 0.08);*/
+    border: 1px solid #8080804a;
+    transition: all 0.25s ease;
+    text-decoration: none;
+    color: inherit;
+  }
+
+  .flippingonew-slider-card:hover {
+    transform: translateY(-4px);
+    box-shadow: 0 14px 30px rgba(0, 0, 0, 0.14);
+  }
+
+  /* ===== LISTING BADGE ===== */
+  .flippingonew-listing-badge {
+    position: absolute;
+    top: 8px;
+    left: 8px;
+    font-size: 11px;
+    background: #eef2ff;
+    color: #1d4ed8;
+    padding: 3px 7px;
+    border-radius: 6px;
+    font-weight: 600;
+    line-height: 1;
+  }
+
+  /* ===== IMAGE ===== */
+  .flippingonew-slider-image {
+    width: 60px;
+    height: 60px;
+    margin: 26px auto 10px;
+    background: #f5f7ff;
+    border-radius: 14px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+  }
+
+  .flippingonew-slider-image img {
+    max-width: 40px;
+    max-height: 40px;
+    object-fit: contain;
+  }
+
+  /* ===== TITLE ===== */
+  .flippingonew-slider-title {
+    font-size: 14px;
+    font-weight: 600;
+    margin: 6px 0 0;
+    line-height: 1.3;
+    color: #111827;
+  }
+
+  /* ===== SLIDER BUTTONS ===== */
+  .flippingonew-slider-btn {
+    background: #ffffff;
+    border: none;
+    width: 36px;
+    height: 36px;
+    border-radius: 50%;
+    box-shadow: 0 6px 18px rgba(0, 0, 0, 0.15);
+    cursor: pointer;
+    font-size: 16px;
+    transition: all 0.2s ease;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+  }
+
+  .flippingonew-slider-btn:hover {
+    background: #2563eb;
+    color: #ffffff;
+  }
+
+  /* ===== MOBILE ===== */
+  @media (max-width: 768px) {
+    .flippingonew-slider-card {
+      min-width: 120px;
+    }
+
+    .flippingonew-slider-btn {
+      display: none;
+    }
+  }
 </style>
 
 
 @section('content')
 
   <!-- ================================
-                                                                                                              START HERO-WRAPPER AREA
-                                                                                                              ================================= -->
+                                                                                                                    START HERO-WRAPPER AREA
+                                                                                                                    ================================= -->
   <!-- <section class="hero-wrapper hero-bg">
-                                                                                                              <div class="overlay"></div>
+                                                                                                                    <div class="overlay"></div>
 
-                                                                                                              <div class="container">
-                                                                                                                <div class="hero-heading text-center">
-                                                                                                                <h2 class="sec__title text-white cd-headline zoom">
-                                                                                                                What are you interested in
-                                                                                                                <span class="cd-words-wrapper">
-                                                                                                                <b class="is-visible">Monetized Website</b>
-                                                                                                                <b>Mobile Applications</b>
-                                                                                                                <b>Adwords Accounts</b>
-                                                                                                                <b>Facebook </b>
-                                                                                                                <b>Instagram</b>
-                                                                                                                <b>Telegram Groups</b>
+                                                                                                                    <div class="container">
+                                                                                                                      <div class="hero-heading text-center">
+                                                                                                                      <h2 class="sec__title text-white cd-headline zoom">
+                                                                                                                      What are you interested in
+                                                                                                                      <span class="cd-words-wrapper">
+                                                                                                                      <b class="is-visible">Monetized Website</b>
+                                                                                                                      <b>Mobile Applications</b>
+                                                                                                                      <b>Adwords Accounts</b>
+                                                                                                                      <b>Facebook </b>
+                                                                                                                      <b>Instagram</b>
+                                                                                                                      <b>Telegram Groups</b>
 
-                                                                                                                </span>
-                                                                                                                </h2>
+                                                                                                                      </span>
+                                                                                                                      </h2>
 
-                                                                                                                </div>
-                                                                                                                <div class="highlighted-categories text-center mt-5">
-                                                                                                                <p class="highlighted__title text-white">
-                                                                                                                Or browse featured categories:
-                                                                                                                </p>
-                                                                                                                <div class="highlight-lists d-flex flex-wrap justify-content-center mt-4">
-                                                                                                                <a href="#" class="highlight-category">
-                                                                                                                <span class="fal fa-building icon-element d-block mx-auto"></span>
-                                                                                                                Monetized Website
-                                                                                                                </a>
-                                                                                                                <a href="#" class="highlight-category">
-                                                                                                                <span class="fal fa-utensils icon-element d-block mx-auto"></span>
-                                                                                                                Mobile Applications
-                                                                                                                </a>
-                                                                                                                <a href="#" class="highlight-category">
-                                                                                                                <span class="fal fa-plane icon-element d-block mx-auto"></span>
-                                                                                                                Adwords Accounts
-                                                                                                                </a>
-                                                                                                                <a href="#" class="highlight-category">
-                                                                                                                <span class="fal fa-music icon-element d-block mx-auto"></span>
-                                                                                                                Facebook 
-                                                                                                                </a>
-                                                                                                                <a href="#" class="highlight-category">
-                                                                                                                <span class="fal fa-dumbbell icon-element d-block mx-auto"></span>
-                                                                                                                Instagram
-                                                                                                                </a>
-                                                                                                                <a href="#" class="highlight-category">
-                                                                                                                <span class="fal fa-hotel icon-element d-block mx-auto"></span>
-                                                                                                                Telegram Groups
-                                                                                                                </a>
-                                                                                                                </div>
-                                                                                                                </div>
+                                                                                                                      </div>
+                                                                                                                      <div class="highlighted-categories text-center mt-5">
+                                                                                                                      <p class="highlighted__title text-white">
+                                                                                                                      Or browse featured categories:
+                                                                                                                      </p>
+                                                                                                                      <div class="highlight-lists d-flex flex-wrap justify-content-center mt-4">
+                                                                                                                      <a href="#" class="highlight-category">
+                                                                                                                      <span class="fal fa-building icon-element d-block mx-auto"></span>
+                                                                                                                      Monetized Website
+                                                                                                                      </a>
+                                                                                                                      <a href="#" class="highlight-category">
+                                                                                                                      <span class="fal fa-utensils icon-element d-block mx-auto"></span>
+                                                                                                                      Mobile Applications
+                                                                                                                      </a>
+                                                                                                                      <a href="#" class="highlight-category">
+                                                                                                                      <span class="fal fa-plane icon-element d-block mx-auto"></span>
+                                                                                                                      Adwords Accounts
+                                                                                                                      </a>
+                                                                                                                      <a href="#" class="highlight-category">
+                                                                                                                      <span class="fal fa-music icon-element d-block mx-auto"></span>
+                                                                                                                      Facebook 
+                                                                                                                      </a>
+                                                                                                                      <a href="#" class="highlight-category">
+                                                                                                                      <span class="fal fa-dumbbell icon-element d-block mx-auto"></span>
+                                                                                                                      Instagram
+                                                                                                                      </a>
+                                                                                                                      <a href="#" class="highlight-category">
+                                                                                                                      <span class="fal fa-hotel icon-element d-block mx-auto"></span>
+                                                                                                                      Telegram Groups
+                                                                                                                      </a>
+                                                                                                                      </div>
+                                                                                                                      </div>
 
-                                                                                                              </div>
+                                                                                                                    </div>
 
-                                                                                                              </section> -->
-  <section class="hero-section" id="home" >
+                                                                                                                    </section> -->
+  <section class="hero-section" id="home">
     <div class="container">
       <div class="row ">
         <div class="col-xl-6">
@@ -2691,7 +2921,7 @@
               <h1>
                 #1 Platform to Buy & Sell
                 <span id="slider-content">
-                 @foreach($categories as $category)
+                  @foreach($heroCategories as $category)
                     <span>
                       <a href="{{ route('listing-list', ['category' => $category->slug]) }}" class="category-link">
                         {{ $category->name }}
@@ -2838,39 +3068,39 @@
                   <!-- Review 1 -->
                   <!-- <div class="swiper-slide review-card">
 
-                                                                                                                <div class="platform-name"><img
-                                                                                                                src="https://upload.wikimedia.org/wikipedia/commons/thumb/2/2f/Google_2015_logo.svg/800px-Google_2015_logo.svg.png "
-                                                                                                                alt="">
-                                                                                                                </div>
-                                                                                                                <div class="stars">★★★☆☆</div>
-                                                                                                                <p style="color: #000000; padding-bottom: 0px; padding-top: 10px;">Scan the QR code below to leave
-                                                                                                                us a review</p>
-                                                                                                                <div class="qr-code">
-                                                                                                                <img src="{{ asset('assets') }}/images/qr.png">
+                                                                                                                      <div class="platform-name"><img
+                                                                                                                      src="https://upload.wikimedia.org/wikipedia/commons/thumb/2/2f/Google_2015_logo.svg/800px-Google_2015_logo.svg.png "
+                                                                                                                      alt="">
+                                                                                                                      </div>
+                                                                                                                      <div class="stars">★★★☆☆</div>
+                                                                                                                      <p style="color: #000000; padding-bottom: 0px; padding-top: 10px;">Scan the QR code below to leave
+                                                                                                                      us a review</p>
+                                                                                                                      <div class="qr-code">
+                                                                                                                      <img src="{{ asset('assets') }}/images/qr.png">
 
-                                                                                                                </div>
-                                                                                                                <p class="review-summary text-center mt-1"> 265 Review</p>
+                                                                                                                      </div>
+                                                                                                                      <p class="review-summary text-center mt-1"> 265 Review</p>
 
 
 
-                                                                                                                </div> -->
+                                                                                                                      </div> -->
 
                   <!-- Review 2 -->
                   <!-- <div class="swiper-slide review-card">
 
 
-                                                                                                                <div class="platform-name"><img
-                                                                                                                src="https://upload.wikimedia.org/wikipedia/commons/5/5c/Trustpilot_logo.png " alt="">
-                                                                                                                </div>
-                                                                                                                <div class="stars">★★☆☆☆</div>
-                                                                                                                <p style="color: #000000; padding-bottom: 0px; padding-top: 10px;">Scan the QR code below to leave
-                                                                                                                us a review</p>
-                                                                                                                <div class="qr-code">
-                                                                                                                <img src="{{ asset('assets') }}/images/qr.png">
+                                                                                                                      <div class="platform-name"><img
+                                                                                                                      src="https://upload.wikimedia.org/wikipedia/commons/5/5c/Trustpilot_logo.png " alt="">
+                                                                                                                      </div>
+                                                                                                                      <div class="stars">★★☆☆☆</div>
+                                                                                                                      <p style="color: #000000; padding-bottom: 0px; padding-top: 10px;">Scan the QR code below to leave
+                                                                                                                      us a review</p>
+                                                                                                                      <div class="qr-code">
+                                                                                                                      <img src="{{ asset('assets') }}/images/qr.png">
 
-                                                                                                                </div>
-                                                                                                                <p class="review-summary text-center mt-1 "> 265 Review</p>
-                                                                                                                </div> -->
+                                                                                                                      </div>
+                                                                                                                      <p class="review-summary text-center mt-1 "> 265 Review</p>
+                                                                                                                      </div> -->
 
                   <!-- Add more reviews -->
                 </div>
@@ -2891,81 +3121,85 @@
         </div>
         <div class="col-12 col-xl-6" style="display: flex; justify-content: end;">
           <!-- <form role="form" class="get-a-quote" id="contact-form" method="post">
-                                                                                                                <div class="mb-lg-3 mb-3 d-flex align-items-center">
-                                                                                                                <i>
-                                                                                                                <svg enable-background="new 0 0 124 124" height="52" viewbox="0 0 124 124" width="52" xmlns="http://www.w3.org/2000/svg"><path d="m82.899 50.646c-6.059 0-10.988-4.918-10.988-10.963s4.929-10.963 10.988-10.963 10.988 4.918 10.988 10.963-4.929 10.963-10.988 10.963zm0-17.979c-3.877 0-7.031 3.147-7.031 7.015s3.154 7.015 7.031 7.015 7.031-3.147 7.031-7.015-3.154-7.015-7.031-7.015z"></path><path d="m122.558 2.183c-.069-.986-.853-1.773-1.841-1.848-14.728-1.125-41.975-.347-58.941 17.482-.002.002-.005.004-.007.007-2.3 2.441-4.418 5.209-6.382 8.136-24.65 8.882-35.589 25.07-38.168 33.298-.376 1.202.496 2.487 1.756 2.582l17.94 1.359c-1.478 3.901-2.824 7.823-4.017 11.748-.215.706-.02 1.472.504 1.992l11.995 11.891c.513.508 1.288.703 1.98.495 4-1.194 7.996-2.545 11.97-4.027l1.381 17.923c.097 1.253 1.377 2.122 2.581 1.752 7.562-2.328 24.216-13.247 33.545-37.919 2.953-1.954 5.73-4.064 8.153-6.359 17.668-16.682 18.58-43.82 17.551-58.512-.07-.987 1.029 14.692 0 0zm-3.878 2.008c.413 7.551.219 17.908-2.38 28.202l-26.124-25.897c10.42-2.625 20.888-2.767 28.504-2.305zm-96.722 53.877c3.21-7.053 12.265-18.732 29.892-26.418-2.945 5.084-5.502 10.331-7.777 15.002-2.04 4.172-3.917 8.403-5.638 12.665zm42.549 42.183-1.267-16.452c4.264-1.695 8.496-3.541 12.668-5.545 4.732-2.244 10.045-4.763 15.169-7.669-7.959 17.563-19.588 26.513-26.57 29.666zm37.752-42.448c-7.489 7.094-18.422 12.277-28.076 16.854-8.762 4.212-17.778 7.744-26.816 10.507l-10.293-10.205c2.785-8.95 6.346-17.879 10.592-26.562 4.394-9.022 9.862-20.251 17.01-27.839 5.992-6.295 13.426-10.299 21.11-12.794l29.252 28.998c-2.497 7.687-6.497 15.108-12.779 21.041z"></path><path d="m4.185 122.808c-1.728 0-2.631-2.145-1.437-3.378l27.357-28.26c1.788-1.841 4.666.918 2.874 2.77l-27.357 28.259c-.392.405-.914.609-1.437.609z"></path><path d="m23.435 124c-1.688 0-2.609-2.063-1.493-3.318l17.73-19.91c1.71-1.913 4.7.723 2.987 2.648l-17.73 19.91c-.394.444-.943.67-1.494.67z"></path><path d="m2.982 104.917c-1.688 0-2.609-2.063-1.493-3.318l17.731-19.91c1.709-1.914 4.7.724 2.987 2.648l-17.731 19.91c-.395.444-.943.67-1.494.67z"></path></svg>
-                                                                                                                </i>
-                                                                                                                <div>
-                                                                                                                <p class="p-0">Marketing Business campaign</p>
-                                                                                                                <h2>Search Listing</h2>
-                                                                                                                </div>
-                                                                                                                </div>
-                                                                                                                <div class="group-img">
-                                                                                                                <svg width="18" height="18" viewbox="0 0 18 18" fill="none" xmlns="http://www.w3.org/2000/svg">
-                                                                                                                <path d="M15.364 11.636C14.3837 10.6558 13.217 9.93013 11.9439 9.49085C13.3074 8.55179 14.2031 6.9802 14.2031 5.20312C14.2031 2.33413 11.869 0 9 0C6.131 0 3.79688 2.33413 3.79688 5.20312C3.79688 6.9802 4.69262 8.55179 6.05609 9.49085C4.78308 9.93013 3.61631 10.6558 2.63605 11.636C0.936176 13.3359 0 15.596 0 18H1.40625C1.40625 13.8128 4.81279 10.4062 9 10.4062C13.1872 10.4062 16.5938 13.8128 16.5938 18H18C18 15.596 17.0638 13.3359 15.364 11.636ZM9 9C6.90641 9 5.20312 7.29675 5.20312 5.20312C5.20312 3.1095 6.90641 1.40625 9 1.40625C11.0936 1.40625 12.7969 3.1095 12.7969 5.20312C12.7969 7.29675 11.0936 9 9 9Z" fill="#555555"></path>
-                                                                                                                </svg>
-                                                                                                                <input type="text" name="name" placeholder="I am looking for..." required="">
-                                                                                                                </div>
-                                                                                                                <div class="group-img">
-                                                                                                                <svg width="22" height="18" viewbox="0 0 22 18" fill="none" xmlns="http://www.w3.org/2000/svg">
-                                                                                                                <path d="M15.8649 18H6.13513C2.58377 18 0.540527 15.9568 0.540527 12.4054V5.5946C0.540527 2.04324 2.58377 0 6.13513 0H15.8649C19.4162 0 21.4595 2.04324 21.4595 5.5946V12.4054C21.4595 15.9568 19.4162 18 15.8649 18ZM6.13513 1.45946C3.35242 1.45946 1.99999 2.81189 1.99999 5.5946V12.4054C1.99999 15.1881 3.35242 16.5406 6.13513 16.5406H15.8649C18.6476 16.5406 20 15.1881 20 12.4054V5.5946C20 2.81189 18.6476 1.45946 15.8649 1.45946H6.13513Z" fill="#444444"></path>
-                                                                                                                <path d="M10.9988 9.8465C10.1815 9.8465 9.35452 9.59352 8.72208 9.07785L5.67668 6.64539C5.36532 6.39241 5.30696 5.93511 5.55992 5.62376C5.8129 5.31241 6.2702 5.25403 6.58155 5.50701L9.62695 7.93947C10.3664 8.53298 11.6215 8.53298 12.361 7.93947L15.4064 5.50701C15.7178 5.25403 16.1848 5.30268 16.428 5.62376C16.681 5.93511 16.6324 6.40214 16.3113 6.64539L13.2659 9.07785C12.6432 9.59352 11.8161 9.8465 10.9988 9.8465Z" fill="#444444"></path>
-                                                                                                                </svg>
-                                                                                                                <input type="text" name="email" placeholder="Email Address" required="">
-                                                                                                                </div>
-                                                                                                                <div class="group-img">
-                                                                                                                <svg fill="none" height="112" viewbox="0 0 24 24" width="112" xmlns="http://www.w3.org/2000/svg"><g clip-rule="evenodd" fill="rgb(0,0,0)" fill-rule="evenodd"><path d="m7 2.75c-.41421 0-.75.33579-.75.75v17c0 .4142.33579.75.75.75h10c.4142 0 .75-.3358.75-.75v-17c0-.41421-.3358-.75-.75-.75zm-2.25.75c0-1.24264 1.00736-2.25 2.25-2.25h10c1.2426 0 2.25 1.00736 2.25 2.25v17c0 1.2426-1.0074 2.25-2.25 2.25h-10c-1.24264 0-2.25-1.0074-2.25-2.25z"></path><path d="m10.25 5c0-.41421.3358-.75.75-.75h2c.4142 0 .75.33579.75.75s-.3358.75-.75.75h-2c-.4142 0-.75-.33579-.75-.75z"></path><path d="m9.25 19c0-.4142.33579-.75.75-.75h4c.4142 0 .75.3358.75.75s-.3358.75-.75.75h-4c-.41421 0-.75-.3358-.75-.75z"></path></g></svg>
-                                                                                                                <input type="text" name="mobile" placeholder="Mobile Number" required="">
-                                                                                                                <input type="hidden" name="form_type" value="banner">               
-                                                                                                                 </div>
-                                                                                                                <div class="group-img">
-                                                                                                                <img src="{{ asset('site_assets') }}/img/dropdown.svg"/>
-                                                                                                                <select id="#" class="minimal" name="course">
-                                                                                                                <option value="Websites">Websites</option>
+                                                                                                                      <div class="mb-lg-3 mb-3 d-flex align-items-center">
+                                                                                                                      <i>
+                                                                                                                      <svg enable-background="new 0 0 124 124" height="52" viewbox="0 0 124 124" width="52" xmlns="http://www.w3.org/2000/svg"><path d="m82.899 50.646c-6.059 0-10.988-4.918-10.988-10.963s4.929-10.963 10.988-10.963 10.988 4.918 10.988 10.963-4.929 10.963-10.988 10.963zm0-17.979c-3.877 0-7.031 3.147-7.031 7.015s3.154 7.015 7.031 7.015 7.031-3.147 7.031-7.015-3.154-7.015-7.031-7.015z"></path><path d="m122.558 2.183c-.069-.986-.853-1.773-1.841-1.848-14.728-1.125-41.975-.347-58.941 17.482-.002.002-.005.004-.007.007-2.3 2.441-4.418 5.209-6.382 8.136-24.65 8.882-35.589 25.07-38.168 33.298-.376 1.202.496 2.487 1.756 2.582l17.94 1.359c-1.478 3.901-2.824 7.823-4.017 11.748-.215.706-.02 1.472.504 1.992l11.995 11.891c.513.508 1.288.703 1.98.495 4-1.194 7.996-2.545 11.97-4.027l1.381 17.923c.097 1.253 1.377 2.122 2.581 1.752 7.562-2.328 24.216-13.247 33.545-37.919 2.953-1.954 5.73-4.064 8.153-6.359 17.668-16.682 18.58-43.82 17.551-58.512-.07-.987 1.029 14.692 0 0zm-3.878 2.008c.413 7.551.219 17.908-2.38 28.202l-26.124-25.897c10.42-2.625 20.888-2.767 28.504-2.305zm-96.722 53.877c3.21-7.053 12.265-18.732 29.892-26.418-2.945 5.084-5.502 10.331-7.777 15.002-2.04 4.172-3.917 8.403-5.638 12.665zm42.549 42.183-1.267-16.452c4.264-1.695 8.496-3.541 12.668-5.545 4.732-2.244 10.045-4.763 15.169-7.669-7.959 17.563-19.588 26.513-26.57 29.666zm37.752-42.448c-7.489 7.094-18.422 12.277-28.076 16.854-8.762 4.212-17.778 7.744-26.816 10.507l-10.293-10.205c2.785-8.95 6.346-17.879 10.592-26.562 4.394-9.022 9.862-20.251 17.01-27.839 5.992-6.295 13.426-10.299 21.11-12.794l29.252 28.998c-2.497 7.687-6.497 15.108-12.779 21.041z"></path><path d="m4.185 122.808c-1.728 0-2.631-2.145-1.437-3.378l27.357-28.26c1.788-1.841 4.666.918 2.874 2.77l-27.357 28.259c-.392.405-.914.609-1.437.609z"></path><path d="m23.435 124c-1.688 0-2.609-2.063-1.493-3.318l17.73-19.91c1.71-1.913 4.7.723 2.987 2.648l-17.73 19.91c-.394.444-.943.67-1.494.67z"></path><path d="m2.982 104.917c-1.688 0-2.609-2.063-1.493-3.318l17.731-19.91c1.709-1.914 4.7.724 2.987 2.648l-17.731 19.91c-.395.444-.943.67-1.494.67z"></path></svg>
+                                                                                                                      </i>
+                                                                                                                      <div>
+                                                                                                                      <p class="p-0">Marketing Business campaign</p>
+                                                                                                                      <h2>Search Listing</h2>
+                                                                                                                      </div>
+                                                                                                                      </div>
+                                                                                                                      <div class="group-img">
+                                                                                                                      <svg width="18" height="18" viewbox="0 0 18 18" fill="none" xmlns="http://www.w3.org/2000/svg">
+                                                                                                                      <path d="M15.364 11.636C14.3837 10.6558 13.217 9.93013 11.9439 9.49085C13.3074 8.55179 14.2031 6.9802 14.2031 5.20312C14.2031 2.33413 11.869 0 9 0C6.131 0 3.79688 2.33413 3.79688 5.20312C3.79688 6.9802 4.69262 8.55179 6.05609 9.49085C4.78308 9.93013 3.61631 10.6558 2.63605 11.636C0.936176 13.3359 0 15.596 0 18H1.40625C1.40625 13.8128 4.81279 10.4062 9 10.4062C13.1872 10.4062 16.5938 13.8128 16.5938 18H18C18 15.596 17.0638 13.3359 15.364 11.636ZM9 9C6.90641 9 5.20312 7.29675 5.20312 5.20312C5.20312 3.1095 6.90641 1.40625 9 1.40625C11.0936 1.40625 12.7969 3.1095 12.7969 5.20312C12.7969 7.29675 11.0936 9 9 9Z" fill="#555555"></path>
+                                                                                                                      </svg>
+                                                                                                                      <input type="text" name="name" placeholder="I am looking for..." required="">
+                                                                                                                      </div>
+                                                                                                                      <div class="group-img">
+                                                                                                                      <svg width="22" height="18" viewbox="0 0 22 18" fill="none" xmlns="http://www.w3.org/2000/svg">
+                                                                                                                      <path d="M15.8649 18H6.13513C2.58377 18 0.540527 15.9568 0.540527 12.4054V5.5946C0.540527 2.04324 2.58377 0 6.13513 0H15.8649C19.4162 0 21.4595 2.04324 21.4595 5.5946V12.4054C21.4595 15.9568 19.4162 18 15.8649 18ZM6.13513 1.45946C3.35242 1.45946 1.99999 2.81189 1.99999 5.5946V12.4054C1.99999 15.1881 3.35242 16.5406 6.13513 16.5406H15.8649C18.6476 16.5406 20 15.1881 20 12.4054V5.5946C20 2.81189 18.6476 1.45946 15.8649 1.45946H6.13513Z" fill="#444444"></path>
+                                                                                                                      <path d="M10.9988 9.8465C10.1815 9.8465 9.35452 9.59352 8.72208 9.07785L5.67668 6.64539C5.36532 6.39241 5.30696 5.93511 5.55992 5.62376C5.8129 5.31241 6.2702 5.25403 6.58155 5.50701L9.62695 7.93947C10.3664 8.53298 11.6215 8.53298 12.361 7.93947L15.4064 5.50701C15.7178 5.25403 16.1848 5.30268 16.428 5.62376C16.681 5.93511 16.6324 6.40214 16.3113 6.64539L13.2659 9.07785C12.6432 9.59352 11.8161 9.8465 10.9988 9.8465Z" fill="#444444"></path>
+                                                                                                                      </svg>
+                                                                                                                      <input type="text" name="email" placeholder="Email Address" required="">
+                                                                                                                      </div>
+                                                                                                                      <div class="group-img">
+                                                                                                                      <svg fill="none" height="112" viewbox="0 0 24 24" width="112" xmlns="http://www.w3.org/2000/svg"><g clip-rule="evenodd" fill="rgb(0,0,0)" fill-rule="evenodd"><path d="m7 2.75c-.41421 0-.75.33579-.75.75v17c0 .4142.33579.75.75.75h10c.4142 0 .75-.3358.75-.75v-17c0-.41421-.3358-.75-.75-.75zm-2.25.75c0-1.24264 1.00736-2.25 2.25-2.25h10c1.2426 0 2.25 1.00736 2.25 2.25v17c0 1.2426-1.0074 2.25-2.25 2.25h-10c-1.24264 0-2.25-1.0074-2.25-2.25z"></path><path d="m10.25 5c0-.41421.3358-.75.75-.75h2c.4142 0 .75.33579.75.75s-.3358.75-.75.75h-2c-.4142 0-.75-.33579-.75-.75z"></path><path d="m9.25 19c0-.4142.33579-.75.75-.75h4c.4142 0 .75.3358.75.75s-.3358.75-.75.75h-4c-.41421 0-.75-.3358-.75-.75z"></path></g></svg>
+                                                                                                                      <input type="text" name="mobile" placeholder="Mobile Number" required="">
+                                                                                                                      <input type="hidden" name="form_type" value="banner">               
+                                                                                                                       </div>
+                                                                                                                      <div class="group-img">
+                                                                                                                      <img src="{{ asset('site_assets') }}/img/dropdown.svg"/>
+                                                                                                                      <select id="#" class="minimal" name="course">
+                                                                                                                      <option value="Websites">Websites</option>
 
-                                                                                                                <option value="Theme And Scripts">Theme And Scripts</option>
-                                                                                                                <option value="Twitter Account">Twitter Account</option>
-                                                                                                                <option value="Instagram Pages">Instagram Pages</option>
-                                                                                                                <option value="Facebook Account">Facebook Account</option>
+                                                                                                                      <option value="Theme And Scripts">Theme And Scripts</option>
+                                                                                                                      <option value="Twitter Account">Twitter Account</option>
+                                                                                                                      <option value="Instagram Pages">Instagram Pages</option>
+                                                                                                                      <option value="Facebook Account">Facebook Account</option>
 
-                                                                                                                <option value="Facebook Account">Telegram Account</option>
-                                                                                                                 <option value="Facebook Account">Youtube Channel</option>
-                                                                                                                </select>
-                                                                                                                </div>
+                                                                                                                      <option value="Facebook Account">Telegram Account</option>
+                                                                                                                       <option value="Facebook Account">Youtube Channel</option>
+                                                                                                                      </select>
+                                                                                                                      </div>
 
-                                                                                                                <button type="submit" name="submit" class="btn batton" style="background-color: #0062ef; width: 100%; text-align: center;display: flex;justify-content: center;">Submit</button>
-                                                                                                                </form>
-                                                                                                                <div class="row mobile-v">
-                                                                                                                <div class="col-6">
-                                                                                                                <div class="btn-wh">
-                                                                                                                <div class="bttn w">
-                                                                                                                <a href="https://wa.me/+918809772278" target="_blank">
-                                                                                                                <img src="{{ asset('site_assets') }}/img/wb.png"></a>
-                                                                                                                </div>
-                                                                                                                </div>
-                                                                                                                </div>
-                                                                                                                <div class="col-6">
-                                                                                                                <div class="btn-wh ">
-                                                                                                                <div class="bttn ">
-                                                                                                                <a href="tel:+918809772278">
+                                                                                                                      <button type="submit" name="submit" class="btn batton" style="background-color: #0062ef; width: 100%; text-align: center;display: flex;justify-content: center;">Submit</button>
+                                                                                                                      </form>
+                                                                                                                      <div class="row mobile-v">
+                                                                                                                      <div class="col-6">
+                                                                                                                      <div class="btn-wh">
+                                                                                                                      <div class="bttn w">
+                                                                                                                      <a href="https://wa.me/+918809772278" target="_blank">
+                                                                                                                      <img src="{{ asset('site_assets') }}/img/wb.png"></a>
+                                                                                                                      </div>
+                                                                                                                      </div>
+                                                                                                                      </div>
+                                                                                                                      <div class="col-6">
+                                                                                                                      <div class="btn-wh ">
+                                                                                                                      <div class="bttn ">
+                                                                                                                      <a href="tel:+918809772278">
 
-                                                                                                                <img src="./{{ asset('site_assets') }}/img/cb.png">
-                                                                                                               </a>
+                                                                                                                      <img src="./{{ asset('site_assets') }}/img/cb.png">
+                                                                                                                     </a>
 
-                                                                                                                </div>
-                                                                                                                </div>
-                                                                                                                </div>
-                                                                                                                </div> -->
+                                                                                                                      </div>
+                                                                                                                      </div>
+                                                                                                                      </div>
+                                                                                                                      </div> -->
           <div class="right-form-card">
             <h3>Search Listings</h3>
 
             <form action="{{ route('listing-list') }}" method="GET" id="searchForm">
 
               <!-- Search Input -->
-              <div class="form-group icon-input">
+              <div class="form-group icon-input flippingonew-inner-search">
                 <i class="fas fa-search"></i>
-                <input type="text" placeholder="I'm looking for..." name="search" id="searchInput" />
+                <input type="text" placeholder="I'm looking for..." id="flippingonewInnerSearchInput" autocomplete="off"
+                  name="search" />
               </div>
+
+
+
 
               <!-- Country Dropdown -->
               <div class="form-group country-dropdown">
@@ -3039,12 +3273,12 @@
     </div>
   </section>
   <!-- end hero-wrapper -->
- 
+
 
 
   <section class="cat-area section--padding">
     <div class="container">
-      <div class="text-center mb-4">
+      <div class="text-start mb-4">
         <h2 class="sec__title mb-3">Explore Top Digital Assets</h2>
         <p class="sec__desc">
           Discover the most in-demand categories, from social accounts to apps, blogs, and more. Find trusted sellers and
@@ -3052,22 +3286,50 @@
         </p>
       </div>
 
-      <!-- Blade -->
-      <div class="social-media-slider" id="categories-list">
-        @foreach($categories->where('is_popular', 1)->take(7) as $category)
-          <a href="{{ route('listing-list', ['category' => $category->slug]) }}" class="social-media-icon-section"
-            style="text-decoration:none; color:inherit;">
-            <div class="s-image-card">
-              @if($category->image)
-                <img src="{{ asset('storage/' . $category->image) }}" alt="{{ $category->name }} Icon" />
-              @else
-                <img src="{{ asset('images/default-category.png') }}" alt="Default Icon" />
-              @endif
-            </div>
-            <h3>{{ $category->name }}</h3>
-            <p>{{ $categorySubmissionCounts[$category->id] ?? 0 }} Listings</p>
-          </a>
-        @endforeach
+
+      <!--<div class="social-media-slider" id="categories-list">-->
+      <!--  @foreach($categories->where('is_popular', 1)->take(7) as $category)-->
+      <!--    <a href="{{ route('listing-list', ['category' => $category->slug]) }}" class="social-media-icon-section"-->
+      <!--      style="text-decoration:none; color:inherit;">-->
+      <!--      <div class="s-image-card">-->
+      <!--        @if($category->image)-->
+      <!--          <img src="{{ asset('storage/' . $category->image) }}" alt="{{ $category->name }} Icon" />-->
+      <!--        @else-->
+      <!--          <img src="{{ asset('images/default-category.png') }}" alt="Default Icon" />-->
+      <!--        @endif-->
+      <!--      </div>-->
+      <!--      <h3>{{ $category->name }}</h3>-->
+      <!--      <p>{{ $categorySubmissionCounts[$category->id] ?? 0 }} Listings</p>-->
+      <!--    </a>-->
+      <!--  @endforeach-->
+      <!--</div>-->
+
+      <div class="flippingonew-slider-wrapper">
+        <button class="flippingonew-slider-btn prev">&#10094;</button>
+
+        <div class="flippingonew-slider-track">
+          @foreach($categories->where('is_popular', 1)->take(10) as $category)
+            <a href="{{ route('listing-list', ['category' => $category->slug]) }}" class="flippingonew-slider-card">
+              <span class="flippingonew-listing-badge">
+                {{ $categorySubmissionCounts[$category->id] ?? 0 }} Listings
+              </span>
+
+              <div class="flippingonew-slider-image">
+                @if($category->image)
+                  <img src="{{ asset('storage/' . $category->image) }}" alt="{{ $category->name }}">
+                @else
+                  <img src="{{ asset('images/default-category.png') }}" alt="Default">
+                @endif
+              </div>
+
+              <h3 class="flippingonew-slider-title">
+                {{ $category->name }}
+              </h3>
+            </a>
+          @endforeach
+        </div>
+
+        <button class="flippingonew-slider-btn next">&#10095;</button>
       </div>
 
 
@@ -3094,30 +3356,30 @@
     const btnAll = document.getElementById('view-all-btn');
     const btnPopular = document.getElementById('view-popular-btn');
 
-  const listingRouteTemplate = "{{ route('listing-list') }}?category=:slug";
+    const listingRouteTemplate = "{{ route('listing-list') }}?category=:slug";
 
-function renderCategories(categories) {
-  container.innerHTML = '';
-  categories.forEach(category => {
-    const div = document.createElement('div');
-    div.classList.add('social-media-icon-section');
-    const imgSrc = category.image ? `/storage/${category.image}` : '/images/default-category.png';
+    function renderCategories(categories) {
+      container.innerHTML = '';
+      categories.forEach(category => {
+        const div = document.createElement('div');
+        div.classList.add('social-media-icon-section');
+        const imgSrc = category.image ? `/storage/${category.image}` : '/images/default-category.png';
 
-    // Replace :slug with actual slug encoded for safety
-    const url = listingRouteTemplate.replace(':slug', encodeURIComponent(category.slug));
+        // Replace :slug with actual slug encoded for safety
+        const url = listingRouteTemplate.replace(':slug', encodeURIComponent(category.slug));
 
-    div.innerHTML = `
-      <a href="${url}" style="text-decoration:none; color:inherit;">
-        <div class="s-image-card">
-          <img src="${imgSrc}" alt="${category.name} Icon" />
-        </div>
-        <h3>${category.name}</h3>
-        <p>${categorySubmissionCounts[category.id] ?? 0} Listings</p>
-      </a>
-    `;
-    container.appendChild(div);
-  });
-}
+        div.innerHTML = `
+            <a href="${url}" style="text-decoration:none; color:inherit;">
+              <div class="s-image-card">
+                <img src="${imgSrc}" alt="${category.name} Icon" />
+              </div>
+              <h3>${category.name}</h3>
+              <p>${categorySubmissionCounts[category.id] ?? 0} Listings</p>
+            </a>
+          `;
+        container.appendChild(div);
+      });
+    }
 
 
 
@@ -3140,12 +3402,12 @@ function renderCategories(categories) {
 
   <!-- end cat-area -->
   <!-- ================================
-                                                                                                              END CAT AREA
-                                                                                                              ================================= -->
+                                                                                                                    END CAT AREA
+                                                                                                                    ================================= -->
 
   <!-- ================================
-                                                                                                              START HIW AREA
-                                                                                                              ================================= -->
+                                                                                                                    START HIW AREA
+                                                                                                                    ================================= -->
   <!--<section class="hiw-area bg-gray section--padding">-->
   <!--  <div class="container">-->
   <!--    <div class="">-->
@@ -3155,18 +3417,18 @@ function renderCategories(categories) {
   <!--        Compare options, connect with sellers, and purchase securely—all in one place.-->
   <!--      </p>-->
   <!--    </div>-->
-      <!-- end section-heading -->
+  <!-- end section-heading -->
   <!--    <div class="row mt-5">-->
-        <!-- Card 1 -->
+  <!-- Card 1 -->
   <!--      <div class="col-lg-3 col-md-6">-->
   <!--        <div class="flip-card">-->
   <!--          <div class="flip-card-inner">-->
-              <!-- Front -->
+  <!-- Front -->
   <!--            <div class="flip-card-front">-->
   <!--              <img src="{{ asset('assets') }}/images/deal.png" width="74px" />-->
   <!--              <h4 class="mt-3">Apply For Sponsorship</h4>-->
   <!--            </div>-->
-              <!-- Back -->
+  <!-- Back -->
   <!--            <div class="flip-card-back">-->
   <!--              <p>-->
   <!--                If you want to get sponsorship from us kindly read our requirements first,-->
@@ -3178,16 +3440,16 @@ function renderCategories(categories) {
   <!--        </div>-->
   <!--      </div>-->
 
-        <!-- Card 2 -->
+  <!-- Card 2 -->
   <!--      <div class="col-lg-3 col-md-6">-->
   <!--        <div class="flip-card">-->
   <!--          <div class="flip-card-inner">-->
-              <!-- Front -->
+  <!-- Front -->
   <!--            <div class="flip-card-front">-->
   <!--              <img src="{{ asset('assets') }}/images/approved.png" width="74px" />-->
   <!--              <h4 class="mt-3">Wait For Approval</h4>-->
   <!--            </div>-->
-              <!-- Back -->
+  <!-- Back -->
   <!--            <div class="flip-card-back">-->
   <!--              <p>-->
   <!--                After applying for sponsorship for your page or channel, please wait for our approval.-->
@@ -3199,16 +3461,16 @@ function renderCategories(categories) {
   <!--        </div>-->
   <!--      </div>-->
 
-        <!-- Card 3 -->
+  <!-- Card 3 -->
   <!--      <div class="col-lg-3 col-md-6">-->
   <!--        <div class="flip-card">-->
   <!--          <div class="flip-card-inner">-->
-              <!-- Front -->
+  <!-- Front -->
   <!--            <div class="flip-card-front">-->
   <!--              <img src="{{ asset('assets') }}/images/brand.png" width="74px" />-->
   <!--              <h4 class="mt-3">Start Promoting Brand</h4>-->
   <!--            </div>-->
-              <!-- Back -->
+  <!-- Back -->
   <!--            <div class="flip-card-back">-->
   <!--              <p>-->
   <!--                Start promoting brand logo, links, tools, & services. Earn money by promoting the brand’s-->
@@ -3220,16 +3482,16 @@ function renderCategories(categories) {
   <!--        </div>-->
   <!--      </div>-->
 
-        <!-- Card 4 -->
+  <!-- Card 4 -->
   <!--      <div class="col-lg-3 col-md-6">-->
   <!--        <div class="flip-card">-->
   <!--          <div class="flip-card-inner">-->
-              <!-- Front -->
+  <!-- Front -->
   <!--            <div class="flip-card-front">-->
   <!--              <img src="{{ asset('assets') }}/images/banking.png" width="74px" />-->
   <!--              <h4 class="mt-3">Get Paid For Promotion</h4>-->
   <!--            </div>-->
-              <!-- Back -->
+  <!-- Back -->
   <!--            <div class="flip-card-back">-->
   <!--              <p>-->
   <!--                Get paid for promotion. We provide instant, daily, and weekly payments-->
@@ -3241,129 +3503,101 @@ function renderCategories(categories) {
   <!--        </div>-->
   <!--      </div>-->
   <!--    </div>-->
-      <!-- end row -->
+  <!-- end row -->
   <!--  </div>-->
-    <!-- end container -->
+  <!-- end container -->
   <!--</section>-->
   <section class="flippingo-hiw-section">
     <div class="flippingo-hiw-container">
-        
-        <!-- FULL SLIDER (Content + Image) -->
-        <div x-data="flippingoHiwSlider()" class="flippingo-hiw-full-slider">
-            
-            <!-- Slides -->
-            <div class="flippingo-hiw-full-slides" :style="{ transform: `translateX(-${current * 100}%)` }">
-                
-              @php
-    $slides = [
-        [
-            'title' => 'How to Start Selling Business on Flippingo Marketplace',
-            'desc' => 'Sell your business, website, app, or social account on Flippingo with ease. ',
-            'desc1' => 'Sell your business, website, app, or social account on Flippingo with ease. ',
-            'desc2' => 'Sell your business, website, app, or social account on Flippingo with ease. ',
-            'desc3' => 'Sell your business, website, app, or social account on Flippingo with ease. ',
-            'highlight' => 'Get verified → List → Sell → Get Paid.',
-            'btn1' => ['text' => 'Start selling', 'icon' => 'fas fa-plus'],
-            'btn2' => ['text' => 'View listings', 'icon' => 'fas fa-eye'],
-            'img' => 'https://images.unsplash.com/photo-1460925895917-afdab827c52f?w=800&h=600&fit=crop'
-        ],
-        [
-            'title' => 'Buy Your Next Digital Asset',
-            'desc' => 'Discover thousands of verified businesses, websites, apps, and social accounts ',
-            'highlight' => 'Compare options, connect with sellers, and purchase securely.',
-            'btn1' => ['text' => 'Browse Now', 'icon' => 'fas fa-search'],
-            'btn2' => ['text' => 'Learn More', 'icon' => 'fas fa-info-circle'],
-            'img' => 'https://images.unsplash.com/photo-1552664730-d307ca884978?w=800&h=600&fit=crop'
-        ],
-        [
-            'title' => 'Monetize Your Digital Assets',
-            'desc' => 'Turn your website, mobile app, or social media account into real cash. ',
-            'highlight' => 'List in minutes → Get offers → Sell fast.',
-            'btn1' => ['text' => 'List Asset', 'icon' => 'fas fa-plus-circle'],
-            'btn2' => ['text' => 'See Examples', 'icon' => 'fas fa-images'],
-            'img' => 'https://images.unsplash.com/photo-1516321310766-90ab77e47b3a?w=800&h=600&fit=crop'
-        ]
-    ];
-@endphp
 
-                @foreach($slides as $index => $slide)
-                <div class="flippingo-hiw-full-slide">
-                    <!-- Left: Content -->
-                    <div class="flippingo-hiw-content">
-                        <h2>{{ $slide['title'] }} </h2>
-                        <p><span>{{ $slide['highlight'] }}</span>
-                           
-                            
-                        </p>
-                        <p><i class="fa-solid fa-circle-check" style="color:blue;"></i>
-                            {{ $slide['desc'] }}
-                            
-                        </p>
-                        <p><i class="fa-solid fa-circle-check" style="color:blue;"></i>
-                            {{ $slide['desc'] }}
-                            
-                        </p>
-                        
+      <!-- FULL SLIDER (Content + Image) -->
+      <div x-data="flippingoHiwSlider()" class="flippingo-hiw-full-slider">
 
-                       
+        <!-- Slides -->
+        <div class="flippingo-hiw-full-slides" :style="{ transform: `translateX(-${current * 100}%)` }">
 
-                        <div class="flippingo-hiw-btn-group">
-                            <a href="#" class="flippingo-hiw-btn flippingo-hiw-btn-primary">
-                                
-                                {{ $slide['btn1']['text'] }} <i class="fa-solid fa-arrow-right"></i>
-                            </a>
-                            <a href="#" class="flippingo-hiw-btn flippingo-hiw-btn-secondary">
-                                <i class="{{ $slide['btn2']['icon'] }}"></i>
-                                {{ $slide['btn2']['text'] }} <i class="fa-solid fa-arrow-right"></i>
-                            </a>
-                        </div>
-                    </div>
+          @foreach($homeSlides as $index => $slide)
+            <div class="flippingo-hiw-full-slide">
 
-                    <!-- Right: Image -->
-                    <div class="flippingo-hiw-image">
-                        <img src="{{ $slide['img'] }}" alt="Slide {{ $index + 1 }}">
-                    </div>
-                </div>
+              <!-- Left: Content -->
+              <div class="flippingo-hiw-content">
+
+                <h2>{{ $slide->title }}</h2>
+
+                <p>
+                  <span>{{ $slide->highlight }}</span>
+                </p>
+
+                {{-- FEATURES (same UI as desc1, desc2, desc3) --}}
+                @foreach($slide->features ?? [] as $feature)
+                  <p>
+                    <i class="fa-solid fa-circle-check" style="color:blue;"></i>
+                    {{ $feature }}
+                  </p>
                 @endforeach
-            </div>
 
-            <!-- Arrows -->
-            <div class="flippingo-hiw-arrow flippingo-hiw-arrow-left" @click="prev()">
-                <i class="fas fa-chevron-left"></i>
-            </div>
-            <div class="flippingo-hiw-arrow flippingo-hiw-arrow-right" @click="next()">
-                <i class="fas fa-chevron-right"></i>
-            </div>
+                <div class="flippingo-hiw-btn-group">
 
-            <!-- Dots -->
-            <div class="flippingo-hiw-dots">
-                <template x-for="(slide, index) in 3" :key="index">
-                    <div class="flippingo-hiw-dot" 
-                         :class="{ 'active': current === index }"
-                         @click="current = index"></div>
-                </template>
+                  <a href="{{ $slide->btn1_link ?? '#' }}" class="flippingo-hiw-btn flippingo-hiw-btn-primary">
+                    {{ $slide->btn1_text }}
+                    <i class="fa-solid fa-arrow-right"></i>
+                  </a>
+
+                  <a href="{{ $slide->btn2_link ?? '#' }}" class="flippingo-hiw-btn flippingo-hiw-btn-secondary">
+                    <i class="{{ $slide->btn2_icon }}"></i>
+                    {{ $slide->btn2_text }}
+                    <i class="fa-solid fa-arrow-right"></i>
+                  </a>
+
+                </div>
+              </div>
+
+              <!-- Right: Image -->
+              <div class="flippingo-hiw-image">
+                <img src="{{ asset('storage/' . $slide->media_path) }}" alt="Slide {{ $index + 1 }}">
+              </div>
+
             </div>
+          @endforeach
+
         </div>
-    </div>
-</section>
 
-<!-- SLIDER JS -->
+        <!-- Arrows -->
+        <div class="flippingo-hiw-arrow flippingo-hiw-arrow-left" @click="prev()">
+          <i class="fas fa-chevron-left"></i>
+        </div>
+        <div class="flippingo-hiw-arrow flippingo-hiw-arrow-right" @click="next()">
+          <i class="fas fa-chevron-right"></i>
+        </div>
+
+        <!-- Dots (count dynamic, UI same) -->
+        <div class="flippingo-hiw-dots">
+          <template x-for="(slide, index) in {{ $homeSlides->count() }}" :key="index">
+            <div class="flippingo-hiw-dot" :class="{ 'active': current === index }" @click="current = index"></div>
+          </template>
+        </div>
+
+      </div>
+    </div>
+  </section>
+
+  <!-- SLIDER JS -->
 
 
   <!-- end hiw-area -->
   <!-- ================================
-                                                                                                              END HIW AREA
-                                                                                                              ================================= -->
+                                                                                                                    END HIW AREA
+                                                                                                                    ================================= -->
 
   <!-- ================================
-                                                                                                              START CARD AREA
-                                                                                                              ================================= -->
+                                                                                                                    START CARD AREA
+                                                                                                                    ================================= -->
 
   <section class="card-area section-padding">
     <div class="container">
       <div class="">
-        <h2 class="sec__title mb-3 text-center">Most Searched Businesses & Digital Products Availale for Sale</h2>
-        <p class="sec__desc text-center">
+        <h2 class="sec__title mb-3 text-start">Most Searched Businesses & Digital Products Availale for Sale</h2>
+        <p class="sec__desc text-start">
           View current listings of businesses and digital products from verified sellers. Start exploring, and Choose what
           fits your goals and begin your journey today.
         </p>
@@ -3597,7 +3831,7 @@ function renderCategories(categories) {
                   @endif
                   <div class="wishlist-budge">
                     <div class="d-flex justify-content-between align-items-center">
-                     @if(in_array($submission['id'], $soldSubmissionIds))
+                      @if(in_array($submission['id'], $soldSubmissionIds))
                         {{-- SOLD OUT badge --}}
                         <div class="budge-soldout">
                           <p><i class="fa-solid fa-ban"></i> Sold Out</p>
@@ -3759,8 +3993,8 @@ function renderCategories(categories) {
 
   <!-- end card-area -->
   <!-- ================================
-                                                                                                              END CARD AREA
-                                                                                                              ================================= -->
+                                                                                                                    END CARD AREA
+                                                                                                                    ================================= -->
   <section class="hiw-area text-center" style="padding: 80px 0; background: #f9fafc;">
     <div class="container">
       <h2 class="sec__title mb-3">How It Works</h2>
@@ -3810,8 +4044,8 @@ function renderCategories(categories) {
   </section>
 
   <!-- ================================
-                                                                                                              START FUN-FACT AREA
-                                                                                                              ================================= -->
+                                                                                                                    START FUN-FACT AREA
+                                                                                                                    ================================= -->
   <section class="prt-row home03-fid-section bg-base-grey clearfix">
     <div class="container">
       <div class="row">
@@ -3909,12 +4143,12 @@ function renderCategories(categories) {
   </section>
   <!-- end funfact-area -->
   <!-- ================================
-                                                                                                              END FUN-FACT AREA
-                                                                                                              ================================= -->
+                                                                                                                    END FUN-FACT AREA
+                                                                                                                    ================================= -->
 
   <!-- ================================
-                                                                                                              START HIW AREA
-                                                                                                              ================================= -->
+                                                                                                                    START HIW AREA
+                                                                                                                    ================================= -->
   <section class="hiw-area section--padding text-center">
     <div class="container">
       <!-- Heading -->
@@ -3978,12 +4212,12 @@ function renderCategories(categories) {
 
   <!-- end hiw-area -->
   <!-- ================================
-                                                                                                              END HIW AREA
-                                                                                                              ================================= -->
+                                                                                                                    END HIW AREA
+                                                                                                                    ================================= -->
 
   <!-- ================================
-                                                                                                              START CTA AREA
-                                                                                                              ================================= -->
+                                                                                                                    START CTA AREA
+                                                                                                                    ================================= -->
   <section class="cta-area bg-gray padding-top-80px padding-bottom-80px position-relative">
     <img src="{{ asset('assets') }}/images/symble1.png" alt="" class="symble-img" />
     <img src="{{ asset('assets') }}/images/symble2.png" alt="" class="symble-img" />
@@ -4008,12 +4242,12 @@ function renderCategories(categories) {
   </section>
   <!-- end cta-area -->
   <!-- ================================
-                                                                                                              END CTA AREA
-                                                                                                              ================================= -->
+                                                                                                                    END CTA AREA
+                                                                                                                    ================================= -->
 
   <!-- ================================
-                                                                                                                 START TESTIMONIAL AREA
-                                                                                                              ================================= -->
+                                                                                                                       START TESTIMONIAL AREA
+                                                                                                                    ================================= -->
   <section class="hiw-area section--padding text-center" style="background-color: #fff; padding-bottom: 0px;">
     <div class="container">
       <h2 class="sec__title mb-3">Testimonial</h2>
@@ -4072,8 +4306,8 @@ function renderCategories(categories) {
 
 
   <!-- ================================
-                                                                                                                 START TESTIMONIAL AREA
-                                                                                                              ================================= -->
+                                                                                                                       START TESTIMONIAL AREA
+                                                                                                                    ================================= -->
 
   <section class="mobile-area section-padding bg-gray position-relative mt-5">
     <img src="{{ asset('assets') }}/images/symble1.png" alt="" class="symble-img" />
@@ -4142,8 +4376,8 @@ function renderCategories(categories) {
   </section>
 
   <!-- ================================
-                                                                                                                 START BLOG AREA
-                                                                                                              ================================= -->
+                                                                                                                       START BLOG AREA
+                                                                                                                    ================================= -->
   <section class="blog-area section--padding">
     <div class="container">
       <div class="d-flex flex-wrap align-items-center justify-content-between">
@@ -4195,30 +4429,30 @@ function renderCategories(categories) {
 
   <!-- end blog-area -->
   <!-- ================================
-                                                                                                                 START BLOG AREA
-                                                                                                              ================================= -->
+                                                                                                                       START BLOG AREA
+                                                                                                                    ================================= -->
 
   <!-- ================================
-                                                                                                              START MOBILE AREA
-                                                                                                              ================================= -->
+                                                                                                                    START MOBILE AREA
+                                                                                                                    ================================= -->
 
   <!-- end mobile-area -->
   <!-- ================================
-                                                                                                              END MOBILE AREA
-                                                                                                              ================================= -->
+                                                                                                                    END MOBILE AREA
+                                                                                                                    ================================= -->
 
   <!-- ================================
-                                                                                                                 START CLIENTLOGO AREA
-                                                                                                              ================================= -->
+                                                                                                                       START CLIENTLOGO AREA
+                                                                                                                    ================================= -->
 
   <!-- end clientlogo-area -->
   <!-- ================================
-                                                                                                                 START CLIENTLOGO AREA
-                                                                                                              ================================= -->
+                                                                                                                       START CLIENTLOGO AREA
+                                                                                                                    ================================= -->
 
   <!-- ================================
-                                                                                                              START SUBSCRIBER AREA
-                                                                                                              ================================= -->
+                                                                                                                    START SUBSCRIBER AREA
+                                                                                                                    ================================= -->
   <section class="subscriber-area mb-n5 position-relative z-index-2">
     <div class="container">
       <div class="subscriber-box d-flex flex-wrap align-items-center justify-content-between bg-dark overflow-hidden">
@@ -4245,8 +4479,8 @@ function renderCategories(categories) {
   </section>
   <!-- end subscriber-area -->
   <!-- ================================
-                                                                                                              END SUBSCRIBER AREA
-                                                                                                              ================================= -->
+                                                                                                                    END SUBSCRIBER AREA
+                                                                                                                    ================================= -->
 
 
   <script>
@@ -4312,6 +4546,95 @@ function renderCategories(categories) {
       }
     });
   </script>
+
+  <script>
+    document.addEventListener("DOMContentLoaded", function () {
+      const input = document.getElementById("flippingonewInnerSearchInput");
+      if (!input) return;
+
+      let dropdown = null;
+      let timeout = null;
+
+      function resolveStorageImage(path) {
+        if (!path) return null;
+        path = path.replace(/^\/?storage\//, '');
+        return `/storage/${path}`;
+      }
+
+      input.addEventListener("input", function () {
+        const value = this.value.toLowerCase().trim();
+
+        if (dropdown) dropdown.remove();
+        if (!value || value.length < 2) return;
+
+        clearTimeout(timeout);
+
+        timeout = setTimeout(() => {
+          fetch(`/listings/search?q=${encodeURIComponent(value)}`, {
+            headers: {
+              "X-CSRF-TOKEN": document
+                .querySelector('meta[name="csrf-token"]')
+                .getAttribute("content")
+            }
+          })
+            .then(res => res.json())
+            .then(res => {
+              if (!res.data || !res.data.length) return;
+
+              dropdown = document.createElement("div");
+              dropdown.className = "flippingonew-inner-dropdown";
+
+              res.data.slice(0, 5).forEach(item => {
+                const div = document.createElement("div");
+                div.className = "flippingonew-inner-item";
+
+                const imageUrl = resolveStorageImage(item.image);
+
+                const imageHtml = imageUrl
+                  ? `<img src="${imageUrl}"
+                           style="width:32px;height:32px;border-radius:6px;object-fit:cover;">`
+                  : `<div class="flippingonew-inner-icon"
+                           style="background:${item.type === "category" ? "#6f42c1" : "#0d6efd"}">
+                          ${item.type === "category" ? "📂" : "📄"}
+                       </div>`;
+
+                div.innerHTML = `
+                    ${imageHtml}
+                    <div class="flippingonew-inner-title">
+                      ${item.title || 'Listing'}
+                    </div>
+                  `;
+
+                div.onclick = (e) => {
+                  e.stopPropagation();   // ✅ IMPORTANT
+
+                  input.value = item.title || '';
+
+                  if (dropdown) {
+                    dropdown.remove();
+                    dropdown = null;
+                  }
+
+                  // OPTIONAL auto-submit
+                  // document.getElementById("searchForm").submit();
+                };
+                dropdown.appendChild(div);
+              });
+
+              input.parentElement.appendChild(dropdown);
+            });
+        }, 300);
+      });
+
+      document.addEventListener("click", function (e) {
+        if (!input.contains(e.target) && dropdown) {
+          dropdown.remove();
+          dropdown = null;
+        }
+      });
+    });
+  </script>
+
   <script>
     document.querySelectorAll('.tab-btn').forEach(btn => {
       btn.addEventListener('click', () => {
@@ -4352,6 +4675,7 @@ function renderCategories(categories) {
       goToSlide(currentSlide);
     }, 3000);
   </script>
+
   <script>
     document.querySelectorAll('.p-card-item').forEach(card => {
       const platform = card.getAttribute('data-platform');
@@ -4375,8 +4699,6 @@ function renderCategories(categories) {
       card.style.setProperty('--border-color', color);
     });
   </script>
-
-
 
   <script>
     const swiper = new Swiper(".reviewSwiper", {
@@ -4536,10 +4858,10 @@ function renderCategories(categories) {
             let reelHtml = '';
             if (reel.reel_type === "upload" && reel.video_file) {
               reelHtml = `
-                                                                              <video controls loop muted autoplay playsinline>
-                                                                                <source src="/storage/${reel.video_file}" type="video/mp4">
-                                                                                Your browser does not support video.
-                                                                              </video>`;
+                                                                                    <video controls loop muted autoplay playsinline>
+                                                                                      <source src="/storage/${reel.video_file}" type="video/mp4">
+                                                                                      Your browser does not support video.
+                                                                                    </video>`;
             } else if (reel.reel_type === "youtube" && reel.youtube_url) {
               // Ensure YouTube embed URL with autoplay, mute & loop
               let ytUrl = reel.youtube_url;
@@ -4548,28 +4870,28 @@ function renderCategories(categories) {
                 ytUrl = `https://www.youtube.com/embed/${videoId}?autoplay=1&mute=1&loop=1&playlist=${videoId}`;
               }
               reelHtml = `
-                                                                              <div class="video ratio ratio-16x9">
-                                                                                <iframe src="${ytUrl}" frameborder="0"
-                                                                                  allow="autoplay; encrypted-media" allowfullscreen></iframe>
-                                                                              </div>`;
+                                                                                    <div class="video ratio ratio-16x9">
+                                                                                      <iframe src="${ytUrl}" frameborder="0"
+                                                                                        allow="autoplay; encrypted-media" allowfullscreen></iframe>
+                                                                                    </div>`;
             } else if (reel.reel_type === "facebook" && reel.facebook_url) {
               // Facebook embed with autoplay & loop
               let fbUrl = `https://www.facebook.com/plugins/video.php?href=${encodeURIComponent(reel.facebook_url)}&autoplay=1&mute=1&loop=1&show_text=false`;
               reelHtml = `
-                                                                              <div class="video ratio ratio-16x9">
-                                                                                <iframe src="${fbUrl}" frameborder="0"
-                                                                                  allow="autoplay; clipboard-write; encrypted-media; picture-in-picture"
-                                                                                  allowfullscreen></iframe>
-                                                                              </div>`;
+                                                                                    <div class="video ratio ratio-16x9">
+                                                                                      <iframe src="${fbUrl}" frameborder="0"
+                                                                                        allow="autoplay; clipboard-write; encrypted-media; picture-in-picture"
+                                                                                        allowfullscreen></iframe>
+                                                                                    </div>`;
             } else {
               reelHtml = `<p class="text-muted text-center">Invalid reel</p>`;
             }
 
             container.insertAdjacentHTML("beforeend", `
-                                                                                                <div class="col-md-3 col-sm-6">
-                                                                                                  <div class="reel-card video">${reelHtml}</div>
-                                                                                                </div>
-                                                                                              `);
+                                                                                                      <div class="col-md-3 col-sm-6">
+                                                                                                        <div class="reel-card video">${reelHtml}</div>
+                                                                                                      </div>
+                                                                                                    `);
           });
         })
         .catch(error => {
@@ -4587,37 +4909,57 @@ function renderCategories(categories) {
     }
   </script>
 
-<script>
+  <script>
     function flippingoHiwSlider() {
-        return {
-            current: 0,
-            total: 3,
-            autoplay: null,
+      return {
+        current: 0,
+        total: 3,
+        autoplay: null,
 
-            init() {
-                this.startAutoplay();
-            },
+        init() {
+          this.startAutoplay();
+        },
 
-            next() {
-                this.current = (this.current + 1) % this.total;
-                this.resetAutoplay();
-            },
+        next() {
+          this.current = (this.current + 1) % this.total;
+          this.resetAutoplay();
+        },
 
-            prev() {
-                this.current = (this.current - 1 + this.total) % this.total;
-                this.resetAutoplay();
-            },
+        prev() {
+          this.current = (this.current - 1 + this.total) % this.total;
+          this.resetAutoplay();
+        },
 
-            startAutoplay() {
-                this.autoplay = setInterval(() => this.next(), 5000);
-            },
+        startAutoplay() {
+          this.autoplay = setInterval(() => this.next(), 5000);
+        },
 
-            resetAutoplay() {
-                clearInterval(this.autoplay);
-                this.startAutoplay();
-            }
+        resetAutoplay() {
+          clearInterval(this.autoplay);
+          this.startAutoplay();
         }
+      }
     }
-</script>
+  </script>
+
+  <script>
+    document.addEventListener("DOMContentLoaded", function () {
+      const track = document.querySelector(".flippingonew-slider-track");
+      const next = document.querySelector(".flippingonew-slider-btn.next");
+      const prev = document.querySelector(".flippingonew-slider-btn.prev");
+
+      if (!track) return;
+
+      const scrollAmount = 220;
+
+      next.addEventListener("click", () => {
+        track.scrollBy({ left: scrollAmount, behavior: "smooth" });
+      });
+
+      prev.addEventListener("click", () => {
+        track.scrollBy({ left: -scrollAmount, behavior: "smooth" });
+      });
+    });
+  </script>
 
 @endsection

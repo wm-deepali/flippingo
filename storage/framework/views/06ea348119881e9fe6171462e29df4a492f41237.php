@@ -2508,6 +2508,18 @@
     margin: 0 auto 10px;
   }
 
+  .s-image-card {
+    width: 100%;
+    height: 150px;
+    display: flex;
+    border-radius: 4px;
+    background-color: #fff;
+    padding: 28px !important;
+    justify-content: center;
+    align-items: center;
+    box-shadow: rgba(0, 0, 0, 0.02) 0px 1px 3px 0px, rgba(27, 31, 35, 0.15) 0px 0px 0px 1px;
+  }
+
   .tabs-wrapper {
     display: flex;
     align-items: center;
@@ -2645,6 +2657,198 @@
 
   .review-section {
     height: fit-content;
+  }
+
+  .section--padding {
+    padding-top: 50px !important;
+    padding-bottom: 70px;
+  }
+
+  .section-padding {
+    padding-top: 50px !important;
+    padding-bottom: 50px !important;
+  }
+
+  .flippingonew-inner-search {
+    position: relative;
+    z-index: 9;
+  }
+
+  .flippingonew-inner-dropdown {
+    position: absolute;
+    top: 110%;
+    left: 0;
+    width: 100%;
+    background: #fff;
+    border-radius: 10px;
+    box-shadow: 0 12px 30px rgba(0, 0, 0, 0.15);
+    overflow: hidden;
+  }
+
+  .flippingonew-inner-item {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    padding: 12px 16px;
+    cursor: pointer;
+    transition: 0.25s;
+    border-bottom: 1px solid #f1f1f1;
+  }
+
+  .flippingonew-inner-item:last-child {
+    border-bottom: none;
+  }
+
+  .flippingonew-inner-item:hover {
+    background: #f5f8ff;
+  }
+
+  .flippingonew-inner-icon {
+    width: 36px;
+    height: 36px;
+    border-radius: 8px;
+    color: #fff;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 18px;
+  }
+
+  .flippingonew-inner-title {
+    font-size: 15px;
+    font-weight: 600;
+    color: #333;
+  }
+
+  .social-media-icon-section p {
+    position: relative;
+    top: -208px;
+    left: 5px;
+    font-size: 12px;
+    font-weight: 600;
+    border: 1px solid #80808038;
+    width: fit-content;
+    padding: 0px 10px;
+    border-radius: 4px;
+  }
+
+  .sec__desc {
+    font-size: 16px;
+    color: #555;
+    max-width: 100% !important;
+    margin-left: 0px;
+
+  }
+
+  /* ===== SLIDER WRAPPER ===== */
+  .flippingonew-slider-wrapper {
+    position: relative;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    width: 100%;
+  }
+
+  /* ===== SLIDER TRACK ===== */
+  .flippingonew-slider-track {
+    display: flex;
+    gap: 14px;
+    overflow: hidden;
+    scroll-behavior: smooth;
+    width: 100%;
+  }
+
+  /* ===== CARD ===== */
+  .flippingonew-slider-card {
+    min-width: 135px;
+    background: #ffffff;
+    border-radius: 14px;
+    padding: 14px 10px 16px;
+    text-align: center;
+    position: relative;
+    /*box-shadow: 0 8px 22px rgba(0, 0, 0, 0.08);*/
+    border: 1px solid #8080804a;
+    transition: all 0.25s ease;
+    text-decoration: none;
+    color: inherit;
+  }
+
+  .flippingonew-slider-card:hover {
+    transform: translateY(-4px);
+    box-shadow: 0 14px 30px rgba(0, 0, 0, 0.14);
+  }
+
+  /* ===== LISTING BADGE ===== */
+  .flippingonew-listing-badge {
+    position: absolute;
+    top: 8px;
+    left: 8px;
+    font-size: 11px;
+    background: #eef2ff;
+    color: #1d4ed8;
+    padding: 3px 7px;
+    border-radius: 6px;
+    font-weight: 600;
+    line-height: 1;
+  }
+
+  /* ===== IMAGE ===== */
+  .flippingonew-slider-image {
+    width: 60px;
+    height: 60px;
+    margin: 26px auto 10px;
+    background: #f5f7ff;
+    border-radius: 14px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+  }
+
+  .flippingonew-slider-image img {
+    max-width: 40px;
+    max-height: 40px;
+    object-fit: contain;
+  }
+
+  /* ===== TITLE ===== */
+  .flippingonew-slider-title {
+    font-size: 14px;
+    font-weight: 600;
+    margin: 6px 0 0;
+    line-height: 1.3;
+    color: #111827;
+  }
+
+  /* ===== SLIDER BUTTONS ===== */
+  .flippingonew-slider-btn {
+    background: #ffffff;
+    border: none;
+    width: 36px;
+    height: 36px;
+    border-radius: 50%;
+    box-shadow: 0 6px 18px rgba(0, 0, 0, 0.15);
+    cursor: pointer;
+    font-size: 16px;
+    transition: all 0.2s ease;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+  }
+
+  .flippingonew-slider-btn:hover {
+    background: #2563eb;
+    color: #ffffff;
+  }
+
+  /* ===== MOBILE ===== */
+  @media (max-width: 768px) {
+    .flippingonew-slider-card {
+      min-width: 120px;
+    }
+
+    .flippingonew-slider-btn {
+      display: none;
+    }
   }
 </style>
 
@@ -2990,10 +3194,14 @@
             <form action="<?php echo e(route('listing-list')); ?>" method="GET" id="searchForm">
 
               <!-- Search Input -->
-              <div class="form-group icon-input">
+              <div class="form-group icon-input flippingonew-inner-search">
                 <i class="fas fa-search"></i>
-                <input type="text" placeholder="I'm looking for..." name="search" id="searchInput" />
+                <input type="text" placeholder="I'm looking for..." id="flippingonewInnerSearchInput"
+                  autocomplete="off" name="search"/>
               </div>
+
+
+
 
               <!-- Country Dropdown -->
               <div class="form-group country-dropdown">
@@ -3072,7 +3280,7 @@
 
   <section class="cat-area section--padding">
     <div class="container">
-      <div class="text-center mb-4">
+      <div class="text-start mb-4">
         <h2 class="sec__title mb-3">Explore Top Digital Assets</h2>
         <p class="sec__desc">
           Discover the most in-demand categories, from social accounts to apps, blogs, and more. Find trusted sellers and
@@ -3080,22 +3288,51 @@
         </p>
       </div>
 
-      <!-- Blade -->
-      <div class="social-media-slider" id="categories-list">
-        <?php $__currentLoopData = $categories->where('is_popular', 1)->take(7); $__env->addLoop($__currentLoopData); foreach($__currentLoopData as $category): $__env->incrementLoopIndices(); $loop = $__env->getLastLoop(); ?>
-          <a href="<?php echo e(route('listing-list', ['category' => $category->slug])); ?>" class="social-media-icon-section"
-            style="text-decoration:none; color:inherit;">
-            <div class="s-image-card">
-              <?php if($category->image): ?>
-                <img src="<?php echo e(asset('storage/' . $category->image)); ?>" alt="<?php echo e($category->name); ?> Icon" />
-              <?php else: ?>
-                <img src="<?php echo e(asset('images/default-category.png')); ?>" alt="Default Icon" />
-              <?php endif; ?>
-            </div>
-            <h3><?php echo e($category->name); ?></h3>
-            <p><?php echo e($categorySubmissionCounts[$category->id] ?? 0); ?> Listings</p>
-          </a>
-        <?php endforeach; $__env->popLoop(); $loop = $__env->getLastLoop(); ?>
+
+      <!--<div class="social-media-slider" id="categories-list">-->
+      <!--  <?php $__currentLoopData = $categories->where('is_popular', 1)->take(7); $__env->addLoop($__currentLoopData); foreach($__currentLoopData as $category): $__env->incrementLoopIndices(); $loop = $__env->getLastLoop(); ?>-->
+      <!--    <a href="<?php echo e(route('listing-list', ['category' => $category->slug])); ?>" class="social-media-icon-section"-->
+      <!--      style="text-decoration:none; color:inherit;">-->
+      <!--      <div class="s-image-card">-->
+      <!--        <?php if($category->image): ?>-->
+      <!--          <img src="<?php echo e(asset('storage/' . $category->image)); ?>" alt="<?php echo e($category->name); ?> Icon" />-->
+      <!--        <?php else: ?>-->
+      <!--          <img src="<?php echo e(asset('images/default-category.png')); ?>" alt="Default Icon" />-->
+      <!--        <?php endif; ?>-->
+      <!--      </div>-->
+      <!--      <h3><?php echo e($category->name); ?></h3>-->
+      <!--      <p><?php echo e($categorySubmissionCounts[$category->id] ?? 0); ?> Listings</p>-->
+      <!--    </a>-->
+      <!--  <?php endforeach; $__env->popLoop(); $loop = $__env->getLastLoop(); ?>-->
+      <!--</div>-->
+
+      <div class="flippingonew-slider-wrapper">
+        <button class="flippingonew-slider-btn prev">&#10094;</button>
+
+        <div class="flippingonew-slider-track">
+          <?php $__currentLoopData = $categories->where('is_popular', 1)->take(10); $__env->addLoop($__currentLoopData); foreach($__currentLoopData as $category): $__env->incrementLoopIndices(); $loop = $__env->getLastLoop(); ?>
+            <a href="<?php echo e(route('listing-list', ['category' => $category->slug])); ?>" class="flippingonew-slider-card">
+              <span class="flippingonew-listing-badge">
+                <?php echo e($categorySubmissionCounts[$category->id] ?? 0); ?> Listings
+              </span>
+
+              <div class="flippingonew-slider-image">
+                <?php if($category->image): ?>
+                  <img src="<?php echo e(asset('storage/' . $category->image)); ?>" alt="<?php echo e($category->name); ?>">
+                <?php else: ?>
+                  <img src="<?php echo e(asset('images/default-category.png')); ?>" alt="Default">
+                <?php endif; ?>
+              </div>
+
+              <h3 class="flippingonew-slider-title">
+                <?php echo e($category->name); ?>
+
+              </h3>
+            </a>
+          <?php endforeach; $__env->popLoop(); $loop = $__env->getLastLoop(); ?>
+        </div>
+
+        <button class="flippingonew-slider-btn next">&#10095;</button>
       </div>
 
 
@@ -3365,8 +3602,8 @@
   <section class="card-area section-padding">
     <div class="container">
       <div class="">
-        <h2 class="sec__title mb-3 text-center">Most Searched Businesses & Digital Products Availale for Sale</h2>
-        <p class="sec__desc text-center">
+        <h2 class="sec__title mb-3 text-start">Most Searched Businesses & Digital Products Availale for Sale</h2>
+        <p class="sec__desc text-start">
           View current listings of businesses and digital products from verified sellers. Start exploring, and Choose what
           fits your goals and begin your journey today.
         </p>
@@ -4322,6 +4559,95 @@
       }
     });
   </script>
+
+  <script>
+    document.addEventListener("DOMContentLoaded", function () {
+      const input = document.getElementById("flippingonewInnerSearchInput");
+      if (!input) return;
+
+      let dropdown = null;
+      let timeout = null;
+
+      function resolveStorageImage(path) {
+        if (!path) return null;
+        path = path.replace(/^\/?storage\//, '');
+        return `/storage/${path}`;
+      }
+
+      input.addEventListener("input", function () {
+        const value = this.value.toLowerCase().trim();
+
+        if (dropdown) dropdown.remove();
+        if (!value || value.length < 2) return;
+
+        clearTimeout(timeout);
+
+        timeout = setTimeout(() => {
+          fetch(`/listings/search?q=${encodeURIComponent(value)}`, {
+            headers: {
+              "X-CSRF-TOKEN": document
+                .querySelector('meta[name="csrf-token"]')
+                .getAttribute("content")
+            }
+          })
+            .then(res => res.json())
+            .then(res => {
+              if (!res.data || !res.data.length) return;
+
+              dropdown = document.createElement("div");
+              dropdown.className = "flippingonew-inner-dropdown";
+
+              res.data.slice(0, 5).forEach(item => {
+                const div = document.createElement("div");
+                div.className = "flippingonew-inner-item";
+
+                const imageUrl = resolveStorageImage(item.image);
+
+                const imageHtml = imageUrl
+                  ? `<img src="${imageUrl}"
+                       style="width:32px;height:32px;border-radius:6px;object-fit:cover;">`
+                  : `<div class="flippingonew-inner-icon"
+                       style="background:${item.type === "category" ? "#6f42c1" : "#0d6efd"}">
+                      ${item.type === "category" ? "📂" : "📄"}
+                   </div>`;
+
+                div.innerHTML = `
+                ${imageHtml}
+                <div class="flippingonew-inner-title">
+                  ${item.title || 'Listing'}
+                </div>
+              `;
+
+                div.onclick = (e) => {
+  e.stopPropagation();   // ✅ IMPORTANT
+
+  input.value = item.title || '';
+
+  if (dropdown) {
+    dropdown.remove();
+    dropdown = null;
+  }
+
+  // OPTIONAL auto-submit
+  // document.getElementById("searchForm").submit();
+};
+                dropdown.appendChild(div);
+              });
+
+              input.parentElement.appendChild(dropdown);
+            });
+        }, 300);
+      });
+
+      document.addEventListener("click", function (e) {
+        if (!input.contains(e.target) && dropdown) {
+          dropdown.remove();
+          dropdown = null;
+        }
+      });
+    });
+  </script>
+
   <script>
     document.querySelectorAll('.tab-btn').forEach(btn => {
       btn.addEventListener('click', () => {
@@ -4362,6 +4688,7 @@
       goToSlide(currentSlide);
     }, 3000);
   </script>
+
   <script>
     document.querySelectorAll('.p-card-item').forEach(card => {
       const platform = card.getAttribute('data-platform');
@@ -4385,8 +4712,6 @@
       card.style.setProperty('--border-color', color);
     });
   </script>
-
-
 
   <script>
     const swiper = new Swiper(".reviewSwiper", {
@@ -4628,6 +4953,26 @@
         }
       }
     }
+  </script>
+
+  <script>
+    document.addEventListener("DOMContentLoaded", function () {
+      const track = document.querySelector(".flippingonew-slider-track");
+      const next = document.querySelector(".flippingonew-slider-btn.next");
+      const prev = document.querySelector(".flippingonew-slider-btn.prev");
+
+      if (!track) return;
+
+      const scrollAmount = 220;
+
+      next.addEventListener("click", () => {
+        track.scrollBy({ left: scrollAmount, behavior: "smooth" });
+      });
+
+      prev.addEventListener("click", () => {
+        track.scrollBy({ left: -scrollAmount, behavior: "smooth" });
+      });
+    });
   </script>
 
 <?php $__env->stopSection(); ?>

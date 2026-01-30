@@ -57,59 +57,112 @@
     .dropdown-menu {
       min-width: 150px;
     }
+
     .offcanvas-body {
-  padding: 20px;
-  background: #fff;
-}
+      padding: 20px;
+      background: #fff;
+    }
 
-.menu-buttons {
-  display: flex;
-  flex-direction: column;
-  gap: 10px;
-}
+    .menu-buttons {
+      display: flex;
+      flex-direction: column;
+      gap: 10px;
+    }
 
-.menu-btn {
-  width: 100%;
-  background: #f8f9fa;
-  border: none;
-  padding: 12px 15px;
-  text-align: left;
-  font-size: 16px;
-  font-weight: 600;
-  color: #333;
-  border-radius: 6px;
-  transition: all 0.3s ease;
-}
+    .menu-btn {
+      width: 100%;
+      background: #f8f9fa;
+      border: none;
+      padding: 12px 15px;
+      text-align: left;
+      font-size: 16px;
+      font-weight: 600;
+      color: #333;
+      border-radius: 6px;
+      transition: all 0.3s ease;
+    }
 
-.menu-btn:hover {
-  background: #007bff;
-  color: #fff;
-}
+    .menu-btn:hover {
+      background: #007bff;
+      color: #fff;
+    }
 
-.dropdown-menu-item {
-  display: none;
-  list-style: none;
-  padding-left: 15px;
-  margin-top: 8px;
-}
+    .dropdown-menu-item {
+      display: none;
+      list-style: none;
+      padding-left: 15px;
+      margin-top: 8px;
+    }
 
-.menu-btn.dropdown-toggle:focus + .dropdown-menu-item {
-  display: block;
-}
+    .menu-btn.dropdown-toggle:focus+.dropdown-menu-item {
+      display: block;
+    }
 
-.dropdown-menu-item li a {
-  display: block;
-  padding: 8px 0;
-  color: #555;
-  font-size: 15px;
-  text-decoration: none;
-  transition: color 0.2s;
-}
+    .dropdown-menu-item li a {
+      display: block;
+      padding: 8px 0;
+      color: #555;
+      font-size: 15px;
+      text-decoration: none;
+      transition: color 0.2s;
+    }
 
-.dropdown-menu-item li a:hover {
-  color: #007bff;
-}
+    .dropdown-menu-item li a:hover {
+      color: #007bff;
+    }
 
+    .flippingonew-search-wrapper {
+      position: relative;
+    }
+
+    .flippingonew-dropdown {
+      position: absolute;
+      top: 100%;
+      left: 0;
+      width: 105%;
+      background: #fff;
+      border-radius: 10px;
+      margin-top: 6px;
+      box-shadow: 0 10px 30px rgba(0, 0, 0, 0.12);
+      display: none;
+      z-index: 9999;
+      overflow: hidden;
+    }
+
+    .flippingonew-item {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      padding: 12px 16px;
+      cursor: pointer;
+      border-bottom: 1px solid #f0f0f0;
+      transition: background 0.2s;
+    }
+
+    .flippingonew-item:last-child {
+      border-bottom: none;
+    }
+
+    .flippingonew-item:hover {
+      background: #f7f9fc;
+    }
+
+    .flippingonew-icon {
+      width: 36px;
+      height: 36px;
+      border-radius: 8px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 18px;
+      color: #fff;
+    }
+
+    .flippingonew-title {
+      font-size: 14px;
+      font-weight: 600;
+      color: #222;
+    }
   </style>
 
 </head>
@@ -130,31 +183,31 @@
 ================================= -->
 
   <header class="header-area border-bottom border-bottom-gray desktop-view">
-   
+
     <div class="main-header py-3">
       <div class="container" style="max-width: 1260px;">
         <div class="main-header-action-wrap d-flex justify-content-between">
           <div class="logo">
-            <a href="<?php echo e(Route('home')); ?>"><img src="<?php echo e(asset('assets')); ?>/images/logo.png" alt="logo"
-                 /></a>
+            <a href="<?php echo e(Route('home')); ?>"><img src="<?php echo e(asset('assets')); ?>/images/logo.png" alt="logo" /></a>
           </div>
 
           <div class="d-flex" style="width: 40%; align-items: center;margin-top: 15px;">
-            <div class="col-lg-12 pe-lg-0">
-              <div class="form-group">
+            <div class="col-lg-12 pe-lg-0 flippingonew-search-wrapper">
+              <div class="form-group position-relative">
                 <span class="fal fa-search form-icon"></span>
-               <input
-  class="form-control form--control listing-search-input"
-  type="text"
-  placeholder="What are you looking for?"
-  autocomplete="off"
-  style="width: 105%;height:45px;" />
+
+                <input type="text" class="form-control form--control flippingonew-search-input"
+                  placeholder="Search social platforms..." style="width:105%;height:45px;"
+                  onkeyup="flippingonewSearch(this.value)" />
+
+                <div class="flippingonew-dropdown" id="flippingonewDropdown"></div>
               </div>
             </div>
-            
+
+
 
           </div>
-          
+
 
           <div class="nav-right-content d-flex align-items-center">
 
@@ -167,7 +220,7 @@
                 <a href="#" class="d-flex align-items-center profile-link" id="profileDropdown" data-bs-toggle="dropdown"
                   aria-expanded="false">
                   <img
-                   src="<?php echo e($customer->profile_pic ? asset('storage/' . $customer->profile_pic) : asset('user_assets/images/users/profile-pic.jpg')); ?>"
+                    src="<?php echo e($customer->profile_pic ? asset('storage/' . $customer->profile_pic) : asset('user_assets/images/users/profile-pic.jpg')); ?>"
                     alt="Profile Photo" class="rounded-circle me-2" style="width:43px; height:43px; object-fit:cover;">
                   <span class="profile-name" style="color:#fff;"><?php echo e($customer->first_name ?? 'User'); ?>
 
@@ -290,22 +343,22 @@
     <!-- end off-canvas -->
   </header>
   <div class="mobile-menu">
-       <div class="main-header py-3">
-      <div class="container" >
+    <div class="main-header py-3">
+      <div class="container">
         <div class="main-header-action-wrap d-flex justify-content-between">
-             <div class="side-menu-open ms-2" data-bs-toggle="offcanvas" href="#offcanvasExample" role="button" aria-controls="offcanvasExample">
-              <i class="fal fa-bars"></i>
-            </div>
+          <div class="side-menu-open ms-2" data-bs-toggle="offcanvas" href="#offcanvasExample" role="button"
+            aria-controls="offcanvasExample">
+            <i class="fal fa-bars"></i>
+          </div>
           <div class="logo">
-            <a href="<?php echo e(Route('home')); ?>"><img src="<?php echo e(asset('assets')); ?>/images/logo.png" alt="logo"
-                 /></a>
+            <a href="<?php echo e(Route('home')); ?>"><img src="<?php echo e(asset('assets')); ?>/images/logo.png" alt="logo" /></a>
           </div>
 
-          
-          
+
+
 
           <div class="nav-right-content d-flex align-items-center">
-               <a href="<?php echo e(Route('add-listing')); ?>" class="theme-btn ms-3" style="padding: 8px 35px;">
+            <a href="<?php echo e(Route('add-listing')); ?>" class="theme-btn ms-3" style="padding: 8px 35px;">
               + Sell Now
             </a>
 
@@ -318,7 +371,7 @@
                 <a href="#" class="d-flex align-items-center profile-link" id="profileDropdown" data-bs-toggle="dropdown"
                   aria-expanded="false">
                   <img
-                   src="<?php echo e($customer->profile_pic ? asset('storage/' . $customer->profile_pic) : asset('user_assets/images/users/profile-pic.jpg')); ?>"
+                    src="<?php echo e($customer->profile_pic ? asset('storage/' . $customer->profile_pic) : asset('user_assets/images/users/profile-pic.jpg')); ?>"
                     alt="Profile Photo" class="rounded-circle me-2" style="width:43px; height:43px; object-fit:cover;">
                   <span class="profile-name" style="color:#fff;"><?php echo e($customer->first_name ?? 'User'); ?>
 
@@ -339,10 +392,10 @@
             <?php endif; ?>
 
             <!-- Sell Now Button -->
-           
+
 
             <!-- Side Menu -->
-           
+
           </div>
 
 
@@ -372,94 +425,90 @@
       </div>
       <!-- end container-fluid -->
     </div>
-    
-     <div class="top-header">
-      <div class="top-header-list">
-<div class="d-flex" style="width: 100%; align-items: center;margin-top: 15px;">
-            <div class="col-12">
-              <div class="form-group">
-                <span class="fal fa-search form-icon"></span>
-                <input
-  class="form-control form--control listing-search-input"
-  type="text"
-  placeholder="What are you looking for?"
-  autocomplete="off"
-  style="width: 100%;height:45px;" />
-              </div>
-            </div>
-            
 
+    <div class="top-header">
+      <div class="top-header-list">
+        <div class="d-flex" style="width: 100%; align-items: center;margin-top: 15px;">
+          <div class="col-12">
+            <div class="form-group">
+              <span class="fal fa-search form-icon"></span>
+              <input class="form-control form--control" type="text" placeholder="What are you looking for?"
+                style="width: 100%;height:45px;" />
+            </div>
           </div>
+
+
+        </div>
 
 
       </div>
 
     </div>
-      
+
   </div>
-  
+
   <div class="offcanvas offcanvas-start" tabindex="-1" id="offcanvasExample" aria-labelledby="offcanvasExampleLabel">
-  <div class="offcanvas-header">
-    <h5 class="offcanvas-title" id="offcanvasExampleLabel">Category</h5>
-    <button type="button" class="btn-close text-reset" data-bs-dismiss="offcanvas" aria-label="Close"></button>
-  </div>
-  <div class="offcanvas-body">
-  <nav class="main-menu" style="width: 100%;">
-    <div class="menu-buttons">
-      <button class="menu-btn dropdown-toggle" type="button">
-        Browse 
-      </button>
-      <ul class="dropdown-menu-item">
-        <?php $__currentLoopData = $categories; $__env->addLoop($__currentLoopData); foreach($__currentLoopData as $category): $__env->incrementLoopIndices(); $loop = $__env->getLastLoop(); ?>
-          <li>
-            <a href="<?php echo e(route('listing-list', ['category' => $category->slug])); ?>">
-              <?php echo e($category->name); ?>
-
-            </a>
-          </li>
-        <?php endforeach; $__env->popLoop(); $loop = $__env->getLastLoop(); ?>
-      </ul>
-
-      <button class="menu-btn" onclick="location.href='<?php echo e(Route('meet-our-team')); ?>'">
-        Meet Our Team
-      </button>
-
-      <button class="menu-btn">
-        Insight
-      </button>
-
-      <button class="menu-btn">
-        Buyers Mandate
-      </button>
-
-      <button class="menu-btn">
-        Why Flippingo
-      </button>
-
-      <button class="menu-btn" onclick="location.href='<?php echo e(Route('blogs')); ?>'">
-        Blogs
-      </button>
-
-      <button class="menu-btn">
-        Sell Digitally
-      </button>
-
-      <button class="menu-btn">
-        Services
-      </button>
-
-      <button class="menu-btn">
-        Resources
-      </button>
-
-      <button class="menu-btn" onclick="location.href='<?php echo e(Route('contact-us')); ?>'">
-        Contact Us
-      </button>
+    <div class="offcanvas-header">
+      <h5 class="offcanvas-title" id="offcanvasExampleLabel">Category</h5>
+      <button type="button" class="btn-close text-reset" data-bs-dismiss="offcanvas" aria-label="Close"></button>
     </div>
-  </nav>
-</div>
+    <div class="offcanvas-body">
+      <nav class="main-menu" style="width: 100%;">
+        <div class="menu-buttons">
+          <button class="menu-btn dropdown-toggle" type="button">
+            Browse
+          </button>
+          <ul class="dropdown-menu-item">
+            <?php $__currentLoopData = $categories; $__env->addLoop($__currentLoopData); foreach($__currentLoopData as $category): $__env->incrementLoopIndices(); $loop = $__env->getLastLoop(); ?>
+              <li>
+                <a href="<?php echo e(route('listing-list', ['category' => $category->slug])); ?>">
+                  <?php echo e($category->name); ?>
 
-</div>
+                </a>
+              </li>
+            <?php endforeach; $__env->popLoop(); $loop = $__env->getLastLoop(); ?>
+          </ul>
+
+          <button class="menu-btn" onclick="location.href='<?php echo e(Route('meet-our-team')); ?>'">
+            Meet Our Team
+          </button>
+
+          <button class="menu-btn">
+            Insight
+          </button>
+
+          <button class="menu-btn">
+            Buyers Mandate
+          </button>
+
+          <button class="menu-btn">
+            Why Flippingo
+          </button>
+
+          <button class="menu-btn" onclick="location.href='<?php echo e(Route('blogs')); ?>'">
+            Blogs
+          </button>
+
+          <button class="menu-btn">
+            Sell Digitally
+          </button>
+
+          <button class="menu-btn">
+            Services
+          </button>
+
+          <button class="menu-btn">
+            Resources
+          </button>
+
+          <button class="menu-btn" onclick="location.href='<?php echo e(Route('contact-us')); ?>'">
+            Contact Us
+          </button>
+        </div>
+      </nav>
+    </div>
+
+  </div>
 
   <!-- ================================
          END HEADER AREA
@@ -618,7 +667,7 @@
     <i class="far fa-angle-up" title="Go top"></i>
   </div>
   <!-- end back-to-top -->
-   
+
   <!-- Template JS Files -->
   <script src="<?php echo e(asset('assets')); ?>/js/jquery-3.7.1.min.js"></script>
   <script src="<?php echo e(asset('assets')); ?>/js/bootstrap.bundle.min.js"></script>
@@ -632,66 +681,92 @@
   <script src="<?php echo e(asset('assets')); ?>/js/jquery.lazy.min.js"></script>
   <script src="<?php echo e(asset('assets')); ?>/js/main.js"></script>
   <script src="//cdn.jsdelivr.net/npm/sweetalert2@11"></script>
-<script>
-$(document).ready(function () {
+  <script>
+    let searchTimeout = null;
 
-    const $input = $('.listing-search-input');
-    const $list  = $('.search-suggestion-list');
-    let timer    = null;
+    // ✅ storage path normalizer (IMPORTANT)
+    function resolveStorageImage(path) {
+      if (!path) return null;
+      return `/storage/${path.replace(/^\/?storage\//, '')}`;
+    }
 
-    $input.on('keyup', function () {
+    function flippingonewSearch(value) {
+      const dropdown = document.getElementById("flippingonewDropdown");
+      dropdown.innerHTML = "";
 
-        clearTimeout(timer);
-        const q = $(this).val().trim();
+      if (!value.trim() || value.length < 2) {
+        dropdown.style.display = "none";
+        return;
+      }
 
-        timer = setTimeout(() => {
+      clearTimeout(searchTimeout);
 
-            if (q.length < 2) {
-                $list.empty().hide();
-                return;
+      searchTimeout = setTimeout(() => {
+        fetch(`/listings/search?q=${encodeURIComponent(value)}`, {
+          headers: {
+            "X-CSRF-TOKEN": document
+              .querySelector('meta[name="csrf-token"]')
+              .getAttribute("content")
+          }
+        })
+          .then(res => res.json())
+          .then(res => {
+            dropdown.innerHTML = "";
+
+            if (!res.data || !res.data.length) {
+              dropdown.style.display = "none";
+              return;
             }
 
-            $.get("<?php echo e(route('listings.search')); ?>", { q }, function (res) {
+            res.data.forEach(item => {
+              const div = document.createElement("div");
+              div.className = "flippingonew-item";
 
-                $list.empty().show();
+              const imageUrl = resolveStorageImage(item.image);
 
-                // ❌ No results
-                if (res.type === 'not_found') {
-                    $list.append(`
-                        <li class="text-muted">No listings found</li>
-                    `);
-                    return;
-                }
+              const imageHtml = imageUrl
+                ? `<img src="${imageUrl}"
+                     style="width:36px;height:36px;border-radius:8px;object-fit:cover;">`
+                : `<div class="flippingonew-icon"
+                     style="background:${item.type === "category" ? "#6f42c1" : "#0d6efd"}">
+                    ${item.type === "category" ? "📂" : "📄"}
+                 </div>`;
 
-                // ✅ Results
-                res.data.forEach(item => {
-                    let badges = '';
-                    if (item.is_premium) badges += ' ⭐';
-                    if (item.is_verified) badges += ' ✔';
+              div.innerHTML = `
+              ${imageHtml}
+              <div class="flippingonew-title">
+                ${item.title || 'Listing'}
+                <small style="display:block;color:#777;font-size:12px;">
+                  ${item.type === "category" ? "Category" : "Listing"}
+                </small>
+              </div>
+            `;
 
-                    $list.append(`
-                        <li>
-                          <a href="${item.url}">
-                            <strong>${item.title}</strong><br>
-                            <small>${item.seller || ''}${badges}</small>
-                          </a>
-                        </li>
-                    `);
-                });
+              div.onclick = () => {
+                window.location.href = item.url;
+              };
+
+              dropdown.appendChild(div);
             });
 
-        }, 300); // debounce
-    });
+            dropdown.style.display = "block";
+          })
+          .catch(() => {
+            dropdown.style.display = "none";
+          });
+      }, 300); // debounce
+    }
 
-    // Click outside → close
-    $(document).on('click', function (e) {
-        if (!$(e.target).closest('.listing-search-input, .search-suggestion-list').length) {
-            $list.hide();
-        }
+    document.addEventListener("click", function (e) {
+      if (!e.target.closest(".flippingonew-search-wrapper")) {
+        document.getElementById("flippingonewDropdown").style.display = "none";
+      }
     });
+  </script>
 
-});
-</script>
+
+
+
 </body>
 
 <!-- Mirrored from  Flippingo.com/demos/themes/html/Flippingo-demo/Flippingo/index.html by HTTrack Website Copier/3.x [XR&CO'2014], Mon, 26 May 2025 04:17:44 GMT -->

@@ -808,11 +808,11 @@ class ListingController extends Controller
             'chartUniques'
         ));
     }
+
     public function search(Request $request)
     {
         $search = strtolower(trim($request->q));
 
-        // 🔍 If empty or too short
         if (!$search || strlen($search) < 2) {
             return response()->json([
                 'type' => 'empty',
@@ -821,14 +821,19 @@ class ListingController extends Controller
             ]);
         }
 
-        $submissions = FormSubmission::with([
+        /* =========================
+         | SEARCH LISTINGS
+         |========================= */
+        $listings = FormSubmission::with([
             'customer.activeSubscription.package',
-            'files'
+            'files',
+            'form.category'
         ])
             ->where('status', 'published')
             ->get()
             ->filter(function ($submission) use ($search) {
 
+                // ✅ SAME DATA HANDLING
                 $data = is_array($submission->data)
                     ? $submission->data
                     : json_decode($submission->data, true);
@@ -837,58 +842,114 @@ class ListingController extends Controller
                     return false;
                 }
 
+                // ✅ EXACT SAME SEARCH LOGIC YOU PROVIDED
+                $found = false;
+
                 foreach ($data as $field) {
                     if (!isset($field['value'])) {
                         continue;
                     }
 
-                    $value = $field['value'];
+                    $fieldValue = $field['value'];
 
-                    if (is_array($value)) {
-                        $value = implode(' ', array_map('strval', $value));
+                    if (is_array($fieldValue)) {
+                        $fieldValue = implode(' ', array_map('strval', $fieldValue));
                     }
 
-                    if (str_contains(strtolower((string) $value), $search)) {
-                        return true;
+                    if (str_contains(strtolower((string) $fieldValue), $search)) {
+                        $found = true;
+                        break;
                     }
                 }
 
-                return false;
+                return $found;
             })
+            ->take(5)
+            ->map(function ($s) {
+
+                // Prepare data safely
+                $data = is_array($s->data)
+                    ? $s->data
+                    : json_decode($s->data, true);
+
+                // 🔑 Dynamically derive title from form data
+                $title = 'Listing';
+
+                if (is_array($data)) {
+                    foreach ($data as $field) {
+                        if (!is_array($field) || !isset($field['value'])) {
+                            continue;
+                        }
+
+                        $value = $field['value'];
+
+                        if (is_array($value)) {
+                            $value = implode(' ', array_map('strval', $value));
+                        }
+
+                        $value = trim((string) $value);
+
+                        // take first meaningful text as title
+                        if ($value !== '' && strlen($value) > 2) {
+                            $title = $value;
+                            break;
+                        }
+                    }
+                }
+
+                // Image logic (unchanged)
+                $files = collect($s->files);
+                $imageFile = $files->firstWhere('show_on_summary', true)
+                    ?? $files->first()
+                    ?? null;
+
+                return [
+                    'type' => 'listing',
+                    'id' => $s->id,
+                    'title' => $title,
+                    'url' => route('listing-details', ['id' => $s->id]),
+                    'seller' => $s->customer?->name,
+                    'is_verified' => $s->customer?->is_verified_seller ?? false,
+                    'is_premium' => $s->customer?->is_premium_seller ?? false,
+                    'image' => $imageFile?->file_path
+                ];
+            });
+
+        /* =========================
+         | SEARCH CATEGORIES
+         |========================= */
+        $categories = Category::whereRaw('LOWER(name) LIKE ?', ["%{$search}%"])
+            ->take(5)
+            ->get()
+            ->map(fn($c) => [
+                'type' => 'category',
+                'id' => $c->id,
+                'title' => $c->name,
+                'url' => url('/listing-list') . '?category=' . $c->slug,
+                'image' => $c->image ?? null
+            ]);
+
+        /* =========================
+         | MERGE RESULTS
+         |========================= */
+        $results = $categories
+            ->toBase()   // 👈 converts Eloquent\Collection → Support\Collection
+            ->merge($listings)
             ->take(8)
-            ->map(fn($s) => $this->mapListing($s))
             ->values();
 
-        // ❌ No results found
-        if ($submissions->isEmpty()) {
+        if ($results->isEmpty()) {
             return response()->json([
                 'type' => 'not_found',
-                'message' => 'No listings found',
+                'message' => 'No results found',
                 'data' => []
             ]);
         }
 
-        // ✅ Results found
         return response()->json([
             'type' => 'search',
-            'data' => $submissions
+            'data' => $results
         ]);
     }
 
-    private function mapListing($submission)
-    {
-        return [
-            'id' => $submission->id,
-            'title' => $submission->title ?? 'Listing',
-            'url' => route('listing-details', $submission->id),
-            'seller' => $submission->customer?->name,
-            'is_verified' => $submission->customer?->is_verified_seller ?? false,
-            'is_premium' => $submission->customer?->is_premium_seller ?? false,
-            'image' => optional(
-                collect($submission->files)
-                    ->firstWhere('show_on_summary', true)
-                ?? collect($submission->files)->first()
-            )->url,
-        ];
-    }
 }
