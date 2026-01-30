@@ -11,42 +11,73 @@ use App\Models\FormSubmissionStat;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Storage;
+use App\Models\FormSummaryCard;
+use App\Models\ProductOrder;
 
 class ListingController extends Controller
 {
+
     public function index()
     {
         $user = auth('customer')->user();
 
-        $allSubmissions = FormSubmission::with('form.category', 'form.formData', 'customer', 'files')
+        $allSubmissions = FormSubmission::with(
+            'form.category',
+            'customer',
+            'files'
+        )
             ->latest()
             ->get();
 
-        // Map each submission's field values to current form field meta
         $submissions = $allSubmissions->map(function ($submission) {
-            $fields = json_decode($submission->data, true) ?? [];
-            $formFields = collect(data_get($submission, 'form.formData.fields', []));
+
+            // Decode submission data safely
+            $fields = is_array($submission->data)
+                ? $submission->data
+                : json_decode($submission->data, true);
+
+            $fields = is_array($fields) ? $fields : [];
+
+            // ✅ Fetch summary cards (admin-defined)
+            $summaryCards = FormSummaryCard::where('form_id', $submission->form_id)
+                ->orderBy('position')
+                ->get();
+
             $summaryFields = [];
 
-            foreach ($fields as $field_id => $field) {
-                $meta = $formFields->firstWhere('field_id', $field_id);
-                if (($meta && !empty($meta['show_on_summary'])) || (!empty($field['show_on_summary']))) {
-                    $summaryFields[] = [
-                        'field_id' => $field_id,
-                        'label' => $meta['label'] ?? $field['label'] ?? '',
-                        'icon' => $meta['icon'] ?? $field['icon'] ?? '',
-                        'value' => $field['value'] ?? '',
-                    ];
+            foreach ($summaryCards as $card) {
+                $key = $card->field_key;
+
+                if (!isset($fields[$key])) {
+                    continue; // field removed after submission
                 }
+
+                $value = $fields[$key]['value'] ?? null;
+
+                if (is_array($value)) {
+                    $value = implode(', ', array_map('strval', $value));
+                }
+
+                if ($value === null || $value === '') {
+                    continue;
+                }
+
+                $summaryFields[] = [
+                    'field_id' => $key,
+                    'label' => $card->label,
+                    'icon' => $card->icon,
+                    'value' => $value,
+                ];
             }
 
-            // Attach summary fields for use in blade
-            $submission->is_sold = \App\Models\ProductOrder::where('submission_id', $submission->id)->exists();
+            // Attach computed data
             $submission->summaryFields = $summaryFields;
+
+            $submission->is_sold = ProductOrder::where('submission_id', $submission->id)->exists();
+
             return $submission;
         });
 
-        // dd($submissions->toArray());
         // Summary counts
         $summary = [
             'published' => $allSubmissions->where('status', 'published')->count(),
@@ -58,31 +89,45 @@ class ListingController extends Controller
         return view('user.listing.index', compact('submissions', 'summary'));
     }
 
+
     public function apiShow(Request $request)
     {
         $id = $request->get('id');
         $user = auth('customer')->user();
 
-        $submission = FormSubmission::with(['form.category', 'customer.wallet', 'files'])
-            ->findOrFail($id);
+        $submission = FormSubmission::with([
+            'form.category',
+            'customer.wallet',
+            'files'
+        ])->findOrFail($id);
 
+        /* ==============================
+         | VIEW + CLICK TRACKING
+         |==============================*/
         if ($user) {
             $today = now()->toDateString();
 
-            // Lifetime Tracking
+            // Lifetime
             $submission->increment('total_views');
             $submission->increment('total_clicks');
 
-            // Daily Tracking
+            // Daily
             $stat = FormSubmissionStat::firstOrCreate(
-                ['form_submission_id' => $submission->id, 'date' => $today],
-                ['views' => 0, 'clicks' => 0, 'unique_views' => 0]
+                [
+                    'form_submission_id' => $submission->id,
+                    'date' => $today
+                ],
+                [
+                    'views' => 0,
+                    'clicks' => 0,
+                    'unique_views' => 0
+                ]
             );
 
             $stat->increment('views');
             $stat->increment('clicks');
 
-            // Unique views tracking
+            // Unique views
             $ip = $request->ip();
             $hasViewed = \App\Models\FormSubmissionView::where('form_submission_id', $id)
                 ->where('ip_address', $ip)
@@ -91,7 +136,7 @@ class ListingController extends Controller
 
             if (!$hasViewed) {
                 \App\Models\FormSubmissionView::create([
-                    'form_submission_id' => $id,
+                    'form_submission_id' => $submission->id,
                     'customer_id' => $user->id,
                     'ip_address' => $ip,
                     'view_date' => $today,
@@ -102,27 +147,50 @@ class ListingController extends Controller
             }
         }
 
-        // Fetch form layout and fields
+        /* ==============================
+         | FORM DATA
+         |==============================*/
         $formData = \App\Models\FormData::where('form_id', $submission->form_id)->first();
+
         $layout = $formData->field_layout ?? [];
         $fields = $formData->fields ?? [];
 
         $submittedData = json_decode($submission->data, true) ?? [];
-        $formFields = collect($fields);
+
+        /* ==============================
+         | SUMMARY FIELDS (FROM SUMMARY CARDS)
+         |==============================*/
+        $summaryCards = \App\Models\FormSummaryCard::where('form_id', $submission->form_id)
+            ->orderBy('position')
+            ->get();
 
         $summaryFields = [];
-        foreach ($submittedData as $field_id => $field) {
-            $meta = $formFields->firstWhere('field_id', $field_id);
-            if (($meta && !empty($meta['show_on_summary'])) || (!empty($field['show_on_summary']))) {
-                $summaryFields[] = [
-                    'field_id' => $field_id,
-                    'label' => $meta['label'] ?? $field['label'] ?? '',
-                    'icon' => $meta['icon'] ?? $field['icon'] ?? '',
-                    'value' => $field['value'] ?? '',
-                ];
+
+        foreach ($summaryCards as $card) {
+
+            $fieldKey = $card->field_key;
+
+            if (!isset($submittedData[$fieldKey]['value'])) {
+                continue; // field removed or not submitted
             }
+
+            $value = $submittedData[$fieldKey]['value'];
+
+            if (is_array($value)) {
+                $value = implode(' ', array_map('strval', $value));
+            }
+
+            $summaryFields[] = [
+                'field_id' => $fieldKey,
+                'label' => $card->label,
+                'icon' => $card->icon,
+                'value' => $value,
+            ];
         }
 
+        /* ==============================
+         | WALLET + WISHLIST
+         |==============================*/
         $walletBalance = optional($submission->customer->wallet)->balance ?? 0;
 
         $isInWishlist = false;
@@ -132,7 +200,9 @@ class ListingController extends Controller
                 ->exists();
         }
 
-        // ✅ Fetch other submissions by same seller
+        /* ==============================
+         | OTHER SUBMISSIONS (SAME SELLER)
+         |==============================*/
         $otherSubmissions = FormSubmission::with('files')
             ->where('customer_id', $submission->customer_id)
             ->where('id', '!=', $submission->id)
@@ -140,12 +210,16 @@ class ListingController extends Controller
             ->take(6)
             ->get();
 
-        // ✅ Preload sold submission IDs in one go (no per-item queries)
+        /* ==============================
+         | SOLD STATUS
+         |==============================*/
         $soldSubmissionIds = \App\Models\ProductOrder::pluck('submission_id')->toArray();
 
+        $isSold = in_array($submission->id, $soldSubmissionIds);
 
-        $isSold = \App\Models\ProductOrder::where('submission_id', $submission->id)->exists();
-
+        /* ==============================
+         | RETURN VIEW
+         |==============================*/
         return view('front.listing-details', compact(
             'submission',
             'layout',
@@ -158,7 +232,6 @@ class ListingController extends Controller
             'soldSubmissionIds'
         ));
     }
-
 
 
     public function sendEnquiry(Request $request)
@@ -631,39 +704,69 @@ class ListingController extends Controller
         $user = auth('customer')->user();
 
         // Get wishlist items with related submission + form + files + customer
-        $wishlist = Wishlist::with('submission.form.category', 'submission.form.formData', 'submission.customer', 'submission.files')
+        $wishlist = Wishlist::with(
+            'submission.form.category',
+            'submission.customer',
+            'submission.files'
+        )
             ->where('customer_id', $user->id)
             ->latest()
             ->paginate(20);
 
-        // 🔹 Map summary fields and image for each submission in wishlist
         foreach ($wishlist as $item) {
             $submission = $item->submission;
 
-            if ($submission) {
-                $fields = json_decode($submission->data, true) ?? [];
-                $formFields = collect(data_get($submission, 'form.formData.fields', []));
-                $summaryFields = [];
+            if (!$submission) {
+                continue;
+            }
 
-                foreach ($fields as $field_id => $field) {
-                    $meta = $formFields->firstWhere('field_id', $field_id);
-                    if (($meta && !empty($meta['show_on_summary'])) || (!empty($field['show_on_summary']))) {
-                        $summaryFields[] = [
-                            'field_id' => $field_id,
-                            'label' => $meta['label'] ?? $field['label'] ?? '',
-                            'icon' => $meta['icon'] ?? $field['icon'] ?? '',
-                            'value' => $field['value'] ?? '',
-                        ];
-                    }
+            // Decode submission data safely
+            $fields = is_array($submission->data)
+                ? $submission->data
+                : json_decode($submission->data, true);
+
+            $fields = is_array($fields) ? $fields : [];
+
+            // ✅ Fetch admin-defined summary cards
+            $summaryCards = FormSummaryCard::where('form_id', $submission->form_id)
+                ->orderBy('position')
+                ->get();
+
+            $summaryFields = [];
+
+            foreach ($summaryCards as $card) {
+                $key = $card->field_key;
+
+                if (!isset($fields[$key])) {
+                    continue; // field removed after submission
                 }
 
-                // Attach to model instance for easy use in Blade
-                $submission->summaryFields = $summaryFields;
-                $submission->category = $submission->form->category;
+                $value = $fields[$key]['value'] ?? null;
 
-                $imageFile = collect($submission->files)->firstWhere('show_on_summary', true);
-                $submission->imageFile = $imageFile;
+                if (is_array($value)) {
+                    $value = implode(', ', array_map('strval', $value));
+                }
+
+                if ($value === null || $value === '') {
+                    continue;
+                }
+
+                $summaryFields[] = [
+                    'field_id' => $key,
+                    'label' => $card->label,
+                    'icon' => $card->icon,
+                    'value' => $value,
+                ];
             }
+
+            // Attach for Blade usage
+            $submission->summaryFields = $summaryFields;
+            $submission->category = $submission->form->category;
+
+            // Image handling
+            $submission->imageFile = collect($submission->files)
+                ->firstWhere('show_on_summary', true)
+                ?? $submission->files->first();
         }
 
         return view('user.wishlist', compact('wishlist'));

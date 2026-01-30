@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 use App\Models\Blog;
 use App\Models\FormSubmission;
 use App\Models\Category;
+use App\Models\FormSummaryCard;
 use App\Models\Testimonial;
 use App\Models\HomeSlide;
 use App\Models\ProductOrder;
@@ -12,62 +13,104 @@ use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\DB;
 use App\Services\GoogleReviewsService;
 use App\Services\TrustpilotService;
+use App\Models\HomePageContent;
 
 
 class SiteController extends Controller
 {
+
     public function index(GoogleReviewsService $googleReviews, TrustpilotService $trustpilot)
     {
         $categories = Category::where('status', 'active')->get();
 
         $submissionsByCategory = [];
         $allSubmissionsFlat = [];
-        $now = now();
         $categorySubmissionCounts = [];
+        $now = now();
+
+        // 🔑 Preload all summary cards (performance safe)
+        $formSummaryCards = FormSummaryCard::orderBy('position')->get()->groupBy('form_id');
 
         foreach ($categories as $category) {
-            // Get all sponsored submissions per category 
-            $sponsoredSubmissions = FormSubmission::whereHas('form', function ($query) use ($category) {
+
+            // Fetch submissions for category
+            $submissions = FormSubmission::whereHas('form', function ($query) use ($category) {
                 $query->where('category_id', $category->id);
             })
-                // ->whereNotNull('sponsor_display_until')
-                // ->where('sponsor_display_until', '>', $now)
-                ->with('form.category', 'form.formData', 'customer', 'files')
+                ->with(['form.category', 'form.formData', 'customer', 'files'])
                 ->where('status', 'published')
                 ->latest()
                 ->get();
 
-            if ($sponsoredSubmissions->isNotEmpty()) {  // Only proceed if submissions exist
-                $categorySubmissionCounts[$category->id] = $sponsoredSubmissions->count();
+            if ($submissions->isEmpty()) {
+                continue;
+            }
 
-                // Process each submission to build summary fields etc.
-                $processedSubmissions = $sponsoredSubmissions->map(function ($submission) {
-                    $fields = json_decode($submission->data, true) ?? [];
-                    $formFields = collect(data_get($submission, 'form.formData.fields', []));
-                    $summaryFields = [];
+            $categorySubmissionCounts[$category->id] = $submissions->count();
 
-                    foreach ($fields as $field_id => $field) {
-                        $meta = $formFields->firstWhere('field_id', $field_id);
-                        if (($meta && !empty($meta['show_on_summary'])) || (!empty($field['show_on_summary']))) {
-                            $summaryFields[] = [
-                                'field_id' => $field_id,
-                                'label' => $meta['label'] ?? $field['label'] ?? '',
-                                'icon' => $meta['icon'] ?? $field['icon'] ?? '',
-                                'value' => $field['value'] ?? '',
-                            ];
-                        }
+            $processedSubmissions = $submissions->map(function ($submission) use ($formSummaryCards) {
+
+                // Decode submission data safely
+                $fields = is_array($submission->data)
+                    ? $submission->data
+                    : json_decode($submission->data, true);
+
+                $fields = is_array($fields) ? $fields : [];
+
+                // 🔑 Get summary cards for this form
+                $summaryCards = $formSummaryCards[$submission->form_id] ?? collect();
+
+                $summaryFields = [];
+
+                foreach ($summaryCards as $card) {
+                    $key = $card->field_key;
+
+                    if (!isset($fields[$key]['value'])) {
+                        continue;
                     }
 
-                    $submission->summaryFields = $summaryFields;
-                    $submission->category = $submission->form->category;
-                    $files = collect($submission->files);
+                    $value = $fields[$key]['value'];
 
-                    $submission->imageFile = $files->firstWhere('show_on_summary', true)
-                        ?? $files->first()
-                        ?? null;
-                    return $submission;
+                    if (is_array($value)) {
+                        $value = implode(' ', array_map('strval', $value));
+                    }
+
+                    $summaryFields[] = [
+                        'field_id' => $key,
+                        'label' => $card->label,
+                        'icon' => $card->icon,
+                        'value' => $value,
+                    ];
+                }
+
+                // Attach summary fields
+                $submission->summaryFields = $summaryFields;
+                // Attach category
+                $submission->category = $submission->form->category;
+
+                $submission->country_id = $submission->customer->country ?? null;
+
+                // Verified flag
+                $submission->is_verified = (bool) ($submission->customer->is_verified_seller ?? false);
+
+                // Premium flag
+                $submission->is_premium = (bool) ($submission->customer->is_premium_seller ?? false);
+
+                // Resolve image
+                $files = collect($submission->files);
+                // All images (NEW)
+                $submission->allImages = $files->values()->map(function ($file) {
+                    return [
+                        'id' => $file->id,
+                        'file_path' => $file->file_path,
+                        'show_on_summary' => (bool) $file->show_on_summary,
+                    ];
                 });
 
+                return $submission;
+            });
+
+            if ($processedSubmissions->isNotEmpty()) {
                 $submissionsByCategory[$category->id] = $processedSubmissions;
                 $allSubmissionsFlat = array_merge($allSubmissionsFlat, $processedSubmissions->toArray());
             }
@@ -75,36 +118,57 @@ class SiteController extends Controller
 
         $allSubmissions = collect($allSubmissionsFlat);
 
+        // Blogs
         $blogs = Blog::with('category')
             ->where('status', 'published')
-            ->orderBy('created_at', 'desc')
+            ->latest()
             ->take(3)
             ->get();
 
-        $testimonials = Testimonial::where('status', 'active')
-            ->get();
+        // Testimonials
+        $testimonials = Testimonial::where('status', 'active')->get();
 
-        $countries = DB::table('countries')
-            ->orderBy('name')
-            ->get();
+        // Countries
+        $countries = DB::table('countries')->orderBy('name')->get();
 
-        $soldSubmissionIds = ProductOrder::pluck('submission_id')
-            ->toArray();
+        // Sold submissions
+        $soldSubmissionIds = ProductOrder::pluck('submission_id')->toArray();
 
+        // Hero categories
         $heroCategories = Category::where('status', 'active')
             ->where('show_in_hero', 1)
             ->select('id', 'name', 'slug')
             ->get();
 
+        // Home slides
         $homeSlides = HomeSlide::where('is_active', 1)
             ->orderBy('sort_order')
             ->get();
 
+        $homePageContent = HomePageContent::whereIn('section_key', [
+            'hero',
+            'featured',
+            'most_searched',
+        ])->get()->keyBy('section_key');
+        // Reviews (disabled for now)
         // $reviews = $googleReviews->getReviews();
         // $trustpilotReviews = $trustpilot->getReviews();
 
-        return view('front.index', compact('categories', 'submissionsByCategory', 'allSubmissions', 'blogs', 'testimonials', 'categorySubmissionCounts', 'countries', 'soldSubmissionIds', 'heroCategories', 'homeSlides'));
+        return view('front.index', compact(
+            'categories',
+            'submissionsByCategory',
+            'allSubmissions',
+            'blogs',
+            'testimonials',
+            'categorySubmissionCounts',
+            'countries',
+            'soldSubmissionIds',
+            'heroCategories',
+            'homeSlides',
+            'homePageContent'
+        ));
     }
+
 
 
 
@@ -298,22 +362,38 @@ class SiteController extends Controller
                 // Ensure array
                 $fields = is_array($fields) ? $fields : [];
 
-                $formFields = collect(data_get($submission, 'form.formData.fields', []));
+                $summaryCards = FormSummaryCard::where('form_id', $submission->form_id)
+                    ->orderBy('position')
+                    ->get();
+
                 $summaryFields = [];
 
-                foreach ($fields as $field_id => $field) {
-                    $meta = $formFields->firstWhere('field_id', $field_id);
-                    if (($meta && !empty($meta['show_on_summary'])) || (!empty($field['show_on_summary']))) {
-                        $summaryFields[] = [
-                            'field_id' => $field_id,
-                            'label' => $meta['label'] ?? $field['label'] ?? '',
-                            'icon' => $meta['icon'] ?? $field['icon'] ?? '',
-                            'value' => $field['value'] ?? '',
-                        ];
-                    }
-                }
+                foreach ($summaryCards as $card) {
+                    $fieldKey = $card->field_key;
 
+                    if (!isset($fields[$fieldKey])) {
+                        continue; // field removed after submission
+                    }
+
+                    $value = $fields[$fieldKey]['value'] ?? null;
+
+                    if (is_array($value)) {
+                        $value = implode(', ', array_map('strval', $value));
+                    }
+
+                    if ($value === null || $value === '') {
+                        continue;
+                    }
+
+                    $summaryFields[] = [
+                        'field_id' => $fieldKey,
+                        'label' => $card->label,
+                        'icon' => $card->icon,
+                        'value' => $value,
+                    ];
+                }
                 $submission->summaryFields = $summaryFields;
+
                 $submission->category = $submission->form->category;
                 $files = collect($submission->files);
 

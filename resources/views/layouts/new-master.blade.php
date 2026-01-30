@@ -42,6 +42,8 @@
   <!-- Optional: Google Fonts -->
   <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600&display=swap" rel="stylesheet">
   <link href="https://pro.fontawesome.com/releases/v5.15.4/css/all.css" rel="stylesheet">
+  <link href="https://cdn.jsdelivr.net/npm/remixicon/fonts/remixicon.css" rel="stylesheet">
+
 
   <style>
     .profile-link {
@@ -162,6 +164,85 @@
       font-size: 14px;
       font-weight: 600;
       color: #222;
+    }
+
+    /* Hide on Desktop */
+    .mobile-bottom-menu {
+      display: none;
+    }
+
+    #back-to-top.show-back-to-top {
+      right: 30px;
+      opacity: 1;
+      visibility: visible;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+    }
+
+    @media(max-width: 768px) {
+      #back-to-top {
+        bottom: 110px;
+      }
+
+      .mobile-bottom-menu {
+        position: fixed;
+        bottom: 0;
+        left: 0;
+        width: 100%;
+        height: 70px;
+        background: #fff;
+        display: flex;
+        justify-content: space-around;
+        align-items: center;
+        box-shadow: 0 -4px 20px rgba(0, 0, 0, 0.08);
+        z-index: 1000;
+        padding-bottom: env(safe-area-inset-bottom);
+      }
+
+      .mobile-bottom-menu .menu-item {
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        font-size: 12px;
+        text-decoration: none;
+        color: #444;
+      }
+
+      .mobile-bottom-menu i {
+        font-size: 22px;
+        margin-bottom: 2px;
+      }
+
+      /* Center Floating Button */
+      .menu-center {
+        position: relative;
+        top: -25px;
+        text-align: center;
+        color: #444;
+      }
+
+      .center-btn {
+        width: 65px;
+        height: 65px;
+        background: #ffffff;
+        border-radius: 50%;
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        /* box-shadow: 0 5px 20px rgba(75, 73, 232, 0.4); */
+        color: #424141;
+      }
+
+      .center-btn i {
+        font-size: 40px;
+      }
+
+      .pattern-bg {
+        position: relative;
+        z-index: 1;
+        bottom: 75px;
+      }
     }
   </style>
 
@@ -653,6 +734,52 @@
       </div>
     </div>
   </section>
+  @php
+    $customer = Auth::guard('customer')->user();
+    $currentRoute = Route::currentRouteName();
+  @endphp
+
+  <div class="mobile-bottom-menu">
+
+    <a href="{{ route('home') }}" class="menu-item {{ $currentRoute === 'home' ? 'active' : '' }}">
+      <i class="ri-home-4-fill"></i>
+      <span>Home</span>
+    </a>
+
+    <a href="{{ route('listing-list') }}"
+      class="menu-item {{ str_contains($currentRoute, 'listing') ? 'active' : '' }}">
+      <i class="ri-search-line"></i>
+      <span>View Listings</span>
+    </a>
+
+    <a href="{{ route('add-listing') }}" class="menu-center">
+      <div class="center-btn">
+        <i class="ri-add-circle-fill"></i>
+      </div>
+      <span>Sell Now</span>
+    </a>
+
+    <a href="#" class="menu-item {{ $currentRoute === 'services' ? 'active' : '' }}">
+      <i class="ri-briefcase-4-fill"></i>
+      <span>Services</span>
+    </a>
+
+    @if($customer)
+      <a href="{{ route('dashboard.index') }}"
+        class="menu-item {{ str_contains($currentRoute, 'dashboard') ? 'active' : '' }}">
+        <i class="ri-user-3-fill"></i>
+        <span>Profile</span>
+      </a>
+    @else
+      <a href="{{ route('authentication-signin') }}"
+        class="menu-item {{ $currentRoute === 'authentication-signin' ? 'active' : '' }}">
+        <i class="ri-login-circle-line"></i>
+        <span>Login</span>
+      </a>
+    @endif
+
+  </div>
+
 
   <!-- end footer-area -->
   <!-- ================================
@@ -681,7 +808,7 @@
   <script>
     let searchTimeout = null;
 
-    // ✅ storage path normalizer (IMPORTANT)
+    // âœ… storage path normalizer (IMPORTANT)
     function resolveStorageImage(path) {
       if (!path) return null;
       return `/storage/${path.replace(/^\/?storage\//, '')}`;
@@ -726,7 +853,7 @@
                      style="width:36px;height:36px;border-radius:8px;object-fit:cover;">`
                 : `<div class="flippingonew-icon"
                      style="background:${item.type === "category" ? "#6f42c1" : "#0d6efd"}">
-                    ${item.type === "category" ? "📂" : "📄"}
+                    ${item.type === "category" ? "ðŸ“‚" : "ðŸ“„"}
                  </div>`;
 
               div.innerHTML = `

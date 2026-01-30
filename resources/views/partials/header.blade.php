@@ -143,13 +143,13 @@
             <li><a class="dropdown-item d-flex align-items-center"
                 href="{{ route('admin.account_deletion_requests.index') }}"><span>Account Delete Request</span></a>
             </li>
-            
+
             <li>
               <a class="dropdown-item d-flex align-items-center" href="{{ route('admin.wallets.index') }}">
                 <span>Manage User Wallet</span>
               </a>
             </li>
-            
+
             <li>
               <a class="dropdown-item d-flex align-items-center" href="{{ route('admin.withdrawal-requests.index') }}">
                 <span>Withdrawal Request</span>
@@ -160,7 +160,7 @@
                 <span>Seller Payout</span>
               </a>
             </li>
-            
+
 
           </ul>
         </li>
@@ -265,8 +265,8 @@
                 Seller Tickets
               </a>
             </li>
-            
-             <li>
+
+            <li>
               <a class="dropdown-item d-flex align-items-center" href="{{ route('admin.notifications.events') }}">
                 Event-Based Notifications
               </a>
@@ -292,7 +292,12 @@
             <span>CMS</span>
           </a>
           <ul class="dropdown-menu">
-              <li><a class="dropdown-item d-flex align-items-center"
+            <li>
+              <a class="dropdown-item d-flex align-items-center" href="{{ route('admin.home-page-content.index') }}">
+                <span>Home Page Content</span>
+              </a>
+            </li>
+            <li><a class="dropdown-item d-flex align-items-center"
                 href="{{ route('admin.home-slides.index') }}"><span>Home Sliders</span></a>
             </li>
             <li><a class="dropdown-item d-flex align-items-center"
@@ -334,4 +339,3 @@
     </div>
   </div>
 </div>
-

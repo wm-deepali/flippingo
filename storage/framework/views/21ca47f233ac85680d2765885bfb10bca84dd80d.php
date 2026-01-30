@@ -1,8 +1,9 @@
-@extends('layouts.user-master')
 
-@section('title')
-    {{ $page->meta_title ?? 'Products' }}
-@endsection
+
+<?php $__env->startSection('title'); ?>
+    <?php echo e($page->meta_title ?? 'Products'); ?>
+
+<?php $__env->stopSection(); ?>
 
 <style>
     /* ====== Common ====== */
@@ -163,9 +164,9 @@
 </style>
 
 
-@section('content')
+<?php $__env->startSection('content'); ?>
 
-    @include('user.sidebar')
+    <?php echo $__env->make('user.sidebar', \Illuminate\Support\Arr::except(get_defined_vars(), ['__data', '__path']))->render(); ?>
 
     <div class="page-wrapper">
         <div class="listing-and-product">
@@ -180,68 +181,70 @@
             <div class="listing-product has-listing">
                 <!-- Summary Cards -->
                 <div class="summary-cards">
-                    <div class="summary-card">Published <span>{{ $summary['published'] }}</span></div>
-                    <div class="summary-card">Pending Approval <span>{{ $summary['pending'] }}</span></div>
-                    <div class="summary-card">Disapproved <span>{{ $summary['rejected'] }}</span></div>
-                    <div class="summary-card">Expired <span>{{ $summary['expired'] }}</span></div>
+                    <div class="summary-card">Published <span><?php echo e($summary['published']); ?></span></div>
+                    <div class="summary-card">Pending Approval <span><?php echo e($summary['pending']); ?></span></div>
+                    <div class="summary-card">Disapproved <span><?php echo e($summary['rejected']); ?></span></div>
+                    <div class="summary-card">Expired <span><?php echo e($summary['expired']); ?></span></div>
                 </div>
 
 
                 <!-- Listing Cards -->
                 <div class="listing-cards">
-                    @forelse($submissions as $submission)
+                    <?php $__empty_1 = true; $__currentLoopData = $submissions; $__env->addLoop($__currentLoopData); foreach($__currentLoopData as $submission): $__env->incrementLoopIndices(); $loop = $__env->getLastLoop(); $__empty_1 = false; ?>
                         <div class="listing-card">
-                            @php
+                            <?php
                                 $fields = json_decode($submission['data'], true);
                                 $productTitle = $fields['product_title']['value'] ?? 'No Title';
                                 $offeredPrice = ($fields['urgent_sale']['value'] ?? '') === 'Yes'
                                     ? ($fields['offered_price']['value'] ?? '0')
                                     : ($fields['mrp']['value'] ?? '0');
 
-                                $summaryFields = $submission['summaryFields'] ?? [];
-                              @endphp
-                            @if($submission['product_photo'])
-                                <img src="{{ asset('storage/' . $submission['product_photo']) }}" />
-                            @else
-                                <img src="{{'https://www.stockvault.net/data/2012/09/10/135306/thumb16.jpg' }}" alt="Product">
-                            @endif
-                            @if($submission->is_sold)
+                                $summaryFields = $submission['summaryFields'] ?? null;
+                              ?>
+                            <?php if($submission['product_photo']): ?>
+                                <img src="<?php echo e(asset('storage/' . $submission['product_photo'])); ?>" />
+                            <?php else: ?>
+                                <img src="<?php echo e('https://www.stockvault.net/data/2012/09/10/135306/thumb16.jpg'); ?>" alt="Product">
+                            <?php endif; ?>
+                            <?php if($submission->is_sold): ?>
                                 <span class="badge bg-danger position-absolute top-0 start-0 m-2 px-3 py-1 text-white">SOLD
                                     OUT</span>
-                            @endif
+                            <?php endif; ?>
                             <div class="listing-info">
-                                <h3>{{ $submission['product_title']}}</h3>
+                                <h3><?php echo e($submission['product_title']); ?></h3>
                                 <div class="wishlist-item-card">
-                                    @foreach($summaryFields as $field)
+                                    <?php $__currentLoopData = $summaryFields; $__env->addLoop($__currentLoopData); foreach($__currentLoopData as $field): $__env->incrementLoopIndices(); $loop = $__env->getLastLoop(); ?>
                                         <div class="wishlist-left mb-2">
                                             <p class="m-0" style="color: green;">
-                                                <i class="{{ $field['icon'] ?? '' }}"></i>
+                                                <i class="<?php echo e($field['icon'] ?? ''); ?>"></i>
                                             </p>
                                             <div class="d-flex flex-column">
                                                 <p class="m-0" style="font-size: 16px;">
-                                                    {{ $field['label'] }}
+                                                    <?php echo e($field['label']); ?>
+
                                                 </p>
                                                 <h5 class="m-0" style="color: #000; font-size: 16px;">
-                                                    {{ $field['value'] }}
+                                                    <?php echo e($field['value']); ?>
+
                                                 </h5>
                                             </div>
                                         </div>
-                                    @endforeach
+                                    <?php endforeach; $__env->popLoop(); $loop = $__env->getLastLoop(); ?>
 
                                 </div>
 
                                 <div class="listing-actions">
 
-                                    <a href="{{ route('listing.edit', $submission['id']) }}" class="btn edit">Edit</a>
+                                    <a href="<?php echo e(route('listing.edit', $submission['id'])); ?>" class="btn edit">Edit</a>
                                     <a href="#" class="btn analytics">View Analytics</a>
-                                    <a href="{{ route('listing.show', $submission['id']) }}" class="btn details">View Detail</a>
+                                    <a href="<?php echo e(route('listing.show', $submission['id'])); ?>" class="btn details">View Detail</a>
                                     <a href="#" class="btn livechat">Live Chat</a>
-                                    <a href="{{ route('dashboard.enquiries', ['submission_id' => $submission['id']]) }}"
+                                    <a href="<?php echo e(route('dashboard.enquiries', ['submission_id' => $submission['id']])); ?>"
                                         class="btn enquiries">
                                         Show All Enquiries
                                     </a>
                                     <button type="button" class="btn btn-danger delete-listing"
-                                        data-id="{{ $submission['id'] }}">
+                                        data-id="<?php echo e($submission['id']); ?>">
                                         Delete
                                     </button>
                                 </div>
@@ -249,11 +252,11 @@
 
                             </div>
                         </div>
-                    @empty
+                    <?php endforeach; $__env->popLoop(); $loop = $__env->getLastLoop(); if ($__empty_1): ?>
                         <div class="create-listing-frame">
                             <button id="create-listing-btn" class="create-listing-btn">+ Create Listing</button>
                         </div>
-                    @endforelse
+                    <?php endif; ?>
                 </div>
 
                 <!-- Listings Cards -->
@@ -322,13 +325,13 @@
         </div>
 
     </div>
-@endsection
+<?php $__env->stopSection(); ?>
 
-@push('scripts')
+<?php $__env->startPush('scripts'); ?>
     <script>
         // Redirect on clicking "Create Listing"
         document.getElementById("create-listing-btn").addEventListener("click", function () {
-            let url = "{{ route('add-listing', ['from' => 'dashboard']) }}";
+            let url = "<?php echo e(route('add-listing', ['from' => 'dashboard'])); ?>";
             window.location.href = url;
         });
 
@@ -347,14 +350,14 @@
                 cancelButtonText: "Cancel"
             }).then((result) => {
                 if (result.isConfirmed) {
-                    let url = "{{ route('listing.destroy', ':id') }}";
+                    let url = "<?php echo e(route('listing.destroy', ':id')); ?>";
                     url = url.replace(':id', listingId);
 
                     $.ajax({
                         url: url,
                         type: "DELETE",
                         data: {
-                            _token: "{{ csrf_token() }}"
+                            _token: "<?php echo e(csrf_token()); ?>"
                         },
                         success: function (res) {
                             Swal.fire({
@@ -379,4 +382,5 @@
         });
 
     </script>
-@endpush
+<?php $__env->stopPush(); ?>
+<?php echo $__env->make('layouts.user-master', \Illuminate\Support\Arr::except(get_defined_vars(), ['__data', '__path']))->render(); ?><?php /**PATH D:\web-mingo-project\flippingo_admin\resources\views/user/listing/index.blade.php ENDPATH**/ ?>

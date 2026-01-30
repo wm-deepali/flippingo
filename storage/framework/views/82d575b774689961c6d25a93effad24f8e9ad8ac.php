@@ -1,8 +1,9 @@
-@extends('layouts.user-master')
 
-@section('title')
-    {{ $page->meta_title ?? 'Flippingo' }}
-@endsection
+
+<?php $__env->startSection('title'); ?>
+    <?php echo e($page->meta_title ?? 'Flippingo'); ?>
+
+<?php $__env->stopSection(); ?>
 
 <style>
     .wishlist-button p {
@@ -10,8 +11,8 @@
         background: #a19f9f33;
     }
 </style>    
-@section('content')
-    @include('user.sidebar')
+<?php $__env->startSection('content'); ?>
+    <?php echo $__env->make('user.sidebar', \Illuminate\Support\Arr::except(get_defined_vars(), ['__data', '__path']))->render(); ?>
 
     <div class="page-wrapper">
         <div class="second-top-header d-flex justify-content-between">
@@ -48,9 +49,9 @@
                     <!-- Wallet -->
                     <div class="seller-card">
                         <h4 class="seller-card-title">Wallet Balance</h4>
-                        <h2 class="seller-card-number">₹{{ $walletBalance }}</h2>
+                        <h2 class="seller-card-number">₹<?php echo e($walletBalance); ?></h2>
                         <p class="seller-card-desc">Available for purchases</p>
-                        <a href="{{ Route('dashboard.wallet') }}" class="seller-card-footer seller-purple">
+                        <a href="<?php echo e(Route('dashboard.wallet')); ?>" class="seller-card-footer seller-purple">
                             <span>Manage Wallet</span>
                             <i class="fas fa-wallet"></i>
                         </a>
@@ -59,9 +60,9 @@
                     <!-- Active Orders -->
                     <div class="seller-card">
                         <h4 class="seller-card-title">Active Orders</h4>
-                        <h2 class="seller-card-number">{{  $activeOrders  }}</h2>
+                        <h2 class="seller-card-number"><?php echo e($activeOrders); ?></h2>
                         <p class="seller-card-desc">In progress</p>
-                        <a href="{{ Route('dashboard.buyer-orders') }}" class="seller-card-footer seller-blue">
+                        <a href="<?php echo e(Route('dashboard.buyer-orders')); ?>" class="seller-card-footer seller-blue">
                             <span>View Orders</span>
                             <i class="fas fa-box"></i>
                         </a>
@@ -70,9 +71,9 @@
                     <!-- Purchases -->
                     <div class="seller-card">
                         <h4 class="seller-card-title">Completed Purchases</h4>
-                        <h2 class="seller-card-number">{{  $completedPurchases  }}</h2>
+                        <h2 class="seller-card-number"><?php echo e($completedPurchases); ?></h2>
                         <p class="seller-card-desc">Successfully acquired</p>
-                        <a href="{{ Route('dashboard.buyer-orders') }}" class="seller-card-footer seller-green">
+                        <a href="<?php echo e(Route('dashboard.buyer-orders')); ?>" class="seller-card-footer seller-green">
                             <span>View Purchases</span>
                             <i class="fas fa-check-circle"></i>
                         </a>
@@ -81,9 +82,9 @@
                     <!-- Watchlist -->
                     <div class="seller-card">
                         <h4 class="seller-card-title">Watchlist</h4>
-                        <h2 class="seller-card-number">{{ $wishlistCount}}</h2>
+                        <h2 class="seller-card-number"><?php echo e($wishlistCount); ?></h2>
                         <p class="seller-card-desc">Saved items</p>
-                        <a href="{{ Route('dashboard.wishlist') }}" class="seller-card-footer seller-red">
+                        <a href="<?php echo e(Route('dashboard.wishlist')); ?>" class="seller-card-footer seller-red">
                             <span>View Watchlist</span>
                             <i class="fas fa-heart"></i>
                         </a>
@@ -111,50 +112,50 @@
                                     <div class="" style="height:180px">
                                         <div id="visitbylocate" style="height:100%"></div>
                                     </div>
-                                  @foreach($locationEarnings as $loc)
+                                  <?php $__currentLoopData = $locationEarnings; $__env->addLoop($__currentLoopData); foreach($__currentLoopData as $loc): $__env->incrementLoopIndices(); $loop = $__env->getLastLoop(); ?>
                 <div class="row mb-3 align-items-center">
                     <div class="col-4 text-right">
-                        <span class="text-muted font-14">{{ $loc['country'] }}</span>
+                        <span class="text-muted font-14"><?php echo e($loc['country']); ?></span>
                     </div>
                     <div class="col-5">
                         <div class="progress" style="height: 5px;">
                             <div class="progress-bar" role="progressbar"
-                                style="width: {{ $loc['percent'] }}%;
-                                       background-color: {{ match($loop->iteration % 4) {
+                                style="width: <?php echo e($loc['percent']); ?>%;
+                                       background-color: <?php echo e(match($loop->iteration % 4) {
                                            1 => '#5f76e8', 
                                            2 => '#dc3545', 
                                            3 => '#17a2b8', 
                                            default => '#28a745'
-                                       } }};"
-                                aria-valuenow="{{ $loc['percent'] }}" 
+                                       }); ?>;"
+                                aria-valuenow="<?php echo e($loc['percent']); ?>" 
                                 aria-valuemin="0" aria-valuemax="100">
                             </div>
                         </div>
                     </div>
                     <div class="col-3 text-right">
-                        <span class="mb-0 font-14 text-dark font-weight-medium">{{ $loc['percent'] }}%</span>
+                        <span class="mb-0 font-14 text-dark font-weight-medium"><?php echo e($loc['percent']); ?>%</span>
                     </div>
                 </div>
-            @endforeach
+            <?php endforeach; $__env->popLoop(); $loop = $__env->getLastLoop(); ?>
                                 </div>
                             </div>
                         </div>
                     </div>
                     <div class="wishlist-card">
-                        @if($wishlist->count())
-                    @foreach($wishlist as $item)
-                        @php
+                        <?php if($wishlist->count()): ?>
+                    <?php $__currentLoopData = $wishlist; $__env->addLoop($__currentLoopData); foreach($__currentLoopData as $item): $__env->incrementLoopIndices(); $loop = $__env->getLastLoop(); ?>
+                        <?php
                             $submission = $item->submission ?? [];
                             $customer = $submission->customer ?? [];
                              $summaryFields = $submission->summaryFields ?? [];
-                        @endphp
+                        ?>
 
                         <div class="wishlist-product-card">
-                            @if($submission->product_photo)
-                                <img src="{{ asset('storage/' . $submission->product_photo) }}" />
-                            @else
+                            <?php if($submission->product_photo): ?>
+                                <img src="<?php echo e(asset('storage/' . $submission->product_photo)); ?>" />
+                            <?php else: ?>
                                 <img src="https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcThez8EsMExS0cJzMTvAM6OlRj9d9SecStl6g&s">
-                            @endif
+                            <?php endif; ?>
                             <div class="wishlist-budge">
                                 <div class="d-flex justify-content-between align-items-center">
                                     <div class="budge-active">
@@ -168,37 +169,39 @@
                             </div>
                             <div class="product-details-hover">
                                 <div class="wishlist-button">
-                                    <p>{{ $submission->category_name ?? '' }}</p>
+                                    <p><?php echo e($submission->category_name ?? ''); ?></p>
 
                                 </div>
-                                <h3 class="mt-2 " style="color: #000;">{{ $submission->product_title ?? '' }}</h3>
+                                <h3 class="mt-2 " style="color: #000;"><?php echo e($submission->product_title ?? ''); ?></h3>
                                 <div class="d-flex justify-content-between align-items-center">
-                                    <p class="m-0">By {{ ($customer->first_name ?? '') . ' ' . ($customer->last_name ?? '') }}</p>
+                                    <p class="m-0">By <?php echo e(($customer->first_name ?? '') . ' ' . ($customer->last_name ?? '')); ?></p>
                                     <p class="m-0" style="color: #007bff;"><i class="fa-solid fa-eye"></i> 10</p>
                                 </div>
                                 <div class="wishlist-item-card">
-                                @foreach($summaryFields as $field)
+                                <?php $__currentLoopData = $summaryFields; $__env->addLoop($__currentLoopData); foreach($__currentLoopData as $field): $__env->incrementLoopIndices(); $loop = $__env->getLastLoop(); ?>
                                         <div class="wishlist-left mb-2">
                                             <p class="m-0" style="color: green;">
-                                                <i class="{{ $field['icon'] ?? '' }}"></i>
+                                                <i class="<?php echo e($field['icon'] ?? ''); ?>"></i>
                                             </p>
                                             <div class="d-flex flex-column">
                                                 <p class="m-0" style="font-size: 16px;">
-                                                    {{ $field['label'] }}
+                                                    <?php echo e($field['label']); ?>
+
                                                 </p>
                                                 <h5 class="m-0" style="color: #000; font-size: 16px;">
-                                                    {{ $field['value'] }}
+                                                    <?php echo e($field['value']); ?>
+
                                                 </h5>
                                             </div>
                                         </div>
-                                    @endforeach
+                                    <?php endforeach; $__env->popLoop(); $loop = $__env->getLastLoop(); ?>
 
                                 </div>
                                 <div class="wishlist-price d-flex justify-content-between mt-3">
                                     <h2 style="color: #000;"><i
-                                            class="fa-solid fa-indian-rupee-sign"></i>{{ $submission->offered_price ?? '' }}</h2>
+                                            class="fa-solid fa-indian-rupee-sign"></i><?php echo e($submission->offered_price ?? ''); ?></h2>
                                     <button type="button" class="btn btn-dark"
-                                                onclick="window.location.href='{{ route('listing-details', ['id' => $submission['id']]) }}'">
+                                                onclick="window.location.href='<?php echo e(route('listing-details', ['id' => $submission['id']])); ?>'">
                                                 View Detail
                                             </button>
 
@@ -209,51 +212,54 @@
 
 
                                 <div class="wishlist-button">
-                                    <p>{{ $submission->category_name ?? '' }}</p>
+                                    <p><?php echo e($submission->category_name ?? ''); ?></p>
                                 
                                 </div>
-                                <h3 class="mt-2" style="color: #000;">{{$submission->product_title ?? ''}}</h3>
+                                <h3 class="mt-2" style="color: #000;"><?php echo e($submission->product_title ?? ''); ?></h3>
                                 <div class="d-flex justify-content-between align-items-center">
-                                    <p class="m-0">By {{ ($customer->first_name ?? '') . ' ' . ($customer->last_name ?? '') }}</p>
+                                    <p class="m-0">By <?php echo e(($customer->first_name ?? '') . ' ' . ($customer->last_name ?? '')); ?></p>
                                     <p class="m-0" style="color: #007bff;"><i class="fa-solid fa-eye"></i> 10</p>
                                 </div>
                                 <div class="wishlist-item-card">
-                    @foreach($summaryFields as $field)
+                    <?php $__currentLoopData = $summaryFields; $__env->addLoop($__currentLoopData); foreach($__currentLoopData as $field): $__env->incrementLoopIndices(); $loop = $__env->getLastLoop(); ?>
                                         <div class="wishlist-left mb-2">
                                             <p class="m-0" style="color: green;">
-                                                <i class="{{ $field['icon'] ?? '' }}"></i>
+                                                <i class="<?php echo e($field['icon'] ?? ''); ?>"></i>
                                             </p>
                                             <div class="d-flex flex-column">
                                                 <p class="m-0" style="font-size: 16px;">
-                                                    {{ $field['label'] }}
+                                                    <?php echo e($field['label']); ?>
+
                                                 </p>
                                                 <h5 class="m-0" style="color: #000; font-size: 16px;">
-                                                    {{ $field['value'] }}
+                                                    <?php echo e($field['value']); ?>
+
                                                 </h5>
                                             </div>
                                         </div>
-                                    @endforeach
+                                    <?php endforeach; $__env->popLoop(); $loop = $__env->getLastLoop(); ?>
                                 </div>
                                 <div class="wishlist-price d-flex justify-content-between mt-3">
                                     <h2 style="color: #000;"><i
-                                            class="fa-solid fa-indian-rupee-sign"></i>{{ $submission->offered_price ?? '' }}</h2>
+                                            class="fa-solid fa-indian-rupee-sign"></i><?php echo e($submission->offered_price ?? ''); ?></h2>
                                        <button type="button" class="btn btn-dark"
-                                                onclick="window.location.href='{{ route('listing-details', ['id' => $submission['id']]) }}'">
+                                                onclick="window.location.href='<?php echo e(route('listing-details', ['id' => $submission['id']])); ?>'">
                                                 View Detail
                                             </button>
                                 </div>
                             </div>
                         </div>
-                    @endforeach
+                    <?php endforeach; $__env->popLoop(); $loop = $__env->getLastLoop(); ?>
 
 
-                    {{-- Pagination --}}
+                    
                     <div class="mt-3">
-                        {{ $wishlist->links() }}
+                        <?php echo e($wishlist->links()); ?>
+
                     </div>
-                @else
+                <?php else: ?>
                     <p class="text-center">No items in wishlist yet.</p>
-                @endif
+                <?php endif; ?>
                     </div>
 
                     <div class="row">
@@ -279,48 +285,48 @@
                                                 </tr>
                                             </thead>
                                             <tbody>
-                                                @foreach($recentSales as $order)
-                                                                @php $status = $order->currentStatus->status ?? 'N/A'; @endphp
+                                                <?php $__currentLoopData = $recentSales; $__env->addLoop($__currentLoopData); foreach($__currentLoopData as $order): $__env->incrementLoopIndices(); $loop = $__env->getLastLoop(); ?>
+                                                                <?php $status = $order->currentStatus->status ?? 'N/A'; ?>
 
                                                 <tr>
-                                                     <td>{{ \Carbon\Carbon::parse($order->created_at)->format('Y-m-d H:i') }}</td>
-                                                    <td>{{ $order->order_number }}</td>
+                                                     <td><?php echo e(\Carbon\Carbon::parse($order->created_at)->format('Y-m-d H:i')); ?></td>
+                                                    <td><?php echo e($order->order_number); ?></td>
                                                     <td>
-                                                        <span class="product-name">{{ $order->product_title }}</span><br>
-                                                        <small>{{ $order->category_name }}</small><br>
-                                                        @if ($order->product_photo)
-                                                            <img src="{{ asset('storage/' . $order->product_photo) }}"
+                                                        <span class="product-name"><?php echo e($order->product_title); ?></span><br>
+                                                        <small><?php echo e($order->category_name); ?></small><br>
+                                                        <?php if($order->product_photo): ?>
+                                                            <img src="<?php echo e(asset('storage/' . $order->product_photo)); ?>"
                                                                 alt="Product Photo" width="50">
-                                                        @endif
+                                                        <?php endif; ?>
                                                     </td>
-                                                    <td>{{ $order->total ?? '-' }}</td>
-                                                    <td>{{ $order->payment->payment_id ? 'Paid' : 'Unpaid' }}</td>
+                                                    <td><?php echo e($order->total ?? '-'); ?></td>
+                                                    <td><?php echo e($order->payment->payment_id ? 'Paid' : 'Unpaid'); ?></td>
                                                     <td>
-                        @switch($status)
-                            @case('recent')
+                        <?php switch($status):
+                            case ('recent'): ?>
                                 <span class="badge badge-primary">Recent</span>
-                                @break
-                            @case('approved')
+                                <?php break; ?>
+                            <?php case ('approved'): ?>
                                 <span class="badge badge-secondary">Approved</span>
-                                @break
-                            @case('processing')
+                                <?php break; ?>
+                            <?php case ('processing'): ?>
                                 <span class="badge badge-info">Processing</span>
-                                @break
-                            @case('delivered')
+                                <?php break; ?>
+                            <?php case ('delivered'): ?>
                                 <span class="badge badge-success">Delivered</span>
-                                @break
-                            @case('cancel_requested')
+                                <?php break; ?>
+                            <?php case ('cancel_requested'): ?>
                                 <span class="badge badge-warning">Cancel Requested</span>
-                                @break
-                            @case('cancelled')
+                                <?php break; ?>
+                            <?php case ('cancelled'): ?>
                                 <span class="badge badge-danger">Cancelled</span>
-                                @break
-                            @default
-                                <span class="badge badge-light">{{ ucfirst($status) }}</span>
-                        @endswitch
+                                <?php break; ?>
+                            <?php default: ?>
+                                <span class="badge badge-light"><?php echo e(ucfirst($status)); ?></span>
+                        <?php endswitch; ?>
                     </td>
                                                 </tr>
-                                                 @endforeach
+                                                 <?php endforeach; $__env->popLoop(); $loop = $__env->getLastLoop(); ?>
                                             </tbody>
                                         </table>
                                     </div>
@@ -350,20 +356,20 @@
                         </tr>
                                             </thead>
                                             <tbody>
-                                                @forelse($recentTransactions as $txn)
+                                                <?php $__empty_1 = true; $__currentLoopData = $recentTransactions; $__env->addLoop($__currentLoopData); foreach($__currentLoopData as $txn): $__env->incrementLoopIndices(); $loop = $__env->getLastLoop(); $__empty_1 = false; ?>
                             <tr >
-                                <td>{{ $txn->created_at->format('Y-m-d') }}</td>
-                                <td>{{ ucfirst($txn->type) }}</td>
-                                <td>{{ ucfirst($txn->transaction_type) }}</td>
-                                <td>{{ $txn->remarks ?? '-' }}</td>
-                                <td>{{ $txn->reference_id }}</td>
-                                <td>₹{{ number_format($txn->amount, 2) }}</td>
+                                <td><?php echo e($txn->created_at->format('Y-m-d')); ?></td>
+                                <td><?php echo e(ucfirst($txn->type)); ?></td>
+                                <td><?php echo e(ucfirst($txn->transaction_type)); ?></td>
+                                <td><?php echo e($txn->remarks ?? '-'); ?></td>
+                                <td><?php echo e($txn->reference_id); ?></td>
+                                <td>₹<?php echo e(number_format($txn->amount, 2)); ?></td>
                             </tr>
-                        @empty
+                        <?php endforeach; $__env->popLoop(); $loop = $__env->getLastLoop(); if ($__empty_1): ?>
                             <tr>
                                 <td colspan="6" class="wallet-no-data">No transactions found.</td>
                             </tr>
-                        @endforelse
+                        <?php endif; ?>
                                             </tbody>
                                         </table>
                                     </div>
@@ -395,48 +401,48 @@
                                                 </tr>
                                             </thead>
                                             <tbody>
-                                                @foreach($recentSales as $order)
-                                                                @php $status = $order->currentStatus->status ?? 'N/A'; @endphp
+                                                <?php $__currentLoopData = $recentSales; $__env->addLoop($__currentLoopData); foreach($__currentLoopData as $order): $__env->incrementLoopIndices(); $loop = $__env->getLastLoop(); ?>
+                                                                <?php $status = $order->currentStatus->status ?? 'N/A'; ?>
 
                                                 <tr>
-                                                     <td>{{ \Carbon\Carbon::parse($order->created_at)->format('Y-m-d H:i') }}</td>
-                                                    <td>{{ $order->order_number }}</td>
+                                                     <td><?php echo e(\Carbon\Carbon::parse($order->created_at)->format('Y-m-d H:i')); ?></td>
+                                                    <td><?php echo e($order->order_number); ?></td>
                                                     <td>
-                                                        <span class="product-name">{{ $order->product_title }}</span><br>
-                                                        <small>{{ $order->category_name }}</small><br>
-                                                        @if ($order->product_photo)
-                                                            <img src="{{ asset('storage/' . $order->product_photo) }}"
+                                                        <span class="product-name"><?php echo e($order->product_title); ?></span><br>
+                                                        <small><?php echo e($order->category_name); ?></small><br>
+                                                        <?php if($order->product_photo): ?>
+                                                            <img src="<?php echo e(asset('storage/' . $order->product_photo)); ?>"
                                                                 alt="Product Photo" width="50">
-                                                        @endif
+                                                        <?php endif; ?>
                                                     </td>
-                                                    <td>{{ $order->total ?? '-' }}</td>
-                                                    <td>{{ $order->payment->payment_id ? 'Paid' : 'Unpaid' }}</td>
+                                                    <td><?php echo e($order->total ?? '-'); ?></td>
+                                                    <td><?php echo e($order->payment->payment_id ? 'Paid' : 'Unpaid'); ?></td>
                                                     <td>
-                        @switch($status)
-                            @case('recent')
+                        <?php switch($status):
+                            case ('recent'): ?>
                                 <span class="badge badge-primary">Recent</span>
-                                @break
-                            @case('approved')
+                                <?php break; ?>
+                            <?php case ('approved'): ?>
                                 <span class="badge badge-secondary">Approved</span>
-                                @break
-                            @case('processing')
+                                <?php break; ?>
+                            <?php case ('processing'): ?>
                                 <span class="badge badge-info">Processing</span>
-                                @break
-                            @case('delivered')
+                                <?php break; ?>
+                            <?php case ('delivered'): ?>
                                 <span class="badge badge-success">Delivered</span>
-                                @break
-                            @case('cancel_requested')
+                                <?php break; ?>
+                            <?php case ('cancel_requested'): ?>
                                 <span class="badge badge-warning">Cancel Requested</span>
-                                @break
-                            @case('cancelled')
+                                <?php break; ?>
+                            <?php case ('cancelled'): ?>
                                 <span class="badge badge-danger">Cancelled</span>
-                                @break
-                            @default
-                                <span class="badge badge-light">{{ ucfirst($status) }}</span>
-                        @endswitch
+                                <?php break; ?>
+                            <?php default: ?>
+                                <span class="badge badge-light"><?php echo e(ucfirst($status)); ?></span>
+                        <?php endswitch; ?>
                     </td>
                                                 </tr>
-                                                 @endforeach
+                                                 <?php endforeach; $__env->popLoop(); $loop = $__env->getLastLoop(); ?>
                                             </tbody>
                                         </table>
                                     </div>
@@ -549,9 +555,9 @@
                     <!-- Wallet -->
                     <div class="seller-card">
                         <h4 class="seller-card-title">Wallet Balance</h4>
-                        <h2 class="seller-card-number">₹{{ $walletBalance }}</h2>
+                        <h2 class="seller-card-number">₹<?php echo e($walletBalance); ?></h2>
                         <p class="seller-card-desc">Available for purchases</p>
-                        <a href="{{ Route('dashboard.wallet') }}" class="seller-card-footer seller-purple">
+                        <a href="<?php echo e(Route('dashboard.wallet')); ?>" class="seller-card-footer seller-purple">
                             <span>Manage Wallet</span>
                             <i class="fas fa-wallet"></i>
                         </a>
@@ -560,9 +566,9 @@
                     <!-- Active Orders -->
                     <div class="seller-card">
                         <h4 class="seller-card-title">Active Orders</h4>
-                        <h2 class="seller-card-number">{{  $activeOrders  }}</h2>
+                        <h2 class="seller-card-number"><?php echo e($activeOrders); ?></h2>
                         <p class="seller-card-desc">In progress</p>
-                        <a href="{{ Route('dashboard.buyer-orders') }}" class="seller-card-footer seller-blue">
+                        <a href="<?php echo e(Route('dashboard.buyer-orders')); ?>" class="seller-card-footer seller-blue">
                             <span>View Orders</span>
                             <i class="fas fa-box"></i>
                         </a>
@@ -571,9 +577,9 @@
                     <!-- Purchases -->
                     <div class="seller-card">
                         <h4 class="seller-card-title">Completed Purchases</h4>
-                        <h2 class="seller-card-number">{{  $completedPurchases  }}</h2>
+                        <h2 class="seller-card-number"><?php echo e($completedPurchases); ?></h2>
                         <p class="seller-card-desc">Successfully acquired</p>
-                        <a href="{{ Route('dashboard.buyer-orders') }}" class="seller-card-footer seller-green">
+                        <a href="<?php echo e(Route('dashboard.buyer-orders')); ?>" class="seller-card-footer seller-green">
                             <span>View Purchases</span>
                             <i class="fas fa-check-circle"></i>
                         </a>
@@ -582,9 +588,9 @@
                     <!-- Watchlist -->
                     <div class="seller-card">
                         <h4 class="seller-card-title">Watchlist</h4>
-                        <h2 class="seller-card-number">{{ $wishlistCount}}</h2>
+                        <h2 class="seller-card-number"><?php echo e($wishlistCount); ?></h2>
                         <p class="seller-card-desc">Saved items</p>
-                        <a href="{{ Route('dashboard.wishlist') }}" class="seller-card-footer seller-red">
+                        <a href="<?php echo e(Route('dashboard.wishlist')); ?>" class="seller-card-footer seller-red">
                             <span>View Watchlist</span>
                             <i class="fas fa-heart"></i>
                         </a>
@@ -613,31 +619,31 @@
  <div class="" style="height:180px">
                                         <div id="visitbylocate" style="height:100%"></div>
                                     </div>
-            @foreach($locationEarnings as $loc)
+            <?php $__currentLoopData = $locationEarnings; $__env->addLoop($__currentLoopData); foreach($__currentLoopData as $loc): $__env->incrementLoopIndices(); $loop = $__env->getLastLoop(); ?>
                 <div class="row mb-3 align-items-center">
                     <div class="col-4 text-right">
-                        <span class="text-muted font-14">{{ $loc['country'] }}</span>
+                        <span class="text-muted font-14"><?php echo e($loc['country']); ?></span>
                     </div>
                     <div class="col-5">
                         <div class="progress" style="height: 5px;">
                             <div class="progress-bar" role="progressbar"
-                                style="width: {{ $loc['percent'] }}%;
-                                       background-color: {{ match($loop->iteration % 4) {
+                                style="width: <?php echo e($loc['percent']); ?>%;
+                                       background-color: <?php echo e(match($loop->iteration % 4) {
                                            1 => '#5f76e8', 
                                            2 => '#dc3545', 
                                            3 => '#17a2b8', 
                                            default => '#28a745'
-                                       } }};"
-                                aria-valuenow="{{ $loc['percent'] }}" 
+                                       }); ?>;"
+                                aria-valuenow="<?php echo e($loc['percent']); ?>" 
                                 aria-valuemin="0" aria-valuemax="100">
                             </div>
                         </div>
                     </div>
                     <div class="col-3 text-right">
-                        <span class="mb-0 font-14 text-dark font-weight-medium">{{ $loc['percent'] }}%</span>
+                        <span class="mb-0 font-14 text-dark font-weight-medium"><?php echo e($loc['percent']); ?>%</span>
                     </div>
                 </div>
-            @endforeach
+            <?php endforeach; $__env->popLoop(); $loop = $__env->getLastLoop(); ?>
 
         </div>
     </div>
@@ -645,20 +651,20 @@
 
                     </div>
                     <div class="wishlist-card">
-                        @if($wishlist->count())
-                    @foreach($wishlist as $item)
-                        @php
+                        <?php if($wishlist->count()): ?>
+                    <?php $__currentLoopData = $wishlist; $__env->addLoop($__currentLoopData); foreach($__currentLoopData as $item): $__env->incrementLoopIndices(); $loop = $__env->getLastLoop(); ?>
+                        <?php
                             $submission = $item->submission ?? [];
                             $customer = $submission->customer ?? [];
                              $summaryFields = $submission->summaryFields ?? [];
-                        @endphp
+                        ?>
 
                         <div class="wishlist-product-card">
-                            @if($submission->product_photo)
-                                <img src="{{ asset('storage/' . $submission->product_photo) }}" />
-                            @else
+                            <?php if($submission->product_photo): ?>
+                                <img src="<?php echo e(asset('storage/' . $submission->product_photo)); ?>" />
+                            <?php else: ?>
                                 <img src="https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcThez8EsMExS0cJzMTvAM6OlRj9d9SecStl6g&s">
-                            @endif
+                            <?php endif; ?>
                             <div class="wishlist-budge">
                                 <div class="d-flex justify-content-between align-items-center">
                                     <div class="budge-active">
@@ -672,36 +678,38 @@
                             </div>
                             <div class="product-details-hover">
                                 <div class="wishlist-button">
-                                    <p>{{ $submission->category_name ?? '' }}</p>
+                                    <p><?php echo e($submission->category_name ?? ''); ?></p>
 
                                 </div>
-                                <h3 class="mt-2 " style="color: #000;">{{ $submission->product_title ?? '' }}</h3>
+                                <h3 class="mt-2 " style="color: #000;"><?php echo e($submission->product_title ?? ''); ?></h3>
                                 <div class="d-flex justify-content-between align-items-center">
-                                    <p class="m-0">By {{ ($customer->first_name ?? '') . ' ' . ($customer->last_name ?? '') }}</p>
+                                    <p class="m-0">By <?php echo e(($customer->first_name ?? '') . ' ' . ($customer->last_name ?? '')); ?></p>
                                     <p class="m-0" style="color: #007bff;"><i class="fa-solid fa-eye"></i> 10</p>
                                 </div>
                                 <div class="wishlist-item-card">
-                                   @foreach($summaryFields as $field)
+                                   <?php $__currentLoopData = $summaryFields; $__env->addLoop($__currentLoopData); foreach($__currentLoopData as $field): $__env->incrementLoopIndices(); $loop = $__env->getLastLoop(); ?>
                                         <div class="wishlist-left mb-2">
                                             <p class="m-0" style="color: green;">
-                                                <i class="{{ $field['icon'] ?? '' }}"></i>
+                                                <i class="<?php echo e($field['icon'] ?? ''); ?>"></i>
                                             </p>
                                             <div class="d-flex flex-column">
                                                 <p class="m-0" style="font-size: 16px;">
-                                                    {{ $field['label'] }}
+                                                    <?php echo e($field['label']); ?>
+
                                                 </p>
                                                 <h5 class="m-0" style="color: #000; font-size: 16px;">
-                                                    {{ $field['value'] }}
+                                                    <?php echo e($field['value']); ?>
+
                                                 </h5>
                                             </div>
                                         </div>
-                                    @endforeach
+                                    <?php endforeach; $__env->popLoop(); $loop = $__env->getLastLoop(); ?>
                                 </div>
                                 <div class="wishlist-price d-flex justify-content-between mt-3">
                                     <h2 style="color: #000;"><i
-                                            class="fa-solid fa-indian-rupee-sign"></i>{{ $submission->offered_price ?? '' }}</h2>
+                                            class="fa-solid fa-indian-rupee-sign"></i><?php echo e($submission->offered_price ?? ''); ?></h2>
                                     <button type="button" class="btn btn-dark"
-                                                onclick="window.location.href='{{ route('listing-details', ['id' => $submission['id']]) }}'">
+                                                onclick="window.location.href='<?php echo e(route('listing-details', ['id' => $submission['id']])); ?>'">
                                                 View Detail
                                             </button>
 
@@ -712,52 +720,55 @@
 
 
                                 <div class="wishlist-button">
-                                    <p>{{ $submission->category_name ?? '' }}</p>
+                                    <p><?php echo e($submission->category_name ?? ''); ?></p>
                                 
                                 </div>
-                                <h3 class="mt-2" style="color: #000;">{{$submission->product_title ?? ''}}</h3>
+                                <h3 class="mt-2" style="color: #000;"><?php echo e($submission->product_title ?? ''); ?></h3>
                                 <div class="d-flex justify-content-between align-items-center">
-                                    <p class="m-0">By {{ ($customer->first_name ?? '') . ' ' . ($customer->last_name ?? '') }}</p>
+                                    <p class="m-0">By <?php echo e(($customer->first_name ?? '') . ' ' . ($customer->last_name ?? '')); ?></p>
                                     <p class="m-0" style="color: #007bff;"><i class="fa-solid fa-eye"></i> 10</p>
                                 </div>
                                 <div class="wishlist-item-card">
-                           @foreach($summaryFields as $field)
+                           <?php $__currentLoopData = $summaryFields; $__env->addLoop($__currentLoopData); foreach($__currentLoopData as $field): $__env->incrementLoopIndices(); $loop = $__env->getLastLoop(); ?>
                                         <div class="wishlist-left mb-2">
                                             <p class="m-0" style="color: green;">
-                                                <i class="{{ $field['icon'] ?? '' }}"></i>
+                                                <i class="<?php echo e($field['icon'] ?? ''); ?>"></i>
                                             </p>
                                             <div class="d-flex flex-column">
                                                 <p class="m-0" style="font-size: 16px;">
-                                                    {{ $field['label'] }}
+                                                    <?php echo e($field['label']); ?>
+
                                                 </p>
                                                 <h5 class="m-0" style="color: #000; font-size: 16px;">
-                                                    {{ $field['value'] }}
+                                                    <?php echo e($field['value']); ?>
+
                                                 </h5>
                                             </div>
                                         </div>
-                                    @endforeach
+                                    <?php endforeach; $__env->popLoop(); $loop = $__env->getLastLoop(); ?>
                                 </div>
                                 <div class="wishlist-price d-flex justify-content-between mt-3">
                                     <h2 style="color: #000;"><i
-                                            class="fa-solid fa-indian-rupee-sign"></i>{{ $submission->offered_price ?? '' }}</h2>
+                                            class="fa-solid fa-indian-rupee-sign"></i><?php echo e($submission->offered_price ?? ''); ?></h2>
                                        <button type="button" class="btn btn-dark"
-                                                onclick="window.location.href='{{ route('listing-details', ['id' => $submission['id']]) }}'">
+                                                onclick="window.location.href='<?php echo e(route('listing-details', ['id' => $submission['id']])); ?>'">
                                                 View Detail
                                             </button>
 
                                 </div>
                             </div>
                         </div>
-                    @endforeach
+                    <?php endforeach; $__env->popLoop(); $loop = $__env->getLastLoop(); ?>
 
 
-                    {{-- Pagination --}}
+                    
                     <div class="mt-3">
-                        {{ $wishlist->links() }}
+                        <?php echo e($wishlist->links()); ?>
+
                     </div>
-                @else
+                <?php else: ?>
                     <p class="text-center">No items in wishlist yet.</p>
-                @endif
+                <?php endif; ?>
                     </div>
 
                     <div class="row">
@@ -783,48 +794,48 @@
                                                 </tr>
                                             </thead>
                                             <tbody>
-                                                @foreach($recentSales as $order)
-                                                                @php $status = $order->currentStatus->status ?? 'N/A'; @endphp
+                                                <?php $__currentLoopData = $recentSales; $__env->addLoop($__currentLoopData); foreach($__currentLoopData as $order): $__env->incrementLoopIndices(); $loop = $__env->getLastLoop(); ?>
+                                                                <?php $status = $order->currentStatus->status ?? 'N/A'; ?>
 
                                                 <tr>
-                                                     <td>{{ \Carbon\Carbon::parse($order->created_at)->format('Y-m-d H:i') }}</td>
-                                                    <td>{{ $order->order_number }}</td>
+                                                     <td><?php echo e(\Carbon\Carbon::parse($order->created_at)->format('Y-m-d H:i')); ?></td>
+                                                    <td><?php echo e($order->order_number); ?></td>
                                                     <td>
-                                                        <span class="product-name">{{ $order->product_title }}</span><br>
-                                                        <small>{{ $order->category_name }}</small><br>
-                                                        @if ($order->product_photo)
-                                                            <img src="{{ asset('storage/' . $order->product_photo) }}"
+                                                        <span class="product-name"><?php echo e($order->product_title); ?></span><br>
+                                                        <small><?php echo e($order->category_name); ?></small><br>
+                                                        <?php if($order->product_photo): ?>
+                                                            <img src="<?php echo e(asset('storage/' . $order->product_photo)); ?>"
                                                                 alt="Product Photo" width="50">
-                                                        @endif
+                                                        <?php endif; ?>
                                                     </td>
-                                                    <td>{{ $order->total ?? '-' }}</td>
-                                                    <td>{{ $order->payment->payment_id ? 'Paid' : 'Unpaid' }}</td>
+                                                    <td><?php echo e($order->total ?? '-'); ?></td>
+                                                    <td><?php echo e($order->payment->payment_id ? 'Paid' : 'Unpaid'); ?></td>
                                                     <td>
-                        @switch($status)
-                            @case('recent')
+                        <?php switch($status):
+                            case ('recent'): ?>
                                 <span class="badge badge-primary">Recent</span>
-                                @break
-                            @case('approved')
+                                <?php break; ?>
+                            <?php case ('approved'): ?>
                                 <span class="badge badge-secondary">Approved</span>
-                                @break
-                            @case('processing')
+                                <?php break; ?>
+                            <?php case ('processing'): ?>
                                 <span class="badge badge-info">Processing</span>
-                                @break
-                            @case('delivered')
+                                <?php break; ?>
+                            <?php case ('delivered'): ?>
                                 <span class="badge badge-success">Delivered</span>
-                                @break
-                            @case('cancel_requested')
+                                <?php break; ?>
+                            <?php case ('cancel_requested'): ?>
                                 <span class="badge badge-warning">Cancel Requested</span>
-                                @break
-                            @case('cancelled')
+                                <?php break; ?>
+                            <?php case ('cancelled'): ?>
                                 <span class="badge badge-danger">Cancelled</span>
-                                @break
-                            @default
-                                <span class="badge badge-light">{{ ucfirst($status) }}</span>
-                        @endswitch
+                                <?php break; ?>
+                            <?php default: ?>
+                                <span class="badge badge-light"><?php echo e(ucfirst($status)); ?></span>
+                        <?php endswitch; ?>
                     </td>
                                                 </tr>
-                                                 @endforeach
+                                                 <?php endforeach; $__env->popLoop(); $loop = $__env->getLastLoop(); ?>
                                             </tbody>
                                         </table>
                                     </div>
@@ -854,20 +865,20 @@
                         </tr>
                                             </thead>
                                             <tbody>
-                                                @forelse($recentTransactions as $txn)
+                                                <?php $__empty_1 = true; $__currentLoopData = $recentTransactions; $__env->addLoop($__currentLoopData); foreach($__currentLoopData as $txn): $__env->incrementLoopIndices(); $loop = $__env->getLastLoop(); $__empty_1 = false; ?>
                             <tr >
-                                <td>{{ $txn->created_at->format('Y-m-d') }}</td>
-                                <td>{{ ucfirst($txn->type) }}</td>
-                                <td>{{ ucfirst($txn->transaction_type) }}</td>
-                                <td>{{ $txn->remarks ?? '-' }}</td>
-                                <td>{{ $txn->reference_id }}</td>
-                                <td>₹{{ number_format($txn->amount, 2) }}</td>
+                                <td><?php echo e($txn->created_at->format('Y-m-d')); ?></td>
+                                <td><?php echo e(ucfirst($txn->type)); ?></td>
+                                <td><?php echo e(ucfirst($txn->transaction_type)); ?></td>
+                                <td><?php echo e($txn->remarks ?? '-'); ?></td>
+                                <td><?php echo e($txn->reference_id); ?></td>
+                                <td>₹<?php echo e(number_format($txn->amount, 2)); ?></td>
                             </tr>
-                        @empty
+                        <?php endforeach; $__env->popLoop(); $loop = $__env->getLastLoop(); if ($__empty_1): ?>
                             <tr>
                                 <td colspan="6" class="wallet-no-data">No transactions found.</td>
                             </tr>
-                        @endforelse
+                        <?php endif; ?>
                                             </tbody>
                                         </table>
                                     </div>
@@ -899,48 +910,48 @@
                                                 </tr>
                                             </thead>
                                             <tbody>
-                                                @foreach($recentSales as $order)
-                                                                @php $status = $order->currentStatus->status ?? 'N/A'; @endphp
+                                                <?php $__currentLoopData = $recentSales; $__env->addLoop($__currentLoopData); foreach($__currentLoopData as $order): $__env->incrementLoopIndices(); $loop = $__env->getLastLoop(); ?>
+                                                                <?php $status = $order->currentStatus->status ?? 'N/A'; ?>
 
                                                 <tr>
-                                                     <td>{{ \Carbon\Carbon::parse($order->created_at)->format('Y-m-d H:i') }}</td>
-                                                    <td>{{ $order->order_number }}</td>
+                                                     <td><?php echo e(\Carbon\Carbon::parse($order->created_at)->format('Y-m-d H:i')); ?></td>
+                                                    <td><?php echo e($order->order_number); ?></td>
                                                     <td>
-                                                        <span class="product-name">{{ $order->product_title }}</span><br>
-                                                        <small>{{ $order->category_name }}</small><br>
-                                                        @if ($order->product_photo)
-                                                            <img src="{{ asset('storage/' . $order->product_photo) }}"
+                                                        <span class="product-name"><?php echo e($order->product_title); ?></span><br>
+                                                        <small><?php echo e($order->category_name); ?></small><br>
+                                                        <?php if($order->product_photo): ?>
+                                                            <img src="<?php echo e(asset('storage/' . $order->product_photo)); ?>"
                                                                 alt="Product Photo" width="50">
-                                                        @endif
+                                                        <?php endif; ?>
                                                     </td>
-                                                    <td>{{ $order->total ?? '-' }}</td>
-                                                    <td>{{ $order->payment->payment_id ? 'Paid' : 'Unpaid' }}</td>
+                                                    <td><?php echo e($order->total ?? '-'); ?></td>
+                                                    <td><?php echo e($order->payment->payment_id ? 'Paid' : 'Unpaid'); ?></td>
                                                     <td>
-                        @switch($status)
-                            @case('recent')
+                        <?php switch($status):
+                            case ('recent'): ?>
                                 <span class="badge badge-primary">Recent</span>
-                                @break
-                            @case('approved')
+                                <?php break; ?>
+                            <?php case ('approved'): ?>
                                 <span class="badge badge-secondary">Approved</span>
-                                @break
-                            @case('processing')
+                                <?php break; ?>
+                            <?php case ('processing'): ?>
                                 <span class="badge badge-info">Processing</span>
-                                @break
-                            @case('delivered')
+                                <?php break; ?>
+                            <?php case ('delivered'): ?>
                                 <span class="badge badge-success">Delivered</span>
-                                @break
-                            @case('cancel_requested')
+                                <?php break; ?>
+                            <?php case ('cancel_requested'): ?>
                                 <span class="badge badge-warning">Cancel Requested</span>
-                                @break
-                            @case('cancelled')
+                                <?php break; ?>
+                            <?php case ('cancelled'): ?>
                                 <span class="badge badge-danger">Cancelled</span>
-                                @break
-                            @default
-                                <span class="badge badge-light">{{ ucfirst($status) }}</span>
-                        @endswitch
+                                <?php break; ?>
+                            <?php default: ?>
+                                <span class="badge badge-light"><?php echo e(ucfirst($status)); ?></span>
+                        <?php endswitch; ?>
                     </td>
                                                 </tr>
-                                                 @endforeach
+                                                 <?php endforeach; $__env->popLoop(); $loop = $__env->getLastLoop(); ?>
                                             </tbody>
                                         </table>
                                     </div>
@@ -1064,9 +1075,9 @@
         <!-- End footer -->
         <!-- ============================================================== -->
     </div>
-@endsection
+<?php $__env->stopSection(); ?>
 
-@push('scripts')
+<?php $__env->startPush('scripts'); ?>
     <script>
         document.addEventListener("DOMContentLoaded", function () {
 
@@ -1130,7 +1141,7 @@
 
             // Create listing button redirect (existing code)
             document.getElementById("create-listing-btn").addEventListener("click", function () {
-                let url = "{{ route('add-listing', ['from' => 'dashboard']) }}";
+                let url = "<?php echo e(route('add-listing', ['from' => 'dashboard'])); ?>";
                 window.location.href = url;
             });
 
@@ -1145,7 +1156,7 @@ document.addEventListener("DOMContentLoaded", function () {
 
     // ---------------- YEARLY EARNINGS ----------------
     let yearLabels = ['Jan','Feb','Mar','Apr','May','Jun','Jul','Aug','Sep','Oct','Nov','Dec'];
-    let yearData = @json(array_values($earningStatsYear->toArray()));
+    let yearData = <?php echo json_encode(array_values($earningStatsYear->toArray()), 15, 512) ?>;
 
     let yearCharts = document.getElementsByClassName('earningChartYear');
     Array.from(yearCharts).forEach(function(chartEl) {
@@ -1186,8 +1197,8 @@ document.addEventListener("DOMContentLoaded", function () {
     });
 
     // ---------------- THIS MONTH EARNINGS ----------------
-    let weekLabels = @json(array_column($earningThisMonthWeeks, 'label'));
-    let weekData = @json(array_column($earningThisMonthWeeks, 'total'));
+    let weekLabels = <?php echo json_encode(array_column($earningThisMonthWeeks, 'label'), 512) ?>;
+    let weekData = <?php echo json_encode(array_column($earningThisMonthWeeks, 'total'), 512) ?>;
 
     let monthCharts = document.getElementsByClassName('earningChartMonth');
     Array.from(monthCharts).forEach(function(chartEl) {
@@ -1228,4 +1239,6 @@ document.addEventListener("DOMContentLoaded", function () {
 
 
 
-@endpush
+<?php $__env->stopPush(); ?>
+
+<?php echo $__env->make('layouts.user-master', \Illuminate\Support\Arr::except(get_defined_vars(), ['__data', '__path']))->render(); ?><?php /**PATH D:\web-mingo-project\flippingo_admin\resources\views/user/dashboard.blade.php ENDPATH**/ ?>

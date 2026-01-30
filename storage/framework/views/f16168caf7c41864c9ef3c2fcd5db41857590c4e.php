@@ -1,8 +1,9 @@
-@extends('layouts.user-master')
 
-@section('title')
-    {{ $page->meta_title ?? 'Wishlist' }}
-@endsection
+
+<?php $__env->startSection('title'); ?>
+    <?php echo e($page->meta_title ?? 'Wishlist'); ?>
+
+<?php $__env->stopSection(); ?>
 
 
 <style>
@@ -86,9 +87,9 @@
     }
 </style>
 
-@section('content')
+<?php $__env->startSection('content'); ?>
 
-    @include('user.sidebar')
+    <?php echo $__env->make('user.sidebar', \Illuminate\Support\Arr::except(get_defined_vars(), ['__data', '__path']))->render(); ?>
 
     <div class="page-wrapper">
         <div class="wishlist-page">
@@ -97,7 +98,7 @@
                 <!-- <h2 style="color: #000;font-weight: 600; line-height: 20px;">Draft Listings</h2>
                                                                 <p>Continue where you left off</p> -->
                 <div class="wishlist-cont">
-                    <button type="button" onclick="window.location.href='{{ route('listing-list') }}'"
+                    <button type="button" onclick="window.location.href='<?php echo e(route('listing-list')); ?>'"
                         class="wishlist-create">+ Create Your Wishlist</button>
                     <p>you can create your wishlist to keep getting the updates.</p>
                 </div>
@@ -105,20 +106,20 @@
 
 
             <div class="wishlist-card">
-                @if($wishlist->count())
-                    @foreach($wishlist as $item)
-                        @php
+                <?php if($wishlist->count()): ?>
+                    <?php $__currentLoopData = $wishlist; $__env->addLoop($__currentLoopData); foreach($__currentLoopData as $item): $__env->incrementLoopIndices(); $loop = $__env->getLastLoop(); ?>
+                        <?php
                             $submission = $item->submission ?? [];
                             $customer = $submission->customer ?? [];
-                            $summaryFields = $submission->summaryFields ?? [];
-                        @endphp
+                            $summaryFields = $submission->summaryFields ?? null;
+                        ?>
 
                         <div class="wishlist-product-card">
-                            @if($submission->product_photo)
-                                <img src="{{ asset('storage/' . $submission->product_photo) }}" />
-                            @else
+                            <?php if($submission->product_photo): ?>
+                                <img src="<?php echo e(asset('storage/' . $submission->product_photo)); ?>" />
+                            <?php else: ?>
                                 <img src="https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcThez8EsMExS0cJzMTvAM6OlRj9d9SecStl6g&s">
-                            @endif
+                            <?php endif; ?>
                             <div class="wishlist-budge">
                                 <div class="d-flex justify-content-between align-items-center">
                                     <div class="budge-active">
@@ -132,37 +133,39 @@
                             </div>
                             <div class="product-details-hover">
                                 <div class="wishlist-button">
-                                    <p>{{ $submission->category_name ?? '' }}</p>
+                                    <p><?php echo e($submission->category_name ?? ''); ?></p>
                                 </div>
-                                <h3 class="mt-2 " style="color: #000;">{{ $submission->product_title ?? '' }}</h3>
+                                <h3 class="mt-2 " style="color: #000;"><?php echo e($submission->product_title ?? ''); ?></h3>
                                 <div class="d-flex justify-content-between align-items-center">
-                                    <p class="m-0">By {{ ($customer->first_name ?? '') . ' ' . ($customer->last_name ?? '') }}</p>
+                                    <p class="m-0">By <?php echo e(($customer->first_name ?? '') . ' ' . ($customer->last_name ?? '')); ?></p>
                                     <p class="m-0" style="color: #007bff;"><i class="fa-solid fa-eye"></i> 10</p>
                                 </div>
                                 <div class="wishlist-item-card">
-                                    @foreach($summaryFields as $field)
+                                    <?php $__currentLoopData = $summaryFields; $__env->addLoop($__currentLoopData); foreach($__currentLoopData as $field): $__env->incrementLoopIndices(); $loop = $__env->getLastLoop(); ?>
                                         <div class="wishlist-left mb-2">
                                             <p class="m-0" style="color: green;">
-                                                <i class="{{ $field['icon'] ?? '' }}"></i>
+                                                <i class="<?php echo e($field['icon'] ?? ''); ?>"></i>
                                             </p>
                                             <div class="d-flex flex-column">
                                                 <p class="m-0" style="font-size: 16px;">
-                                                    {{ $field['label'] }}
+                                                    <?php echo e($field['label']); ?>
+
                                                 </p>
                                                 <h5 class="m-0" style="color: #000; font-size: 16px;">
-                                                    {{ $field['value'] }}
+                                                    <?php echo e($field['value']); ?>
+
                                                 </h5>
                                             </div>
                                         </div>
-                                    @endforeach
+                                    <?php endforeach; $__env->popLoop(); $loop = $__env->getLastLoop(); ?>
 
 
                                 </div>
                                 <div class="wishlist-price d-flex justify-content-between mt-3">
                                     <h2 style="color: #000;"><i
-                                            class="fa-solid fa-indian-rupee-sign"></i>{{ $submission->offered_price ?? '' }}</h2>
+                                            class="fa-solid fa-indian-rupee-sign"></i><?php echo e($submission->offered_price ?? ''); ?></h2>
                                     <button type="button" class="btn btn-dark"
-                                        onclick="window.location.href='{{ route('listing-details', ['id' => $submission['id']]) }}'">
+                                        onclick="window.location.href='<?php echo e(route('listing-details', ['id' => $submission['id']])); ?>'">
                                         View Detail
                                     </button>
 
@@ -173,54 +176,57 @@
 
 
                                 <div class="wishlist-button">
-                                    <p>{{ $submission->category_name ?? '' }}</p>
+                                    <p><?php echo e($submission->category_name ?? ''); ?></p>
 
                                 </div>
-                                <h3 class="mt-2" style="color: #000;">{{$submission->product_title ?? ''}}</h3>
+                                <h3 class="mt-2" style="color: #000;"><?php echo e($submission->product_title ?? ''); ?></h3>
 
                                 <div class="d-flex justify-content-between align-items-center">
-                                    <p class="m-0">By {{ ($customer->first_name ?? '') . ' ' . ($customer->last_name ?? '') }}</p>
+                                    <p class="m-0">By <?php echo e(($customer->first_name ?? '') . ' ' . ($customer->last_name ?? '')); ?></p>
                                     <p class="m-0" style="color: #007bff;"><i class="fa-solid fa-eye"></i> 10</p>
                                 </div>
                                 <div class="wishlist-item-card">
-                                    @foreach($summaryFields as $field)
+                                    <?php $__currentLoopData = $summaryFields; $__env->addLoop($__currentLoopData); foreach($__currentLoopData as $field): $__env->incrementLoopIndices(); $loop = $__env->getLastLoop(); ?>
                                         <div class="wishlist-left mb-2">
                                             <p class="m-0" style="color: green;">
-                                                <i class="{{ $field['icon'] ?? '' }}"></i>
+                                                <i class="<?php echo e($field['icon'] ?? ''); ?>"></i>
                                             </p>
                                             <div class="d-flex flex-column">
                                                 <p class="m-0" style="font-size: 16px;">
-                                                    {{ $field['label'] }}
+                                                    <?php echo e($field['label']); ?>
+
                                                 </p>
                                                 <h5 class="m-0" style="color: #000; font-size: 16px;">
-                                                    {{ $field['value'] }}
+                                                    <?php echo e($field['value']); ?>
+
                                                 </h5>
                                             </div>
                                         </div>
-                                    @endforeach
+                                    <?php endforeach; $__env->popLoop(); $loop = $__env->getLastLoop(); ?>
 
                                 </div>
                                 <div class="wishlist-price d-flex justify-content-between mt-3">
                                     <h2 style="color: #000;"><i
-                                            class="fa-solid fa-indian-rupee-sign"></i>{{ $submission->offered_price ?? '' }}</h2>
+                                            class="fa-solid fa-indian-rupee-sign"></i><?php echo e($submission->offered_price ?? ''); ?></h2>
                                     <button type="button" class="btn btn-dark"
-                                        onclick="window.location.href='{{ route('listing-details', ['id' => $submission['id']]) }}'">
+                                        onclick="window.location.href='<?php echo e(route('listing-details', ['id' => $submission['id']])); ?>'">
                                         View Detail
                                     </button>
 
                                 </div>
                             </div>
                         </div>
-                    @endforeach
+                    <?php endforeach; $__env->popLoop(); $loop = $__env->getLastLoop(); ?>
 
 
-                    {{-- Pagination --}}
+                    
                     <div class="mt-3">
-                        {{ $wishlist->links() }}
+                        <?php echo e($wishlist->links()); ?>
+
                     </div>
-                @else
+                <?php else: ?>
                     <p class="text-center">No items in wishlist yet.</p>
-                @endif
+                <?php endif; ?>
             </div>
 
 
@@ -229,4 +235,5 @@
     </div>
 
 
-@endsection
+<?php $__env->stopSection(); ?>
+<?php echo $__env->make('layouts.user-master', \Illuminate\Support\Arr::except(get_defined_vars(), ['__data', '__path']))->render(); ?><?php /**PATH D:\web-mingo-project\flippingo_admin\resources\views/user/wishlist.blade.php ENDPATH**/ ?>

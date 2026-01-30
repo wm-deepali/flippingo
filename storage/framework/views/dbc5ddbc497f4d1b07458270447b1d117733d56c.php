@@ -15,7 +15,7 @@
 
 
                                    $imageFile = $submission['imageFile'] ?? null; 
-                                    $summaryFields = $submission['summaryFields'] ?? null;
+                                    $summaryFields = $submission['summaryFields'] ?? [];
                                   ?>
                                 <div class="wishlist-product-card" data-category="<?php echo e($catSlug); ?>">
                                     <?php if($imageFile): ?>
@@ -59,32 +59,23 @@
                                             <p class="m-0" style="color: #007bff;"><i class="fa-solid fa-eye"></i> 10</p>
                                         </div>
                                         <div class="wishlist-item-card">
-                                  <?php if(!empty($summaryFields)): ?>
-    <?php
-        // Use array_filter when summaryFields is a plain array
-        $textFields = array_filter($summaryFields, function ($field) {
-            return
-                isset($field['field_id']) &&
-                Str::startsWith($field['field_id'], 'text_');
-        });
-    ?>
+                                  <?php $__currentLoopData = $summaryFields; $__env->addLoop($__currentLoopData); foreach($__currentLoopData as $field): $__env->incrementLoopIndices(); $loop = $__env->getLastLoop(); ?>
+                      <div class="wishlist-left">
+                        <p class="m-0" style="color: green;">
+                          <i class="<?php echo e($field['icon'] ?? ''); ?>"></i>
+                        </p>
+                        <div class="d-flex flex-column">
+                          <p class="m-0" style="font-size: 16px;">
+                            <?php echo e($field['label']); ?>
 
-    <?php if(!empty($textFields)): ?>
-        <?php $__currentLoopData = $textFields; $__env->addLoop($__currentLoopData); foreach($__currentLoopData as $field): $__env->incrementLoopIndices(); $loop = $__env->getLastLoop(); ?>
-            <div class="wishlist-left">
-                <p class="m-0" style="color: green;">
-                    <i class="<?php echo e($field['icon'] ?? ''); ?>"></i>
-                </p>
-                <div class="d-flex flex-column">
-                    <p class="m-0" style="font-size: 16px;"><?php echo e($field['label'] ?? ''); ?></p>
-                    <h5 class="m-0" style="color: #000; font-size: 16px;"><?php echo e($field['value'] ?? ''); ?></h5>
-                </div>
-            </div>
-        <?php endforeach; $__env->popLoop(); $loop = $__env->getLastLoop(); ?>
-    <?php endif; ?>
-<?php endif; ?>
+                          </p>
+                          <h5 class="m-0" style="color: #000; font-size: 16px;">
+                            <?php echo e($field['value']); ?>
 
-
+                          </h5>
+                        </div>
+                      </div>
+                    <?php endforeach; $__env->popLoop(); $loop = $__env->getLastLoop(); ?>
                                         </div>
                                         <div class="wishlist-price d-flex justify-content-between mt-3">
                                             <h2 style="color: #000;"><i
@@ -105,34 +96,6 @@
 
                                         </div>
                                         <h3 class="mt-2" style="color: #000;"><?php echo e($productTitle ?? ''); ?></h3>
-                                       <?php if(!empty($summaryFields)): ?>
-    <?php
-        // Filter textarea fields using array_filter
-        $textareaFields = array_filter($summaryFields, function($field) {
-            return
-                isset($field['field_id']) &&
-                Str::startsWith($field['field_id'], 'textarea');
-        });
-    ?>
-
-    <?php if(!empty($textareaFields)): ?>
-        <p style="font-size: 13px;">
-            <?php $__currentLoopData = $textareaFields; $__env->addLoop($__currentLoopData); foreach($__currentLoopData as $index => $field): $__env->incrementLoopIndices(); $loop = $__env->getLastLoop(); ?>
-                <?php if(!empty($field['icon'])): ?>
-                    <i class="<?php echo e($field['icon']); ?>" style="margin-right: 4px;"></i>
-                <?php endif; ?>
-                <?php echo e(\Illuminate\Support\Str::limit($field['value'], 100, '...')); ?>
-
-
-                
-                <?php if($index !== array_key_last($textareaFields)): ?>
-                    &nbsp;|&nbsp;
-                <?php endif; ?>
-            <?php endforeach; $__env->popLoop(); $loop = $__env->getLastLoop(); ?>
-        </p>
-    <?php endif; ?>
-<?php endif; ?>
-
                                         <div class="d-flex justify-content-between align-items-center">
                                             <p class="m-0">By
                                                 <?php echo e(($submission['customer']['first_name'] ?? '') . ' ' . ($submission['customer']['last_name'] ?? '')); ?>
@@ -141,30 +104,23 @@
                                             <p class="m-0" style="color: #007bff;"><i class="fa-solid fa-eye"></i> 10</p>
                                         </div>
                                         <div class="wishlist-item-card">
-                                              <?php if(!empty($summaryFields)): ?>
-    <?php
-        // Use array_filter when summaryFields is a plain array
-        $textFields = array_filter($summaryFields, function ($field) {
-            return
-                isset($field['field_id']) &&
-                Str::startsWith($field['field_id'], 'text_');
-        });
-    ?>
+                                               <?php $__currentLoopData = $summaryFields; $__env->addLoop($__currentLoopData); foreach($__currentLoopData as $field): $__env->incrementLoopIndices(); $loop = $__env->getLastLoop(); ?>
+                      <div class="wishlist-left">
+                        <p class="m-0" style="color: green;">
+                          <i class="<?php echo e($field['icon'] ?? ''); ?>"></i>
+                        </p>
+                        <div class="d-flex flex-column">
+                          <p class="m-0" style="font-size: 16px;">
+                            <?php echo e($field['label']); ?>
 
-    <?php if(!empty($textFields)): ?>
-        <?php $__currentLoopData = $textFields; $__env->addLoop($__currentLoopData); foreach($__currentLoopData as $field): $__env->incrementLoopIndices(); $loop = $__env->getLastLoop(); ?>
-            <div class="wishlist-left">
-                <p class="m-0" style="color: green;">
-                    <i class="<?php echo e($field['icon'] ?? ''); ?>"></i>
-                </p>
-                <div class="d-flex flex-column">
-                    <p class="m-0" style="font-size: 16px;"><?php echo e($field['label'] ?? ''); ?></p>
-                    <h5 class="m-0" style="color: #000; font-size: 16px;"><?php echo e($field['value'] ?? ''); ?></h5>
-                </div>
-            </div>
-        <?php endforeach; $__env->popLoop(); $loop = $__env->getLastLoop(); ?>
-    <?php endif; ?>
-<?php endif; ?>
+                          </p>
+                          <h5 class="m-0" style="color: #000; font-size: 16px;">
+                            <?php echo e($field['value']); ?>
+
+                          </h5>
+                        </div>
+                      </div>
+                    <?php endforeach; $__env->popLoop(); $loop = $__env->getLastLoop(); ?>
                                         </div>
                                         <div class="wishlist-price d-flex justify-content-between mt-3">
                                             <h2 style="color: #000;"><i
@@ -194,7 +150,7 @@
     : ($fields['mrp']['value'] ?? '0');
 
                                     $imageFile = $submission->imageFile ?? null; 
-                                    $summaryFields = $submission->summaryFields ?? null;
+                                    $summaryFields = $submission->summaryFields ?? [];
 
                                         ?>
                                         <div class="wishlist-product-card" data-category="<?php echo e($category->slug); ?>">
@@ -239,30 +195,23 @@
                                                     <p class="m-0" style="color: #007bff;"><i class="fa-solid fa-eye"></i> 10</p>
                                                 </div>
                                                 <div class="wishlist-item-card">
-                                                    <?php if(!empty($summaryFields)): ?>
-                                                    <?php
-        // Use array_filter when summaryFields is a plain array
-        $textFields = array_filter($summaryFields, function ($field) {
-            return
-                isset($field['field_id']) &&
-                Str::startsWith($field['field_id'], 'text_');
-        });
-    ?>
+                                                 <?php $__currentLoopData = $summaryFields; $__env->addLoop($__currentLoopData); foreach($__currentLoopData as $field): $__env->incrementLoopIndices(); $loop = $__env->getLastLoop(); ?>
+                      <div class="wishlist-left">
+                        <p class="m-0" style="color: green;">
+                          <i class="<?php echo e($field['icon'] ?? ''); ?>"></i>
+                        </p>
+                        <div class="d-flex flex-column">
+                          <p class="m-0" style="font-size: 16px;">
+                            <?php echo e($field['label']); ?>
 
-    <?php if(!empty($textFields)): ?>
-        <?php $__currentLoopData = $textFields; $__env->addLoop($__currentLoopData); foreach($__currentLoopData as $field): $__env->incrementLoopIndices(); $loop = $__env->getLastLoop(); ?>
-            <div class="wishlist-left">
-                <p class="m-0" style="color: green;">
-                    <i class="<?php echo e($field['icon'] ?? ''); ?>"></i>
-                </p>
-                <div class="d-flex flex-column">
-                    <p class="m-0" style="font-size: 16px;"><?php echo e($field['label'] ?? ''); ?></p>
-                    <h5 class="m-0" style="color: #000; font-size: 16px;"><?php echo e($field['value'] ?? ''); ?></h5>
-                </div>
-            </div>
-        <?php endforeach; $__env->popLoop(); $loop = $__env->getLastLoop(); ?>
-   <?php endif; ?>
-<?php endif; ?>
+                          </p>
+                          <h5 class="m-0" style="color: #000; font-size: 16px;">
+                            <?php echo e($field['value']); ?>
+
+                          </h5>
+                        </div>
+                      </div>
+                    <?php endforeach; $__env->popLoop(); $loop = $__env->getLastLoop(); ?>
                                                 </div>
                                                 <div class="wishlist-price d-flex justify-content-between mt-3">
                                                     <h2 style="color: #000;"><i
@@ -283,34 +232,6 @@
 
                                                 </div>
                                                 <h3 class="mt-2" style="color: #000;"><?php echo e($productTitle ?? ''); ?></h3>
-                                                <?php if(!empty($summaryFields)): ?>
-    <?php
-        // Filter textarea fields using array_filter
-        $textareaFields = array_filter($summaryFields, function($field) {
-            return
-                isset($field['field_id']) &&
-                Str::startsWith($field['field_id'], 'textarea');
-        });
-    ?>
-
-    <?php if(!empty($textareaFields)): ?>
-        <p style="font-size: 13px;">
-            <?php $__currentLoopData = $textareaFields; $__env->addLoop($__currentLoopData); foreach($__currentLoopData as $index => $field): $__env->incrementLoopIndices(); $loop = $__env->getLastLoop(); ?>
-                <?php if(!empty($field['icon'])): ?>
-                    <i class="<?php echo e($field['icon']); ?>" style="margin-right: 4px;"></i>
-                <?php endif; ?>
-                <?php echo e(\Illuminate\Support\Str::limit($field['value'], 100, '...')); ?>
-
-
-                
-                <?php if($index !== array_key_last($textareaFields)): ?>
-                    &nbsp;|&nbsp;
-                <?php endif; ?>
-            <?php endforeach; $__env->popLoop(); $loop = $__env->getLastLoop(); ?>
-        </p>
-    <?php endif; ?>
-<?php endif; ?>
-
                                                 <div class="d-flex justify-content-between align-items-center">
                                                     <p class="m-0">By
                                                         <?php echo e(($submission['customer']->first_name ?? '') . ' ' . ($submission['customer']->last_name ?? '')); ?>
@@ -319,30 +240,23 @@
                                                     <p class="m-0" style="color: #007bff;"><i class="fa-solid fa-eye"></i> 10</p>
                                                 </div>
                                                 <div class="wishlist-item-card">
-                                               <?php if(!empty($summaryFields)): ?>
-    <?php
-        // Use array_filter when summaryFields is a plain array
-        $textFields = array_filter($summaryFields, function ($field) {
-            return
-                isset($field['field_id']) &&
-                Str::startsWith($field['field_id'], 'text_');
-        });
-    ?>
+                                             <?php $__currentLoopData = $summaryFields; $__env->addLoop($__currentLoopData); foreach($__currentLoopData as $field): $__env->incrementLoopIndices(); $loop = $__env->getLastLoop(); ?>
+                      <div class="wishlist-left">
+                        <p class="m-0" style="color: green;">
+                          <i class="<?php echo e($field['icon'] ?? ''); ?>"></i>
+                        </p>
+                        <div class="d-flex flex-column">
+                          <p class="m-0" style="font-size: 16px;">
+                            <?php echo e($field['label']); ?>
 
-    <?php if(!empty($textFields)): ?>
-        <?php $__currentLoopData = $textFields; $__env->addLoop($__currentLoopData); foreach($__currentLoopData as $field): $__env->incrementLoopIndices(); $loop = $__env->getLastLoop(); ?>
-            <div class="wishlist-left">
-                <p class="m-0" style="color: green;">
-                    <i class="<?php echo e($field['icon'] ?? ''); ?>"></i>
-                </p>
-                <div class="d-flex flex-column">
-                    <p class="m-0" style="font-size: 16px;"><?php echo e($field['label'] ?? ''); ?></p>
-                    <h5 class="m-0" style="color: #000; font-size: 16px;"><?php echo e($field['value'] ?? ''); ?></h5>
-                </div>
-            </div>
-        <?php endforeach; $__env->popLoop(); $loop = $__env->getLastLoop(); ?>
-           <?php endif; ?>
-<?php endif; ?>
+                          </p>
+                          <h5 class="m-0" style="color: #000; font-size: 16px;">
+                            <?php echo e($field['value']); ?>
+
+                          </h5>
+                        </div>
+                      </div>
+                    <?php endforeach; $__env->popLoop(); $loop = $__env->getLastLoop(); ?>
 
                                                 </div>
                                                 <div class="wishlist-price d-flex justify-content-between mt-3">

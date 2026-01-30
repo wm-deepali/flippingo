@@ -442,7 +442,7 @@
             SOLD OUT
           </span>
         <?php endif; ?>
-                        </div>
+                      </div>
                       <?php endif; ?>
                     <?php endforeach; $__env->popLoop(); $loop = $__env->getLastLoop(); ?>
                   </div>
@@ -548,25 +548,28 @@ foreach ($fields as $field) {
                 <div class="performance-metrics">
                   <!-- Revenue Box -->
 
-                   <?php if(!empty($summaryFields)): ?>
-                                                    <?php $textFields = array_filter($summaryFields, function ($field) {
-            return
-                isset($field['field_id']) &&
-                Str::startsWith($field['field_id'], 'text_');
-        });
-    ?>
+                  <?php if(!empty($summaryFields)): ?>
+    <?php $__currentLoopData = $summaryFields; $__env->addLoop($__currentLoopData); foreach($__currentLoopData as $field): $__env->incrementLoopIndices(); $loop = $__env->getLastLoop(); ?>
+        <div class="performance-box performance-revenue">
+            <div class="performance-icon">
+                <?php if(!empty($field['icon'])): ?>
+                    <i class="<?php echo e($field['icon']); ?>"></i>
+                <?php endif; ?>
+            </div>
 
-    <?php if(!empty($textFields)): ?>
-        <?php $__currentLoopData = $textFields; $__env->addLoop($__currentLoopData); foreach($__currentLoopData as $field): $__env->incrementLoopIndices(); $loop = $__env->getLastLoop(); ?>
-         <div class="performance-box performance-revenue">
-                      <div class="performance-icon"><i class="<?php echo e($field['icon'] ?? ''); ?>"></i></div>
-                    <p class="performance-value"><?php echo e($field['value'] ?? 'Not disclosed'); ?></p>
-                    <span class="performance-label"><?php echo e($field['label'] ?? ''); ?></span>
-                  </div>
-        <?php endforeach; $__env->popLoop(); $loop = $__env->getLastLoop(); ?>
-   <?php endif; ?>
+            <p class="performance-value">
+                <?php echo e($field['value'] ?? 'Not disclosed'); ?>
+
+            </p>
+
+            <span class="performance-label">
+                <?php echo e($field['label'] ?? ''); ?>
+
+            </span>
+        </div>
+    <?php endforeach; $__env->popLoop(); $loop = $__env->getLastLoop(); ?>
 <?php endif; ?>
-                  
+
                 </div>
 
                 <!-- Footer Note -->

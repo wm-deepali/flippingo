@@ -1,4 +1,5 @@
 <?php
+use App\Http\Controllers\Admin\HomePageContentController;
 use App\Http\Controllers\Admin\HomeSlideController;
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\Admin\{
@@ -266,5 +267,14 @@ Route::group(['middleware' => 'auth'], function () {
         Route::resource('home-slides', HomeSlideController::class);
         Route::post('home-slides/{homeSlide}/toggle', [HomeSlideController::class, 'toggleStatus']);
 
+        Route::get(
+            'home-page-content',
+            [HomePageContentController::class, 'index']
+        )->name('home-page-content.index');
+
+        Route::post(
+            'home-page-content',
+            [HomePageContentController::class, 'update']
+        )->name('home-page-content.update');
     });
 });

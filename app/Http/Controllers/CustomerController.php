@@ -26,7 +26,7 @@ use Carbon\Carbon;
 use App\Models\State;
 use App\Models\City;
 use App\Helpers\SmsHelper;
-
+use App\Models\FormSummaryCard;
 
 class CustomerController extends Controller
 {
@@ -522,184 +522,198 @@ class CustomerController extends Controller
         return redirect()->route('authentication-signin')->with('success', 'Your password has been changed!');
     }
 
-
     public function dashboard()
     {
-        if (Auth::guard('customer')->check()) {
-            $user_id = Auth::guard('customer')->user()->id;
-            $data['user'] = Customer::findOrFail($user_id);
-
-            // 🔹 Wallet Balance (assuming balance is a column on customers table)
-            $data['walletBalance'] = $data['user']->wallet->balance ?? 0;
-
-            // 🔹 Active Orders
-            $data['activeOrders'] = ProductOrder::where('customer_id', $user_id)
-                ->whereHas('currentStatus', function ($q) {
-                    $q->whereNotIn('status', ['delivered', 'cancelled', 'deleted']);
-                })
-                ->count();
-
-            // 🔹 Completed Purchases
-            $data['completedPurchases'] = ProductOrder::where('customer_id', $user_id)
-                ->whereHas('currentStatus', function ($q) {
-                    $q->where('status', 'delivered');
-                })
-                ->count();
-
-            $data['wishlistCount'] = Wishlist::where('customer_id', $user_id)
-                ->count();
-
-            // 🔹 Wishlist
-            $data['wishlist'] = Wishlist::with('submission.form.category', 'submission.form.formData', 'submission.customer', 'submission.files')
-                ->where('customer_id', $user_id)
-                ->latest()
-                ->paginate(20);
-
-            // 🔹 Map summary fields and image for each submission in wishlist
-            foreach ($data['wishlist'] as $item) {
-                $submission = $item->submission;
-
-                if ($submission) {
-                    $fields = json_decode($submission->data, true) ?? [];
-                    $formFields = collect(data_get($submission, 'form.formData.fields', []));
-                    $summaryFields = [];
-
-                    foreach ($fields as $field_id => $field) {
-                        $meta = $formFields->firstWhere('field_id', $field_id);
-                        if (($meta && !empty($meta['show_on_summary'])) || (!empty($field['show_on_summary']))) {
-                            $summaryFields[] = [
-                                'field_id' => $field_id,
-                                'label' => $meta['label'] ?? $field['label'] ?? '',
-                                'icon' => $meta['icon'] ?? $field['icon'] ?? '',
-                                'value' => $field['value'] ?? '',
-                            ];
-                        }
-                    }
-
-                    // Attach to model instance for easy use in Blade
-                    $submission->summaryFields = $summaryFields;
-                    $submission->category = $submission->form->category;
-
-                    $imageFile = collect($submission->files)->firstWhere('show_on_summary', true);
-                    $submission->imageFile = $imageFile;
-                }
-            }
-
-            // 🔹 Enquiry Revenues
-            $data['enquiryRevenues'] = Enquiry::where('customer_id', $user_id);
-
-            // 🔹 Recent Sales
-            $data['recentSales'] = ProductOrder::with(['submission', 'currentStatus'])
-                ->where('customer_id', $user_id)
-                ->latest()
-                ->take(5)
-                ->get();
-
-            $data['recentTransactions'] = WalletTransaction::whereHas('wallet', function ($q) use ($user_id) {
-                $q->where('customer_id', $user_id);
-            })
-                ->latest()
-                ->take(5)
-                ->get();
-
-            // 🔹 Earnings Statistics (Month-wise for whole year)
-            $earningStatsYear = ProductOrder::where('seller_id', $user_id)
-                ->whereHas('currentStatus', function ($q) {
-                    $q->whereNotIn('status', ['cancelled', 'deleted']);
-                })
-                ->selectRaw('MONTH(created_at) as month, SUM(seller_earning) as total')
-                ->whereYear('created_at', now()->year)
-                ->groupBy('month')
-                ->pluck('total', 'month')
-                ->map(fn($value) => (float) $value);
-
-            // Ensure all 12 months exist (0 if missing)
-            $data['earningStatsYear'] = collect(range(1, 12))
-                ->mapWithKeys(fn($m) => [$m => $earningStatsYear->get($m, 0.0)]);
-
-
-            // Get start and end of current month
-            $startOfMonth = Carbon::now()->startOfMonth();
-            $endOfMonth = Carbon::now()->endOfMonth();
-
-            // Initialize weekly buckets
-            $weeks = [];
-            $period = new \DatePeriod(
-                $startOfMonth,
-                new \DateInterval('P1W'),
-                $endOfMonth->addDay() // include last day
-            );
-
-            foreach ($period as $weekStart) {
-                $weekStart = Carbon::instance($weekStart); // ensure it's Carbon
-                $weekEnd = $weekStart->copy()->endOfWeek();
-                if ($weekEnd->gt($endOfMonth)) {
-                    $weekEnd = $endOfMonth;
-                }
-                $weeks[] = [
-                    'start' => $weekStart->format('Y-m-d'),
-                    'end' => $weekEnd->format('Y-m-d'),
-                    'label' => $weekStart->format('d M') . ' - ' . $weekEnd->format('d M')
-                ];
-            }
-
-            // Calculate weekly earnings
-            $weeklyEarnings = [];
-            foreach ($weeks as $week) {
-                $total = ProductOrder::where('seller_id', $user_id)
-                    ->whereHas('currentStatus', function ($q) {
-                        $q->whereNotIn('status', ['cancelled', 'deleted']);
-                    })
-                    ->whereBetween('created_at', [$week['start'], $week['end']])
-                    ->sum('seller_earning');
-
-                $weeklyEarnings[] = [
-                    'label' => $week['label'],
-                    'total' => (float) $total
-                ];
-            }
-
-            $data['earningThisMonthWeeks'] = $weeklyEarnings;
-
-
-            // Fetch all orders for the seller (excluding cancelled/deleted)
-            $orders = ProductOrder::where('seller_id', $user_id)
-                ->whereHas('currentStatus', fn($q) => $q->whereNotIn('status', ['cancelled', 'deleted']))
-                ->with('customer.countryname') // eager load customer and country
-                ->get();
-
-            // Group earnings by country name
-            $locationEarnings = $orders->groupBy(fn($order) => $order->customer->country ?? 'India')
-                ->map(function ($orders, $country) {
-                    return [
-                        'country' => $country,
-                        'total' => $orders->sum('seller_earning')
-                    ];
-                });
-
-            // Calculate total earnings
-            $totalEarnings = $locationEarnings->sum('total');
-
-            // Add percentage for progress bars
-            $locationEarnings = $locationEarnings->map(function ($item) use ($totalEarnings) {
-                return [
-                    'country' => $item['country'] ?? 'India',
-                    'total' => $item['total'],
-                    'percent' => $totalEarnings ? round(($item['total'] / $totalEarnings) * 100) : 0,
-                ];
-            });
-
-            // Pass to view
-            $data['locationEarnings'] = $locationEarnings;
-
-            // dd( $data['earningStats']);
-            return view('user.dashboard', $data);
-
-        } else {
+        if (!Auth::guard('customer')->check()) {
             return redirect()->route('authentication-signin')
                 ->withErrors('Please login to access the dashboard.');
         }
+
+        $user_id = Auth::guard('customer')->user()->id;
+        $data['user'] = Customer::findOrFail($user_id);
+
+        // 🔹 Wallet Balance
+        $data['walletBalance'] = $data['user']->wallet->balance ?? 0;
+
+        // 🔹 Active Orders
+        $data['activeOrders'] = ProductOrder::where('customer_id', $user_id)
+            ->whereHas(
+                'currentStatus',
+                fn($q) =>
+                $q->whereNotIn('status', ['delivered', 'cancelled', 'deleted'])
+            )
+            ->count();
+
+        // 🔹 Completed Purchases
+        $data['completedPurchases'] = ProductOrder::where('customer_id', $user_id)
+            ->whereHas(
+                'currentStatus',
+                fn($q) =>
+                $q->where('status', 'delivered')
+            )
+            ->count();
+
+        $data['wishlistCount'] = Wishlist::where('customer_id', $user_id)->count();
+
+        // 🔹 Wishlist
+        $data['wishlist'] = Wishlist::with(
+            'submission.form.category',
+            'submission.customer',
+            'submission.files'
+        )
+            ->where('customer_id', $user_id)
+            ->latest()
+            ->paginate(20);
+
+        // 🔹 Build summary fields (ADMIN CONTROLLED)
+        foreach ($data['wishlist'] as $item) {
+            $submission = $item->submission;
+
+            if (!$submission) {
+                continue;
+            }
+
+            $fields = is_array($submission->data)
+                ? $submission->data
+                : json_decode($submission->data, true);
+
+            $fields = is_array($fields) ? $fields : [];
+
+            // ✅ Fetch summary cards
+            $summaryCards = FormSummaryCard::where('form_id', $submission->form_id)
+                ->orderBy('position')
+                ->get();
+
+            $summaryFields = [];
+
+            foreach ($summaryCards as $card) {
+                $key = $card->field_key;
+
+                if (!isset($fields[$key])) {
+                    continue;
+                }
+
+                $value = $fields[$key]['value'] ?? null;
+
+                if (is_array($value)) {
+                    $value = implode(', ', array_map('strval', $value));
+                }
+
+                if ($value === null || $value === '') {
+                    continue;
+                }
+
+                $summaryFields[] = [
+                    'field_id' => $key,
+                    'label' => $card->label,
+                    'icon' => $card->icon,
+                    'value' => $value,
+                ];
+            }
+
+            $submission->summaryFields = $summaryFields;
+            $submission->category = $submission->form->category;
+
+            // Image
+            $submission->imageFile = collect($submission->files)
+                ->firstWhere('show_on_summary', true)
+                ?? $submission->files->first();
+        }
+
+        // 🔹 Enquiry Revenues
+        $data['enquiryRevenues'] = Enquiry::where('customer_id', $user_id);
+
+        // 🔹 Recent Sales
+        $data['recentSales'] = ProductOrder::with(['submission', 'currentStatus'])
+            ->where('customer_id', $user_id)
+            ->latest()
+            ->take(5)
+            ->get();
+
+        // 🔹 Wallet Transactions
+        $data['recentTransactions'] = WalletTransaction::whereHas(
+            'wallet',
+            fn($q) =>
+            $q->where('customer_id', $user_id)
+        )
+            ->latest()
+            ->take(5)
+            ->get();
+
+        // 🔹 Earnings Statistics (Year)
+        $earningStatsYear = ProductOrder::where('seller_id', $user_id)
+            ->whereHas(
+                'currentStatus',
+                fn($q) =>
+                $q->whereNotIn('status', ['cancelled', 'deleted'])
+            )
+            ->selectRaw('MONTH(created_at) as month, SUM(seller_earning) as total')
+            ->whereYear('created_at', now()->year)
+            ->groupBy('month')
+            ->pluck('total', 'month')
+            ->map(fn($v) => (float) $v);
+
+        $data['earningStatsYear'] = collect(range(1, 12))
+            ->mapWithKeys(fn($m) => [$m => $earningStatsYear->get($m, 0.0)]);
+
+        // 🔹 Weekly earnings (current month)
+        $startOfMonth = Carbon::now()->startOfMonth();
+        $endOfMonth = Carbon::now()->endOfMonth();
+
+        $weeks = [];
+        $period = new \DatePeriod(
+            $startOfMonth,
+            new \DateInterval('P1W'),
+            $endOfMonth->copy()->addDay()
+        );
+
+        foreach ($period as $weekStart) {
+            $weekStart = Carbon::instance($weekStart);
+            $weekEnd = min($weekStart->copy()->endOfWeek(), $endOfMonth);
+
+            $weeks[] = [
+                'label' => $weekStart->format('d M') . ' - ' . $weekEnd->format('d M'),
+                'total' => (float) ProductOrder::where('seller_id', $user_id)
+                    ->whereHas(
+                        'currentStatus',
+                        fn($q) =>
+                        $q->whereNotIn('status', ['cancelled', 'deleted'])
+                    )
+                    ->whereBetween('created_at', [$weekStart, $weekEnd])
+                    ->sum('seller_earning'),
+            ];
+        }
+
+        $data['earningThisMonthWeeks'] = $weeks;
+
+        // 🔹 Earnings by country
+        $orders = ProductOrder::where('seller_id', $user_id)
+            ->whereHas(
+                'currentStatus',
+                fn($q) =>
+                $q->whereNotIn('status', ['cancelled', 'deleted'])
+            )
+            ->with('customer.countryname')
+            ->get();
+
+        $locationEarnings = $orders
+            ->groupBy(fn($o) => $o->customer->country ?? 'India')
+            ->map(fn($orders, $country) => [
+                'country' => $country,
+                'total' => $orders->sum('seller_earning'),
+            ]);
+
+        $totalEarnings = $locationEarnings->sum('total');
+
+        $data['locationEarnings'] = $locationEarnings->map(fn($item) => [
+            'country' => $item['country'],
+            'total' => $item['total'],
+            'percent' => $totalEarnings ? round(($item['total'] / $totalEarnings) * 100) : 0,
+        ]);
+
+        return view('user.dashboard', $data);
     }
+
 
 
 

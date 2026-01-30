@@ -441,7 +441,7 @@
             SOLD OUT
           </span>
         @endif
-                        </div>
+                      </div>
                       @endif
                     @endforeach
                   </div>
@@ -547,25 +547,26 @@ foreach ($fields as $field) {
                 <div class="performance-metrics">
                   <!-- Revenue Box -->
 
-                   @if(!empty($summaryFields))
-                                                    @php $textFields = array_filter($summaryFields, function ($field) {
-            return
-                isset($field['field_id']) &&
-                Str::startsWith($field['field_id'], 'text_');
-        });
-    @endphp
+                  @if(!empty($summaryFields))
+    @foreach($summaryFields as $field)
+        <div class="performance-box performance-revenue">
+            <div class="performance-icon">
+                @if(!empty($field['icon']))
+                    <i class="{{ $field['icon'] }}"></i>
+                @endif
+            </div>
 
-    @if(!empty($textFields))
-        @foreach($textFields as $field)
-         <div class="performance-box performance-revenue">
-                      <div class="performance-icon"><i class="{{ $field['icon'] ?? '' }}"></i></div>
-                    <p class="performance-value">{{ $field['value'] ?? 'Not disclosed' }}</p>
-                    <span class="performance-label">{{ $field['label'] ?? '' }}</span>
-                  </div>
-        @endforeach
-   @endif
+            <p class="performance-value">
+                {{ $field['value'] ?? 'Not disclosed' }}
+            </p>
+
+            <span class="performance-label">
+                {{ $field['label'] ?? '' }}
+            </span>
+        </div>
+    @endforeach
 @endif
-                  
+
                 </div>
 
                 <!-- Footer Note -->
