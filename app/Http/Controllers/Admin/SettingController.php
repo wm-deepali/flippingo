@@ -74,7 +74,12 @@ class SettingController extends Controller
             // Seller Commission
             'default_commission',
             // Cancel Subscription
-            'cancel_subscription_days'
+            'cancel_subscription_days',
+            // Premium Seller
+            'premium_sales_threshold',
+            'premium_seller_note',
+
+
         ];
 
         foreach ($keys as $key) {

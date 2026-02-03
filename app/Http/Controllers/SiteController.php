@@ -14,26 +14,36 @@ use Illuminate\Support\Facades\DB;
 use App\Services\GoogleReviewsService;
 use App\Services\TrustpilotService;
 use App\Models\HomePageContent;
-
+use App\Helpers\IpHelper;
+use App\Helpers\CurrencyHelper;
 
 class SiteController extends Controller
 {
 
     public function index(GoogleReviewsService $googleReviews, TrustpilotService $trustpilot)
     {
-        $categories = Category::where('status', 'active')->get();
+        /* ======================================================
+         | 🌍 IP BASED CURRENCY DETECTION
+         ====================================================== */
+        $countryCode = IpHelper::countryCode();
+        // Currency logic
+        $viewerCurrency = $countryCode === 'in' ? 'INR' : 'USD';
+        // Exchange rate (base price assumed INR)
+        $usdRate = CurrencyHelper::usdRate(); // REAL TIME
 
+        $categories = Category::where('status', 'active')->get();
         $submissionsByCategory = [];
         $allSubmissionsFlat = [];
         $categorySubmissionCounts = [];
         $now = now();
 
         // 🔑 Preload all summary cards (performance safe)
-        $formSummaryCards = FormSummaryCard::orderBy('position')->get()->groupBy('form_id');
+        $formSummaryCards = FormSummaryCard::orderBy('position')
+            ->get()
+            ->groupBy('form_id');
 
         foreach ($categories as $category) {
 
-            // Fetch submissions for category
             $submissions = FormSubmission::whereHas('form', function ($query) use ($category) {
                 $query->where('category_id', $category->id);
             })
@@ -48,18 +58,54 @@ class SiteController extends Controller
 
             $categorySubmissionCounts[$category->id] = $submissions->count();
 
-            $processedSubmissions = $submissions->map(function ($submission) use ($formSummaryCards) {
+            $processedSubmissions = $submissions->map(function ($submission) use ($formSummaryCards, $viewerCurrency, $usdRate) {
 
-                // Decode submission data safely
+                /* =====================================
+                 | Decode submission data
+                 ===================================== */
                 $fields = is_array($submission->data)
                     ? $submission->data
                     : json_decode($submission->data, true);
 
                 $fields = is_array($fields) ? $fields : [];
 
-                // 🔑 Get summary cards for this form
-                $summaryCards = $formSummaryCards[$submission->form_id] ?? collect();
+                /* =====================================
+  | BASE PRICE FROM FORM
+  ===================================== */
+                $basePrice = ($fields['urgent_sale']['value'] ?? '') === 'Yes'
+                    ? ($fields['offered_price']['value'] ?? 0)
+                    : ($fields['mrp']['value'] ?? 0);
 
+                $basePrice = (float) $basePrice;
+
+                /* =====================================
+                 | SUBMISSION & VIEWER CURRENCY
+                 ===================================== */
+                $submissionCurrency = $submission->currency ?? 'USD'; // stored
+                $displayPrice = $basePrice;
+                /* =====================================
+                 | CONVERSION MATRIX
+                 ===================================== */
+                if ($submissionCurrency === 'INR' && $viewerCurrency === 'USD') {
+                    // INR → USD
+                    $displayPrice = round($basePrice * $usdRate, 2);
+
+                } elseif ($submissionCurrency === 'USD' && $viewerCurrency === 'INR') {
+                    // USD → INR
+                    $displayPrice = round($basePrice / $usdRate, 2);
+                }
+
+                // else: same currency → no conversion
+
+                $submission->display_price = $displayPrice;
+                $submission->currency = $viewerCurrency;
+                $submission->currency_symbol = $viewerCurrency === 'INR' ? '₹' : '$';
+
+
+                /* =====================================
+                 | SUMMARY CARDS
+                 ===================================== */
+                $summaryCards = $formSummaryCards[$submission->form_id] ?? collect();
                 $summaryFields = [];
 
                 foreach ($summaryCards as $card) {
@@ -80,26 +126,24 @@ class SiteController extends Controller
                         'label' => $card->label,
                         'icon' => $card->icon,
                         'value' => $value,
+                        'color' => $card->color,
                     ];
                 }
 
-                // Attach summary fields
                 $submission->summaryFields = $summaryFields;
-                // Attach category
+
+                /* =====================================
+                 | FLAGS & META
+                 ===================================== */
                 $submission->category = $submission->form->category;
-
                 $submission->country_id = $submission->customer->country ?? null;
+                $submission->is_verified = (bool) ($submission->customer->is_verified ?? false);
+                $submission->is_premium = (bool) ($submission->customer->is_premium ?? false);
 
-                // Verified flag
-                $submission->is_verified = (bool) ($submission->customer->is_verified_seller ?? false);
-
-                // Premium flag
-                $submission->is_premium = (bool) ($submission->customer->is_premium_seller ?? false);
-
-                // Resolve image
-                $files = collect($submission->files);
-                // All images (NEW)
-                $submission->allImages = $files->values()->map(function ($file) {
+                /* =====================================
+                 | IMAGES
+                 ===================================== */
+                $submission->allImages = collect($submission->files)->values()->map(function ($file) {
                     return [
                         'id' => $file->id,
                         'file_path' => $file->file_path,
@@ -118,29 +162,26 @@ class SiteController extends Controller
 
         $allSubmissions = collect($allSubmissionsFlat);
 
-        // Blogs
+        /* ======================================================
+         | OTHER DATA
+         ====================================================== */
         $blogs = Blog::with('category')
             ->where('status', 'published')
             ->latest()
             ->take(3)
             ->get();
 
-        // Testimonials
         $testimonials = Testimonial::where('status', 'active')->get();
 
-        // Countries
         $countries = DB::table('countries')->orderBy('name')->get();
 
-        // Sold submissions
         $soldSubmissionIds = ProductOrder::pluck('submission_id')->toArray();
 
-        // Hero categories
         $heroCategories = Category::where('status', 'active')
             ->where('show_in_hero', 1)
             ->select('id', 'name', 'slug')
             ->get();
 
-        // Home slides
         $homeSlides = HomeSlide::where('is_active', 1)
             ->orderBy('sort_order')
             ->get();
@@ -150,9 +191,6 @@ class SiteController extends Controller
             'featured',
             'most_searched',
         ])->get()->keyBy('section_key');
-        // Reviews (disabled for now)
-        // $reviews = $googleReviews->getReviews();
-        // $trustpilotReviews = $trustpilot->getReviews();
 
         return view('front.index', compact(
             'categories',
@@ -170,6 +208,34 @@ class SiteController extends Controller
     }
 
 
+    public function allCategories()
+    {
+        // All active categories
+        $categories = Category::where('status', 'active')
+            ->orderBy('name')
+            ->get();
+
+        // Count published listings per category
+        $categorySubmissionCounts = FormSubmission::where('status', 'published')
+            ->whereHas('form')
+            ->get()
+            ->groupBy(function ($submission) {
+                return $submission->form->category_id;
+            })
+            ->map->count()
+            ->toArray();
+
+        // Featured section content
+        $homePageContent = HomePageContent::whereIn('section_key', ['featured'])
+            ->get()
+            ->keyBy('section_key');
+
+        return view('front.categories', compact(
+            'categories',
+            'categorySubmissionCounts',
+            'homePageContent'
+        ));
+    }
 
 
     public function addListing(Request $request)
@@ -239,13 +305,22 @@ class SiteController extends Controller
             ->with('form')
             ->get();
 
-        return view('front.add-listing', compact('categories'));
+        $countries = DB::table('countries')->orderBy('name')->get();
+        return view('front.add-listing', compact('categories', 'countries'));
     }
-
 
 
     public function FormSubmissionList(Request $request)
     {
+        /* ======================================================
+         | 🌍 IP BASED CURRENCY DETECTION
+         ====================================================== */
+        $countryCode = IpHelper::countryCode();
+        // Currency logic
+        $viewerCurrency = $countryCode === 'in' ? 'INR' : 'USD';
+        // Exchange rate (base price assumed INR)
+        $usdRate = CurrencyHelper::usdRate(); // REAL TIME
+
         $categories = Category::where('status', 'active')
             ->with(['form.filters', 'form.formData'])
             ->get();
@@ -352,7 +427,8 @@ class SiteController extends Controller
 
 
             // Map summary fields
-            $allSubmissionsMapped = $filtered->map(function ($submission) {
+            $allSubmissionsMapped = $filtered->map(function ($submission) use ($viewerCurrency, $usdRate) {
+
                 // Decode safely
                 $fields = $submission->data;
                 if (!is_array($fields)) {
@@ -361,6 +437,39 @@ class SiteController extends Controller
 
                 // Ensure array
                 $fields = is_array($fields) ? $fields : [];
+
+                /* =====================================
+| BASE PRICE FROM FORM
+===================================== */
+                $basePrice = ($fields['urgent_sale']['value'] ?? '') === 'Yes'
+                    ? ($fields['offered_price']['value'] ?? 0)
+                    : ($fields['mrp']['value'] ?? 0);
+
+                $basePrice = (float) $basePrice;
+
+                /* =====================================
+                 | SUBMISSION & VIEWER CURRENCY
+                 ===================================== */
+                $submissionCurrency = $submission->currency ?? 'INR'; // stored
+                $displayPrice = $basePrice;
+
+                /* =====================================
+                 | CONVERSION MATRIX
+                 ===================================== */
+                if ($submissionCurrency === 'INR' && $viewerCurrency === 'USD') {
+                    // INR → USD
+                    $displayPrice = round($basePrice * $usdRate, 2);
+
+                } elseif ($submissionCurrency === 'USD' && $viewerCurrency === 'INR') {
+                    // USD → INR
+                    $displayPrice = round($basePrice / $usdRate, 2);
+                }
+
+                // else: same currency → no conversion
+
+                $submission->display_price = $displayPrice;
+                $submission->currency = $viewerCurrency;
+                $submission->currency_symbol = $viewerCurrency === 'INR' ? '₹' : '$';
 
                 $summaryCards = FormSummaryCard::where('form_id', $submission->form_id)
                     ->orderBy('position')
@@ -390,6 +499,7 @@ class SiteController extends Controller
                         'label' => $card->label,
                         'icon' => $card->icon,
                         'value' => $value,
+                        'color' => $card->color,
                     ];
                 }
                 $submission->summaryFields = $summaryFields;

@@ -61,16 +61,17 @@
                                             <li class="list-group-item d-flex align-items-center"
                                                 data-key="{{ $card->field_key }}" data-label="{{ $card->label }}">
 
-                                                {{-- ICON INPUT --}}
                                                 <input type="text" class="form-control mr-2 icon-input"
                                                     value="{{ $card->icon }}" placeholder="fa fa-user" style="max-width:130px;">
 
-                                                {{-- ICON PREVIEW --}}
+                                                <input type="color" class="form-control mr-2 color-input"
+                                                    value="{{ $card->color ?? '#000000' }}" style="width:55px;padding:2px;">
+
                                                 <span class="icon-preview mr-3">
-                                                    <i class="{{ $card->icon }}"></i>
+                                                    <i class="{{ $card->icon }}"
+                                                        style="color: {{ $card->color ?? '#000000' }}"></i>
                                                 </span>
 
-                                                {{-- LABEL --}}
                                                 <span class="flex-grow-1">{{ $card->label }}</span>
 
                                                 <button type="button"
@@ -79,7 +80,7 @@
                                         @endforeach
                                     </ul>
 
-                                    {{-- ICON HELP FOR NON-TECH USERS --}}
+                                    {{-- ICON PICKER --}}
                                     <div class="border rounded p-2 mb-3">
                                         <small class="text-muted">Click an icon to use:</small>
 
@@ -104,7 +105,6 @@
 
                                             <!-- DATE / TIME -->
                                             <i class="fa fa-calendar" data-icon="fa fa-calendar" title="Date"></i>
-                                            <i class="fa fa-clock" data-icon="fa fa-clock" title="Time"></i>
 
                                             <!-- MONEY / PAYMENT -->
                                             <i class="fa fa-rupee-sign" data-icon="fa fa-rupee-sign" title="Amount (₹)"></i>
@@ -185,7 +185,9 @@
     <script>
         $(function () {
 
-            $("#selected-summary-fields").sortable({ placeholder: "ui-state-highlight" });
+            $("#selected-summary-fields").sortable({
+                placeholder: "ui-state-highlight"
+            });
 
             /* ADD FIELD */
             $(document).on('click', '.add-summary-field', function () {
@@ -196,15 +198,19 @@
                 if ($('#selected-summary-fields li[data-key="' + key + '"]').length) return;
 
                 $('#selected-summary-fields').append(`
-                <li class="list-group-item d-flex align-items-center"
-                    data-key="${key}" data-label="${label}">
-                    <input type="text" class="form-control mr-2 icon-input"
-                           placeholder="fa fa-user" style="max-width:130px;">
-                    <span class="icon-preview mr-3"><i class="fa fa-user"></i></span>
-                    <span class="flex-grow-1">${label}</span>
-                    <button type="button" class="btn btn-sm btn-danger remove-summary-field">×</button>
-                </li>
-            `);
+          <li class="list-group-item d-flex align-items-center"
+              data-key="${key}" data-label="${label}">
+            <input type="text" class="form-control mr-2 icon-input"
+                   placeholder="fa fa-user" style="max-width:130px;">
+            <input type="color" class="form-control mr-2 color-input"
+                   value="#000000" style="width:55px;padding:2px;">
+            <span class="icon-preview mr-3">
+              <i class="fa fa-user" style="color:#000000"></i>
+            </span>
+            <span class="flex-grow-1">${label}</span>
+            <button type="button" class="btn btn-sm btn-danger remove-summary-field">×</button>
+          </li>
+        `);
             });
 
             /* REMOVE */
@@ -212,17 +218,30 @@
                 $(this).closest('li').remove();
             });
 
-            /* ICON CLICK PICKER */
+            /* ICON PICKER */
             $(document).on('click', '.icon-picker i', function () {
                 let icon = $(this).data('icon');
                 let active = $('#selected-summary-fields li').last();
+                let color = active.find('.color-input').val();
+
                 active.find('.icon-input').val(icon);
-                active.find('.icon-preview i').attr('class', icon);
+                active.find('.icon-preview i')
+                    .attr('class', icon)
+                    .css('color', color);
             });
 
-            /* LIVE PREVIEW */
+            /* LIVE ICON PREVIEW */
             $(document).on('keyup', '.icon-input', function () {
-                $(this).siblings('.icon-preview').find('i').attr('class', $(this).val());
+                $(this).siblings('.icon-preview')
+                    .find('i')
+                    .attr('class', $(this).val());
+            });
+
+            /* LIVE COLOR PREVIEW */
+            $(document).on('change', '.color-input', function () {
+                $(this).siblings('.icon-preview')
+                    .find('i')
+                    .css('color', $(this).val());
             });
 
             /* SAVE */
@@ -235,6 +254,7 @@
                         field_key: $(this).data('key'),
                         label: $(this).data('label'),
                         icon: $(this).find('.icon-input').val(),
+                        color: $(this).find('.color-input').val(),
                         position: i
                     });
                 });
@@ -242,7 +262,7 @@
                 $.post("{{ route('admin.form.summary-card.store', $form->id) }}", {
                     _token: $('meta[name="csrf-token"]').attr('content'),
                     cards
-                }, () => {
+                }, function () {
                     Swal.fire('Saved!', 'Summary card updated.', 'success')
                         .then(() => location.href = "{{ route('admin.form.index') }}");
                 });

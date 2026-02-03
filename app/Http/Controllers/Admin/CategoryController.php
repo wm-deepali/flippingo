@@ -49,7 +49,9 @@ class CategoryController extends Controller
             'slug' => 'required|max:155',
             'status' => 'required',
             'icon_image' => 'nullable|image|mimes:jpeg,png,jpg,gif,svg,webp|max:5024',
+            'country_dropdown_label' => 'nullable|required_if:enable_country_filter,1|max:100',
         ]);
+
 
         if ($validator->passes()) {
             DB::beginTransaction();
@@ -66,9 +68,14 @@ class CategoryController extends Controller
                     'status' => $request->status,
                     'is_popular' => $request->has('is_popular') ? 1 : 0,
                     'show_in_hero' => $request->has('show_in_hero') ? 1 : 0,
+
+                    'enable_country_filter' => $request->has('enable_country_filter') ? 1 : 0,
+                    'country_dropdown_label' => $request->has('enable_country_filter')
+                        ? $request->country_dropdown_label
+                        : null,
+
                     'image' => $imagePath,
                 ]);
-
 
                 DB::commit();
                 return response()->json(['success' => true]);
@@ -121,7 +128,9 @@ class CategoryController extends Controller
             'slug' => 'required|max:155',
             'status' => 'required',
             'icon_image' => 'nullable|image|mimes:jpeg,png,jpg,gif,svg,webp|max:5024',
+            'country_dropdown_label' => 'nullable|required_if:enable_country_filter,1|max:100',
         ]);
+
 
         if ($validator->passes()) {
             DB::beginTransaction();
@@ -143,9 +152,14 @@ class CategoryController extends Controller
                     'status' => $request->status,
                     'is_popular' => $request->has('is_popular') ? 1 : 0,
                     'show_in_hero' => $request->has('show_in_hero') ? 1 : 0,
+
+                    'enable_country_filter' => $request->has('enable_country_filter') ? 1 : 0,
+                    'country_dropdown_label' => $request->has('enable_country_filter')
+                        ? $request->country_dropdown_label
+                        : null,
+
                     'image' => $category->image,
                 ]);
-
 
                 DB::commit();
                 return response()->json(['success' => true]);

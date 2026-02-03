@@ -13,6 +13,7 @@ class FormSummaryCard extends Model
         'field_key',
         'label',
         'icon',
+        'color',
         'position'
     ];
 }

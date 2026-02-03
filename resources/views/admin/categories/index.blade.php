@@ -44,6 +44,7 @@
                         <th>Status</th>
                         <th>Popular</th>
                         <th>Show in Hero</th>
+                        <th>Country Filter</th>
                         <th>Created At</th>
                         <th width="100px">Action</th>
                       </tr>
@@ -71,14 +72,20 @@
                             @endif
                           </td>
 
-                           <td>
+                          <td>
                             @if($category->show_in_hero)
                               <span class="badge badge-success">Yes</span>
                             @else
                               <span class="text-muted">No</span>
                             @endif
                           </td>
-
+                          <td>
+                            @if($category->enable_country_filter)
+                              <span class="badge badge-info">Enabled</span>
+                            @else
+                              <span class="badge badge-secondary">India (Default)</span>
+                            @endif
+                          </td>
                           <td>{{ $category->created_at->format('d M Y, h:i A') }}</td>
 
                           <td>

@@ -194,10 +194,6 @@
                             @php
                                 $fields = json_decode($submission['data'], true);
                                 $productTitle = $fields['product_title']['value'] ?? 'No Title';
-                                $offeredPrice = ($fields['urgent_sale']['value'] ?? '') === 'Yes'
-                                    ? ($fields['offered_price']['value'] ?? '0')
-                                    : ($fields['mrp']['value'] ?? '0');
-
                                 $summaryFields = $submission['summaryFields'] ?? [];
                               @endphp
                             @if($submission['product_photo'])
@@ -214,7 +210,7 @@
                                 <div class="wishlist-item-card">
                                     @foreach($summaryFields as $field)
                                         <div class="wishlist-left mb-2">
-                                            <p class="m-0" style="color: green;">
+                                            <p class="m-0" style="color: {{ $field['color'] ?? '#000000' }};">
                                                 <i class="{{ $field['icon'] ?? '' }}"></i>
                                             </p>
                                             <div class="d-flex flex-column">

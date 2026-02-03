@@ -3,6 +3,7 @@
 namespace App\Http\Controllers\Admin;
 
 use App\Http\Controllers\Controller;
+use App\Models\Customer;
 use App\Models\OrderCancellationReason;
 use App\Models\Payment;
 use App\Models\PaymentRefund;
@@ -12,6 +13,7 @@ use App\Models\ProductOrder;
 use Barryvdh\DomPDF\Facade\Pdf;
 use Illuminate\Support\Carbon;
 use Illuminate\Database\Eloquent\Builder;
+use Illuminate\Validation\Rule;
 
 
 class ProductOrderController extends Controller
@@ -353,6 +355,102 @@ class ProductOrderController extends Controller
         ]);
 
         return response()->json(['success' => true]);
+    }
+
+
+    public function updateStatus(Request $request, $id)
+    {
+        $productOrder = ProductOrder::findOrFail($id);
+
+        /*
+        |--------------------------------------------------------------------------
+        | Allowed status transitions
+        |--------------------------------------------------------------------------
+        */
+        $allowedTransitions = [
+            'recent' => ['approved', 'processing', 'delivered', 'cancelled', 'deleted'],
+            'approved' => ['processing', 'delivered', 'cancelled', 'deleted'],
+            'processing' => ['delivered', 'cancelled', 'deleted'],
+            'delivered' => [],
+            'cancelled' => [],
+            'deleted' => [],
+        ];
+
+        $currentStatus = $productOrder->currentStatus?->status ?? 'recent';
+
+        if (!in_array($request->status, $allowedTransitions[$currentStatus] ?? [])) {
+            return response()->json(['message' => 'Invalid status transition'], 422);
+        }
+
+        /*
+        |--------------------------------------------------------------------------
+        | Validation
+        |--------------------------------------------------------------------------
+        */
+        $rules = [
+            'status' => ['required', Rule::in(array_keys($allowedTransitions))],
+            'remarks' => ['required', 'string', 'max:1000'],
+        ];
+
+        if ($request->status === 'delivered') {
+            $rules['delivery_date'] = ['required', 'date'];
+            $rules['delivery_method'] = ['required', 'string', 'max:255'];
+        }
+
+        if ($request->status === 'cancelled') {
+            $rules['cancellation_reason'] = ['required', 'exists:cancellation_reasons,id'];
+        }
+
+        $validated = $request->validate($rules);
+
+        /*
+        |--------------------------------------------------------------------------
+        | Save status history
+        |--------------------------------------------------------------------------
+        */
+        $productOrder->statuses()->create([
+            'product_order_id' => $productOrder->id,
+            'status' => $validated['status'],
+            'remarks' => $validated['remarks'],
+            'delivery_date' => $validated['delivery_date'] ?? null,
+            'delivery_method' => $validated['delivery_method'] ?? null,
+            'cancellation_reason_id' => $validated['cancellation_reason'] ?? null,
+            'changed_by' => auth()->id(),
+        ]);
+
+        /*
+        |--------------------------------------------------------------------------
+        | ✅ PREMIUM SELLER CHECK (FROM SETTINGS)
+        |--------------------------------------------------------------------------
+        */
+        if ($validated['status'] === 'delivered') {
+
+            // Read from settings table (cached helper)
+            $premiumThreshold = (int) setting('premium_sales_threshold', 0);
+
+            if ($premiumThreshold > 0) {
+
+                $deliveredCount = ProductOrder::where('seller_id', $productOrder->seller_id)
+                    ->whereHas('currentStatus', function ($q) {
+                        $q->where('status', 'delivered');
+                    })
+                    ->count();
+
+                $seller = Customer::find($productOrder->seller_id);
+
+                if ($seller && !$seller->is_premium && $deliveredCount >= $premiumThreshold) {
+
+                    $seller->update([
+                        'is_premium' => true,
+                        'premium_activated_at' => now(),
+                    ]);
+                }
+            }
+        }
+
+        return response()->json([
+            'message' => 'Order status updated successfully'
+        ]);
     }
 
 

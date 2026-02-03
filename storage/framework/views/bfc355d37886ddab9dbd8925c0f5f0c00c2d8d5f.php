@@ -48,7 +48,31 @@
                             Show in Hero Section
                         </label>
                     </div>
-                    
+
+                   <!-- Country Filter Option -->
+<div class="form-group">
+    <label>
+        <input type="checkbox"
+               name="enable_country_filter"
+               id="enable_country_filter"
+               value="1">
+        Enable Country Dropdown on Listing Page
+    </label>
+    <small class="form-text text-muted">
+        (If not enabled, country will be India by default)
+    </small>
+</div>
+
+<!-- Country Dropdown Label (Hidden by default) -->
+<div class="form-group d-none" id="country-label-wrapper">
+    <label>Country Dropdown Label</label>
+    <input type="text"
+           name="country_dropdown_label"
+           id="country_dropdown_label"
+           class="form-control"
+           placeholder="e.g. Select Country">
+</div>
+
                     <!-- Icon Image -->
                     <div class="form-group">
                         <label>Icon Image</label>
@@ -77,4 +101,22 @@
     document.getElementById('name').addEventListener('input', function () {
         document.getElementById('slug').value = slugify(this.value);
     });
-</script><?php /**PATH D:\web-mingo-project\flippingo_admin\resources\views/admin/categories/ajax/add-category.blade.php ENDPATH**/ ?>
+</script>
+<script>
+    document.getElementById('enable_country_filter')
+        .addEventListener('change', function () {
+
+            const wrapper = document.getElementById('country-label-wrapper');
+            const input   = document.getElementById('country_dropdown_label');
+
+            if (this.checked) {
+                wrapper.classList.remove('d-none');
+                input.required = true;
+            } else {
+                wrapper.classList.add('d-none');
+                input.required = false;
+                input.value = '';
+            }
+        });
+</script>
+<?php /**PATH D:\web-mingo-project\flippingo_admin\resources\views/admin/categories/ajax/add-category.blade.php ENDPATH**/ ?>

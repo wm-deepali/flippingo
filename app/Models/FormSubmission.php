@@ -15,6 +15,8 @@ class FormSubmission extends Model
     protected $fillable = [
         'form_id',
         'customer_id',
+        'country_id',
+        'currency',
         'data',
         'published', // keep for backward compatibility
         'status',
@@ -26,12 +28,13 @@ class FormSubmission extends Model
         'sponsor_display_until'
     ];
 
+
     protected $casts = [
         'data' => 'array',
         'published' => 'boolean',
         'expires_at' => 'datetime',
         'published_at' => 'datetime',
-        'sponsor_display_until' => 'datetime'
+        'sponsor_display_until' => 'datetime',
     ];
 
 
@@ -39,7 +42,8 @@ class FormSubmission extends Model
         'product_title',
         'category_name',
         'product_photo',
-        'offered_price'
+        'offered_price',
+        'currency_symbol'
     ];
 
     // Relationships:
@@ -118,9 +122,21 @@ class FormSubmission extends Model
     {
         $files = collect($this->files);
         $file = $files->firstWhere('show_on_summary', true)
-                    ?? $files->first()
-                    ?? null;
+            ?? $files->first()
+            ?? null;
 
         return $file ? $file->file_path : null;
     }
+
+    public function country()
+    {
+        return $this->belongsTo(Country::class, 'country_id');
+    }
+
+    public function getCurrencySymbolAttribute()
+    {
+        return $this->currency === 'USD' ? '$' : '₹';
+    }
+
+
 }

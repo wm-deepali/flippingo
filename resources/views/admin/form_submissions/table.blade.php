@@ -34,7 +34,7 @@
   <td>{{ $submission->id}}</td>
                 <td>{{ $submission->product_title }}</td>
                 <td>
-                    {{ $submission->offered_price }}
+                    {{ $submission->currency_symbol }}{{ $submission->offered_price }}
      
 
 </td>

@@ -27,6 +27,8 @@ use App\Models\State;
 use App\Models\City;
 use App\Helpers\SmsHelper;
 use App\Models\FormSummaryCard;
+use App\Helpers\IpHelper;
+use App\Helpers\CurrencyHelper;
 
 class CustomerController extends Controller
 {
@@ -565,6 +567,15 @@ class CustomerController extends Controller
             ->latest()
             ->paginate(20);
 
+        /* ======================================================
+| 🌍 IP BASED CURRENCY DETECTION
+====================================================== */
+        $countryCode = IpHelper::countryCode();
+        // Currency logic
+        $viewerCurrency = $countryCode === 'in' ? 'INR' : 'USD';
+        // Exchange rate (base price assumed INR)
+        $usdRate = CurrencyHelper::usdRate(); // REAL TIME
+
         // 🔹 Build summary fields (ADMIN CONTROLLED)
         foreach ($data['wishlist'] as $item) {
             $submission = $item->submission;
@@ -578,6 +589,39 @@ class CustomerController extends Controller
                 : json_decode($submission->data, true);
 
             $fields = is_array($fields) ? $fields : [];
+
+                /* =====================================
+                | BASE PRICE FROM FORM
+                ===================================== */
+                $basePrice = ($fields['urgent_sale']['value'] ?? '') === 'Yes'
+                    ? ($fields['offered_price']['value'] ?? 0)
+                    : ($fields['mrp']['value'] ?? 0);
+
+                $basePrice = (float) $basePrice;
+
+                /* =====================================
+                 | SUBMISSION & VIEWER CURRENCY
+                 ===================================== */
+                $submissionCurrency = $submission->currency ?? 'USD'; // stored
+                $displayPrice = $basePrice;
+                /* =====================================
+                 | CONVERSION MATRIX
+                 ===================================== */
+                if ($submissionCurrency === 'INR' && $viewerCurrency === 'USD') {
+                    // INR → USD
+                    $displayPrice = round($basePrice * $usdRate, 2);
+
+                } elseif ($submissionCurrency === 'USD' && $viewerCurrency === 'INR') {
+                    // USD → INR
+                    $displayPrice = round($basePrice / $usdRate, 2);
+                }
+
+                // else: same currency → no conversion
+
+                $submission->display_price = $displayPrice;
+                $submission->currency = $viewerCurrency;
+                $submission->currency_symbol = $viewerCurrency === 'INR' ? '₹' : '$';
+
 
             // ✅ Fetch summary cards
             $summaryCards = FormSummaryCard::where('form_id', $submission->form_id)
@@ -608,6 +652,7 @@ class CustomerController extends Controller
                     'label' => $card->label,
                     'icon' => $card->icon,
                     'value' => $value,
+                    'color' => $card->color,
                 ];
             }
 

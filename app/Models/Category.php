@@ -11,7 +11,7 @@ class Category extends Model
 {
     use HasFactory, HasSlug;
 
-    protected $fillable = ['name', 'slug', 'status', 'image', 'is_popular', 'show_in_hero'];
+    protected $fillable = ['name', 'slug', 'status', 'image', 'is_popular', 'show_in_hero', 'enable_country_filter', 'country_dropdown_label'];
 
 
     public function getSlugOptions(): SlugOptions

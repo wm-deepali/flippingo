@@ -67,6 +67,12 @@
                                         <span class="font-weight-bold">Cancel Subscription</span>
                                     </a>
                                 </li>
+                                <li class="nav-item">
+                                    <a class="nav-link" data-toggle="pill" href="#premium-setting">
+                                        <i data-feather="star" class="font-medium-3 mr-1"></i>
+                                        <span class="font-weight-bold">Premium Seller</span>
+                                    </a>
+                                </li>
 
                             </ul>
                         </div>
@@ -328,7 +334,8 @@
                                                             <label>Template Text</label>
                                                             <textarea class="form-control mb-2"
                                                                 name="sms_templates[{{ $i }}][text]"
-                                                                placeholder="Enter Template Message" readonly>{{ $template['text'] ?? '' }}</textarea>
+                                                                placeholder="Enter Template Message"
+                                                                readonly>{{ $template['text'] ?? '' }}</textarea>
 
                                                             {{-- Variables --}}
                                                             <label>Available Variables</label>
@@ -446,6 +453,38 @@
                                                 <button type="submit" class="btn btn-primary">Save Cancel Settings</button>
                                             </form>
                                         </div>
+
+                                        <div class="tab-pane fade" id="premium-setting">
+  <form method="POST" action="{{ route('admin.settings.update') }}">
+    @csrf
+
+    <div class="form-group">
+      <label>Sales Required to Become Premium Seller</label>
+      <input type="number"
+             class="form-control"
+             name="premium_sales_threshold"
+             value="{{ $settings['premium_sales_threshold'] ?? 10 }}"
+             min="1">
+      <small class="text-muted">
+        Seller becomes premium automatically after completing this many sales.
+      </small>
+    </div>
+
+    <div class="form-group">
+      <label>Premium Seller Tooltip / Note</label>
+      <textarea class="form-control"
+                name="premium_seller_note"
+                rows="3"
+                placeholder="Why this seller is premium">
+        {{ $settings['premium_seller_note'] ?? '' }}
+      </textarea>
+    </div>
+
+    <button type="submit" class="btn btn-primary">
+      Save Premium Rules
+    </button>
+  </form>
+</div>
 
                                     </div>
                                 </div>

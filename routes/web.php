@@ -160,6 +160,10 @@ Route::group(['middleware' => 'auth'], function () {
         Route::get('/seller-orders/{sellerId}', [ProductOrderController::class, 'sellerOrders'])
             ->name('seller-orders');
 
+        Route::post(
+            '/customers/{customer}/toggle-verification',
+            [CustomerController::class, 'toggleVerification']
+        )->name('customers.toggleVerification');
 
         // wallets and theri routes
         Route::get('wallets', [WalletController::class, 'index'])->name('wallets.index');

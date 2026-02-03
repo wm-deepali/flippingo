@@ -98,7 +98,7 @@
                         </a>
 
                  
-                        <a href="{{ route('admin.customers.show', ['id' => $order->seller_id]) }}" target="_blank" class="btn btn-sm btn-primary">
+                        <a href="{{ route('admin.customers.show', $order->seller_id) }}" target="_blank" class="btn btn-sm btn-primary">
                             View Buyer Info
                         </a>
 

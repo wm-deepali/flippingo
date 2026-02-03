@@ -9,11 +9,7 @@
 
                                     $fields = json_decode($submission['data'], true);
                                     $productTitle = $fields['product_title']['value'] ?? 'No Title';
-                                   $offeredPrice = ($fields['urgent_sale']['value'] ?? '') === 'Yes'
-    ? ($fields['offered_price']['value'] ?? '0')
-    : ($fields['mrp']['value'] ?? '0');
-
-
+                                
                                    $imageFile = $submission['imageFile'] ?? null; 
                                     $summaryFields = $submission['summaryFields'] ?? [];
                                   ?>
@@ -61,7 +57,7 @@
                                         <div class="wishlist-item-card">
                                   <?php $__currentLoopData = $summaryFields; $__env->addLoop($__currentLoopData); foreach($__currentLoopData as $field): $__env->incrementLoopIndices(); $loop = $__env->getLastLoop(); ?>
                       <div class="wishlist-left">
-                        <p class="m-0" style="color: green;">
+                       <p class="m-0" style="color: <?php echo e($field['color'] ?? '#000000'); ?>;">
                           <i class="<?php echo e($field['icon'] ?? ''); ?>"></i>
                         </p>
                         <div class="d-flex flex-column">
@@ -79,7 +75,7 @@
                                         </div>
                                         <div class="wishlist-price d-flex justify-content-between mt-3">
                                             <h2 style="color: #000;"><i
-                                                    class="fa-solid fa-indian-rupee-sign"></i><?php echo e($offeredPrice); ?></h2>
+                                                    class="fa-solid fa-indian-rupee-sign"></i><?php echo e($submission['currency_symbol']); ?><?php echo e(number_format($submission['display_price'], 2)); ?></h2>
                                             <button type="button" class="btn btn-dark"
                                                 onclick="window.location.href='<?php echo e(route('listing-details', ['id' => $submission['id']])); ?>'">
                                                 View Detail
@@ -106,7 +102,7 @@
                                         <div class="wishlist-item-card">
                                                <?php $__currentLoopData = $summaryFields; $__env->addLoop($__currentLoopData); foreach($__currentLoopData as $field): $__env->incrementLoopIndices(); $loop = $__env->getLastLoop(); ?>
                       <div class="wishlist-left">
-                        <p class="m-0" style="color: green;">
+                       <p class="m-0" style="color: <?php echo e($field['color'] ?? '#000000'); ?>;">
                           <i class="<?php echo e($field['icon'] ?? ''); ?>"></i>
                         </p>
                         <div class="d-flex flex-column">
@@ -124,7 +120,7 @@
                                         </div>
                                         <div class="wishlist-price d-flex justify-content-between mt-3">
                                             <h2 style="color: #000;"><i
-                                                    class="fa-solid fa-indian-rupee-sign"></i><?php echo e($offeredPrice); ?></h2>
+                                                    class="fa-solid fa-indian-rupee-sign"></i><?php echo e($submission['currency_symbol']); ?><?php echo e(number_format($submission['display_price'], 2)); ?></h2>
                                             <button type="button" class="btn btn-dark"
                                                 onclick="window.location.href='<?php echo e(route('listing-details', ['id' => $submission['id']])); ?>'">
                                                 View Detail
@@ -145,10 +141,7 @@
                                         <?php
                                             $fields = json_decode($submission->data, true);
                                             $productTitle = $fields['product_title']['value'] ?? 'No Title';
-                                             $offeredPrice = ($fields['urgent_sale']['value'] ?? '') === 'Yes'
-    ? ($fields['offered_price']['value'] ?? '0')
-    : ($fields['mrp']['value'] ?? '0');
-
+                                
                                     $imageFile = $submission->imageFile ?? null; 
                                     $summaryFields = $submission->summaryFields ?? [];
 
@@ -197,7 +190,7 @@
                                                 <div class="wishlist-item-card">
                                                  <?php $__currentLoopData = $summaryFields; $__env->addLoop($__currentLoopData); foreach($__currentLoopData as $field): $__env->incrementLoopIndices(); $loop = $__env->getLastLoop(); ?>
                       <div class="wishlist-left">
-                        <p class="m-0" style="color: green;">
+                        <p class="m-0" style="color: <?php echo e($field['color'] ?? '#000000'); ?>;">
                           <i class="<?php echo e($field['icon'] ?? ''); ?>"></i>
                         </p>
                         <div class="d-flex flex-column">
@@ -214,8 +207,12 @@
                     <?php endforeach; $__env->popLoop(); $loop = $__env->getLastLoop(); ?>
                                                 </div>
                                                 <div class="wishlist-price d-flex justify-content-between mt-3">
-                                                    <h2 style="color: #000;"><i
-                                                            class="fa-solid fa-indian-rupee-sign"></i><?php echo e($offeredPrice); ?></h2>
+                                                   <h2 style="color:#000;">
+                        <?php echo e($submission['currency_symbol']); ?>
+
+                       <?php echo e($submission['currency_symbol']  == '$'? number_format($submission['display_price'], 2) : $submission['display_price']); ?>
+
+                      </h2>
                                                     <button type="button" class="btn btn-dark"
                                                         onclick="window.location.href='<?php echo e(route('listing-details', ['id' => $submission['id']])); ?>'">
                                                         View Detail
@@ -242,7 +239,7 @@
                                                 <div class="wishlist-item-card">
                                              <?php $__currentLoopData = $summaryFields; $__env->addLoop($__currentLoopData); foreach($__currentLoopData as $field): $__env->incrementLoopIndices(); $loop = $__env->getLastLoop(); ?>
                       <div class="wishlist-left">
-                        <p class="m-0" style="color: green;">
+                       <p class="m-0" style="color: <?php echo e($field['color'] ?? '#000000'); ?>;">
                           <i class="<?php echo e($field['icon'] ?? ''); ?>"></i>
                         </p>
                         <div class="d-flex flex-column">
@@ -260,8 +257,12 @@
 
                                                 </div>
                                                 <div class="wishlist-price d-flex justify-content-between mt-3">
-                                                    <h2 style="color: #000;"><i
-                                                            class="fa-solid fa-indian-rupee-sign"></i><?php echo e($offeredPrice); ?></h2>
+                                                  <h2 style="color:#000;">
+                        <?php echo e($submission['currency_symbol']); ?>
+
+                       <?php echo e($submission['currency_symbol']  == '$'? number_format($submission['display_price'], 2) : $submission['display_price']); ?>
+
+                      </h2>
                                                     <button type="button" class="btn btn-dark"
                                                         onclick="window.location.href='<?php echo e(route('listing-details', ['id' => $submission['id']])); ?>'">
                                                         View Detail

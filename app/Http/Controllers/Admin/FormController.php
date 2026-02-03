@@ -31,28 +31,36 @@ class FormController extends Controller
     }
 
 
-    public function showFormHtml($id)
-    {
-        $form = Form::findOrFail($id);
-        // Fetch the associated form data (fields/configuration) if any
-        $formData = FormData::where('form_id', $form->id)->first();
+   public function showFormHtml($id)
+{
+    $form = Form::findOrFail($id);
+    $formData = FormData::where('form_id', $form->id)->first();
 
-        // Assuming you want to return the rendered form HTML or form data JSON
-        // Here, returning HTML snippet or form JSON to inject into frontend
+    // Get category via form relationship
+    $category = $form->category; // make sure relationship exists
 
-        // If form HTML is stored in form_data table under 'html'
-        $html = $formData ? $formData->html : '';
-        // dd($formData->fields);
-        // Respond with HTML content to be injected
-        return response()->json([
-            'success' => true,
-            'html' => $html,
-            'formdata' => $formData,
-            'fields' => $formData ? $formData->fields : [],
-            'form_id' => $form->id,
-            'form_name' => $form->name,
-        ]);
-    }
+    $enableCountry = $category?->enable_country_filter ?? 0;
+
+    // Build country dropdown HTML
+    $countries = \DB::table('countries')->orderBy('name')->get();
+
+    $countryHtml = view('partials.country-dropdown', [
+        'countries' => $countries,
+        'enableCountry' => $enableCountry
+    ])->render();
+
+    // Original form HTML
+    $formHtml = $formData?->html ?? '';
+
+    return response()->json([
+        'success' => true,
+        'html' => $countryHtml . $formHtml, // 👈 prepend country
+        'fields' => $formData?->fields ?? [],
+        'form_id' => $form->id,
+        'form_name' => $form->name,
+    ]);
+}
+
 
 
     /**
@@ -547,6 +555,7 @@ class FormController extends Controller
             'savedCards'
         ));
     }
+    
     public function storeSummaryCard(Request $request, Form $form)
     {
         $request->validate([
@@ -558,30 +567,36 @@ class FormController extends Controller
 
         foreach ($request->cards as $index => $card) {
 
-            $fieldKey = $card['field_key']; // ✅ FIX HERE
+            $fieldKey = $card['field_key'];
+
+            $data = [
+                'icon' => $card['icon'] ?? null,
+                'color' => $card['color'] ?? '#000000',
+                'position' => $index,
+            ];
 
             if ($existing->has($fieldKey)) {
-                // Update existing
-                $existing[$fieldKey]->update([
-                    'icon' => $card['icon'] ?? null,
-                    'position' => $index,
-                ]);
+
+                // 🔁 Update existing card
+                $existing[$fieldKey]->update($data);
 
                 // Mark as handled
                 $existing->forget($fieldKey);
 
             } else {
-                // Create new
+
+                // ➕ Create new card
                 $form->summaryCards()->create([
                     'field_key' => $fieldKey,
                     'label' => $card['label'],
                     'icon' => $card['icon'] ?? null,
+                    'color' => $card['color'] ?? '#000000',
                     'position' => $index,
                 ]);
             }
         }
 
-        // Delete removed cards
+        // 🗑 Delete removed cards
         if ($existing->isNotEmpty()) {
             $form->summaryCards()
                 ->whereIn('field_key', $existing->keys())
@@ -590,5 +605,6 @@ class FormController extends Controller
 
         return response()->json(['success' => true]);
     }
+
 
 }

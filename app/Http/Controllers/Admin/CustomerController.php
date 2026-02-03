@@ -150,4 +150,17 @@ class CustomerController extends Controller
         return view('admin.customers.all_admin_commission', compact('data'));
     }
 
+
+      public function toggleVerification(Customer $customer)
+    {
+        $customer->update([
+            'is_verified' => ! $customer->is_verified
+        ]);
+
+        return response()->json([
+            'status' => 'success',
+            'verified' => $customer->is_verified
+        ]);
+    }
+
 }

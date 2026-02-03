@@ -74,18 +74,33 @@
                           {{ $slide->highlight ?? '—' }}
                         </td>
 
-                        <td>
-                          @if($slide->media_type === 'video')
-                            <span class="badge badge-info">Video</span>
-                          @elseif($slide->media_path)
-                            <img src="{{ asset('storage/'.$slide->media_path) }}"
-                                 width="60"
-                                 height="40"
-                                 class="rounded">
-                          @else
-                            <span class="text-muted">—</span>
-                          @endif
-                        </td>
+                      <td>
+  @if($slide->media_type === 'image' && $slide->media_path)
+      <img src="{{ asset('storage/'.$slide->media_path) }}"
+           width="60"
+           height="40"
+           class="rounded"
+           style="object-fit:cover;">
+
+  @elseif($slide->media_type === 'video')
+
+      @if($slide->video_type === 'upload')
+          <span class="badge badge-primary">Video (Upload)</span>
+
+      @elseif(in_array($slide->video_type, ['youtube','vimeo']))
+          <span class="badge badge-info">
+              Video ({{ ucfirst($slide->video_type) }})
+          </span>
+
+      @else
+          <span class="badge badge-secondary">Video (External)</span>
+      @endif
+
+  @else
+      <span class="text-muted">—</span>
+  @endif
+</td>
+
 
                         <td>
                           {{ is_array($slide->features) ? count($slide->features) : 0 }}

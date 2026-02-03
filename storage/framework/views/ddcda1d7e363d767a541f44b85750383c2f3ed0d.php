@@ -75,18 +75,33 @@
 
                         </td>
 
-                        <td>
-                          <?php if($slide->media_type === 'video'): ?>
-                            <span class="badge badge-info">Video</span>
-                          <?php elseif($slide->media_path): ?>
-                            <img src="<?php echo e(asset('storage/'.$slide->media_path)); ?>"
-                                 width="60"
-                                 height="40"
-                                 class="rounded">
-                          <?php else: ?>
-                            <span class="text-muted">—</span>
-                          <?php endif; ?>
-                        </td>
+                      <td>
+  <?php if($slide->media_type === 'image' && $slide->media_path): ?>
+      <img src="<?php echo e(asset('storage/'.$slide->media_path)); ?>"
+           width="60"
+           height="40"
+           class="rounded"
+           style="object-fit:cover;">
+
+  <?php elseif($slide->media_type === 'video'): ?>
+
+      <?php if($slide->video_type === 'upload'): ?>
+          <span class="badge badge-primary">Video (Upload)</span>
+
+      <?php elseif(in_array($slide->video_type, ['youtube','vimeo'])): ?>
+          <span class="badge badge-info">
+              Video (<?php echo e(ucfirst($slide->video_type)); ?>)
+          </span>
+
+      <?php else: ?>
+          <span class="badge badge-secondary">Video (External)</span>
+      <?php endif; ?>
+
+  <?php else: ?>
+      <span class="text-muted">—</span>
+  <?php endif; ?>
+</td>
+
 
                         <td>
                           <?php echo e(is_array($slide->features) ? count($slide->features) : 0); ?>

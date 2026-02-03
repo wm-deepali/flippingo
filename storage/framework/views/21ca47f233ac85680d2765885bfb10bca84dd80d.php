@@ -195,11 +195,7 @@
                             <?php
                                 $fields = json_decode($submission['data'], true);
                                 $productTitle = $fields['product_title']['value'] ?? 'No Title';
-                                $offeredPrice = ($fields['urgent_sale']['value'] ?? '') === 'Yes'
-                                    ? ($fields['offered_price']['value'] ?? '0')
-                                    : ($fields['mrp']['value'] ?? '0');
-
-                                $summaryFields = $submission['summaryFields'] ?? null;
+                                $summaryFields = $submission['summaryFields'] ?? [];
                               ?>
                             <?php if($submission['product_photo']): ?>
                                 <img src="<?php echo e(asset('storage/' . $submission['product_photo'])); ?>" />
@@ -215,7 +211,7 @@
                                 <div class="wishlist-item-card">
                                     <?php $__currentLoopData = $summaryFields; $__env->addLoop($__currentLoopData); foreach($__currentLoopData as $field): $__env->incrementLoopIndices(); $loop = $__env->getLastLoop(); ?>
                                         <div class="wishlist-left mb-2">
-                                            <p class="m-0" style="color: green;">
+                                            <p class="m-0" style="color: <?php echo e($field['color'] ?? '#000000'); ?>;">
                                                 <i class="<?php echo e($field['icon'] ?? ''); ?>"></i>
                                             </p>
                                             <div class="d-flex flex-column">

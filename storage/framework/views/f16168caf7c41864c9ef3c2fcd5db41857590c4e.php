@@ -96,7 +96,7 @@
 
             <div class="wishlist-container">
                 <!-- <h2 style="color: #000;font-weight: 600; line-height: 20px;">Draft Listings</h2>
-                                                                <p>Continue where you left off</p> -->
+                                                                        <p>Continue where you left off</p> -->
                 <div class="wishlist-cont">
                     <button type="button" onclick="window.location.href='<?php echo e(route('listing-list')); ?>'"
                         class="wishlist-create">+ Create Your Wishlist</button>
@@ -111,7 +111,7 @@
                         <?php
                             $submission = $item->submission ?? [];
                             $customer = $submission->customer ?? [];
-                            $summaryFields = $submission->summaryFields ?? null;
+                            $summaryFields = $submission->summaryFields ?? [];
                         ?>
 
                         <div class="wishlist-product-card">
@@ -143,7 +143,7 @@
                                 <div class="wishlist-item-card">
                                     <?php $__currentLoopData = $summaryFields; $__env->addLoop($__currentLoopData); foreach($__currentLoopData as $field): $__env->incrementLoopIndices(); $loop = $__env->getLastLoop(); ?>
                                         <div class="wishlist-left mb-2">
-                                            <p class="m-0" style="color: green;">
+                                            <p class="m-0" style="color: <?php echo e($field['color'] ?? '#000000'); ?>;">
                                                 <i class="<?php echo e($field['icon'] ?? ''); ?>"></i>
                                             </p>
                                             <div class="d-flex flex-column">
@@ -162,8 +162,13 @@
 
                                 </div>
                                 <div class="wishlist-price d-flex justify-content-between mt-3">
-                                    <h2 style="color: #000;"><i
-                                            class="fa-solid fa-indian-rupee-sign"></i><?php echo e($submission->offered_price ?? ''); ?></h2>
+                                    <h2 style="color:#000;">
+                                        <?php echo e($submission->currency_symbol); ?>
+
+                                        <?php echo e(number_format($submission->display_price, 2)); ?>
+
+                                    </h2>
+
                                     <button type="button" class="btn btn-dark"
                                         onclick="window.location.href='<?php echo e(route('listing-details', ['id' => $submission['id']])); ?>'">
                                         View Detail
@@ -188,7 +193,7 @@
                                 <div class="wishlist-item-card">
                                     <?php $__currentLoopData = $summaryFields; $__env->addLoop($__currentLoopData); foreach($__currentLoopData as $field): $__env->incrementLoopIndices(); $loop = $__env->getLastLoop(); ?>
                                         <div class="wishlist-left mb-2">
-                                            <p class="m-0" style="color: green;">
+                                            <p class="m-0" style="color: <?php echo e($field['color'] ?? '#000000'); ?>;">
                                                 <i class="<?php echo e($field['icon'] ?? ''); ?>"></i>
                                             </p>
                                             <div class="d-flex flex-column">
@@ -206,10 +211,15 @@
 
                                 </div>
                                 <div class="wishlist-price d-flex justify-content-between mt-3">
-                                    <h2 style="color: #000;"><i
-                                            class="fa-solid fa-indian-rupee-sign"></i><?php echo e($submission->offered_price ?? ''); ?></h2>
+                                    <h2 style="color:#000000;">
+                                        <?php echo e($submission->currency_symbol); ?>
+
+                                        <?php echo e(number_format($submission->display_price, 2)); ?>
+
+                                    </h2>
+
                                     <button type="button" class="btn btn-dark"
-                                        onclick="window.location.href='<?php echo e(route('listing-details', ['id' => $submission['id']])); ?>'">
+                                        onclick="window.location.href='<?php echo e(route('listing-details', ['id' => $submission->id])); ?>'">
                                         View Detail
                                     </button>
 

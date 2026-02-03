@@ -52,6 +52,36 @@
                         </label>
                     </div>
 
+      <!-- Country Filter Option -->
+<div class="form-group">
+    <label>
+        <input type="checkbox"
+               name="enable_country_filter"
+               id="enable_country_filter"
+               value="1"
+               {{ $category->enable_country_filter ? 'checked' : '' }}>
+        Enable Country Dropdown on Listing Page
+    </label>
+    <small class="form-text text-muted">
+        (If not enabled, country will be India by default)
+    </small>
+</div>
+
+<!-- Country Dropdown Label (conditional) -->
+<div class="form-group {{ $category->enable_country_filter ? '' : 'd-none' }}"
+     id="country-label-wrapper">
+    <label>Country Dropdown Label</label>
+    <input type="text"
+           name="country_dropdown_label"
+           id="country_dropdown_label"
+           class="form-control"
+           placeholder="e.g. Select Country"
+           value="{{ $category->country_dropdown_label ?? '' }}"
+           {{ $category->enable_country_filter ? 'required' : '' }}>
+</div>
+
+
+
                     <div class="form-group">
                         <label>Icon Image</label>
                         <input type="file" name="icon_image" class="form-control-file">
@@ -89,3 +119,34 @@
         document.getElementById('slug').value = slugify(this.value);
     });
 </script>
+<script>
+    const enableCountryCheckbox = document.getElementById('enable_country_filter');
+    const countryLabelWrapper  = document.getElementById('country-label-wrapper');
+    const countryLabelInput    = document.getElementById('country_dropdown_label');
+
+    function toggleCountryLabel() {
+        if (enableCountryCheckbox.checked) {
+            countryLabelWrapper.classList.remove('d-none');
+            countryLabelInput.required = true;
+            countryLabelInput.disabled = false;
+
+            // Optional default
+            if (!countryLabelInput.value) {
+                countryLabelInput.value = 'Select Country';
+            }
+
+        } else {
+            countryLabelWrapper.classList.add('d-none');
+            countryLabelInput.required = false;
+            countryLabelInput.disabled = true; // 🔥 IMPORTANT
+            countryLabelInput.value = '';
+        }
+    }
+
+    // Initial state on modal load
+    toggleCountryLabel();
+
+    // Toggle on change
+    enableCountryCheckbox.addEventListener('change', toggleCountryLabel);
+</script>
+

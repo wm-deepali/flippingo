@@ -13,6 +13,8 @@ use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Storage;
 use App\Models\FormSummaryCard;
 use App\Models\ProductOrder;
+use App\Helpers\IpHelper;
+use App\Helpers\CurrencyHelper;
 
 class ListingController extends Controller
 {
@@ -67,6 +69,7 @@ class ListingController extends Controller
                     'label' => $card->label,
                     'icon' => $card->icon,
                     'value' => $value,
+                    'color' => $card->color,
                 ];
             }
 
@@ -185,6 +188,7 @@ class ListingController extends Controller
                 'label' => $card->label,
                 'icon' => $card->icon,
                 'value' => $value,
+                'color' => $card->color,
             ];
         }
 
@@ -412,10 +416,22 @@ class ListingController extends Controller
             }
         }
 
+        $countryId = $request->input('country'); // country dropdown value (ID)
+        $currency = 'INR'; // default
+
+        if (!empty($countryId)) {
+            // Assuming India ID = 101 (change if different)
+            if ((int) $countryId !== 101) {
+                $currency = 'USD';
+            }
+        }
+
         // Save submission
         $submission = FormSubmission::create([
             'form_id' => $formId,
             'customer_id' => $customerId,
+            'country_id' => $countryId,
+            'currency' => $currency,
             'data' => json_encode($inputDataWithMeta, JSON_PRETTY_PRINT),
             'status' => 'pending',
             'expires_at' => $expiresAt,
@@ -713,6 +729,15 @@ class ListingController extends Controller
             ->latest()
             ->paginate(20);
 
+        /* ======================================================
+        | 🌍 IP BASED CURRENCY DETECTION
+        ====================================================== */
+        $countryCode = IpHelper::countryCode();
+        // Currency logic
+        $viewerCurrency = $countryCode === 'in' ? 'INR' : 'USD';
+        // Exchange rate (base price assumed INR)
+        $usdRate = CurrencyHelper::usdRate(); // REAL TIME
+
         foreach ($wishlist as $item) {
             $submission = $item->submission;
 
@@ -726,6 +751,38 @@ class ListingController extends Controller
                 : json_decode($submission->data, true);
 
             $fields = is_array($fields) ? $fields : [];
+
+            /* =====================================
+            | BASE PRICE FROM FORM
+            ===================================== */
+            $basePrice = ($fields['urgent_sale']['value'] ?? '') === 'Yes'
+                ? ($fields['offered_price']['value'] ?? 0)
+                : ($fields['mrp']['value'] ?? 0);
+
+            $basePrice = (float) $basePrice;
+
+            /* =====================================
+             | SUBMISSION & VIEWER CURRENCY
+             ===================================== */
+            $submissionCurrency = $submission->currency ?? 'USD'; // stored
+            $displayPrice = $basePrice;
+            /* =====================================
+             | CONVERSION MATRIX
+             ===================================== */
+            if ($submissionCurrency === 'INR' && $viewerCurrency === 'USD') {
+                // INR → USD
+                $displayPrice = round($basePrice * $usdRate, 2);
+
+            } elseif ($submissionCurrency === 'USD' && $viewerCurrency === 'INR') {
+                // USD → INR
+                $displayPrice = round($basePrice / $usdRate, 2);
+            }
+
+            // else: same currency → no conversion
+
+            $submission->display_price = $displayPrice;
+            $submission->currency = $viewerCurrency;
+            $submission->currency_symbol = $viewerCurrency === 'INR' ? '₹' : '$';
 
             // ✅ Fetch admin-defined summary cards
             $summaryCards = FormSummaryCard::where('form_id', $submission->form_id)
@@ -756,6 +813,7 @@ class ListingController extends Controller
                     'label' => $card->label,
                     'icon' => $card->icon,
                     'value' => $value,
+                    'color' => $card->color,
                 ];
             }
 
@@ -1012,8 +1070,8 @@ class ListingController extends Controller
                     'title' => $title,
                     'url' => route('listing-details', ['id' => $s->id]),
                     'seller' => $s->customer?->name,
-                    'is_verified' => $s->customer?->is_verified_seller ?? false,
-                    'is_premium' => $s->customer?->is_premium_seller ?? false,
+                    'is_verified' => $s->customer?->is_verified ?? false,
+                    'is_premium' => $s->customer?->is_premium ?? false,
                     'image' => $imageFile?->file_path
                 ];
             });

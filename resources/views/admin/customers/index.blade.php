@@ -79,36 +79,84 @@
 
                                                     <!-- Status -->
                                                     <td>
+                                                        {{-- Account Status --}}
                                                         <span
-                                                            class="badge {{ $customer->status == 'active' ? 'badge-success' : 'badge-danger' }}">
+                                                            class="badge {{ $customer->status === 'active' ? 'badge-success' : 'badge-danger' }}">
                                                             {{ ucfirst($customer->status ?? 'inactive') }}
                                                         </span>
+
+                                                        <br>
+
+                                                        {{-- Verification Status --}}
+                                                        @if($customer->is_verified)
+                                                            <span class="badge badge-info" data-toggle="tooltip"
+                                                                title="{{ $customer->verification_note ?? 'Verified by admin' }}">
+                                                                ✔ Verified
+                                                            </span>
+                                                        @else
+                                                            <span class="badge badge-secondary">Not Verified</span>
+                                                        @endif
                                                     </td>
+
 
                                                     <!-- Actions -->
                                                     <td>
-                                                        <a href="{{ route('admin.customers.show', $customer->id) }}"
-                                                            class="btn btn-sm btn-info">View</a>
-                                                        <a href="{{ route('admin.customers.edit', $customer->id) }}"
-                                                            class="btn btn-sm btn-warning">Edit</a>
-                                                        <button class="btn btn-sm btn-danger delete-customer"
-                                                            data-id="{{ $customer->id }}">Delete</button>
+                                                        <div class="dropdown">
+                                                            <button class="btn btn-sm btn-primary dropdown-toggle" type="button"
+                                                                data-toggle="dropdown">
+                                                                Actions
+                                                            </button>
 
-                                                        <a href="#" class="btn btn-sm btn-primary">Wallet</a>
-                                                        <a href="{{ route('admin.seller-orders', $customer->id) }}"
-                                                            class="btn btn-sm btn-info">
-                                                            View Orders
-                                                        </a>
-                                                        <a href="#" class="btn btn-sm btn-success">Subscriptions</a>
-                                                        <a href="#" class="btn btn-sm btn-secondary">Enquiries</a>
-                                                        <a href="#" class="btn btn-sm btn-info">Chats</a>
-                                                        <a href="#" class="btn btn-sm btn-danger">Tickets</a>
-                                                        <button class="btn btn-sm btn-outline-primary" data-toggle="modal"
-                                                            data-target="#changePasswordModal{{ $customer->id }}">
-                                                            Change Password
-                                                        </button>
+                                                            <div class="dropdown-menu dropdown-menu-right">
 
+                                                                <a class="dropdown-item"
+                                                                    href="{{ route('admin.customers.show', $customer->id) }}">
+                                                                    View
+                                                                </a>
+
+                                                                <a class="dropdown-item"
+                                                                    href="{{ route('admin.customers.edit', $customer->id) }}">
+                                                                    Edit
+                                                                </a>
+
+                                                                <a class="dropdown-item"
+                                                                    href="{{ route('admin.seller-orders', $customer->id) }}">
+                                                                    View Orders
+                                                                </a>
+
+                                                                <a class="dropdown-item" href="#">Wallet</a>
+                                                                <a class="dropdown-item" href="#">Subscriptions</a>
+                                                                <a class="dropdown-item" href="#">Enquiries</a>
+                                                                <a class="dropdown-item" href="#">Chats</a>
+                                                                <a class="dropdown-item" href="#">Tickets</a>
+
+                                                                <div class="dropdown-divider"></div>
+
+                                                                {{-- VERIFY / UNVERIFY --}}
+                                                                <button class="dropdown-item toggle-verify"
+                                                                    data-id="{{ $customer->id }}"
+                                                                    data-status="{{ $customer->is_verified ? 1 : 0 }}">
+                                                                    {{ $customer->is_verified ? 'Unverify User' : 'Verify User' }}
+                                                                </button>
+
+                                                                <div class="dropdown-divider"></div>
+
+                                                                {{-- CHANGE PASSWORD --}}
+                                                                <button class="dropdown-item" data-toggle="modal"
+                                                                    data-target="#changePasswordModal{{ $customer->id }}">
+                                                                    Change Password
+                                                                </button>
+
+                                                                {{-- DELETE --}}
+                                                                <button class="dropdown-item text-danger delete-customer"
+                                                                    data-id="{{ $customer->id }}">
+                                                                    Delete
+                                                                </button>
+
+                                                            </div>
+                                                        </div>
                                                     </td>
+
                                                 </tr>
                                             @empty
                                                 <tr>
@@ -185,5 +233,36 @@
             });
         });
     </script>
+
+<script>
+$(function () {
+ // Toggle verification
+// Toggle verification (no prompt)
+$(document).on('click', '.toggle-verify', function () {
+  const customerId = $(this).data('id');
+
+  Swal.fire({
+    title: 'Are you sure?',
+    text: 'This will toggle the verification status of the user.',
+    icon: 'question',
+    showCancelButton: true,
+    confirmButtonText: 'Yes, proceed'
+  }).then((result) => {
+    if (result.isConfirmed) {
+      $.ajax({
+        url: `/admin/customers/${customerId}/toggle-verification`,
+        type: 'POST',
+        data: {
+          _token: $('meta[name="csrf-token"]').attr('content')
+        },
+        success: () => location.reload(),
+        error: () => Swal.fire('Error', 'Something went wrong', 'error')
+      });
+    }
+  });
+});
+
+});
+</script>
 
 @endpush

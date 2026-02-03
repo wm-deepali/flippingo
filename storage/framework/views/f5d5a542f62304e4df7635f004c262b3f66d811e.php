@@ -44,6 +44,7 @@
                         <th>Status</th>
                         <th>Popular</th>
                         <th>Show in Hero</th>
+                        <th>Country Filter</th>
                         <th>Created At</th>
                         <th width="100px">Action</th>
                       </tr>
@@ -71,14 +72,20 @@
                             <?php endif; ?>
                           </td>
 
-                           <td>
+                          <td>
                             <?php if($category->show_in_hero): ?>
                               <span class="badge badge-success">Yes</span>
                             <?php else: ?>
                               <span class="text-muted">No</span>
                             <?php endif; ?>
                           </td>
-
+                          <td>
+                            <?php if($category->enable_country_filter): ?>
+                              <span class="badge badge-info">Enabled</span>
+                            <?php else: ?>
+                              <span class="badge badge-secondary">India (Default)</span>
+                            <?php endif; ?>
+                          </td>
                           <td><?php echo e($category->created_at->format('d M Y, h:i A')); ?></td>
 
                           <td>

@@ -9,11 +9,7 @@
 
                                     $fields = json_decode($submission['data'], true);
                                     $productTitle = $fields['product_title']['value'] ?? 'No Title';
-                                   $offeredPrice = ($fields['urgent_sale']['value'] ?? '') === 'Yes'
-    ? ($fields['offered_price']['value'] ?? '0')
-    : ($fields['mrp']['value'] ?? '0');
-
-
+                                
                                    $imageFile = $submission['imageFile'] ?? null; 
                                     $summaryFields = $submission['summaryFields'] ?? [];
                                   @endphp
@@ -60,7 +56,7 @@
                                         <div class="wishlist-item-card">
                                   @foreach($summaryFields as $field)
                       <div class="wishlist-left">
-                        <p class="m-0" style="color: green;">
+                       <p class="m-0" style="color: {{ $field['color'] ?? '#000000' }};">
                           <i class="{{ $field['icon'] ?? '' }}"></i>
                         </p>
                         <div class="d-flex flex-column">
@@ -76,7 +72,7 @@
                                         </div>
                                         <div class="wishlist-price d-flex justify-content-between mt-3">
                                             <h2 style="color: #000;"><i
-                                                    class="fa-solid fa-indian-rupee-sign"></i>{{ $offeredPrice }}</h2>
+                                                    class="fa-solid fa-indian-rupee-sign"></i>{{ $submission['currency_symbol'] }}{{ number_format($submission['display_price'], 2) }}</h2>
                                             <button type="button" class="btn btn-dark"
                                                 onclick="window.location.href='{{ route('listing-details', ['id' => $submission['id']]) }}'">
                                                 View Detail
@@ -102,7 +98,7 @@
                                         <div class="wishlist-item-card">
                                                @foreach($summaryFields as $field)
                       <div class="wishlist-left">
-                        <p class="m-0" style="color: green;">
+                       <p class="m-0" style="color: {{ $field['color'] ?? '#000000' }};">
                           <i class="{{ $field['icon'] ?? '' }}"></i>
                         </p>
                         <div class="d-flex flex-column">
@@ -118,7 +114,7 @@
                                         </div>
                                         <div class="wishlist-price d-flex justify-content-between mt-3">
                                             <h2 style="color: #000;"><i
-                                                    class="fa-solid fa-indian-rupee-sign"></i>{{ $offeredPrice }}</h2>
+                                                    class="fa-solid fa-indian-rupee-sign"></i>{{ $submission['currency_symbol'] }}{{ number_format($submission['display_price'], 2) }}</h2>
                                             <button type="button" class="btn btn-dark"
                                                 onclick="window.location.href='{{ route('listing-details', ['id' => $submission['id']]) }}'">
                                                 View Detail
@@ -139,10 +135,7 @@
                                         @php
                                             $fields = json_decode($submission->data, true);
                                             $productTitle = $fields['product_title']['value'] ?? 'No Title';
-                                             $offeredPrice = ($fields['urgent_sale']['value'] ?? '') === 'Yes'
-    ? ($fields['offered_price']['value'] ?? '0')
-    : ($fields['mrp']['value'] ?? '0');
-
+                                
                                     $imageFile = $submission->imageFile ?? null; 
                                     $summaryFields = $submission->summaryFields ?? [];
 
@@ -190,7 +183,7 @@
                                                 <div class="wishlist-item-card">
                                                  @foreach($summaryFields as $field)
                       <div class="wishlist-left">
-                        <p class="m-0" style="color: green;">
+                        <p class="m-0" style="color: {{ $field['color'] ?? '#000000' }};">
                           <i class="{{ $field['icon'] ?? '' }}"></i>
                         </p>
                         <div class="d-flex flex-column">
@@ -205,8 +198,10 @@
                     @endforeach
                                                 </div>
                                                 <div class="wishlist-price d-flex justify-content-between mt-3">
-                                                    <h2 style="color: #000;"><i
-                                                            class="fa-solid fa-indian-rupee-sign"></i>{{ $offeredPrice }}</h2>
+                                                   <h2 style="color:#000;">
+                        {{ $submission['currency_symbol'] }}
+                       {{ $submission['currency_symbol']  == '$'? number_format($submission['display_price'], 2) : $submission['display_price']}}
+                      </h2>
                                                     <button type="button" class="btn btn-dark"
                                                         onclick="window.location.href='{{ route('listing-details', ['id' => $submission['id']]) }}'">
                                                         View Detail
@@ -232,7 +227,7 @@
                                                 <div class="wishlist-item-card">
                                              @foreach($summaryFields as $field)
                       <div class="wishlist-left">
-                        <p class="m-0" style="color: green;">
+                       <p class="m-0" style="color: {{ $field['color'] ?? '#000000' }};">
                           <i class="{{ $field['icon'] ?? '' }}"></i>
                         </p>
                         <div class="d-flex flex-column">
@@ -248,8 +243,10 @@
 
                                                 </div>
                                                 <div class="wishlist-price d-flex justify-content-between mt-3">
-                                                    <h2 style="color: #000;"><i
-                                                            class="fa-solid fa-indian-rupee-sign"></i>{{ $offeredPrice }}</h2>
+                                                  <h2 style="color:#000;">
+                        {{ $submission['currency_symbol'] }}
+                       {{ $submission['currency_symbol']  == '$'? number_format($submission['display_price'], 2) : $submission['display_price']}}
+                      </h2>
                                                     <button type="button" class="btn btn-dark"
                                                         onclick="window.location.href='{{ route('listing-details', ['id' => $submission['id']]) }}'">
                                                         View Detail

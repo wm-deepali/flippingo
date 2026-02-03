@@ -13,7 +13,7 @@
     --flippingo-gray: #6b7280;
   }
 
-ap
+
   .flippingo-hiw-section {
     padding: 0;
     background: linear-gradient(to bottom, #f0f9ff, #ffffff);
@@ -2064,7 +2064,7 @@ ap
   }
 
   .accordion .accordion-item .accordion-header::after {
-    content: "";
+    content: "ï„…";
     font-size: 2rem;
     font-family: "FontAwesome";
     position: absolute;
@@ -2320,25 +2320,47 @@ ap
     width: 93%;
     margin: auto;
     margin-top: 30px;
+    background: #000;
   }
 
   .wishlist-card {
     width: 100%;
     display: grid;
-    grid-template-columns: 1fr 1fr 1fr;
-    gap: 20px;
+    grid-template-columns: 1fr 1fr 1fr 1fr;
+    gap: 15px;
     margin-top: 40px;
     padding-bottom: 50px;
+  }
+
+  .product-details-hover h3 {
+    font-size: 18px !important;
+    font-weight: 600;
   }
 
   .wishlist-product-card {
     width: 100%;
     height: auto;
-    background: white;
-    padding: 10px;
-    border-radius: 10px;
-    box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+    padding: 8px;
+    border-radius: 16px;
+
+    /* ðŸ”¥ Glassmorphism */
+    background: rgba(255, 255, 255, 0.2);
+    backdrop-filter: blur(12px);
+    -webkit-backdrop-filter: blur(12px);
+
+    border: 1px solid rgba(255, 255, 255, 0.3);
+    box-shadow: 0 8px 20px rgba(0, 0, 0, 0.15);
+
+    transition: all 0.3s ease-in-out;
   }
+
+
+  .wishlist-product-card:hover {
+    background: rgba(255, 255, 255, 0.28);
+    box-shadow: 0 10px 25px rgba(0, 0, 0, 0.2);
+    transform: translateY(-3px);
+  }
+
 
   .wishlist-product-card img {
     width: 100%;
@@ -2347,7 +2369,7 @@ ap
 
   .wishlist-budge {
     position: relative;
-    top: -200px;
+    top: -145px;
     left: 6px;
   }
 
@@ -2387,15 +2409,28 @@ ap
 
   }
 
+  .wishlist-price h2 {
+    font-size: 22px;
+  }
+
+  .wishlist-price h2 i {
+    font-size: 20px !important;
+    padding-right: 5px;
+  }
+
+  .wishlist-price button {
+    font-size: 18px;
+  }
+
   .wishlist-button p {
-    font-size: 14px;
-    text-align: center;
+    font-size: 13px;
+    text-align: start;
     width: 100%;
-    border-radius: 10px;
+    border-radius: 5px;
     margin: 0;
     padding: 0px 10px;
     /* border: 1px solid lightgray; */
-    background: #a19f9f33;
+    background: #ffffff;
   }
 
   .wishlist-button .budge-active1 p {
@@ -2409,30 +2444,50 @@ ap
     border-radius: 4px;
   }
 
- .wishlist-item-card {
+  .wishlist-item-card {
     display: grid;
     grid-template-columns: repeat(2, 1fr);
-    gap: 10px;
-    width: 100%;
-    margin-top:10px;
-}
+    gap: 5px;
+    margin-top: 10px;
+  }
 
-
-.wishlist-item-card > div:nth-last-child(1):nth-child(odd) {
+  /* Odd items last → full width */
+  .wishlist-item-card>div:nth-last-child(1):nth-child(odd) {
     grid-column: span 2;
-}
+  }
+
+  /* When only 2 items → both full width */
+  .wishlist-item-card.two-items>div {
+    grid-column: span 2 !important;
+  }
+
+  .card-preview-box {
+    background: rgba(255, 255, 255, 0.95);
+    /* Almost white */
+    padding: 10px;
+    border-radius: 10px;
+    margin-top: -20px;
+    box-shadow: 0 2px 5px rgba(0, 0, 0, 0.05);
+  }
+
+  .card-preview-box p,
+  .card-preview-box span {
+    color: #000 !important;
+    font-size: 12px;
+    line-height: 16px;
+  }
 
 
 
   .wishlist-left {
     width: 100%;
     height: 60px;
-    background-color: #d3d3d32b;
+    background-color: #ffffff99;
     border-radius: 3px;
     padding: 10px;
     display: flex;
     align-items: center;
-    gap: 10px;
+    gap: 5px;
 
   }
 
@@ -2447,6 +2502,7 @@ ap
   .product-details-hover {
     padding: 10px;
     display: block;
+    margin-top: -26px;
     /* Default visible */
     /*transition: opacity 0.3s ease;*/
     /*margin-top: -20px;*/
@@ -2763,6 +2819,7 @@ ap
     overflow: hidden;
     scroll-behavior: smooth;
     width: 100%;
+    padding: 20px 0px;
   }
 
   /* ===== CARD ===== */
@@ -2940,123 +2997,132 @@ ap
     background: #000;
     color: #fff;
   }
-  
+
   /* Wrapper */
-.wishlist-image-wrapper {
+  .wishlist-image-wrapper {
     position: relative;
     width: 100%;
     aspect-ratio: 16 / 9;
     overflow: hidden;
     border-radius: 10px;
-}
+  }
 
 
-/* Slider container */
-.wishlist-main-slider {
+  /* Slider container */
+  .wishlist-main-slider {
     display: flex;
     height: 100%;
     width: 100%;
     transition: transform 0.4s ease;
-}
+  }
 
-/* Each image */
-.wishlist-main-slider .slide-img {
+  /* Each image */
+  .wishlist-main-slider .slide-img {
     width: 100%;
     height: 100%;
     object-fit: cover;
     /*flex-shrink: 0;*/
-}
+  }
 
-/* Arrows (hidden initially) */
-.wishlist-nav {
+  /* Arrows (hidden initially) */
+  .wishlist-nav {
     position: absolute;
     top: 50%;
     transform: translateY(-50%);
     font-size: 20px;
     color: #fff;
-    background: rgba(0,0,0,0.4);
+    background: rgba(0, 0, 0, 0.4);
     padding: 8px 10px;
     border-radius: 50%;
     opacity: 0;
     pointer-events: none;
     transition: 0.3s;
     cursor: pointer;
-}
+  }
 
-.wishlist-prev { left: 10px; }
-.wishlist-next { right: 10px; }
+  .wishlist-prev {
+    left: 10px;
+  }
 
-/* Hover → show carousel controls */
-.wishlist-image-wrapper:hover .wishlist-nav {
+  .wishlist-next {
+    right: 10px;
+  }
+
+  /* Hover â†’ show carousel controls */
+  .wishlist-image-wrapper:hover .wishlist-nav {
     opacity: 1;
     pointer-events: auto;
-}
+  }
 
+  .dropdown-menu {
+    height: 260px;
+    overflow-y: auto;
+  }
 </style>
 
 
 @section('content')
 
   <!-- ================================
-                                                                                                                                        START HERO-WRAPPER AREA
-                                                                                                                                        ================================= -->
+                                                                                                                                              START HERO-WRAPPER AREA
+                                                                                                                                              ================================= -->
   <!-- <section class="hero-wrapper hero-bg">
-                                                                                                                                        <div class="overlay"></div>
+                                                                                                                                              <div class="overlay"></div>
 
-                                                                                                                                        <div class="container">
-                                                                                                                                          <div class="hero-heading text-center">
-                                                                                                                                          <h2 class="sec__title text-white cd-headline zoom">
-                                                                                                                                          What are you interested in
-                                                                                                                                          <span class="cd-words-wrapper">
-                                                                                                                                          <b class="is-visible">Monetized Website</b>
-                                                                                                                                          <b>Mobile Applications</b>
-                                                                                                                                          <b>Adwords Accounts</b>
-                                                                                                                                          <b>Facebook </b>
-                                                                                                                                          <b>Instagram</b>
-                                                                                                                                          <b>Telegram Groups</b>
+                                                                                                                                              <div class="container">
+                                                                                                                                                <div class="hero-heading text-center">
+                                                                                                                                                <h2 class="sec__title text-white cd-headline zoom">
+                                                                                                                                                What are you interested in
+                                                                                                                                                <span class="cd-words-wrapper">
+                                                                                                                                                <b class="is-visible">Monetized Website</b>
+                                                                                                                                                <b>Mobile Applications</b>
+                                                                                                                                                <b>Adwords Accounts</b>
+                                                                                                                                                <b>Facebook </b>
+                                                                                                                                                <b>Instagram</b>
+                                                                                                                                                <b>Telegram Groups</b>
 
-                                                                                                                                          </span>
-                                                                                                                                          </h2>
+                                                                                                                                                </span>
+                                                                                                                                                </h2>
 
-                                                                                                                                          </div>
-                                                                                                                                          <div class="highlighted-categories text-center mt-5">
-                                                                                                                                          <p class="highlighted__title text-white">
-                                                                                                                                          Or browse featured categories:
-                                                                                                                                          </p>
-                                                                                                                                          <div class="highlight-lists d-flex flex-wrap justify-content-center mt-4">
-                                                                                                                                          <a href="#" class="highlight-category">
-                                                                                                                                          <span class="fal fa-building icon-element d-block mx-auto"></span>
-                                                                                                                                          Monetized Website
-                                                                                                                                          </a>
-                                                                                                                                          <a href="#" class="highlight-category">
-                                                                                                                                          <span class="fal fa-utensils icon-element d-block mx-auto"></span>
-                                                                                                                                          Mobile Applications
-                                                                                                                                          </a>
-                                                                                                                                          <a href="#" class="highlight-category">
-                                                                                                                                          <span class="fal fa-plane icon-element d-block mx-auto"></span>
-                                                                                                                                          Adwords Accounts
-                                                                                                                                          </a>
-                                                                                                                                          <a href="#" class="highlight-category">
-                                                                                                                                          <span class="fal fa-music icon-element d-block mx-auto"></span>
-                                                                                                                                          Facebook 
-                                                                                                                                          </a>
-                                                                                                                                          <a href="#" class="highlight-category">
-                                                                                                                                          <span class="fal fa-dumbbell icon-element d-block mx-auto"></span>
-                                                                                                                                          Instagram
-                                                                                                                                          </a>
-                                                                                                                                          <a href="#" class="highlight-category">
-                                                                                                                                          <span class="fal fa-hotel icon-element d-block mx-auto"></span>
-                                                                                                                                          Telegram Groups
-                                                                                                                                          </a>
-                                                                                                                                          </div>
-                                                                                                                                          </div>
+                                                                                                                                                </div>
+                                                                                                                                                <div class="highlighted-categories text-center mt-5">
+                                                                                                                                                <p class="highlighted__title text-white">
+                                                                                                                                                Or browse featured categories:
+                                                                                                                                                </p>
+                                                                                                                                                <div class="highlight-lists d-flex flex-wrap justify-content-center mt-4">
+                                                                                                                                                <a href="#" class="highlight-category">
+                                                                                                                                                <span class="fal fa-building icon-element d-block mx-auto"></span>
+                                                                                                                                                Monetized Website
+                                                                                                                                                </a>
+                                                                                                                                                <a href="#" class="highlight-category">
+                                                                                                                                                <span class="fal fa-utensils icon-element d-block mx-auto"></span>
+                                                                                                                                                Mobile Applications
+                                                                                                                                                </a>
+                                                                                                                                                <a href="#" class="highlight-category">
+                                                                                                                                                <span class="fal fa-plane icon-element d-block mx-auto"></span>
+                                                                                                                                                Adwords Accounts
+                                                                                                                                                </a>
+                                                                                                                                                <a href="#" class="highlight-category">
+                                                                                                                                                <span class="fal fa-music icon-element d-block mx-auto"></span>
+                                                                                                                                                Facebook 
+                                                                                                                                                </a>
+                                                                                                                                                <a href="#" class="highlight-category">
+                                                                                                                                                <span class="fal fa-dumbbell icon-element d-block mx-auto"></span>
+                                                                                                                                                Instagram
+                                                                                                                                                </a>
+                                                                                                                                                <a href="#" class="highlight-category">
+                                                                                                                                                <span class="fal fa-hotel icon-element d-block mx-auto"></span>
+                                                                                                                                                Telegram Groups
+                                                                                                                                                </a>
+                                                                                                                                                </div>
+                                                                                                                                                </div>
 
-                                                                                                                                        </div>
+                                                                                                                                              </div>
 
-                                                                                                                                        </section> -->
-                @php
-  $hero = $homePageContent['hero'] ?? null;
-@endphp
+                                                                                                                                              </section> -->
+  @php
+    $hero = $homePageContent['hero'] ?? null;
+  @endphp
   <section class="hero-section" id="home">
     <div class="container">
       <div class="row ">
@@ -3064,7 +3130,7 @@ ap
           <div class="hero-section-text">
             <!--<h1>#1 Platform to Buy & Sell Digital Assets</h1>-->
             <div class="text-slider">
-              <h1>{{ $hero->title ?? '>#1 Platform to Buy & Sell Digital Assets' }}
+              <h1>{{ $hero->title ?? 'Explore Top Digital Assets' }}
 
                 <span id="slider-content">
                   @foreach($heroCategories as $category)
@@ -3079,7 +3145,9 @@ ap
             </div>
 
 
-           <p>{{ $hero->description ?? 'Flppingo is a platform for Posting Free Ads - it only takes a few simple steps! Select the right category and publish your classified ad for free.' }}</p>
+            <p>
+              {{ $hero->description ?? 'Discover the most in-demand categories, from social accounts to apps, blogs, and more.' }}
+            </p>
             <div class="video">
 
               <!-- Modal -->
@@ -3213,39 +3281,39 @@ ap
                   <!-- Review 1 -->
                   <!-- <div class="swiper-slide review-card">
 
-                                                                                                                                          <div class="platform-name"><img
-                                                                                                                                          src="https://upload.wikimedia.org/wikipedia/commons/thumb/2/2f/Google_2015_logo.svg/800px-Google_2015_logo.svg.png "
-                                                                                                                                          alt="">
-                                                                                                                                          </div>
-                                                                                                                                          <div class="stars">★★★☆☆</div>
-                                                                                                                                          <p style="color: #000000; padding-bottom: 0px; padding-top: 10px;">Scan the QR code below to leave
-                                                                                                                                          us a review</p>
-                                                                                                                                          <div class="qr-code">
-                                                                                                                                          <img src="{{ asset('assets') }}/images/qr.png">
+                                                                                                                                                <div class="platform-name"><img
+                                                                                                                                                src="https://upload.wikimedia.org/wikipedia/commons/thumb/2/2f/Google_2015_logo.svg/800px-Google_2015_logo.svg.png "
+                                                                                                                                                alt="">
+                                                                                                                                                </div>
+                                                                                                                                                <div class="stars">â˜…â˜…â˜…â˜†â˜†</div>
+                                                                                                                                                <p style="color: #000000; padding-bottom: 0px; padding-top: 10px;">Scan the QR code below to leave
+                                                                                                                                                us a review</p>
+                                                                                                                                                <div class="qr-code">
+                                                                                                                                                <img src="{{ asset('assets') }}/images/qr.png">
 
-                                                                                                                                          </div>
-                                                                                                                                          <p class="review-summary text-center mt-1"> 265 Review</p>
+                                                                                                                                                </div>
+                                                                                                                                                <p class="review-summary text-center mt-1"> 265 Review</p>
 
 
 
-                                                                                                                                          </div> -->
+                                                                                                                                                </div> -->
 
                   <!-- Review 2 -->
                   <!-- <div class="swiper-slide review-card">
 
 
-                                                                                                                                          <div class="platform-name"><img
-                                                                                                                                          src="https://upload.wikimedia.org/wikipedia/commons/5/5c/Trustpilot_logo.png " alt="">
-                                                                                                                                          </div>
-                                                                                                                                          <div class="stars">★★☆☆☆</div>
-                                                                                                                                          <p style="color: #000000; padding-bottom: 0px; padding-top: 10px;">Scan the QR code below to leave
-                                                                                                                                          us a review</p>
-                                                                                                                                          <div class="qr-code">
-                                                                                                                                          <img src="{{ asset('assets') }}/images/qr.png">
+                                                                                                                                                <div class="platform-name"><img
+                                                                                                                                                src="https://upload.wikimedia.org/wikipedia/commons/5/5c/Trustpilot_logo.png " alt="">
+                                                                                                                                                </div>
+                                                                                                                                                <div class="stars">â˜…â˜…â˜†â˜†â˜†</div>
+                                                                                                                                                <p style="color: #000000; padding-bottom: 0px; padding-top: 10px;">Scan the QR code below to leave
+                                                                                                                                                us a review</p>
+                                                                                                                                                <div class="qr-code">
+                                                                                                                                                <img src="{{ asset('assets') }}/images/qr.png">
 
-                                                                                                                                          </div>
-                                                                                                                                          <p class="review-summary text-center mt-1 "> 265 Review</p>
-                                                                                                                                          </div> -->
+                                                                                                                                                </div>
+                                                                                                                                                <p class="review-summary text-center mt-1 "> 265 Review</p>
+                                                                                                                                                </div> -->
 
                   <!-- Add more reviews -->
                 </div>
@@ -3266,71 +3334,71 @@ ap
         </div>
         <div class="col-12 col-xl-6" style="display: flex; justify-content: end;">
           <!-- <form role="form" class="get-a-quote" id="contact-form" method="post">
-                                                                                                                                          <div class="mb-lg-3 mb-3 d-flex align-items-center">
-                                                                                                                                          <i>
-                                                                                                                                          <svg enable-background="new 0 0 124 124" height="52" viewbox="0 0 124 124" width="52" xmlns="http://www.w3.org/2000/svg"><path d="m82.899 50.646c-6.059 0-10.988-4.918-10.988-10.963s4.929-10.963 10.988-10.963 10.988 4.918 10.988 10.963-4.929 10.963-10.988 10.963zm0-17.979c-3.877 0-7.031 3.147-7.031 7.015s3.154 7.015 7.031 7.015 7.031-3.147 7.031-7.015-3.154-7.015-7.031-7.015z"></path><path d="m122.558 2.183c-.069-.986-.853-1.773-1.841-1.848-14.728-1.125-41.975-.347-58.941 17.482-.002.002-.005.004-.007.007-2.3 2.441-4.418 5.209-6.382 8.136-24.65 8.882-35.589 25.07-38.168 33.298-.376 1.202.496 2.487 1.756 2.582l17.94 1.359c-1.478 3.901-2.824 7.823-4.017 11.748-.215.706-.02 1.472.504 1.992l11.995 11.891c.513.508 1.288.703 1.98.495 4-1.194 7.996-2.545 11.97-4.027l1.381 17.923c.097 1.253 1.377 2.122 2.581 1.752 7.562-2.328 24.216-13.247 33.545-37.919 2.953-1.954 5.73-4.064 8.153-6.359 17.668-16.682 18.58-43.82 17.551-58.512-.07-.987 1.029 14.692 0 0zm-3.878 2.008c.413 7.551.219 17.908-2.38 28.202l-26.124-25.897c10.42-2.625 20.888-2.767 28.504-2.305zm-96.722 53.877c3.21-7.053 12.265-18.732 29.892-26.418-2.945 5.084-5.502 10.331-7.777 15.002-2.04 4.172-3.917 8.403-5.638 12.665zm42.549 42.183-1.267-16.452c4.264-1.695 8.496-3.541 12.668-5.545 4.732-2.244 10.045-4.763 15.169-7.669-7.959 17.563-19.588 26.513-26.57 29.666zm37.752-42.448c-7.489 7.094-18.422 12.277-28.076 16.854-8.762 4.212-17.778 7.744-26.816 10.507l-10.293-10.205c2.785-8.95 6.346-17.879 10.592-26.562 4.394-9.022 9.862-20.251 17.01-27.839 5.992-6.295 13.426-10.299 21.11-12.794l29.252 28.998c-2.497 7.687-6.497 15.108-12.779 21.041z"></path><path d="m4.185 122.808c-1.728 0-2.631-2.145-1.437-3.378l27.357-28.26c1.788-1.841 4.666.918 2.874 2.77l-27.357 28.259c-.392.405-.914.609-1.437.609z"></path><path d="m23.435 124c-1.688 0-2.609-2.063-1.493-3.318l17.73-19.91c1.71-1.913 4.7.723 2.987 2.648l-17.73 19.91c-.394.444-.943.67-1.494.67z"></path><path d="m2.982 104.917c-1.688 0-2.609-2.063-1.493-3.318l17.731-19.91c1.709-1.914 4.7.724 2.987 2.648l-17.731 19.91c-.395.444-.943.67-1.494.67z"></path></svg>
-                                                                                                                                          </i>
-                                                                                                                                          <div>
-                                                                                                                                          <p class="p-0">Marketing Business campaign</p>
-                                                                                                                                          <h2>Search Listing</h2>
-                                                                                                                                          </div>
-                                                                                                                                          </div>
-                                                                                                                                          <div class="group-img">
-                                                                                                                                          <svg width="18" height="18" viewbox="0 0 18 18" fill="none" xmlns="http://www.w3.org/2000/svg">
-                                                                                                                                          <path d="M15.364 11.636C14.3837 10.6558 13.217 9.93013 11.9439 9.49085C13.3074 8.55179 14.2031 6.9802 14.2031 5.20312C14.2031 2.33413 11.869 0 9 0C6.131 0 3.79688 2.33413 3.79688 5.20312C3.79688 6.9802 4.69262 8.55179 6.05609 9.49085C4.78308 9.93013 3.61631 10.6558 2.63605 11.636C0.936176 13.3359 0 15.596 0 18H1.40625C1.40625 13.8128 4.81279 10.4062 9 10.4062C13.1872 10.4062 16.5938 13.8128 16.5938 18H18C18 15.596 17.0638 13.3359 15.364 11.636ZM9 9C6.90641 9 5.20312 7.29675 5.20312 5.20312C5.20312 3.1095 6.90641 1.40625 9 1.40625C11.0936 1.40625 12.7969 3.1095 12.7969 5.20312C12.7969 7.29675 11.0936 9 9 9Z" fill="#555555"></path>
-                                                                                                                                          </svg>
-                                                                                                                                          <input type="text" name="name" placeholder="I am looking for..." required="">
-                                                                                                                                          </div>
-                                                                                                                                          <div class="group-img">
-                                                                                                                                          <svg width="22" height="18" viewbox="0 0 22 18" fill="none" xmlns="http://www.w3.org/2000/svg">
-                                                                                                                                          <path d="M15.8649 18H6.13513C2.58377 18 0.540527 15.9568 0.540527 12.4054V5.5946C0.540527 2.04324 2.58377 0 6.13513 0H15.8649C19.4162 0 21.4595 2.04324 21.4595 5.5946V12.4054C21.4595 15.9568 19.4162 18 15.8649 18ZM6.13513 1.45946C3.35242 1.45946 1.99999 2.81189 1.99999 5.5946V12.4054C1.99999 15.1881 3.35242 16.5406 6.13513 16.5406H15.8649C18.6476 16.5406 20 15.1881 20 12.4054V5.5946C20 2.81189 18.6476 1.45946 15.8649 1.45946H6.13513Z" fill="#444444"></path>
-                                                                                                                                          <path d="M10.9988 9.8465C10.1815 9.8465 9.35452 9.59352 8.72208 9.07785L5.67668 6.64539C5.36532 6.39241 5.30696 5.93511 5.55992 5.62376C5.8129 5.31241 6.2702 5.25403 6.58155 5.50701L9.62695 7.93947C10.3664 8.53298 11.6215 8.53298 12.361 7.93947L15.4064 5.50701C15.7178 5.25403 16.1848 5.30268 16.428 5.62376C16.681 5.93511 16.6324 6.40214 16.3113 6.64539L13.2659 9.07785C12.6432 9.59352 11.8161 9.8465 10.9988 9.8465Z" fill="#444444"></path>
-                                                                                                                                          </svg>
-                                                                                                                                          <input type="text" name="email" placeholder="Email Address" required="">
-                                                                                                                                          </div>
-                                                                                                                                          <div class="group-img">
-                                                                                                                                          <svg fill="none" height="112" viewbox="0 0 24 24" width="112" xmlns="http://www.w3.org/2000/svg"><g clip-rule="evenodd" fill="rgb(0,0,0)" fill-rule="evenodd"><path d="m7 2.75c-.41421 0-.75.33579-.75.75v17c0 .4142.33579.75.75.75h10c.4142 0 .75-.3358.75-.75v-17c0-.41421-.3358-.75-.75-.75zm-2.25.75c0-1.24264 1.00736-2.25 2.25-2.25h10c1.2426 0 2.25 1.00736 2.25 2.25v17c0 1.2426-1.0074 2.25-2.25 2.25h-10c-1.24264 0-2.25-1.0074-2.25-2.25z"></path><path d="m10.25 5c0-.41421.3358-.75.75-.75h2c.4142 0 .75.33579.75.75s-.3358.75-.75.75h-2c-.4142 0-.75-.33579-.75-.75z"></path><path d="m9.25 19c0-.4142.33579-.75.75-.75h4c.4142 0 .75.3358.75.75s-.3358.75-.75.75h-4c-.41421 0-.75-.3358-.75-.75z"></path></g></svg>
-                                                                                                                                          <input type="text" name="mobile" placeholder="Mobile Number" required="">
-                                                                                                                                          <input type="hidden" name="form_type" value="banner">               
-                                                                                                                                           </div>
-                                                                                                                                          <div class="group-img">
-                                                                                                                                          <img src="{{ asset('site_assets') }}/img/dropdown.svg"/>
-                                                                                                                                          <select id="#" class="minimal" name="course">
-                                                                                                                                          <option value="Websites">Websites</option>
+                                                                                                                                                <div class="mb-lg-3 mb-3 d-flex align-items-center">
+                                                                                                                                                <i>
+                                                                                                                                                <svg enable-background="new 0 0 124 124" height="52" viewbox="0 0 124 124" width="52" xmlns="http://www.w3.org/2000/svg"><path d="m82.899 50.646c-6.059 0-10.988-4.918-10.988-10.963s4.929-10.963 10.988-10.963 10.988 4.918 10.988 10.963-4.929 10.963-10.988 10.963zm0-17.979c-3.877 0-7.031 3.147-7.031 7.015s3.154 7.015 7.031 7.015 7.031-3.147 7.031-7.015-3.154-7.015-7.031-7.015z"></path><path d="m122.558 2.183c-.069-.986-.853-1.773-1.841-1.848-14.728-1.125-41.975-.347-58.941 17.482-.002.002-.005.004-.007.007-2.3 2.441-4.418 5.209-6.382 8.136-24.65 8.882-35.589 25.07-38.168 33.298-.376 1.202.496 2.487 1.756 2.582l17.94 1.359c-1.478 3.901-2.824 7.823-4.017 11.748-.215.706-.02 1.472.504 1.992l11.995 11.891c.513.508 1.288.703 1.98.495 4-1.194 7.996-2.545 11.97-4.027l1.381 17.923c.097 1.253 1.377 2.122 2.581 1.752 7.562-2.328 24.216-13.247 33.545-37.919 2.953-1.954 5.73-4.064 8.153-6.359 17.668-16.682 18.58-43.82 17.551-58.512-.07-.987 1.029 14.692 0 0zm-3.878 2.008c.413 7.551.219 17.908-2.38 28.202l-26.124-25.897c10.42-2.625 20.888-2.767 28.504-2.305zm-96.722 53.877c3.21-7.053 12.265-18.732 29.892-26.418-2.945 5.084-5.502 10.331-7.777 15.002-2.04 4.172-3.917 8.403-5.638 12.665zm42.549 42.183-1.267-16.452c4.264-1.695 8.496-3.541 12.668-5.545 4.732-2.244 10.045-4.763 15.169-7.669-7.959 17.563-19.588 26.513-26.57 29.666zm37.752-42.448c-7.489 7.094-18.422 12.277-28.076 16.854-8.762 4.212-17.778 7.744-26.816 10.507l-10.293-10.205c2.785-8.95 6.346-17.879 10.592-26.562 4.394-9.022 9.862-20.251 17.01-27.839 5.992-6.295 13.426-10.299 21.11-12.794l29.252 28.998c-2.497 7.687-6.497 15.108-12.779 21.041z"></path><path d="m4.185 122.808c-1.728 0-2.631-2.145-1.437-3.378l27.357-28.26c1.788-1.841 4.666.918 2.874 2.77l-27.357 28.259c-.392.405-.914.609-1.437.609z"></path><path d="m23.435 124c-1.688 0-2.609-2.063-1.493-3.318l17.73-19.91c1.71-1.913 4.7.723 2.987 2.648l-17.73 19.91c-.394.444-.943.67-1.494.67z"></path><path d="m2.982 104.917c-1.688 0-2.609-2.063-1.493-3.318l17.731-19.91c1.709-1.914 4.7.724 2.987 2.648l-17.731 19.91c-.395.444-.943.67-1.494.67z"></path></svg>
+                                                                                                                                                </i>
+                                                                                                                                                <div>
+                                                                                                                                                <p class="p-0">Marketing Business campaign</p>
+                                                                                                                                                <h2>Search Listing</h2>
+                                                                                                                                                </div>
+                                                                                                                                                </div>
+                                                                                                                                                <div class="group-img">
+                                                                                                                                                <svg width="18" height="18" viewbox="0 0 18 18" fill="none" xmlns="http://www.w3.org/2000/svg">
+                                                                                                                                                <path d="M15.364 11.636C14.3837 10.6558 13.217 9.93013 11.9439 9.49085C13.3074 8.55179 14.2031 6.9802 14.2031 5.20312C14.2031 2.33413 11.869 0 9 0C6.131 0 3.79688 2.33413 3.79688 5.20312C3.79688 6.9802 4.69262 8.55179 6.05609 9.49085C4.78308 9.93013 3.61631 10.6558 2.63605 11.636C0.936176 13.3359 0 15.596 0 18H1.40625C1.40625 13.8128 4.81279 10.4062 9 10.4062C13.1872 10.4062 16.5938 13.8128 16.5938 18H18C18 15.596 17.0638 13.3359 15.364 11.636ZM9 9C6.90641 9 5.20312 7.29675 5.20312 5.20312C5.20312 3.1095 6.90641 1.40625 9 1.40625C11.0936 1.40625 12.7969 3.1095 12.7969 5.20312C12.7969 7.29675 11.0936 9 9 9Z" fill="#555555"></path>
+                                                                                                                                                </svg>
+                                                                                                                                                <input type="text" name="name" placeholder="I am looking for..." required="">
+                                                                                                                                                </div>
+                                                                                                                                                <div class="group-img">
+                                                                                                                                                <svg width="22" height="18" viewbox="0 0 22 18" fill="none" xmlns="http://www.w3.org/2000/svg">
+                                                                                                                                                <path d="M15.8649 18H6.13513C2.58377 18 0.540527 15.9568 0.540527 12.4054V5.5946C0.540527 2.04324 2.58377 0 6.13513 0H15.8649C19.4162 0 21.4595 2.04324 21.4595 5.5946V12.4054C21.4595 15.9568 19.4162 18 15.8649 18ZM6.13513 1.45946C3.35242 1.45946 1.99999 2.81189 1.99999 5.5946V12.4054C1.99999 15.1881 3.35242 16.5406 6.13513 16.5406H15.8649C18.6476 16.5406 20 15.1881 20 12.4054V5.5946C20 2.81189 18.6476 1.45946 15.8649 1.45946H6.13513Z" fill="#444444"></path>
+                                                                                                                                                <path d="M10.9988 9.8465C10.1815 9.8465 9.35452 9.59352 8.72208 9.07785L5.67668 6.64539C5.36532 6.39241 5.30696 5.93511 5.55992 5.62376C5.8129 5.31241 6.2702 5.25403 6.58155 5.50701L9.62695 7.93947C10.3664 8.53298 11.6215 8.53298 12.361 7.93947L15.4064 5.50701C15.7178 5.25403 16.1848 5.30268 16.428 5.62376C16.681 5.93511 16.6324 6.40214 16.3113 6.64539L13.2659 9.07785C12.6432 9.59352 11.8161 9.8465 10.9988 9.8465Z" fill="#444444"></path>
+                                                                                                                                                </svg>
+                                                                                                                                                <input type="text" name="email" placeholder="Email Address" required="">
+                                                                                                                                                </div>
+                                                                                                                                                <div class="group-img">
+                                                                                                                                                <svg fill="none" height="112" viewbox="0 0 24 24" width="112" xmlns="http://www.w3.org/2000/svg"><g clip-rule="evenodd" fill="rgb(0,0,0)" fill-rule="evenodd"><path d="m7 2.75c-.41421 0-.75.33579-.75.75v17c0 .4142.33579.75.75.75h10c.4142 0 .75-.3358.75-.75v-17c0-.41421-.3358-.75-.75-.75zm-2.25.75c0-1.24264 1.00736-2.25 2.25-2.25h10c1.2426 0 2.25 1.00736 2.25 2.25v17c0 1.2426-1.0074 2.25-2.25 2.25h-10c-1.24264 0-2.25-1.0074-2.25-2.25z"></path><path d="m10.25 5c0-.41421.3358-.75.75-.75h2c.4142 0 .75.33579.75.75s-.3358.75-.75.75h-2c-.4142 0-.75-.33579-.75-.75z"></path><path d="m9.25 19c0-.4142.33579-.75.75-.75h4c.4142 0 .75.3358.75.75s-.3358.75-.75.75h-4c-.41421 0-.75-.3358-.75-.75z"></path></g></svg>
+                                                                                                                                                <input type="text" name="mobile" placeholder="Mobile Number" required="">
+                                                                                                                                                <input type="hidden" name="form_type" value="banner">               
+                                                                                                                                                 </div>
+                                                                                                                                                <div class="group-img">
+                                                                                                                                                <img src="{{ asset('site_assets') }}/img/dropdown.svg"/>
+                                                                                                                                                <select id="#" class="minimal" name="course">
+                                                                                                                                                <option value="Websites">Websites</option>
 
-                                                                                                                                          <option value="Theme And Scripts">Theme And Scripts</option>
-                                                                                                                                          <option value="Twitter Account">Twitter Account</option>
-                                                                                                                                          <option value="Instagram Pages">Instagram Pages</option>
-                                                                                                                                          <option value="Facebook Account">Facebook Account</option>
+                                                                                                                                                <option value="Theme And Scripts">Theme And Scripts</option>
+                                                                                                                                                <option value="Twitter Account">Twitter Account</option>
+                                                                                                                                                <option value="Instagram Pages">Instagram Pages</option>
+                                                                                                                                                <option value="Facebook Account">Facebook Account</option>
 
-                                                                                                                                          <option value="Facebook Account">Telegram Account</option>
-                                                                                                                                           <option value="Facebook Account">Youtube Channel</option>
-                                                                                                                                          </select>
-                                                                                                                                          </div>
+                                                                                                                                                <option value="Facebook Account">Telegram Account</option>
+                                                                                                                                                 <option value="Facebook Account">Youtube Channel</option>
+                                                                                                                                                </select>
+                                                                                                                                                </div>
 
-                                                                                                                                          <button type="submit" name="submit" class="btn batton" style="background-color: #0062ef; width: 100%; text-align: center;display: flex;justify-content: center;">Submit</button>
-                                                                                                                                          </form>
-                                                                                                                                          <div class="row mobile-v">
-                                                                                                                                          <div class="col-6">
-                                                                                                                                          <div class="btn-wh">
-                                                                                                                                          <div class="bttn w">
-                                                                                                                                          <a href="https://wa.me/+918809772278" target="_blank">
-                                                                                                                                          <img src="{{ asset('site_assets') }}/img/wb.png"></a>
-                                                                                                                                          </div>
-                                                                                                                                          </div>
-                                                                                                                                          </div>
-                                                                                                                                          <div class="col-6">
-                                                                                                                                          <div class="btn-wh ">
-                                                                                                                                          <div class="bttn ">
-                                                                                                                                          <a href="tel:+918809772278">
+                                                                                                                                                <button type="submit" name="submit" class="btn batton" style="background-color: #0062ef; width: 100%; text-align: center;display: flex;justify-content: center;">Submit</button>
+                                                                                                                                                </form>
+                                                                                                                                                <div class="row mobile-v">
+                                                                                                                                                <div class="col-6">
+                                                                                                                                                <div class="btn-wh">
+                                                                                                                                                <div class="bttn w">
+                                                                                                                                                <a href="https://wa.me/+918809772278" target="_blank">
+                                                                                                                                                <img src="{{ asset('site_assets') }}/img/wb.png"></a>
+                                                                                                                                                </div>
+                                                                                                                                                </div>
+                                                                                                                                                </div>
+                                                                                                                                                <div class="col-6">
+                                                                                                                                                <div class="btn-wh ">
+                                                                                                                                                <div class="bttn ">
+                                                                                                                                                <a href="tel:+918809772278">
 
-                                                                                                                                          <img src="./{{ asset('site_assets') }}/img/cb.png">
-                                                                                                                                         </a>
+                                                                                                                                                <img src="./{{ asset('site_assets') }}/img/cb.png">
+                                                                                                                                               </a>
 
-                                                                                                                                          </div>
-                                                                                                                                          </div>
-                                                                                                                                          </div>
-                                                                                                                                          </div> -->
+                                                                                                                                                </div>
+                                                                                                                                                </div>
+                                                                                                                                                </div>
+                                                                                                                                                </div> -->
           <div class="right-form-card">
             <h3>Search Listings</h3>
 
@@ -3422,14 +3490,14 @@ ap
 
 
   <section class="cat-area section--padding">
-      @php
-  $featured = $homePageContent['featured'] ?? null;
-@endphp
+    @php
+      $featured = $homePageContent['featured'] ?? null;
+    @endphp
     <div class="container">
       <div class="text-start mb-4">
-        <h2 class="sec__title mb-3">  {{ $featured->title ?? 'Explore Top Digital Assets' }}</h2>
+        <h2 class="sec__title mb-3"> {{ $featured->title ?? 'Explore Top Digital Assets' }}</h2>
         <p class="sec__desc">
-        {{ $featured->description ?? 'Discover the most in-demand categories, from social accounts to apps, blogs, and more.' }}
+          {{ $featured->description ?? 'Discover the most in-demand categories, from social accounts to apps, blogs, and more.' }}
         </p>
       </div>
 
@@ -3484,7 +3552,7 @@ ap
       <!-- Buttons -->
       <div class="text-center mt-4">
         @if($categories->count() > $categories->where('is_popular', 1)->count())
-          <button class="btn btn-primary" onclick="window.location.href='{{ route('listing-list') }}'">
+          <button class="btn btn-primary" onclick="window.location.href='{{ route('categories.index') }}'">
             View All Categories
           </button>
 
@@ -3519,14 +3587,14 @@ ap
         const url = listingRouteTemplate.replace(':slug', encodeURIComponent(category.slug));
 
         div.innerHTML = `
-                                <a href="${url}" style="text-decoration:none; color:inherit;">
-                                  <div class="s-image-card">
-                                    <img src="${imgSrc}" alt="${category.name} Icon" />
-                                  </div>
-                                  <h3>${category.name}</h3>
-                                  <p>${categorySubmissionCounts[category.id] ?? 0} Listings</p>
-                                </a>
-                              `;
+                                      <a href="${url}" style="text-decoration:none; color:inherit;">
+                                        <div class="s-image-card">
+                                          <img src="${imgSrc}" alt="${category.name} Icon" />
+                                        </div>
+                                        <h3>${category.name}</h3>
+                                        <p>${categorySubmissionCounts[category.id] ?? 0} Listings</p>
+                                      </a>
+                                    `;
         container.appendChild(div);
       });
     }
@@ -3552,19 +3620,19 @@ ap
 
   <!-- end cat-area -->
   <!-- ================================
-                                                                                                                                        END CAT AREA
-                                                                                                                                        ================================= -->
+                                                                                                                                              END CAT AREA
+                                                                                                                                              ================================= -->
 
   <!-- ================================
-                                                                                                                                        START HIW AREA
-                                                                                                                                        ================================= -->
+                                                                                                                                              START HIW AREA
+                                                                                                                                              ================================= -->
   <!--<section class="hiw-area bg-gray section--padding">-->
   <!--  <div class="container">-->
   <!--    <div class="">-->
   <!--      <h2 class="sec__title mb-3 text-center">Buy Your Next Digital Asset on Flippingo</h2>-->
   <!--      <p class="sec__desc text-center">-->
   <!--        Explore verified listings of businesses, accounts, websites, and apps.-->
-  <!--        Compare options, connect with sellers, and purchase securely—all in one place.-->
+  <!--        Compare options, connect with sellers, and purchase securelyâ€”all in one place.-->
   <!--      </p>-->
   <!--    </div>-->
   <!-- end section-heading -->
@@ -3623,7 +3691,7 @@ ap
   <!-- Back -->
   <!--            <div class="flip-card-back">-->
   <!--              <p>-->
-  <!--                Start promoting brand logo, links, tools, & services. Earn money by promoting the brand’s-->
+  <!--                Start promoting brand logo, links, tools, & services. Earn money by promoting the brandâ€™s-->
   <!--                content and products.-->
   <!--              </p>-->
   <!--              <button>View More</button>-->
@@ -3702,10 +3770,40 @@ ap
                 </div>
               </div>
 
-              <!-- Right: Image -->
               <div class="flippingo-hiw-image">
-                <img src="{{ asset('storage/' . $slide->media_path) }}" alt="Slide {{ $index + 1 }}">
+
+                {{-- IMAGE --}}
+                @if($slide->media_type === 'image' && $slide->media_path)
+                  <img src="{{ asset('storage/' . $slide->media_path) }}" alt="Slide {{ $index + 1 }}" loading="lazy"
+                    style="width:100%;height:auto;border-radius:12px;">
+
+                  {{-- UPLOADED VIDEO --}}
+                @elseif($slide->media_type === 'video' && $slide->video_type === 'upload')
+                  <video autoplay muted loop playsinline preload="metadata"
+                    style="width:100%;height:auto;border-radius:12px;">
+                    <source src="{{ asset('storage/' . $slide->media_path) }}" type="video/mp4">
+                  </video>
+
+                  {{-- YOUTUBE --}}
+                @elseif($slide->media_type === 'video' && $slide->video_type === 'youtube')
+                  @php
+                    // Extract video ID safely from embed URL
+                    $youtubeId = basename(parse_url($slide->media_path, PHP_URL_PATH));
+                  @endphp
+                  <iframe
+                    src="https://www.youtube.com/embed/{{ $youtubeId }}?autoplay=1&mute=1&loop=1&playlist={{ $youtubeId }}"
+                    frameborder="0" allow="autoplay; fullscreen; encrypted-media; picture-in-picture" allowfullscreen
+                    style="width:100%;height:360px;border-radius:12px;"></iframe>
+
+                  {{-- VIMEO / EXTERNAL --}}
+                @elseif($slide->media_type === 'video' && in_array($slide->video_type, ['vimeo', 'external']))
+                  <iframe src="{{ $slide->media_path }}" frameborder="0"
+                    allow="autoplay; fullscreen; encrypted-media; picture-in-picture" allowfullscreen
+                    style="width:100%;height:360px;border-radius:12px;"></iframe>
+                @endif
+
               </div>
+
 
             </div>
           @endforeach
@@ -3736,23 +3834,23 @@ ap
 
   <!-- end hiw-area -->
   <!-- ================================
-                                                                                                                                        END HIW AREA
-                                                                                                                                        ================================= -->
+                                                                                                                                              END HIW AREA
+                                                                                                                                              ================================= -->
 
   <!-- ================================
-                                                                                                                                        START CARD AREA
-                                                                                                                                        ================================= -->
+                                                                                                                                              START CARD AREA
+                                                                                                                                              ================================= -->
 
-  <section class="card-area section-padding">
-      @php
-  $mostSearched = $homePageContent['most_searched'] ?? null;
-@endphp
+  <section class="card-area section-padding" style="background:#f0f5fb;">
+    @php
+      $mostSearched = $homePageContent['most_searched'] ?? null;
+    @endphp
     <div class="container">
       <div class="">
         <h2 class="sec__title  text-start"> {{ $mostSearched->title ?? 'Most Searched Businesses' }}</h2>
-     <p class="sec__desc text-start mb-3">
-    {{ $mostSearched->description ?? 'View current listings of businesses and digital products from verified sellers.' }}
-  </p>
+        <p class="sec__desc text-start mb-3">
+          {{ $mostSearched->description ?? 'View current listings of businesses and digital products from verified sellers.' }}
+        </p>
       </div>
 
       <div class="filter-bar">
@@ -3760,17 +3858,20 @@ ap
         <!-- Category Section -->
         <div class="filter-left">
 
+          @php
+            $popularCategories = $categories->where('is_popular', 1)->values();
+          @endphp
           <!-- Category Dropdown -->
           <select id="categorySelect" class="filter-select">
             <option value="all">All Categories</option>
-            @foreach($categories->where('is_popular', 1)->take(8) as $category)
+            @foreach($popularCategories->slice(2, 8) as $category)
               <option value="{{ $category->slug }}">{{ $category->name }}</option>
             @endforeach
           </select>
 
           <!-- 3 Category Buttons (auto hide when dropdown used) -->
           <div class="quick-categories" id="quickCategories">
-            @foreach($categories->where('is_popular', 1)->take(2) as $category)
+            @foreach($popularCategories->take(2) as $category)
               <button class="tab-btn" data-category="{{ $category->slug }}">
                 {{ $category->name }}
               </button>
@@ -3821,9 +3922,7 @@ ap
                 $fields = json_decode($submission['data'], true);
 
                 $productTitle = $fields['product_title']['value'] ?? 'No Title';
-                $offeredPrice = ($fields['urgent_sale']['value'] ?? '') === 'Yes'
-                  ? ($fields['offered_price']['value'] ?? '0')
-                  : ($fields['mrp']['value'] ?? '0');
+          
                 $imageFile = $submission['allImages'][0] ?? null;
                 $summaryFields = $submission['summaryFields'] ?? null;
               @endphp
@@ -3832,19 +3931,19 @@ ap
                 data-verified="{{ $submission['is_verified'] ? '1' : '0' }}"
                 data-premium="{{ $submission['is_premium'] ? '1' : '0' }}">
                 @if($imageFile)
-<div class="wishlist-image-wrapper">
+                  <div class="wishlist-image-wrapper">
 
-    <div class="wishlist-main-slider">
-        @foreach($submission['allImages'] as $img)
-            <img src="{{ asset('storage/' . $img['file_path']) }}" class="slide-img" />
-        @endforeach
-    </div>
+                    <div class="wishlist-main-slider">
+                      @foreach($submission['allImages'] as $img)
+                        <img src="{{ asset('storage/' . $img['file_path']) }}" class="slide-img" />
+                      @endforeach
+                    </div>
 
-    <!-- Navigation Arrows -->
-    <div class="wishlist-nav wishlist-prev"><i class="fa-solid fa-chevron-left"></i></div>
-    <div class="wishlist-nav wishlist-next"><i class="fa-solid fa-chevron-right"></i></div>
+                    <!-- Navigation Arrows -->
+                    <div class="wishlist-nav wishlist-prev"><i class="fa-solid fa-chevron-left"></i></div>
+                    <div class="wishlist-nav wishlist-next"><i class="fa-solid fa-chevron-right"></i></div>
 
-</div>
+                  </div>
 
                 @else
                   <img src="https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcThez8EsMExS0cJzMTvAM6OlRj9d9SecStl6g&s">
@@ -3877,14 +3976,15 @@ ap
                   </div>
                   <h3 class="mt-2 " style="color: #000;">{{ $productTitle }}</h3>
                   <div class="d-flex justify-content-between align-items-center">
-                    <p class="m-0">
+                    <p class="m-0" style="font-size:12px;">
                       By
                       {{ ($submission['customer']['first_name'] ?? '') . ' ' . ($submission['customer']['last_name'] ?? '') }}
 
-                      @if(!empty($submission['is_premium']) && $submission['is_premium'])
-                        <span class="text-warning ms-1" title="Premium Seller">
-                          <i class="fa-solid fa-crown"></i>
-                        </span>
+                      @if(!empty($submission->is_premium) && $submission->is_premium)
+                          <span class="text-warning ms-1" data-toggle="tooltip" data-placement="top"
+                            title="{{ setting('premium_seller_note', 'Premium Seller') }}">
+                            <i class="fa-solid fa-crown"></i>
+                          </span>
                       @elseif(!empty($submission['is_verified']) && $submission['is_verified'])
                         <span class="text-success ms-1" title="Verified Seller">
                           <i class="fa-solid fa-circle-check"></i>
@@ -3895,14 +3995,15 @@ ap
                     <p class="m-0" style="color: #007bff;"><i class="fa-solid fa-eye"></i> {{ $submission->total_views ?? 0 }}
                     </p>
                   </div>
-                  <div class="wishlist-item-card">
+                  <div class="wishlist-item-card {{ count($summaryFields) == 2 ? 'two-items' : '' }}">
                     @foreach($summaryFields as $field)
                       <div class="wishlist-left">
-                        <p class="m-0" style="color: green;">
+                        <p class="m-0" style="color: {{ $field['color'] ?? 'green' }};">
                           <i class="{{ $field['icon'] ?? '' }}"></i>
                         </p>
+
                         <div class="d-flex flex-column">
-                          <p class="m-0" style="font-size: 10px;">
+                          <p class="m-0" style="font-size: 10px;line-height: 12px;">
                             {{ $field['label'] }}
                           </p>
                           <h5 class="m-0" style="color: #000; font-size: 14px;">
@@ -3912,8 +4013,13 @@ ap
                       </div>
                     @endforeach
                   </div>
+
                   <div class="wishlist-price d-flex justify-content-between mt-3">
-                    <h2 style="color: #000;"><i class="fa-solid fa-indian-rupee-sign"></i>{{ $offeredPrice }}</h2>
+                    <h2 style="color:#000;">
+                      {{ $submission['currency_symbol'] }}
+                     {{ $submission['currency_symbol']  == '$'? number_format($submission['display_price'], 2) : $submission['display_price']}}
+                    </h2>
+
 
                     <button type="button" class="btn btn-dark"
                       onclick="window.location.href='{{ route('listing-details', ['id' => $submission['id']]) }}'">
@@ -3922,47 +4028,6 @@ ap
                   </div>
                 </div>
 
-                <!--<div class="more-info" data-aos="fade-up" data-aos-duration="500">-->
-                <!--  <div class="wishlist-button">-->
-                <!--    <p>{{ $catName }}</p>-->
-                <!--    <div class="budge-active1">-->
-                <!--      <p><i class="fa-solid fa-circle-check"></i> Verified</p>-->
-                <!--    </div>-->
-
-                <!--  </div>-->
-                <!--  <h3 class="mt-2" style="color: #000;">{{ $productTitle ?? '' }}</h3>-->
-                <!--  <div class="d-flex justify-content-between align-items-center">-->
-                <!--    <p class="m-0">By-->
-                <!--      {{ ($submission['customer']['first_name'] ?? '') . ' ' . ($submission['customer']['last_name'] ?? '') }}-->
-                <!--    </p>-->
-                <!--    <p class="m-0" style="color: #007bff;"><i class="fa-solid fa-eye"></i> {{ $submission->total_views ?? 0 }}</p>-->
-                <!--  </div>-->
-                <!--  <div class="wishlist-item-card">-->
-                <!--    @foreach($summaryFields as $field)-->
-                <!--      <div class="wishlist-left">-->
-                <!--        <p class="m-0" style="color: green;">-->
-                <!--          <i class="{{ $field['icon'] ?? '' }}"></i>-->
-                <!--        </p>-->
-                <!--        <div class="d-flex flex-column">-->
-                <!--          <p class="m-0" style="font-size: 16px;">-->
-                <!--            {{ $field['label'] }}-->
-                <!--          </p>-->
-                <!--          <h5 class="m-0" style="color: #000; font-size: 16px;">-->
-                <!--            {{ $field['value'] }}-->
-                <!--          </h5>-->
-                <!--        </div>-->
-                <!--      </div>-->
-                <!--    @endforeach-->
-
-                <!--  </div>-->
-                <!--  <div class="wishlist-price d-flex justify-content-between mt-3">-->
-                <!--    <h2 style="color: #000;"><i class="fa-solid fa-indian-rupee-sign"></i>{{ $offeredPrice }}</h2>-->
-                <!--    <button type="button" class="btn btn-dark"-->
-                <!--      onclick="window.location.href='{{ route('listing-details', ['id' => $submission['id']]) }}'">-->
-                <!--      View Listing-->
-                <!--    </button>-->
-                <!--  </div>-->
-                <!--</div>-->
               </div>
             @endforeach
           @endif
@@ -3980,10 +4045,6 @@ ap
                   $fields = json_decode($submission->data, true);
 
                   $productTitle = $fields['product_title']['value'] ?? 'No Title';
-                  $offeredPrice = ($fields['urgent_sale']['value'] ?? '') === 'Yes'
-                    ? ($fields['offered_price']['value'] ?? '0')
-                    : ($fields['mrp']['value'] ?? '0');
-
                   $imageFile = $submission->allImages[0] ?? null;
                   $summaryFields = $submission->summaryFields;
 
@@ -3994,19 +4055,19 @@ ap
                   data-verified="{{ $submission->is_verified ? '1' : '0' }}"
                   data-premium="{{ $submission->is_premium ? '1' : '0' }}">
                   @if($imageFile)
-<div class="wishlist-image-wrapper">
+                    <div class="wishlist-image-wrapper">
 
-    <div class="wishlist-main-slider">
-        @foreach($submission['allImages'] as $img)
-            <img src="{{ asset('storage/' . $img['file_path']) }}" class="slide-img" />
-        @endforeach
-    </div>
+                      <div class="wishlist-main-slider">
+                        @foreach($submission['allImages'] as $img)
+                          <img src="{{ asset('storage/' . $img['file_path']) }}" class="slide-img" />
+                        @endforeach
+                      </div>
 
-    <!-- Navigation Arrows -->
-    <div class="wishlist-nav wishlist-prev"><i class="fa-solid fa-chevron-left"></i></div>
-    <div class="wishlist-nav wishlist-next"><i class="fa-solid fa-chevron-right"></i></div>
+                      <!-- Navigation Arrows -->
+                      <div class="wishlist-nav wishlist-prev"><i class="fa-solid fa-chevron-left"></i></div>
+                      <div class="wishlist-nav wishlist-next"><i class="fa-solid fa-chevron-right"></i></div>
 
-</div>
+                    </div>
                   @else
                     <img src="https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcThez8EsMExS0cJzMTvAM6OlRj9d9SecStl6g&s">
                   @endif
@@ -4032,16 +4093,17 @@ ap
                     <div class="wishlist-button">
                       <p>{{ $category->name }}</p>
                       <!-- <div class="budge-active1">
-                                        <p><i class="fa-solid fa-circle-check"></i> Verified</p>
-                                      </div> -->
+                                                                <p><i class="fa-solid fa-circle-check"></i> Verified</p>
+                                                              </div> -->
                     </div>
                     <h3 class="mt-2 " style="color: #000;">{{ $productTitle }}</h3>
                     <div class="d-flex justify-content-between align-items-center">
                       <p class="m-0">
                         By {{ ($submission->customer->first_name ?? '') . ' ' . ($submission->customer->last_name ?? '') }}
 
-                        @if(!empty($submission->is_premium) && $submission->is_premium)
-                          <span class="text-warning ms-1" title="Premium Seller">
+                      @if(!empty($submission->is_premium) && $submission->is_premium)
+                          <span class="text-warning ms-1" data-toggle="tooltip" data-placement="top"
+                            title="{{ setting('premium_seller_note', 'Premium Seller') }}">
                             <i class="fa-solid fa-crown"></i>
                           </span>
                         @elseif(!empty($submission->is_verified) && $submission->is_verified)
@@ -4056,7 +4118,7 @@ ap
                     <div class="wishlist-item-card">
                       @foreach($summaryFields as $field)
                         <div class="wishlist-left">
-                          <p class="m-0" style="color: green;">
+                          <p class="m-0" style="color: {{ $field['color'] ?? 'green' }};">
                             <i class="{{ $field['icon'] ?? '' }}"></i>
                           </p>
                           <div class="d-flex flex-column">
@@ -4071,7 +4133,10 @@ ap
                       @endforeach
                     </div>
                     <div class="wishlist-price d-flex justify-content-between mt-3">
-                      <h2 style="color: #000;"><i class="fa-solid fa-indian-rupee-sign"></i>{{ $offeredPrice }}</h2>
+                      <h2 style="color:#000;">
+                        {{ $submission->currency_symbol }}
+                       {{ $submission->currency_symbol  == '$'? number_format($submission->display_price, 2) : $submission->display_price}}
+                      </h2>
                       <button type="button" class="btn btn-dark"
                         onclick="window.location.href='{{ route('listing-details', ['id' => $submission->id]) }}'">
                         View Listing
@@ -4080,48 +4145,7 @@ ap
                     </div>
 
                   </div>
-                  <!-- <div class="more-info" data-aos="fade-up" data-aos-duration="500">
-                                            <div class="wishlist-button">
-                                              <p>{{ $category->name }}</p>
-                                              <div class="budge-active1">
-                                                <p><i class="fa-solid fa-circle-check"></i> Verified</p>
-                                              </div>
-                                            </div>
-                                            <h3 class="mt-2" style="color: #000;">{{ $productTitle ?? '' }}</h3>
-                                            <div class="d-flex justify-content-between align-items-center">
-                                              <p class="m-0">By
-                                                {{ ($submission->customer->first_name ?? '') . ' ' . ($submission->customer->last_name ?? '') }}
-                                              </p>
-                                              <p class="m-0" style="color: #007bff;"><i class="fa-solid fa-eye"></i> {{ $submission->total_views ?? 0 }}
-                                              </p>
-                                            </div>
-                                            <div class="wishlist-item-card">
-                                              @foreach($summaryFields as $field)
-                                                <div class="wishlist-left">
-                                                  <p class="m-0" style="color: green;">
-                                                    <i class="{{ $field['icon'] ?? '' }}"></i>
-                                                  </p>
-                                                  <div class="d-flex flex-column">
-                                                    <p class="m-0" style="font-size: 16px;">
-                                                      {{ $field['label'] }}
-                                                    </p>
-                                                    <h5 class="m-0" style="color: #000; font-size: 16px;">
-                                                      {{ $field['value'] }}
-                                                    </h5>
-                                                  </div>
-                                                </div>
-                                              @endforeach
-
-
-                                            </div>
-                                            <div class="wishlist-price d-flex justify-content-between mt-3">
-                                              <h2 style="color: #000;"><i class="fa-solid fa-indian-rupee-sign"></i>{{ $offeredPrice }}</h2>
-                                              <button type="button" class="btn btn-dark"
-                                                onclick="window.location.href='{{ route('listing-details', ['id' => $submission->id]) }}'">
-                                                View Listing
-                                              </button>
-                                            </div>
-                                          </div> -->
+               
                 </div>
               @endforeach
             @else
@@ -4142,8 +4166,8 @@ ap
 
   <!-- end card-area -->
   <!-- ================================
-                                                                                                                                        END CARD AREA
-                                                                                                                                        ================================= -->
+                                                                                                                                              END CARD AREA
+                                                                                                                                              ================================= -->
   <section class="hiw-area text-center" style="padding: 80px 0; background: #f9fafc;">
     <div class="container">
       <h2 class="sec__title mb-3">How It Works</h2>
@@ -4193,8 +4217,8 @@ ap
   </section>
 
   <!-- ================================
-                                                                                                                                        START FUN-FACT AREA
-                                                                                                                                        ================================= -->
+                                                                                                                                              START FUN-FACT AREA
+                                                                                                                                              ================================= -->
   <section class="prt-row home03-fid-section bg-base-grey clearfix">
     <div class="container">
       <div class="row">
@@ -4292,18 +4316,18 @@ ap
   </section>
   <!-- end funfact-area -->
   <!-- ================================
-                                                                                                                                        END FUN-FACT AREA
-                                                                                                                                        ================================= -->
+                                                                                                                                              END FUN-FACT AREA
+                                                                                                                                              ================================= -->
 
   <!-- ================================
-                                                                                                                                        START HIW AREA
-                                                                                                                                        ================================= -->
+                                                                                                                                              START HIW AREA
+                                                                                                                                              ================================= -->
   <section class="hiw-area section--padding text-center">
     <div class="container">
       <!-- Heading -->
       <h2 class="sec__title mb-3">What We Offer</h2>
       <p class="sec__desc mb-5">
-        Explore a range of digital assets ready to buy or sell — from premium domains
+        Explore a range of digital assets ready to buy or sell â€” from premium domains
         to full-fledged websites, digital templates, and more.
       </p>
 
@@ -4361,12 +4385,12 @@ ap
 
   <!-- end hiw-area -->
   <!-- ================================
-                                                                                                                                        END HIW AREA
-                                                                                                                                        ================================= -->
+                                                                                                                                              END HIW AREA
+                                                                                                                                              ================================= -->
 
   <!-- ================================
-                                                                                                                                        START CTA AREA
-                                                                                                                                        ================================= -->
+                                                                                                                                              START CTA AREA
+                                                                                                                                              ================================= -->
   <section class="cta-area bg-gray padding-top-80px padding-bottom-80px position-relative">
     <img src="{{ asset('assets') }}/images/symble1.png" alt="" class="symble-img" />
     <img src="{{ asset('assets') }}/images/symble2.png" alt="" class="symble-img" />
@@ -4391,12 +4415,12 @@ ap
   </section>
   <!-- end cta-area -->
   <!-- ================================
-                                                                                                                                        END CTA AREA
-                                                                                                                                        ================================= -->
+                                                                                                                                              END CTA AREA
+                                                                                                                                              ================================= -->
 
   <!-- ================================
-                                                                                                                                           START TESTIMONIAL AREA
-                                                                                                                                        ================================= -->
+                                                                                                                                                 START TESTIMONIAL AREA
+                                                                                                                                              ================================= -->
   <section class="hiw-area section--padding text-center" style="background-color: #fff; padding-bottom: 0px;">
     <div class="container">
       <h2 class="sec__title mb-3">Testimonial</h2>
@@ -4455,8 +4479,8 @@ ap
 
 
   <!-- ================================
-                                                                                                                                           START TESTIMONIAL AREA
-                                                                                                                                        ================================= -->
+                                                                                                                                                 START TESTIMONIAL AREA
+                                                                                                                                              ================================= -->
 
   <section class="mobile-area section-padding bg-gray position-relative mt-5">
     <img src="{{ asset('assets') }}/images/symble1.png" alt="" class="symble-img" />
@@ -4525,8 +4549,8 @@ ap
   </section>
 
   <!-- ================================
-                                                                                                                                           START BLOG AREA
-                                                                                                                                        ================================= -->
+                                                                                                                                                 START BLOG AREA
+                                                                                                                                              ================================= -->
   <section class="blog-area section--padding">
     <div class="container">
       <div class="d-flex flex-wrap align-items-center justify-content-between">
@@ -4578,30 +4602,30 @@ ap
 
   <!-- end blog-area -->
   <!-- ================================
-                                                                                                                                           START BLOG AREA
-                                                                                                                                        ================================= -->
+                                                                                                                                                 START BLOG AREA
+                                                                                                                                              ================================= -->
 
   <!-- ================================
-                                                                                                                                        START MOBILE AREA
-                                                                                                                                        ================================= -->
+                                                                                                                                              START MOBILE AREA
+                                                                                                                                              ================================= -->
 
   <!-- end mobile-area -->
   <!-- ================================
-                                                                                                                                        END MOBILE AREA
-                                                                                                                                        ================================= -->
+                                                                                                                                              END MOBILE AREA
+                                                                                                                                              ================================= -->
 
   <!-- ================================
-                                                                                                                                           START CLIENTLOGO AREA
-                                                                                                                                        ================================= -->
+                                                                                                                                                 START CLIENTLOGO AREA
+                                                                                                                                              ================================= -->
 
   <!-- end clientlogo-area -->
   <!-- ================================
-                                                                                                                                           START CLIENTLOGO AREA
-                                                                                                                                        ================================= -->
+                                                                                                                                                 START CLIENTLOGO AREA
+                                                                                                                                              ================================= -->
 
   <!-- ================================
-                                                                                                                                        START SUBSCRIBER AREA
-                                                                                                                                        ================================= -->
+                                                                                                                                              START SUBSCRIBER AREA
+                                                                                                                                              ================================= -->
   <section class="subscriber-area mb-n5 position-relative z-index-2">
     <div class="container">
       <div class="subscriber-box d-flex flex-wrap align-items-center justify-content-between bg-dark overflow-hidden">
@@ -4628,8 +4652,8 @@ ap
   </section>
   <!-- end subscriber-area -->
   <!-- ================================
-                                                                                                                                        END SUBSCRIBER AREA
-                                                                                                                                        ================================= -->
+                                                                                                                                              END SUBSCRIBER AREA
+                                                                                                                                              ================================= -->
 
 
   <script>
@@ -4741,21 +4765,21 @@ ap
 
                 const imageHtml = imageUrl
                   ? `<img src="${imageUrl}"
-                                               style="width:32px;height:32px;border-radius:6px;object-fit:cover;">`
+                                                     style="width:32px;height:32px;border-radius:6px;object-fit:cover;">`
                   : `<div class="flippingonew-inner-icon"
-                                               style="background:${item.type === "category" ? "#6f42c1" : "#0d6efd"}">
-                                              ${item.type === "category" ? "📂" : "📄"}
-                                           </div>`;
+                                                     style="background:${item.type === "category" ? "#6f42c1" : "#0d6efd"}">
+                                                    ${item.type === "category" ? "ðŸ“‚" : "ðŸ“„"}
+                                                 </div>`;
 
                 div.innerHTML = `
-                                        ${imageHtml}
-                                        <div class="flippingonew-inner-title">
-                                          ${item.title || 'Listing'}
-                                        </div>
-                                      `;
+                                              ${imageHtml}
+                                              <div class="flippingonew-inner-title">
+                                                ${item.title || 'Listing'}
+                                              </div>
+                                            `;
 
                 div.onclick = (e) => {
-                  e.stopPropagation();   // ✅ IMPORTANT
+                  e.stopPropagation();   // âœ… IMPORTANT
 
                   input.value = item.title || '';
 
@@ -5007,10 +5031,10 @@ ap
             let reelHtml = '';
             if (reel.reel_type === "upload" && reel.video_file) {
               reelHtml = `
-                                                                                                        <video controls loop muted autoplay playsinline>
-                                                                                                          <source src="/storage/${reel.video_file}" type="video/mp4">
-                                                                                                          Your browser does not support video.
-                                                                                                        </video>`;
+                                                                                                              <video controls loop muted autoplay playsinline>
+                                                                                                                <source src="/storage/${reel.video_file}" type="video/mp4">
+                                                                                                                Your browser does not support video.
+                                                                                                              </video>`;
             } else if (reel.reel_type === "youtube" && reel.youtube_url) {
               // Ensure YouTube embed URL with autoplay, mute & loop
               let ytUrl = reel.youtube_url;
@@ -5019,28 +5043,28 @@ ap
                 ytUrl = `https://www.youtube.com/embed/${videoId}?autoplay=1&mute=1&loop=1&playlist=${videoId}`;
               }
               reelHtml = `
-                                                                                                        <div class="video ratio ratio-16x9">
-                                                                                                          <iframe src="${ytUrl}" frameborder="0"
-                                                                                                            allow="autoplay; encrypted-media" allowfullscreen></iframe>
-                                                                                                        </div>`;
+                                                                                                              <div class="video ratio ratio-16x9">
+                                                                                                                <iframe src="${ytUrl}" frameborder="0"
+                                                                                                                  allow="autoplay; encrypted-media" allowfullscreen></iframe>
+                                                                                                              </div>`;
             } else if (reel.reel_type === "facebook" && reel.facebook_url) {
               // Facebook embed with autoplay & loop
               let fbUrl = `https://www.facebook.com/plugins/video.php?href=${encodeURIComponent(reel.facebook_url)}&autoplay=1&mute=1&loop=1&show_text=false`;
               reelHtml = `
-                                                                                                        <div class="video ratio ratio-16x9">
-                                                                                                          <iframe src="${fbUrl}" frameborder="0"
-                                                                                                            allow="autoplay; clipboard-write; encrypted-media; picture-in-picture"
-                                                                                                            allowfullscreen></iframe>
-                                                                                                        </div>`;
+                                                                                                              <div class="video ratio ratio-16x9">
+                                                                                                                <iframe src="${fbUrl}" frameborder="0"
+                                                                                                                  allow="autoplay; clipboard-write; encrypted-media; picture-in-picture"
+                                                                                                                  allowfullscreen></iframe>
+                                                                                                              </div>`;
             } else {
               reelHtml = `<p class="text-muted text-center">Invalid reel</p>`;
             }
 
             container.insertAdjacentHTML("beforeend", `
-                                                                                                                          <div class="col-md-3 col-sm-6">
-                                                                                                                            <div class="reel-card video">${reelHtml}</div>
-                                                                                                                          </div>
-                                                                                                                        `);
+                                                                                                                                <div class="col-md-3 col-sm-6">
+                                                                                                                                  <div class="reel-card video">${reelHtml}</div>
+                                                                                                                                </div>
+                                                                                                                              `);
           });
         })
         .catch(error => {
@@ -5117,6 +5141,7 @@ ap
     const quickCategories = document.getElementById("quickCategories");
     const groups = document.querySelectorAll(".submission-group");
     const tabButtons = document.querySelectorAll(".tab-btn");
+    const filterButtons = document.querySelectorAll(".filter-btn");
 
     let activeFilters = {
       category: "all",
@@ -5125,66 +5150,71 @@ ap
       premium: false
     };
 
-    // ===============================
+    // =====================================
     // APPLY FILTERS
-    // ===============================
-   function applyFilters() {
-    groups.forEach(group => {
+    // =====================================
+    function applyFilters() {
+      groups.forEach(group => {
+        const groupCategory = group.dataset.group;
 
-      const groupCategory = group.dataset.group;
-
-      // 🔑 STEP 1: GROUP VISIBILITY
-      if (activeFilters.category === "all") {
-        // Show ONLY "all" group
-        group.style.display = groupCategory === "all" ? "" : "none";
-      } else {
-        // Show ONLY selected category group
-        group.style.display = groupCategory === activeFilters.category ? "" : "none";
-      }
-
-      // 🔑 STEP 2: FILTER CARDS INSIDE VISIBLE GROUP
-      if (group.style.display !== "none") {
-        let hasVisible = false;
-
-        group.querySelectorAll(".wishlist-product-card").forEach(card => {
-          const matchCountry =
-            activeFilters.country === "all" ||
-            card.dataset.country === activeFilters.country;
-
-          const matchVerified =
-            !activeFilters.verified || card.dataset.verified === "1";
-
-          const matchPremium =
-            !activeFilters.premium || card.dataset.premium === "1";
-
-          const visible = matchCountry && matchVerified && matchPremium;
-
-          card.style.display = visible ? "" : "none";
-          if (visible) hasVisible = true;
-        });
-
-        // Hide group if no cards match other filters
-        if (!hasVisible) {
-          group.style.display = "none";
+        // 🔑 GROUP VISIBILITY
+        if (activeFilters.category === "all") {
+          group.style.display = groupCategory === "all" ? "" : "none";
+        } else {
+          group.style.display = groupCategory === activeFilters.category ? "" : "none";
         }
-      }
-    });
-  }
 
-    // ===============================
+        // 🔑 FILTER CARDS INSIDE VISIBLE GROUP
+        if (group.style.display !== "none") {
+          let hasVisible = false;
+
+          group.querySelectorAll(".wishlist-product-card").forEach(card => {
+            const matchCountry =
+              activeFilters.country === "all" ||
+              card.dataset.country === activeFilters.country;
+
+            const matchVerified =
+              !activeFilters.verified || card.dataset.verified === "1";
+
+            const matchPremium =
+              !activeFilters.premium || card.dataset.premium === "1";
+
+            const visible = matchCountry && matchVerified && matchPremium;
+
+            card.style.display = visible ? "" : "none";
+            if (visible) hasVisible = true;
+          });
+
+          // Hide empty group
+          if (!hasVisible) {
+            group.style.display = "none";
+          }
+        }
+      });
+    }
+
+    // =====================================
     // CATEGORY DROPDOWN
-    // ===============================
+    // =====================================
     categorySelect.addEventListener("change", function () {
       activeFilters.category = this.value;
-      quickCategories.style.display = this.value === "all" ? "" : "none";
 
+      // Show quick categories ONLY when "All"
+      // if (this.value === "all") {
+      //   quickCategories.style.display = "flex";
+      // } else {
+      //   quickCategories.style.display = "none";
+      // }
+
+      // Reset quick button active state
       tabButtons.forEach(btn => btn.classList.remove("active"));
+
       applyFilters();
     });
 
-    // ===============================
+    // =====================================
     // QUICK CATEGORY BUTTONS
-    // ===============================
+    // =====================================
     tabButtons.forEach(btn => {
       btn.addEventListener("click", function () {
         activeFilters.category = this.dataset.category;
@@ -5193,23 +5223,25 @@ ap
         tabButtons.forEach(b => b.classList.remove("active"));
         this.classList.add("active");
 
-        quickCategories.style.display = "none";
+        // Hide quick categories after selection
+        // quickCategories.style.display = "none";
+
         applyFilters();
       });
     });
 
-    // ===============================
+    // =====================================
     // COUNTRY FILTER
-    // ===============================
+    // =====================================
     countrySelect.addEventListener("change", function () {
       activeFilters.country = this.value;
       applyFilters();
     });
 
-    // ===============================
-    // VERIFIED / PREMIUM BUTTONS
-    // ===============================
-    document.querySelectorAll(".filter-btn").forEach(btn => {
+    // =====================================
+    // VERIFIED / PREMIUM FILTERS
+    // =====================================
+    filterButtons.forEach(btn => {
       btn.addEventListener("click", function () {
         this.classList.toggle("active");
 
@@ -5225,31 +5257,34 @@ ap
       });
     });
 
-    // ===============================
+    // =====================================
     // INITIAL LOAD
-    // ===============================
-    applyFilters();
+    // =====================================
+    document.addEventListener("DOMContentLoaded", () => {
+      quickCategories.style.display = "flex";
+      applyFilters();
+    });
   </script>
   <script>
-      document.querySelectorAll('.wishlist-image-wrapper').forEach(function(wrapper) {
+    document.querySelectorAll('.wishlist-image-wrapper').forEach(function (wrapper) {
 
-    let slider = wrapper.querySelector('.wishlist-main-slider');
-    let images = slider.querySelectorAll('.slide-img');
-    let total = images.length;
-    let index = 0;
+      let slider = wrapper.querySelector('.wishlist-main-slider');
+      let images = slider.querySelectorAll('.slide-img');
+      let total = images.length;
+      let index = 0;
 
-    // Next
-    wrapper.querySelector('.wishlist-next').addEventListener('click', function () {
+      // Next
+      wrapper.querySelector('.wishlist-next').addEventListener('click', function () {
         index = (index + 1) % total;
         slider.style.transform = `translateX(-${index * 100}%)`;
-    });
+      });
 
-    // Prev
-    wrapper.querySelector('.wishlist-prev').addEventListener('click', function () {
+      // Prev
+      wrapper.querySelector('.wishlist-prev').addEventListener('click', function () {
         index = (index - 1 + total) % total;
         slider.style.transform = `translateX(-${index * 100}%)`;
+      });
     });
-});
 
   </script>
 

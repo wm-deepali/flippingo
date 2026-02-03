@@ -179,7 +179,7 @@
                                 <div class="wishlist-item-card">
                                 @foreach($summaryFields as $field)
                                         <div class="wishlist-left mb-2">
-                                            <p class="m-0" style="color: green;">
+                                            <p class="m-0" style="color: {{ $field['color'] ?? '#000000' }};">
                                                 <i class="{{ $field['icon'] ?? '' }}"></i>
                                             </p>
                                             <div class="d-flex flex-column">
@@ -195,8 +195,10 @@
 
                                 </div>
                                 <div class="wishlist-price d-flex justify-content-between mt-3">
-                                    <h2 style="color: #000;"><i
-                                            class="fa-solid fa-indian-rupee-sign"></i>{{ $submission->offered_price ?? '' }}</h2>
+                                     <h2 style="color:#000000;">
+                                        {{ $submission->currency_symbol }}
+                                        {{ $submission->currency_symbol  == '$'? number_format($submission->display_price, 2) : $submission->display_price}}
+                                    </h2>
                                     <button type="button" class="btn btn-dark"
                                                 onclick="window.location.href='{{ route('listing-details', ['id' => $submission['id']]) }}'">
                                                 View Detail
@@ -220,7 +222,7 @@
                                 <div class="wishlist-item-card">
                     @foreach($summaryFields as $field)
                                         <div class="wishlist-left mb-2">
-                                            <p class="m-0" style="color: green;">
+                                            <p class="m-0" style="color: {{ $field['color'] ?? '#000000' }};">
                                                 <i class="{{ $field['icon'] ?? '' }}"></i>
                                             </p>
                                             <div class="d-flex flex-column">
@@ -235,8 +237,10 @@
                                     @endforeach
                                 </div>
                                 <div class="wishlist-price d-flex justify-content-between mt-3">
-                                    <h2 style="color: #000;"><i
-                                            class="fa-solid fa-indian-rupee-sign"></i>{{ $submission->offered_price ?? '' }}</h2>
+                                     <h2 style="color:#000000;">
+                                        {{ $submission->currency_symbol }}
+                                       {{ $submission->currency_symbol  == '$'? number_format($submission->display_price, 2) : $submission->display_price}}
+                                    </h2>
                                        <button type="button" class="btn btn-dark"
                                                 onclick="window.location.href='{{ route('listing-details', ['id' => $submission['id']]) }}'">
                                                 View Detail
@@ -683,7 +687,7 @@
                                 <div class="wishlist-item-card">
                                    @foreach($summaryFields as $field)
                                         <div class="wishlist-left mb-2">
-                                            <p class="m-0" style="color: green;">
+                                            <p class="m-0" style="color: {{ $field['color'] ?? '#000000' }};">
                                                 <i class="{{ $field['icon'] ?? '' }}"></i>
                                             </p>
                                             <div class="d-flex flex-column">
@@ -698,8 +702,10 @@
                                     @endforeach
                                 </div>
                                 <div class="wishlist-price d-flex justify-content-between mt-3">
-                                    <h2 style="color: #000;"><i
-                                            class="fa-solid fa-indian-rupee-sign"></i>{{ $submission->offered_price ?? '' }}</h2>
+                                     <h2 style="color:#000000;">
+                                        {{ $submission->currency_symbol }}
+                                       {{ $submission->currency_symbol  == '$'? number_format($submission->display_price, 2) : $submission->display_price}}
+                                    </h2>
                                     <button type="button" class="btn btn-dark"
                                                 onclick="window.location.href='{{ route('listing-details', ['id' => $submission['id']]) }}'">
                                                 View Detail
@@ -723,7 +729,7 @@
                                 <div class="wishlist-item-card">
                            @foreach($summaryFields as $field)
                                         <div class="wishlist-left mb-2">
-                                            <p class="m-0" style="color: green;">
+                                            <p class="m-0" style="color: {{ $field['color'] ?? '#000000' }};">
                                                 <i class="{{ $field['icon'] ?? '' }}"></i>
                                             </p>
                                             <div class="d-flex flex-column">
@@ -738,8 +744,10 @@
                                     @endforeach
                                 </div>
                                 <div class="wishlist-price d-flex justify-content-between mt-3">
-                                    <h2 style="color: #000;"><i
-                                            class="fa-solid fa-indian-rupee-sign"></i>{{ $submission->offered_price ?? '' }}</h2>
+                                     <h2 style="color:#000000;">
+                                        {{ $submission->currency_symbol }}
+                                       {{ $submission->currency_symbol  == '$'? number_format($submission->display_price, 2) : $submission->display_price}}
+                                    </h2>
                                        <button type="button" class="btn btn-dark"
                                                 onclick="window.location.href='{{ route('listing-details', ['id' => $submission['id']]) }}'">
                                                 View Detail

@@ -34,15 +34,6 @@ class ListingController extends Controller
 
         // Map for front-end
         $submissions = $submissions->map(function ($submission) {
-            $submittedValues = $submission ? json_decode($submission->data, true) : [];
-
-            $submission->offered_price =
-                ($submittedValues['urgent_sale']['value'] ?? '') === 'Yes'
-                ? ($submittedValues['offered_price']['value'] ?? 0)
-                : ($submittedValues['mrp']['value'] ?? 0);
-
-            $submission->product_title = $submittedValues['product_title']['value'] ?? '';
-            $submission->category_name = optional($submission->form->category)->name ?? '';
             $submission->total_sales = $submission->orders->count();
             $submission->is_expired = $submission->status === 'expired';
             $submission->is_sold = \App\Models\ProductOrder::where('submission_id', $submission->id)->exists();
@@ -92,12 +83,15 @@ class ListingController extends Controller
         $existingData = json_decode($submission->data, true) ?? [];
         $uploadedFiles = $submission->files;
 
+        $countries = \DB::table('countries')->orderBy('name')->get();
+        
         // dd($existingData,$formData->fields);
         return view('admin.form_submissions.edit', [
             'submission' => $submission,
             'formData' => $formData,
             'existingData' => $existingData,
             'uploadedFiles' => $uploadedFiles,
+            'countries' => $countries,
         ]);
     }
 
@@ -279,13 +273,6 @@ class ListingController extends Controller
     public function viewAllSales($submissionId)
     {
         $submission = FormSubmission::with(['customer', 'form.category', 'orders.customer', 'orders.seller', 'orders.payment', 'orders.currentStatus'])->findOrFail($submissionId);
-        $submittedValues = $submission ? json_decode($submission->data, true) : [];
-
-        $submission->offered_price = optional($submittedValues['offered_price'])['value'] ?? 0;
-        $submission->product_title = optional($submittedValues['product_title'])['value'] ?? '';
-        $submission->category_name = optional($submission->form->category)->name ?? '';
-        $submission->total_sales = $submission->orders->count();
-
         $orders = $submission->orders;
         return view('admin.form_submissions.sales', compact('submission', 'orders'));
     }
