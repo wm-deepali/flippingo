@@ -150,35 +150,15 @@ class SubscriptionController extends Controller
 
             $order->product = [
                 "productTitle" => $submittedValues['product_title']['value'] ?? '-',
-                "offeredPrice" =>
-                    ($submittedValues['urgent_sale']['value'] ?? '') === 'Yes'
-                    ? ($submittedValues['offered_price']['value'] ?? 0)
-                    : ($submittedValues['mrp']['value'] ?? 0),
-
-                "category" => optional($order->submission->form->category)->name ?? '-',
-                "productPhoto" => optional($order->submission->files()->where('show_on_summary', true)->first())->file_path ?? null,
+            "offeredPrice" => $order->amount, // ✅ FIX
+            "category" => optional($order->submission->form->category)->name ?? '-',
+            "productPhoto" => optional(
+                $order->submission->files()->where('show_on_summary', true)->first()
+            )->file_path ?? null,
             ];
         }
         return view('admin.payments.invoice', compact('order', 'type'));
     }
-
-    public function download($type, $id)
-    {
-        if ($type === 'subscription') {
-            $order = Subscription::with(['package', 'customer', 'payment'])->findOrFail($id);
-            $pdfView = 'admin.invoices.subscription_pdf';
-        } else {
-            // $order = ProductOrder::with(['products', 'buyer', 'seller', 'payment'])->findOrFail($id);
-            $pdfView = 'admin.invoices.product_pdf';
-        }
-
-        $pdf = \PDF::loadView($pdfView, compact('order', 'type'));
-
-        $fileName = 'Invoice_' . $order->id . '_' . now()->format('Ymd') . '.pdf';
-
-        return $pdf->download($fileName);
-    }
-
 
     public function reports(Request $request)
     {

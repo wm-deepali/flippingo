@@ -98,44 +98,43 @@ class ListingController extends Controller
         $id = $request->get('id');
         $user = auth('customer')->user();
 
+        /* ==============================
+         | 🌍 VIEWER CURRENCY
+         ============================== */
+        $countryCode = IpHelper::countryCode();
+        $viewerCurrency = $countryCode === 'in' ? 'INR' : 'USD';
+        $usdRate = CurrencyHelper::usdRate();
+
         $submission = FormSubmission::with([
             'form.category',
             'customer.wallet',
-            'files'
+            'files',
+            'country'
         ])->findOrFail($id);
 
         /* ==============================
-         | VIEW + CLICK TRACKING
-         |==============================*/
+         | 👁️ VIEW + CLICK TRACKING
+         ============================== */
         if ($user) {
             $today = now()->toDateString();
 
-            // Lifetime
             $submission->increment('total_views');
             $submission->increment('total_clicks');
 
-            // Daily
             $stat = FormSubmissionStat::firstOrCreate(
-                [
-                    'form_submission_id' => $submission->id,
-                    'date' => $today
-                ],
-                [
-                    'views' => 0,
-                    'clicks' => 0,
-                    'unique_views' => 0
-                ]
+                ['form_submission_id' => $submission->id, 'date' => $today],
+                ['views' => 0, 'clicks' => 0, 'unique_views' => 0]
             );
 
             $stat->increment('views');
             $stat->increment('clicks');
 
-            // Unique views
             $ip = $request->ip();
-            $hasViewed = \App\Models\FormSubmissionView::where('form_submission_id', $id)
-                ->where('ip_address', $ip)
-                ->where('view_date', $today)
-                ->exists();
+            $hasViewed = \App\Models\FormSubmissionView::where([
+                'form_submission_id' => $id,
+                'ip_address' => $ip,
+                'view_date' => $today
+            ])->exists();
 
             if (!$hasViewed) {
                 \App\Models\FormSubmissionView::create([
@@ -151,18 +150,37 @@ class ListingController extends Controller
         }
 
         /* ==============================
-         | FORM DATA
-         |==============================*/
+         | 📄 FORM DATA
+         ============================== */
         $formData = \App\Models\FormData::where('form_id', $submission->form_id)->first();
-
         $layout = $formData->field_layout ?? [];
         $fields = $formData->fields ?? [];
 
         $submittedData = json_decode($submission->data, true) ?? [];
 
         /* ==============================
-         | SUMMARY FIELDS (FROM SUMMARY CARDS)
-         |==============================*/
+         | 💰 PRICE CALCULATION (CORRECT)
+         ============================== */
+        $basePrice = ($submittedData['urgent_sale']['value'] ?? '') === 'Yes'
+            ? ($submittedData['offered_price']['value'] ?? 0)
+            : ($submittedData['mrp']['value'] ?? 0);
+
+        $basePrice = (float) $basePrice;
+        $submissionCurrency = $submission->currency ?? 'INR';
+
+        if ($submissionCurrency === 'INR' && $viewerCurrency === 'USD') {
+            $displayPrice = round($basePrice * $usdRate, 2);
+        } elseif ($submissionCurrency === 'USD' && $viewerCurrency === 'INR') {
+            $displayPrice = round($basePrice / $usdRate, 2);
+        } else {
+            $displayPrice = $basePrice;
+        }
+
+        $currencySymbol = $viewerCurrency === 'INR' ? '₹' : '$';
+
+        /* ==============================
+         | 📊 SUMMARY FIELDS
+         ============================== */
         $summaryCards = \App\Models\FormSummaryCard::where('form_id', $submission->form_id)
             ->orderBy('position')
             ->get();
@@ -170,17 +188,15 @@ class ListingController extends Controller
         $summaryFields = [];
 
         foreach ($summaryCards as $card) {
-
             $fieldKey = $card->field_key;
 
-            if (!isset($submittedData[$fieldKey]['value'])) {
-                continue; // field removed or not submitted
-            }
+            if (!isset($submittedData[$fieldKey]['value']))
+                continue;
 
             $value = $submittedData[$fieldKey]['value'];
 
             if (is_array($value)) {
-                $value = implode(' ', array_map('strval', $value));
+                $value = implode(', ', array_map('strval', $value));
             }
 
             $summaryFields[] = [
@@ -193,48 +209,112 @@ class ListingController extends Controller
         }
 
         /* ==============================
-         | WALLET + WISHLIST
-         |==============================*/
-        $walletBalance = optional($submission->customer->wallet)->balance ?? 0;
+ | 💳 WALLET CURRENCY HANDLING
+ ============================== */
 
-        $isInWishlist = false;
-        if ($user) {
-            $isInWishlist = \App\Models\Wishlist::where('customer_id', $user->id)
-                ->where('submission_id', $submission->id)
-                ->exists();
+        // Wallet is ALWAYS stored in INR
+        $walletBalanceINR = optional($submission->customer->wallet)->balance ?? 0;
+
+        // Convert wallet balance for display
+        if ($viewerCurrency === 'USD') {
+            $walletBalanceDisplay = round($walletBalanceINR * $usdRate, 2);
+        } else {
+            $walletBalanceDisplay = $walletBalanceINR;
         }
 
+        // Required amount comparison must be in SAME currency
+        $requiredAmountDisplay = max(0, $displayPrice - $walletBalanceDisplay);
+
+        // Required amount for Razorpay (INR only)
+        $requiredAmountINR = max(0, $basePrice - $walletBalanceINR);
+
+
+        $isInWishlist = $user
+            ? \App\Models\Wishlist::where([
+                'customer_id' => $user->id,
+                'submission_id' => $submission->id
+            ])->exists()
+            : false;
+
+
         /* ==============================
-         | OTHER SUBMISSIONS (SAME SELLER)
-         |==============================*/
-        $otherSubmissions = FormSubmission::with('files')
+  | 🧾 OTHER SUBMISSIONS (WITH CURRENCY)
+  ============================== */
+        $otherSubmissions = FormSubmission::with(['files'])
             ->where('customer_id', $submission->customer_id)
             ->where('id', '!=', $submission->id)
             ->latest()
             ->take(6)
-            ->get();
+            ->get()
+            ->map(function ($item) use ($viewerCurrency, $usdRate) {
 
-        /* ==============================
-         | SOLD STATUS
-         |==============================*/
+                // Decode safely
+                $data = is_array($item->data)
+                    ? $item->data
+                    : json_decode($item->data, true);
+
+                $data = is_array($data) ? $data : [];
+
+                /* ------------------------------
+                 | BASE PRICE
+                 ------------------------------ */
+                $basePrice = ($data['urgent_sale']['value'] ?? '') === 'Yes'
+                    ? ($data['offered_price']['value'] ?? 0)
+                    : ($data['mrp']['value'] ?? 0);
+
+                $basePrice = (float) $basePrice;
+
+                /* ------------------------------
+                 | CURRENCY CONVERSION
+                 ------------------------------ */
+                $submissionCurrency = $item->currency ?? 'INR';
+                $displayPrice = $basePrice;
+
+                if ($submissionCurrency === 'INR' && $viewerCurrency === 'USD') {
+                    $displayPrice = round($basePrice * $usdRate, 2);
+                } elseif ($submissionCurrency === 'USD' && $viewerCurrency === 'INR') {
+                    $displayPrice = round($basePrice / $usdRate, 2);
+                }
+
+                /* ------------------------------
+                 | ATTACH DISPLAY DATA
+                 ------------------------------ */
+                $item->display_price = $displayPrice;
+                $item->currency_symbol = $viewerCurrency === 'INR' ? '₹' : '$';
+                $item->viewer_currency = $viewerCurrency;
+
+                return $item;
+            });
+
+
         $soldSubmissionIds = \App\Models\ProductOrder::pluck('submission_id')->toArray();
-
         $isSold = in_array($submission->id, $soldSubmissionIds);
 
         /* ==============================
-         | RETURN VIEW
-         |==============================*/
+         | ✅ RETURN VIEW
+         ============================== */
         return view('front.listing-details', compact(
             'submission',
             'layout',
             'fields',
-            'walletBalance',
             'summaryFields',
             'isInWishlist',
             'otherSubmissions',
             'isSold',
-            'soldSubmissionIds'
+            'soldSubmissionIds',
+
+            // price
+            'displayPrice',
+            'currencySymbol',
+            'viewerCurrency',
+
+            // wallet
+            'walletBalanceDisplay',
+            'walletBalanceINR',
+            'requiredAmountDisplay',
+            'requiredAmountINR'
         ));
+
     }
 
 
@@ -293,7 +373,7 @@ class ListingController extends Controller
         $fieldsDefinition = $formData ? $formData->fields : [];
 
         // Get all non-file inputs except tokens and form_id
-        $rawInputData = $request->except(['_token', '_method', 'form_id']);
+        $rawInputData = $request->except(['_token', '_method', 'form_id', 'country']);
 
         $inputDataWithMeta = [];
 
@@ -421,7 +501,7 @@ class ListingController extends Controller
 
         if (!empty($countryId)) {
             // Assuming India ID = 101 (change if different)
-            if ((int) $countryId !== 101) {
+            if ((int) $countryId !== 229) {
                 $currency = 'USD';
             }
         }
@@ -462,7 +542,6 @@ class ListingController extends Controller
         return response()->json(['success' => true, 'message' => 'Form submitted successfully']);
     }
 
-
     public function show($id)
     {
         $submission = FormSubmission::find($id);
@@ -493,10 +572,20 @@ class ListingController extends Controller
         $submission = FormSubmission::findOrFail($id);
 
         // Load FormData linked to this submission's form
-        $formData = FormData::where('form_id', $submission->form_id)->first();
+        $formData = FormData::where('form_id', $submission->form_id)->firstOrFail();
 
-        $existingData = json_decode($submission->data, true) ?? [];
+        // Decode submission data safely
+        $existingData = is_array($submission->data)
+            ? $submission->data
+            : json_decode($submission->data, true);
+
         $uploadedFiles = $submission->files;
+
+        // Load countries only if category allows it
+        $countries = [];
+        if ($submission->form?->category?->enable_country_filter) {
+            $countries = \DB::table('countries')->orderBy('name')->get();
+        }
 
         // dd($formData->fields);
         return view('user.listing.edit', [
@@ -504,12 +593,13 @@ class ListingController extends Controller
             'formData' => $formData,
             'existingData' => $existingData,
             'uploadedFiles' => $uploadedFiles,
+            'countries' => $countries,
         ]);
     }
 
     public function update(Request $request, $id)
     {
-        $submission = FormSubmission::with('form')->find($id);
+        $submission = FormSubmission::with('form')->findOrFail($id);
 
         try {
             $form = $submission->form;
@@ -524,25 +614,73 @@ class ListingController extends Controller
             $fieldsDefinition = $formData ? $formData->fields : [];
 
             // Existing structured input data
-            $inputDataWithMeta = $submission->data ? json_decode($submission->data, true) : [];
+            $inputDataWithMeta = $submission->data
+                ? json_decode($submission->data, true)
+                : [];
 
-            // Update non-file fields
-            $rawInputData = $request->except(['_token', '_method', 'form_id', 'delete_files']);
+            // 🔥 OLD DATA FOR PRICE COMPARISON
+            $oldData = $inputDataWithMeta;
+
+            /*
+            |------------------------------------------------------------------
+            | COUNTRY + CURRENCY
+            |------------------------------------------------------------------
+            */
+            $countryId = null;
+            $currency = 'INR';
+
+            if ($request->filled('country')) {
+                $countryId = (int) $request->input('country');
+
+                $currency = ($countryId === config('app.india_country_id', 229))
+                    ? 'INR'
+                    : 'USD';
+            }
+
+            /*
+            |------------------------------------------------------------------
+            | UPDATE NON-FILE FIELDS (EXCLUDE COUNTRY)
+            |------------------------------------------------------------------
+            */
+            $rawInputData = $request->except([
+                '_token',
+                '_method',
+                'form_id',
+                'delete_files',
+                'country',
+            ]);
+
+            // 🔥 PRICE DROP TRACKER
+            $priceDropPercent = null;
+            $priceFields = ['mrp', 'offered_price'];
             foreach ($rawInputData as $fieldId => $value) {
-                // Handle child fields of cascading dropdowns
+
+                // Cascading dropdown child
                 if (str_ends_with($fieldId, '_child')) {
                     $parentKey = str_replace('_child', '', $fieldId);
                     $inputDataWithMeta[$parentKey]['child_value'] = $value;
                     continue;
                 }
 
-                // Handle "Other" custom input for cascading dropdowns
+                // Cascading dropdown other
                 if (str_ends_with($fieldId, '_child_custom')) {
                     $parentKey = str_replace('_child_custom', '', $fieldId);
                     $inputDataWithMeta[$parentKey]['child_custom_value'] = $value;
                     continue;
                 }
 
+                // 🔥 PRICE DROP CALCULATION
+                if (in_array($fieldId, $priceFields)) {
+                    $oldPrice = (float) ($oldData[$fieldId]['value'] ?? 0);
+                    $newPrice = (float) $value;
+
+                    if ($oldPrice > 0 && $newPrice > 0 && $newPrice < $oldPrice) {
+                        $priceDropPercent = round(
+                            (($oldPrice - $newPrice) / $oldPrice) * 100,
+                            2
+                        );
+                    }
+                }
 
                 $fieldDef = collect($fieldsDefinition)->firstWhere('id', $fieldId);
                 $fieldLabel = $fieldDef['properties']['label'] ?? $fieldId;
@@ -558,7 +696,11 @@ class ListingController extends Controller
                 ];
             }
 
-            // Handle file deletions
+            /*
+            |------------------------------------------------------------------
+            | HANDLE FILE DELETIONS
+            |------------------------------------------------------------------
+            */
             if ($request->has('delete_files')) {
                 foreach ($request->delete_files as $fileId) {
                     $file = $submission->files()->find($fileId);
@@ -569,69 +711,71 @@ class ListingController extends Controller
                 }
             }
 
-            // Handle new file uploads (replace old ones for same field)
+            /*
+            |------------------------------------------------------------------
+            | HANDLE FILE UPLOADS
+            |------------------------------------------------------------------
+            */
             foreach ($request->allFiles() as $fieldName => $fileOrFiles) {
-                $fieldDef = collect($fieldsDefinition)
-                    ->firstWhere('id', $fieldName)
-                    ?? collect($fieldsDefinition)->firstWhere('name', $fieldName);
-
+                $fieldDef = collect($fieldsDefinition)->firstWhere('id', $fieldName);
                 $fieldLabel = $fieldDef['properties']['label'] ?? $fieldName;
                 $showOnSummary = $fieldDef['properties']['show_on_summary'] ?? false;
 
-                // 🚨 delete old files for this field (if any)
-                $oldFiles = $submission->files()->where('field_id', $fieldName)->get();
-                foreach ($oldFiles as $oldFile) {
+                $submission->files()->where('field_id', $fieldName)->each(function ($oldFile) {
                     Storage::disk('public')->delete($oldFile->file_path);
                     $oldFile->delete();
-                }
+                });
 
-                // Save new file(s)
-                if (is_array($fileOrFiles)) {
-                    foreach ($fileOrFiles as $file) {
-                        if ($file->isValid()) {
-                            $path = $file->store('uploads', 'public');
-                            $submission->files()->create([
-                                'field_id' => $fieldName,
-                                'field_name' => $fieldLabel,
-                                'file_path' => $path,
-                                'original_name' => $file->getClientOriginalName(),
-                                'mime_type' => $file->getMimeType(),
-                                'size' => $file->getSize(),
-                                'show_on_summary' => $showOnSummary,
-                            ]);
-                        }
-                    }
-                } elseif ($fileOrFiles instanceof \Illuminate\Http\UploadedFile) {
-                    if ($fileOrFiles->isValid()) {
-                        $path = $fileOrFiles->store('uploads', 'public');
+                $files = is_array($fileOrFiles) ? $fileOrFiles : [$fileOrFiles];
+
+                foreach ($files as $file) {
+                    if ($file->isValid()) {
+                        $path = $file->store('uploads', 'public');
                         $submission->files()->create([
                             'field_id' => $fieldName,
                             'field_name' => $fieldLabel,
                             'file_path' => $path,
-                            'original_name' => $fileOrFiles->getClientOriginalName(),
-                            'mime_type' => $fileOrFiles->getMimeType(),
-                            'size' => $fileOrFiles->getSize(),
+                            'original_name' => $file->getClientOriginalName(),
+                            'mime_type' => $file->getMimeType(),
+                            'size' => $file->getSize(),
                             'show_on_summary' => $showOnSummary,
                         ]);
                     }
                 }
 
-                unset($inputDataWithMeta[$fieldName]); // avoid JSON conflict
+                unset($inputDataWithMeta[$fieldName]);
             }
 
-
-            // Update submission
-            $submission->update([
+            /*
+            |------------------------------------------------------------------
+            | FINAL UPDATE
+            |------------------------------------------------------------------
+            */
+            $updateData = [
                 'data' => json_encode($inputDataWithMeta),
-            ]);
+                'country_id' => $countryId,
+                'currency' => $currency,
+            ];
 
+            
             $user = auth('customer')->user();
             $submission->addHistory($submission->status, 'Submission updated', $user->id);
+
+            // 🔥 STORE ONLY DECREASE %
+            if ($priceDropPercent !== null) {
+                $updateData['price_change_meta'] = json_encode([
+                    'decrease_percent' => $priceDropPercent,
+                    'updated_at' => now()->toDateTimeString(),
+                ]);
+            }
+
+            $submission->update($updateData);
 
             return response()->json([
                 'success' => true,
                 'message' => 'Submission updated successfully.'
             ]);
+
         } catch (\Exception $e) {
             return response()->json([
                 'success' => false,
@@ -652,7 +796,6 @@ class ListingController extends Controller
 
         return response()->json(['success' => true, 'message' => 'Listing and all related data deleted successfully.']);
     }
-
 
     public function enquiryIndex(Request $request)
     {
@@ -713,7 +856,6 @@ class ListingController extends Controller
             'submissionsList'
         ));
     }
-
 
     public function wishlistIndex()
     {

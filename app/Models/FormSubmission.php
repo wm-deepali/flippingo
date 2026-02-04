@@ -25,12 +25,14 @@ class FormSubmission extends Model
         'total_views',
         'unique_views',
         'total_clicks',
-        'sponsor_display_until'
+        'sponsor_display_until',
+        'price_change_meta'
     ];
 
 
     protected $casts = [
         'data' => 'array',
+        'price_change_meta' => 'array', // ✅ NEW
         'published' => 'boolean',
         'expires_at' => 'datetime',
         'published_at' => 'datetime',
@@ -43,7 +45,8 @@ class FormSubmission extends Model
         'category_name',
         'product_photo',
         'offered_price',
-        'currency_symbol'
+        'currency_symbol',
+        'price_drop_percent'
     ];
 
     // Relationships:
@@ -138,5 +141,12 @@ class FormSubmission extends Model
         return $this->currency === 'USD' ? '$' : '₹';
     }
 
-
+    /**
+     * ✅ NEW: Price drop percentage accessor
+     * Used directly on listing page
+     */
+    public function getPriceDropPercentAttribute()
+    {
+        return $this->price_change_meta['decrease_percent'] ?? null;
+    }
 }

@@ -104,7 +104,8 @@
                                         <?php endif; ?>
                                     </td>
                                     <td>1</td>
-                                    <td><?php echo e(number_format($offeredPrice, 2)); ?></td>
+                                   <td><?php echo e(number_format($order->amount, 2)); ?></td>
+
                                 </tr>
                             </tbody>
                         </table>

@@ -117,10 +117,7 @@ class OrderController extends Controller
 
         $order->product = [
             "productTitle" => $submittedValues['product_title']['value'] ?? '-',
-            "offeredPrice" => ($submittedValues['urgent_sale']['value'] ?? '') === 'Yes'
-                ? ($submittedValues['offered_price']['value'] ?? 0)
-                : ($submittedValues['mrp']['value'] ?? 0),
-
+            "offeredPrice" => $order->amount, // ✅ FIX
             "category" => optional($order->submission->form->category)->name ?? '-',
             "productPhoto" => optional($order->submission->files()->where('show_on_summary', true)->first())->file_path ?? null,
         ];
@@ -147,10 +144,7 @@ class OrderController extends Controller
 
         $order->product = [
             "productTitle" => $submittedValues['product_title']['value'] ?? '-',
-            "offeredPrice" => ($submittedValues['urgent_sale']['value'] ?? '') === 'Yes'
-                ? ($submittedValues['offered_price']['value'] ?? 0)
-                : ($submittedValues['mrp']['value'] ?? 0),
-
+            "offeredPrice" => $order->amount, // ✅ FIX
             "category" => optional($order->submission->form->category)->name ?? '-',
             "productPhoto" => optional($order->submission->files()->where('show_on_summary', true)->first())->file_path ?? null,
         ];

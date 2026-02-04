@@ -34,7 +34,7 @@
                     </td>
 
                     <!-- Product Cost -->
-                    <td>{{ $order->total ?? '-' }}</td>
+                    <td>₹{{ $order->total ?? '-' }}</td>
 
                   
                     <!-- Order Status -->

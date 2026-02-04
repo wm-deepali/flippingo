@@ -50,15 +50,18 @@
 
                     {{-- Tab Content --}}
                     <div class="tab-content mt-2">
-                        @foreach(['recent','approved','processing','delivered','cancelled','deleted'] as $status)
-                            <div class="tab-pane fade {{ $loop->first ? 'show active' : '' }}" id="{{ $status }}">
-                                @include('admin.product-orders.table', [
-                                    'orders' => $orders->filter(
-                                        fn($order) => $order->currentStatus?->status === $status
-                                    )
-                                ])
-                            </div>
-                        @endforeach
+                       @foreach(['recent','approved','processing','delivered','cancelled','deleted'] as $status)
+    <div class="tab-pane fade {{ $loop->first ? 'show active' : '' }}" id="{{ $status }}">
+        @include('admin.product-orders.table', [
+            'orders' => $ordersByStatus[$status]
+        ])
+
+        <div class="mt-2">
+            {{ $ordersByStatus[$status]->links() }}
+        </div>
+    </div>
+@endforeach
+
                     </div>
 
                 </div>

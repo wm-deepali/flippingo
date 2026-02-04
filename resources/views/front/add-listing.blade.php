@@ -13,8 +13,8 @@
 
 @section('content')
     <!-- ================================
-                                                                                            START BREADCRUMB AREA
-                                                                                        ================================= -->
+                                                                                                START BREADCRUMB AREA
+                                                                                            ================================= -->
     <section class="breadcrumb-area bread-bg">
         <div class="overlay"></div>
         <!-- end overlay -->
@@ -39,12 +39,12 @@
     </section>
     <!-- end breadcrumb-area -->
     <!-- ================================
-                                                                                            END BREADCRUMB AREA
-                                                                                        ================================= -->
+                                                                                                END BREADCRUMB AREA
+                                                                                            ================================= -->
 
     <!-- ================================
-                                                                                            START ADD-LISTING AREA
-                                                                                        ================================= -->
+                                                                                                START ADD-LISTING AREA
+                                                                                            ================================= -->
     <section class="add-listing-area padding-top-60px padding-bottom-90px">
         <div class="container">
             <div class="row justify-content-center">
@@ -408,52 +408,54 @@
             });
         });
     </script>
-<script>
-function updatePriceCurrency() {
-    const $countrySelect = $('#dynamicFormContainer').find('select[name="country"]');
-    const country = $countrySelect.length ? $countrySelect.val() : '229';
+    <script>
+        function updatePriceCurrency() {
+            const $countrySelect = $('#dynamicFormContainer').find('select[name="country"]');
+            const country = $countrySelect.length ? $countrySelect.val() : '229';
 
-    const isIndia = country === '229' || country === '';
+            const isIndia = country === '229' || country === '';
 
-    const currency = isIndia ? 'INR' : 'USD';
-    const symbol = isIndia ? '₹' : '$';
+            const currency = isIndia ? 'INR' : 'USD';
+            const symbol = isIndia ? '₹' : '$';
 
-    // Update hidden currency field
-    $('#price_currency').val(currency);
+            // Update hidden currency field
+            $('#price_currency').val(currency);
 
-    // Update MRP field
-    const $mrpLabel = $('label[for="mrp"]');
-    const $mrpInput = $('#mrp');
+            // =========================
+            // PRICE (MRP)
+            // =========================
+            const $mrpInput = $('#dynamicFormContainer').find('input[name="mrp"]');
+            if ($mrpInput.length) {
+                const $mrpWrapper = $mrpInput.closest('.form-group, .mb-3');
+                const $mrpLabel = $mrpWrapper.find('label');
 
-    if ($mrpLabel.length) {
-        $mrpLabel.html(`Price (${currency}) <span class="text-danger">*</span>`);
-    }
-    if ($mrpInput.length) {
-        $mrpInput.attr('placeholder', `Enter Price in ${currency}`);
-    }
+                $mrpLabel.html(`Price (${currency}) <span class="text-danger">*</span>`);
+                $mrpInput.attr('placeholder', `Enter Price in ${currency}`);
+            }
 
-    // Update Offered Price
-    const $offerLabel = $('label[for="offered_price"]');
-    const $offerInput = $('#offered_price');
+            // =========================
+            // OFFERED PRICE
+            // =========================
+            const $offerInput = $('#dynamicFormContainer').find('input[name="offered_price"]');
+            if ($offerInput.length) {
+                const $offerWrapper = $offerInput.closest('.form-group, .mb-3');
+                const $offerLabel = $offerWrapper.find('label');
 
-    if ($offerLabel.length) {
-        $offerLabel.text(`Demand Price (${currency})`);
-    }
-    if ($offerInput.length) {
-        $offerInput.attr('placeholder', `Enter Demand Price in ${currency}`);
-    }
-}
+                $offerLabel.text(`Demand Price (${currency})`);
+                $offerInput.attr('placeholder', `Enter Demand Price in ${currency}`);
+            }
+        }
 
-// 🔁 Country change
-$(document).on('change', 'select[name="country"]', function () {
-    updatePriceCurrency();
-});
+        // 🔁 Country change
+        $(document).on('change', 'select[name="country"]', function () {
+            updatePriceCurrency();
+        });
 
-// 🔁 After dynamic form load
-$(document).on('DOMNodeInserted', '#dynamicFormContainer', function () {
-    updatePriceCurrency();
-});
-</script>
+        // 🔁 After dynamic form load
+        $(document).on('DOMNodeInserted', '#dynamicFormContainer', function () {
+            updatePriceCurrency();
+        });
+    </script>
 
     <script src="https://cdn.jsdelivr.net/npm/signature_pad@4.0.0/dist/signature_pad.umd.min.js"></script>
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">

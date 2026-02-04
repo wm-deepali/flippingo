@@ -32,7 +32,7 @@
                             <img src="{{ asset('storage/' . $order->product_photo) }}" alt="Product Photo" width="50">
                         @endif
                     </td>
-                    <td>{{ $order->total }}</td>
+                    <td>₹{{ $order->total }}</td>
                     <td>{{ $order->seller_earning }}</td>
                     <td>{{ ucfirst($order->payment->status) }}</td>
                     <td>

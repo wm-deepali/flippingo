@@ -103,7 +103,8 @@
                                         @endif
                                     </td>
                                     <td>1</td>
-                                    <td>{{ number_format($offeredPrice, 2) }}</td>
+                                   <td>{{ number_format($order->amount, 2) }}</td>
+
                                 </tr>
                             </tbody>
                         </table>

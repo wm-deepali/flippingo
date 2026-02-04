@@ -45,26 +45,76 @@ class ListingController extends Controller
 
         return view('admin.form_submissions.index', compact('submissions'));
     }
+
     public function show($id)
     {
-        $submission = FormSubmission::find($id);
+        $submission = FormSubmission::with([
+            'form',
+            'customer',
+            'country',
+            'files'
+        ])->findOrFail($id);
 
-        // Decode submitted data JSON (contains 'label', 'value', 'child_value', 'show_on_summary')
-        $submittedData = json_decode($submission->data, true) ?? [];
+        /*
+        |--------------------------------------------------------------------------
+        | SAFELY NORMALIZE `data`
+        | - Works if data is string OR array
+        |--------------------------------------------------------------------------
+        */
+        if (is_array($submission->data)) {
+            $submittedData = $submission->data;
+        } elseif (is_string($submission->data)) {
+            $submittedData = json_decode($submission->data, true) ?? [];
+        } else {
+            $submittedData = [];
+        }
 
         $mappedData = [];
 
-        foreach ($submittedData as $fieldId => $fieldData) {
-            $label = $fieldData['label'] ?? $fieldId;
-            $value = $fieldData['value'] ?? null;
-            $childValue = $fieldData['child_value'] ?? null; // <- add this
-            $showOnSummary = $fieldData['show_on_summary'] ?? false;
+        /*
+        |--------------------------------------------------------------------------
+        | COUNTRY (from column)
+        |--------------------------------------------------------------------------
+        */
+        if ($submission->country) {
+            $mappedData['Country'] = [
+                'value' => $submission->country->name,
+            ];
+        }
 
-            $mappedData[$label] = [
-                'value' => $value,
-                'child_value' => $childValue,   // <- include child_value here
+        /*
+        |--------------------------------------------------------------------------
+        | PRICE (using model accessors – safe)
+        |--------------------------------------------------------------------------
+        */
+        if ($submission->offered_price !== '-') {
+            $mappedData['Price'] = [
+                'value' => $submission->currency_symbol . ' ' .
+                    number_format((float) $submission->offered_price, 2),
+            ];
+        }
+
+        /*
+        |--------------------------------------------------------------------------
+        | DYNAMIC FORM FIELDS
+        |--------------------------------------------------------------------------
+        */
+        foreach ($submittedData as $fieldId => $fieldData) {
+
+            // Skip pricing internals
+            if (in_array($fieldId, ['mrp', 'urgent_sale', 'offered_price'])) {
+                continue;
+            }
+
+            if (!is_array($fieldData)) {
+                continue; // safety guard
+            }
+
+            $mappedData[$fieldData['label'] ?? $fieldId] = [
+                'value' => $fieldData['value'] ?? null,
+                'child_value' => $fieldData['child_value'] ?? null,
                 'child_custom_value' => $fieldData['child_custom_value'] ?? null,
-                'show_on_summary' => $showOnSummary,
+                'show_on_summary' => $fieldData['show_on_summary'] ?? false,
             ];
         }
 
@@ -72,28 +122,35 @@ class ListingController extends Controller
     }
 
 
-
     public function edit($id)
     {
         $submission = FormSubmission::findOrFail($id);
 
         // Load FormData linked to this submission's form
-        $formData = \App\Models\FormData::where('form_id', $submission->form_id)->first();
+        $formData = FormData::where('form_id', $submission->form_id)->firstOrFail();
 
-        $existingData = json_decode($submission->data, true) ?? [];
+        // Decode submission data safely
+        $existingData = is_array($submission->data)
+            ? $submission->data
+            : json_decode($submission->data, true);
+
         $uploadedFiles = $submission->files;
 
-        $countries = \DB::table('countries')->orderBy('name')->get();
-        
-        // dd($existingData,$formData->fields);
+        // Load countries only if category allows it
+        $countries = [];
+        if ($submission->form?->category?->enable_country_filter) {
+            $countries = \DB::table('countries')->orderBy('name')->get();
+        }
+
         return view('admin.form_submissions.edit', [
             'submission' => $submission,
             'formData' => $formData,
-            'existingData' => $existingData,
+            'existingData' => $existingData ?? [],
             'uploadedFiles' => $uploadedFiles,
             'countries' => $countries,
         ]);
     }
+
 
     public function update(Request $request, $id)
     {
@@ -112,28 +169,55 @@ class ListingController extends Controller
             $fieldsDefinition = $formData ? $formData->fields : [];
 
             // Existing structured input data
-            $inputDataWithMeta = $submission->data ? json_decode($submission->data, true) : [];
+            $inputDataWithMeta = $submission->data
+                ? json_decode($submission->data, true)
+                : [];
 
-            // Update non-file fields
-            $rawInputData = $request->except(['_token', '_method', 'form_id', 'delete_files']);
-            // dd($rawInputData);
+            /*
+            |--------------------------------------------------------------------------
+            | COUNTRY + CURRENCY (HANDLE FIRST)
+            |--------------------------------------------------------------------------
+            */
+            $countryId = null;
+            $currency = 'INR';
+
+            if ($request->filled('country')) {
+                $countryId = (int) $request->input('country');
+
+                // India → INR, others → USD
+                $currency = ($countryId === config('app.india_country_id', 229))
+                    ? 'INR'
+                    : 'USD';
+            }
+
+            /*
+            |--------------------------------------------------------------------------
+            | Update non-file fields (EXCLUDE country)
+            |--------------------------------------------------------------------------
+            */
+            $rawInputData = $request->except([
+                '_token',
+                '_method',
+                'form_id',
+                'delete_files',
+                'country', // 🔥 IMPORTANT: exclude country from JSON
+            ]);
+
             foreach ($rawInputData as $fieldId => $value) {
 
-                // Handle child fields of cascading dropdowns
-                // Handle child fields of cascading dropdowns
+                // Handle cascading dropdown child
                 if (str_ends_with($fieldId, '_child')) {
                     $parentKey = str_replace('_child', '', $fieldId);
                     $inputDataWithMeta[$parentKey]['child_value'] = $value;
                     continue;
                 }
 
-                // Handle "Other" custom input for cascading dropdowns
+                // Handle cascading dropdown "Other"
                 if (str_ends_with($fieldId, '_child_custom')) {
                     $parentKey = str_replace('_child_custom', '', $fieldId);
                     $inputDataWithMeta[$parentKey]['child_custom_value'] = $value;
                     continue;
                 }
-
 
                 $fieldDef = collect($fieldsDefinition)->firstWhere('id', $fieldId);
                 $fieldLabel = $fieldDef['properties']['label'] ?? $fieldId;
@@ -149,7 +233,11 @@ class ListingController extends Controller
                 ];
             }
 
-            // Handle file deletions
+            /*
+            |--------------------------------------------------------------------------
+            | Handle file deletions
+            |--------------------------------------------------------------------------
+            */
             if ($request->has('delete_files')) {
                 foreach ($request->delete_files as $fileId) {
                     $file = $submission->files()->find($fileId);
@@ -160,63 +248,59 @@ class ListingController extends Controller
                 }
             }
 
-            // Handle new file uploads (replace old ones for same field)
+            /*
+            |--------------------------------------------------------------------------
+            | Handle new file uploads
+            |--------------------------------------------------------------------------
+            */
             foreach ($request->allFiles() as $fieldName => $fileOrFiles) {
-                $fieldDef = collect($fieldsDefinition)
-                    ->firstWhere('id', $fieldName)
-                    ?? collect($fieldsDefinition)->firstWhere('name', $fieldName);
-
+                $fieldDef = collect($fieldsDefinition)->firstWhere('id', $fieldName);
                 $fieldLabel = $fieldDef['properties']['label'] ?? $fieldName;
                 $showOnSummary = $fieldDef['properties']['show_on_summary'] ?? false;
 
-                // Delete old files for this field
-                $oldFiles = $submission->files()->where('field_id', $fieldName)->get();
-                foreach ($oldFiles as $oldFile) {
+                // Remove old files for same field
+                $submission->files()->where('field_id', $fieldName)->each(function ($oldFile) {
                     Storage::disk('public')->delete($oldFile->file_path);
                     $oldFile->delete();
-                }
+                });
 
-                // Save new file(s)
-                if (is_array($fileOrFiles)) {
-                    foreach ($fileOrFiles as $file) {
-                        if ($file->isValid()) {
-                            $path = $file->store('uploads', 'public');
-                            $submission->files()->create([
-                                'field_id' => $fieldName,
-                                'field_name' => $fieldLabel,
-                                'file_path' => $path,
-                                'original_name' => $file->getClientOriginalName(),
-                                'mime_type' => $file->getMimeType(),
-                                'size' => $file->getSize(),
-                                'show_on_summary' => $showOnSummary,
-                            ]);
-                        }
-                    }
-                } elseif ($fileOrFiles instanceof \Illuminate\Http\UploadedFile) {
-                    if ($fileOrFiles->isValid()) {
-                        $path = $fileOrFiles->store('uploads', 'public');
+                $files = is_array($fileOrFiles) ? $fileOrFiles : [$fileOrFiles];
+
+                foreach ($files as $file) {
+                    if ($file->isValid()) {
+                        $path = $file->store('uploads', 'public');
                         $submission->files()->create([
                             'field_id' => $fieldName,
                             'field_name' => $fieldLabel,
                             'file_path' => $path,
-                            'original_name' => $fileOrFiles->getClientOriginalName(),
-                            'mime_type' => $fileOrFiles->getMimeType(),
-                            'size' => $fileOrFiles->getSize(),
+                            'original_name' => $file->getClientOriginalName(),
+                            'mime_type' => $file->getMimeType(),
+                            'size' => $file->getSize(),
                             'show_on_summary' => $showOnSummary,
                         ]);
                     }
                 }
 
-                unset($inputDataWithMeta[$fieldName]); // avoid JSON conflict
+                unset($inputDataWithMeta[$fieldName]);
             }
 
-            // Update submission JSON data
+            /*
+            |--------------------------------------------------------------------------
+            | Update submission
+            |--------------------------------------------------------------------------
+            */
             $submission->update([
                 'data' => json_encode($inputDataWithMeta),
+                'country_id' => $countryId,
+                'currency' => $currency,
             ]);
 
-            // Add history
-            $submission->addHistory($submission->status, 'Submission updated', auth()->id());
+            // History
+            $submission->addHistory(
+                $submission->status,
+                'Submission updated',
+                auth()->id()
+            );
 
             return response()->json([
                 'success' => true,

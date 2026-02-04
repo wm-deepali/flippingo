@@ -7,6 +7,7 @@ use App\Models\Customer;
 use App\Models\OrderCancellationReason;
 use App\Models\Payment;
 use App\Models\PaymentRefund;
+use App\Models\Subscription;
 use App\Models\Wallet;
 use Illuminate\Http\Request;
 use App\Models\ProductOrder;
@@ -20,24 +21,51 @@ class ProductOrderController extends Controller
 {
     public function index()
     {
-        $orders = ProductOrder::with(['customer', 'seller'])->latest()->paginate(20);
+        $statuses = ['recent', 'approved', 'processing', 'delivered', 'cancelled', 'deleted'];
 
-        // Get active cancellation reasons from DB
+        $ordersByStatus = [];
+
+        foreach ($statuses as $status) {
+            $ordersByStatus[$status] = ProductOrder::with([
+                'customer',
+                'seller',
+                'payment',
+                'currentStatus'
+            ])
+                ->whereHas('currentStatus', fn($q) => $q->where('status', $status))
+                ->latest()
+                ->paginate(20, ['*'], $status);
+        }
+
         $reasons = OrderCancellationReason::pluck('reason', 'id');
 
-        return view('admin.product-orders.index', compact('orders', 'reasons'));
+        return view('admin.product-orders.index', compact('ordersByStatus', 'reasons'));
     }
 
 
     public function sellerOrders($sellerId)
     {
         // Fetch orders of this seller only
-        $orders = ProductOrder::with(['customer', 'seller'])
-            ->where('seller_id', $sellerId)
-            ->latest()
-            ->paginate(20);
+        $statuses = ['recent', 'approved', 'processing', 'delivered', 'cancelled', 'deleted'];
 
-        return view('admin.product-orders.index', compact('orders'));
+        $ordersByStatus = [];
+
+        foreach ($statuses as $status) {
+            $ordersByStatus[$status] = ProductOrder::with([
+                'customer',
+                'seller',
+                'payment',
+                'currentStatus'
+            ])
+                ->where('seller_id', $sellerId)
+                ->whereHas('currentStatus', fn($q) => $q->where('status', $status))
+                ->latest()
+                ->paginate(20, ['*'], $status);
+        }
+
+        $reasons = OrderCancellationReason::pluck('reason', 'id');
+
+        return view('admin.product-orders.index', compact('ordersByStatus', 'reasons'));
     }
 
 
@@ -52,30 +80,31 @@ class ProductOrderController extends Controller
             'submission.files'
         ])->findOrFail($id);
 
-        // Decode submission data
-        $submittedValues = $order->submission ? json_decode($order->submission->data, true) : [];
+        // Decode submission data (DISPLAY ONLY)
+        $submittedValues = $order->submission
+            ? json_decode($order->submission->data, true)
+            : [];
 
         $productTitle = $submittedValues['product_title']['value'] ?? '-';
-        $mrp = $submittedValues['mrp']['value'] ?? 0;
+        $mrp = (float) ($submittedValues['mrp']['value'] ?? 0);
 
+        // Offered price ONLY for display (do NOT recompute totals)
         $offeredPrice = ($submittedValues['urgent_sale']['value'] ?? '') === 'Yes'
-            ? ($submittedValues['offered_price']['value'] ?? 0)
+            ? (float) ($submittedValues['offered_price']['value'] ?? 0)
             : $mrp;
 
-        // Calculate discount
-        $discount = max($mrp - $offeredPrice, 0); // difference between MRP and offered price
-
-        // Optional: final price after discount
-        $finalPrice = $offeredPrice - $discount;
-
+        // Discount is informational only
+        $discount = max($mrp - $offeredPrice, 0);
 
         // Category
         $category = optional($order->submission->form->category)->name ?? '-';
 
-        // Product photo (first file with show_on_summary = true)
+        // Product photo
         $productPhoto = optional(
-            $order->submission->files()->where('show_on_summary', true)->first()
-        )->file_path ?? null;
+            $order->submission->files()
+                ->where('show_on_summary', true)
+                ->first()
+        )->file_path;
 
         return view('admin.product-orders.show', compact(
             'order',
@@ -88,6 +117,7 @@ class ProductOrderController extends Controller
             'productPhoto'
         ));
     }
+
 
 
     public function update(Request $request, $id)
@@ -139,43 +169,48 @@ class ProductOrderController extends Controller
     }
 
 
-    public function downloadInvoice($id)
+    public function downloadInvoice($type, $id)
     {
-        $order = ProductOrder::with([
-            'customer',
-            'seller',
-            'payment',
-            'statuses',
-            'submission.form.category',
-            'submission.files'
-        ])->findOrFail($id);
+        if ($type === 'subscription') {
 
-        $submittedValues = $order->submission ? json_decode($order->submission->data, true) : [];
+            $order = Subscription::with([
+                'customer',
+                'payment',
+                'package',
+                'invoice'
+            ])->findOrFail($id);
 
-        $productTitle = $submittedValues['product_title']['value'] ?? '-';
-        $mrp = $submittedValues['mrp']['value'] ?? 0;
-        $offeredPrice =
-            ($submittedValues['urgent_sale']['value'] ?? '') === 'Yes'
-            ? ($submittedValues['offered_price']['value'] ?? 0)
-            : ($submittedValues['mrp']['value'] ?? 0);
+            // Normalize amounts (SOURCE = payment)
+            $order->amount = (float) ($order->payment->amount ?? 0);
+            $order->total = (float) ($order->payment->amount ?? 0);
+        } else {
+            // PRODUCT ORDER
+            $order = ProductOrder::with([
+                'customer',
+                'payment',
+                'submission.form.category',
+                'submission.files',
+                'invoice'
+            ])->findOrFail($id);
 
-        // Calculate discount
-        $discount = max($mrp - $offeredPrice, 0); // difference between MRP and offered price
-        $category = optional($order->submission->form->category)->name ?? '-';
-        $productPhoto = optional($order->submission->files()->where('show_on_summary', true)->first())->file_path ?? null;
+            // Attach product info (DISPLAY ONLY)
+            $submittedValues = json_decode($order->submission->data ?? '{}', true);
 
-        $pdf = Pdf::loadView('admin.product-orders.invoice', compact(
-            'order',
-            'productTitle',
-            'mrp',
-            'offeredPrice',
-            'discount',
-            'category',
-            'productPhoto'
-        ));
+            $order->product = [
+                'productTitle' => $submittedValues['product_title']['value'] ?? '-',
+                'category' => optional($order->submission->form->category)->name ?? '-',
+                'productPhoto' => optional(
+                    $order->submission->files()->where('show_on_summary', true)->first()
+                )->file_path,
+            ];
+        }
+
+        $pdf = Pdf::loadView('admin.payments.pdf', compact('order', 'type'))
+            ->setPaper('A4', 'portrait');
 
         return $pdf->download('Invoice_' . $order->order_number . '.pdf');
     }
+
 
     public function viewInvoice($id)
     {
@@ -194,14 +229,13 @@ class ProductOrderController extends Controller
         $type = 'product';
         $order->product = [
             "productTitle" => $submittedValues['product_title']['value'] ?? '-',
-            "offeredPrice" =>
-                ($submittedValues['urgent_sale']['value'] ?? '') === 'Yes'
-                ? ($submittedValues['offered_price']['value'] ?? 0)
-                : ($submittedValues['mrp']['value'] ?? 0),
-
+            "offeredPrice" => $order->amount, // ✅ FIX
             "category" => optional($order->submission->form->category)->name ?? '-',
-            "productPhoto" => optional($order->submission->files()->where('show_on_summary', true)->first())->file_path ?? null,
+            "productPhoto" => optional(
+                $order->submission->files()->where('show_on_summary', true)->first()
+            )->file_path ?? null,
         ];
+
 
         // Return the Blade view for showing invoice
         return view('admin.payments.invoice', compact(

@@ -13,219 +13,693 @@
     padding: 6px;
     font-size: 14px;
   }
-  
 </style>
+<style>
+  /* MAIN OUTER WRAPPER (Center + Max Width) */
+
+
+  /* Wave Animation Layer */
+
+
+
+  /* INNER FLEX WRAPPER */
+  .newlogin-content {
+    display: flex;
+    gap: 50px;
+    align-items: flex-start;
+  }
+
+  /* LEFT SECTION */
+  .newlogin-left {
+    flex: 1;
+  }
+
+  /* RIGHT SIDE IMAGE */
+  .newlogin-right {
+    flex: 1;
+    display: flex;
+    justify-content: center;
+  }
+
+  .newlogin-right img {
+    width: 100%;
+    max-width: 450px;
+    border-radius: 22px;
+  }
+
+  /* LABEL */
+  .newlogin-label {
+    font-size: 14px;
+    font-weight: 600;
+    margin-bottom: 6px;
+  }
+
+  /* INPUT + SELECT GROUP */
+  .newlogin-input-group {
+    margin-bottom: 10px;
+  }
+
+  /* COUNTRY SELECT */
+  .newlogin-country {
+    padding: 10px;
+    border-radius: 12px 0 0 12px;
+    background: #f3f3f3;
+    border: 1px solid #ddd;
+    width: 90px;
+  }
+
+  /* INPUT */
+  .newlogin-input {
+    border-radius: 0 12px 12px 0;
+    border: 1px solid #ddd;
+    padding: 10px 14px;
+    width: 100%;
+    font-size: 14px;
+  }
+
+  .newlogin-input1 {
+    border-radius: 12px;
+    border: 1px solid #ddd;
+    padding: 10px 14px;
+    width: 100%;
+    font-size: 14px;
+  }
+
+  /* SMALL ARROW BUTTON */
+  .newlogin-go {
+    background: #3d3df5;
+    color: #fff;
+    padding: 9px 14px;
+    border-radius: 12px;
+    border: none;
+    margin-left: 10px;
+  }
+
+  /* DIVIDER */
+  .newlogin-divider {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    margin: 10px 0;
+    color: #666;
+  }
+
+  .newlogin-divider hr {
+    flex: 1;
+  }
+
+  /* GOOGLE BUTTON */
+  .newlogin-google {
+    background: #fff;
+    border: 1px solid #ddd;
+    padding: 10px 16px;
+    border-radius: 12px;
+    display: inline-flex;
+    align-items: center;
+    gap: 10px;
+    font-size: 14px;
+  }
+
+  /* SUBMIT BUTTON */
+  .newlogin-submit {
+    margin-top: 25px;
+    width: 100%;
+    background: #111827;
+    color: #fff;
+    padding: 12px;
+    border: none;
+    border-radius: 12px;
+    font-size: 16px;
+  }
+
+  /* MOBILE */
+  @media(max-width: 768px) {
+    .newlogin-content {
+      flex-direction: column-reverse;
+    }
+
+    .newlogin-wrapper {
+      margin-top: 10px;
+      padding: 10px 18px;
+    }
+  }
+</style>
+<style>
+  .hidden {
+    display: none;
+  }
+
+  .newlogin-wrapper {
+    max-width: 1100px;
+    margin: 40px auto;
+    padding: 30px 40px;
+
+    /* ⭐ Glass Effect */
+    background: rgba(255, 255, 255, 0.2);
+    backdrop-filter: blur(15px);
+    -webkit-backdrop-filter: blur(15px);
+
+    /* ⭐ Soft Border */
+    border: 1px solid rgba(255, 255, 255, 0.35);
+    border-radius: 25px;
+
+    /* ⭐ Glowing Shadow */
+    box-shadow: 0 8px 32px rgba(0, 0, 0, 0.12);
+
+    /* ⭐ Wave Animation Background */
+    position: relative;
+    overflow: hidden;
+  }
+
+  /* Wave Animation Layer */
+  .newlogin-wrapper::before {
+    content: "";
+    position: absolute;
+    top: -50%;
+    left: -50%;
+    width: 200%;
+    height: 200%;
+
+    background: radial-gradient(circle,
+        rgba(255, 255, 255, 0.25) 0%,
+        rgba(255, 255, 255, 0) 70%);
+
+    animation: glassWave 6s infinite linear;
+  }
+
+  /* Wave Keyframes */
+  /*@keyframes glassWave {*/
+  /*    0% { transform: translate(0, 0) rotate(0deg); }*/
+  /*    50% { transform: translate(10%, 10%) rotate(180deg); }*/
+  /*    100% { transform: translate(0, 0) rotate(360deg); }*/
+  /*}*/
+
+  .newlogin-content {
+    display: flex;
+    gap: 50px;
+  }
+
+  .newlogin-left {
+    flex: 1;
+    color: #ffffff;
+  }
+
+  .newlogin-left h2 {
+    color: #ffffff;
+  }
+
+  .newlogin-right {
+    flex: 1;
+    display: flex;
+    justify-content: center;
+  }
+
+  .newlogin-right img {
+    width: 100%;
+    max-width: 450px;
+    border-radius: 22px;
+  }
+
+  .newlogin-google {
+    background: #fff;
+    border: 1px solid #ddd;
+    padding: 10px 16px;
+    border-radius: 12px;
+    display: inline-flex;
+    align-items: center;
+    gap: 10px;
+  }
+
+  .newlogin-divider {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    margin: 0px 0;
+  }
+
+  .newlogin-divider hr {
+    flex: 1;
+  }
+
+  .newlogin-label {
+    font-size: 14px;
+    font-weight: 600;
+    margin-bottom: 4px;
+  }
+
+  .newlogin-country {
+    padding: 10px;
+    border-radius: 10px 0 0 10px;
+    border: 1px solid #ddd;
+    background: #f3f3f3;
+  }
+
+  .newlogin-input {
+    border-radius: 0 10px 10px 0;
+    border: 1px solid #ddd;
+    padding: 10px 14px;
+    width: 100%;
+  }
+
+  .newlogin-go {
+    background: #3d3df5;
+    color: #fff;
+    padding: 10px 14px;
+    border-radius: 12px;
+    border: none;
+    margin-left: 10px;
+  }
+
+  .newlogin-submit {
+    margin-top: 20px;
+    width: 100%;
+    background: #111827;
+    color: #fff;
+    padding: 12px;
+    border: none;
+    border-radius: 12px;
+  }
+</style>
+<style>
+  .zorcha-container {
+    position: relative;
+    width: 100%;
+    max-width: 820px;
+    margin: auto;
+    margin-top: 190px;
+    margin-bottom: 60px;
+    background: rgba(255, 255, 255, 0.25);
+    backdrop-filter: blur(16px);
+    -webkit-backdrop-filter: blur(16px);
+    border-radius: 24px;
+    border: 1px solid rgba(255, 255, 255, 0.4);
+    box-shadow: 0 8px 32px rgba(0, 0, 0, 0.15);
+    overflow: hidden;
+    padding: 40px 32px;
+    text-align: start;
+  }
+
+  .zorcha-bg-image {
+    position: absolute;
+    inset: 0;
+    background: url('https://images.unsplash.com/photo-1585487000160-6ebcfceb0d26?auto=format&fit=crop&q=80') center/cover no-repeat;
+    opacity: 0.12;
+    z-index: -1;
+  }
+
+  .zorcha-h1 {
+    font-size: 2.1rem;
+    margin-bottom: 8px;
+    color: #2d1a47;
+    font-weight: 700;
+  }
+
+  .zorcha-subtitle {
+    font-size: 1rem;
+    color: #555;
+    margin-bottom: 32px;
+  }
+
+  .zorcha-toggle-link {
+    color: #6a4aff;
+    font-weight: 600;
+    cursor: pointer;
+    text-decoration: underline;
+    margin-left: 8px;
+  }
+
+  .zorcha-google-btn {
+    display: flex;
+    align-items: center;
+    /*justify-content: center;*/
+    gap: 12px;
+    width: 100%;
+    padding: 14px;
+    margin: 20px 0;
+    background: white;
+    border: 1px solid #ddd;
+    border-radius: 12px;
+    font-weight: 600;
+    cursor: pointer;
+    transition: all 0.2s;
+  }
+
+  .zorcha-google-btn:hover {
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+  }
+
+  .zorcha-input-group {
+    position: relative;
+    margin: 24px 0;
+    text-align: left;
+  }
+
+  .zorcha-label {
+    display: block;
+    margin-bottom: 8px;
+    font-weight: 500;
+    color: #444;
+  }
+
+  .zorcha-input,
+  .zorcha-otp-box {
+    width: 100%;
+    padding: 14px 16px;
+    border: 2px solid #ddd;
+    border-radius: 12px;
+    font-size: 1rem;
+    transition: all 0.2s;
+  }
+
+  .zorcha-input:focus,
+  .zorcha-otp-box:focus {
+    outline: none;
+    border-color: #6a4aff;
+    box-shadow: 0 0 0 3px rgba(106, 74, 255, 0.2);
+  }
+
+  .zorcha-phone-prefix {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    padding: 14px 16px;
+    background: #f8f9fa;
+    border: 2px solid #ddd;
+    border-right: none;
+    border-radius: 12px 0 0 12px;
+    font-weight: 500;
+  }
+
+  .zorcha-phone-input-wrapper {
+    display: flex;
+  }
+
+  .zorcha-phone-input-wrapper .zorcha-input {
+    border-top-left-radius: 0;
+    border-bottom-left-radius: 0;
+    flex: 1;
+  }
+
+  .zorcha-checkbox-group {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    margin: 16px 0;
+    font-size: 0.95rem;
+    color: #555;
+  }
+
+  .zorcha-btn {
+    width: 100%;
+    padding: 16px;
+    background: linear-gradient(90deg, #5a3aff, #7c5eff);
+    color: white;
+    border: none;
+    border-radius: 12px;
+    font-size: 1.1rem;
+    font-weight: 600;
+    cursor: pointer;
+    transition: all 0.25s;
+    box-shadow: 0 6px 20px rgba(90, 58, 255, 0.3);
+  }
+
+  .zorcha-btn:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 10px 30px rgba(90, 58, 255, 0.4);
+  }
+
+  .zorcha-terms {
+    margin-top: 24px;
+    font-size: 0.85rem;
+    color: #666;
+  }
+
+  .zorcha-terms a {
+    color: #6a4aff;
+    text-decoration: none;
+  }
+
+  /* OTP specific */
+  .zorcha-otp-grid {
+    display: flex;
+    gap: 12px;
+    justify-content: center;
+    margin: 32px 0;
+  }
+
+  .zorcha-otp-box {
+    width: 54px;
+    height: 60px;
+    background: rgba(255, 255, 255, 0.7);
+    border: 2px solid #ddd;
+    border-radius: 12px;
+    font-size: 1.8rem;
+    font-weight: 600;
+    text-align: center;
+  }
+
+  .zorcha-otp-box.filled {
+    border-color: #6a4aff;
+    background: rgba(106, 74, 255, 0.08);
+  }
+
+  .zorcha-resend {
+    color: #888;
+    font-size: 0.95rem;
+    margin-top: 8px;
+  }
+
+  .zorcha-resend span {
+    color: #6a4aff;
+    cursor: pointer;
+  }
+
+  .zorcha-change-link {
+    color: #6a4aff;
+    cursor: pointer;
+    font-weight: 500;
+    margin-top: 16px;
+    display: inline-block;
+  }
+
+  .login-image img {
+    width: 380px;
+    margin-left: 20px;
+  }
+</style>
+
+
 @section('content')
-  <!-- ================================
-                                  START BREADCRUMB AREA
-                                ================================= -->
+  
+  <div class="zorcha-container">
+    <div class="login-image " style="display:flex; justify-content:space-between;">
+      <div class="loginleft-side">
+        <div class="zorcha-bg-image"></div>
 
-  <!-- end breadcrumb-area -->
-  <!-- ================================
-                                  END BREADCRUMB AREA
-                                ================================= -->
+        <!-- Page 1: Sign In -->
+        <div id="signInPage">
+          <h1 class="zorcha-h1">Sign In</h1>
+          <p class="zorcha-subtitle">Don't have an account? <a href="#"
+              style="color:#6a4aff; text-decoration:none; font-weight:600;">Sign Up</a></p>
 
-  <!-- ================================
-                                  START CONTACT AREA
-                                ================================= -->
-  <section class="contact-area" style="padding-top:220px; padding-bottom:90px;">
-    <div class="container ">
-      <div class="row align-items-center">
+          <button class="zorcha-google-btn" onclick="window.location.href='{{ route('google.redirect') }}'">
+            <i class="fab fa-google"></i> Google
+          </button>
 
+          <div id="phoneMode">
+            <div class="zorcha-input-group">
+              <div style="display:flex;justify-content:space-between;">
+                <label class="zorcha-label">Phone number</label>
+                <p style="text-align:left; font-size:0.9rem; color:#555;">
+                  <a href="#" id="switchToEmail" class="zorcha-toggle-link">Use email</a>
+                </p>
+              </div>
 
+              <div class="zorcha-phone-input-wrapper">
+                <div class="zorcha-phone-prefix">
+                  <span>🇮🇳</span> +91
+                </div>
+                <input type="tel" class="zorcha-input" maxlength="10" placeholder="Enter phone number" id="phoneInput" />
+              </div>
+            </div>
 
-        <!-- Right side form -->
-        <div class="col-lg-12 login-page">
-          <div class="loginimg">
-            <img
-              src="https://img.freepik.com/free-vector/user-verification-unauthorized-access-prevention-private-account-authentication-cyber-security-people-entering-login-password-safety-measures_335657-3530.jpg"
-              alt="Login illustration" class="img-fluid rounded ">
+            <div class="zorcha-checkbox-group">
+              <input type="checkbox" id="whatsappOtp" checked />
+              <label for="whatsappOtp">OTP Via Whatsapp</label>
+            </div>
+            <button class="zorcha-btn" onclick="goToOtp('phone')">Send OTP</button>
           </div>
 
-          <form id='loginForm' action="#" class="" style="padding: 30px 20px;">
-            <div class="card-body">
-              <div class="text-center">
-                <h4 class="font-size-28 font-weight-semi-bold mb-1 mt-4">Login to your account</h4>
-                <p class="card-text">with your social network</p>
-                <div class="d-flex flex-wrap align-items-center justify-content-between my-4 sign-g">
-                  <a href="{{ route('google.redirect')}}" class="theme-btn flex-grow-1 mx-1 my-1  " style="color:#000;">
-                    <img src="https://images.icon-icons.com/2699/PNG/512/google_logo_icon_169090.png"> Sign In with Google
-                  </a>
-                </div>
+          <div id="emailMode" style="display:none;">
+            <div class="zorcha-input-group">
+              <div style="display:flex;justify-content:space-between;">
+                <label class="zorcha-label">Email address</label>
+                <p style="text-align:left; font-size:0.9rem; color:#555;">
+                  <a href="#" id="switchToPhone" class="zorcha-toggle-link">Use phone</a>
+                </p>
               </div>
-
-              <hr>
-
-              <!--<div class="d-flex align-items-center">-->
-              <!--  <hr class="border-top-gray flex-grow-1" />-->
-              <!--  <span class="mx-1 text-uppercase">or</span>-->
-              <!--  <hr class="border-top-gray flex-grow-1" />-->
-              <!--</div>-->
-
-             
-              
-              
-              <div class="form-group position-relative mt-3">
-                <label class="label-text">Sign in with Mobile</label>
-                <div class="input-group">
-                  <select class="form-select country-code col-3" id="countryCode" name="countryCode">
-                    <option value="+91"> +91</option>
-                    <option value="+1"> +1</option>
-                    <option value="+44"> +44</option>
-                    <option value="+971"> +971</option>
-                  </select>
-                  <input class="form-control form--control" type="text" name="loginPhone" id="loginPhone"
-                    placeholder="Enter Mobile Number" />
-                  <button type="button" class="arrow-btn" onclick="showNextField('phone')">→</button>
-                </div>
-              </div>
-
-              <div class="form-group hidden" id="passwordBoxPhone">
-                <label class="label-text">Enter OTP</label>
-                <div class="position-relative">
-                  <input class="form-control form--control ps-3" type="password" name="password"
-                    placeholder="Enter Password / OTP" />
-                </div>
-              </div>
-
-              
-              <div class="d-flex align-items-center">
-                <hr class="border-top-gray flex-grow-1" />
-                <span class="mx-1 text-uppercase">or</span>
-                <hr class="border-top-gray flex-grow-1" />
-              </div>
-
-               <!-- Step 1: Username / Email / Mobile -->
-
-              <div class="form-group position-relative mt-4">
-                <label class="label-text">Sign in With E-mail / Username</label>
-                <input class="form-control form--control ps-3" type="text" name="loginEmail" id="loginEmail"
-                  placeholder="Enter E-mail Id / Username" />
-                <button type="button" class="arrow-btn" onclick="showNextField('email')">→</button>
-              </div>
-
-              <!-- Step 2: Hidden initially -->
-              <div class="form-group hidden" id="passwordBoxEmail">
-                <label class="label-text">Enter Password</label>
-                <div class="position-relative">
-                  <input class="form-control form--control ps-3" type="password" name="password"
-                    placeholder="Enter Password / OTP" />
-                </div>
-              </div>
-              
-              <!-- Remember + Forgot -->
-              <div class="form-group d-flex align-items-center justify-content-between hidden" id="rememberBox">
-                <div class="custom-control custom-checkbox">
-                  <input type="checkbox" class="custom-control-input" id="RememberMe" />
-                  <label class="custom-control-label" for="RememberMe">Remember Me</label>
-                </div>
-                <a href="{{ Route('recover') }}" class="btn-link">Forgot password?</a>
-              </div>
-
-              <!-- Submit Button -->
-
-              <button class="theme-btn border-0 w-100 hidden" type="submit" id="submitBtn" style="display:none;">Login
-                Now</button>
-
-              <p class="mt-5 text-center">
-                Not a member?
-                <a href="{{ Route('authentication-signup') }}" class="btn-link" style="color:blue;">Register</a>
-              </p>
+              <input type="email" class="zorcha-input" placeholder="Enter your email address" id="emailInput" />
             </div>
-          </form>
+
+            <button class="zorcha-btn" onclick="goToOtp('email')">Sign In</button>
+          </div>
+
+          <p class="zorcha-terms">
+            By proceeding you acknowledge that you have read, understood and agree to our
+            <a href="#">Terms and Conditions</a>.
+          </p>
         </div>
 
-        <!-- Styles -->
+        <!-- Page 2: OTP Verification -->
+        <div id="otpPage" style="display:none;">
+          <h1 class="zorcha-h1">Check your phone</h1>
+          <p class="zorcha-subtitle">We sent you a verification code via SMS. Please enter the code below.</p>
 
+          <div style="margin:20px 0; font-weight:500; color:#444;">
+            <span id="contactDisplay"></span>
+            <a href="#" class="zorcha-toggle-link" onclick="backToSignIn()">Change</a>
+          </div>
 
-        <!-- Script -->
+          <div class="zorcha-otp-grid">
+            <input type="text" class="zorcha-otp-box" maxlength="1" pattern="[0-9]*" inputmode="numeric" />
+            <input type="text" class="zorcha-otp-box" maxlength="1" pattern="[0-9]*" inputmode="numeric" />
+            <input type="text" class="zorcha-otp-box" maxlength="1" pattern="[0-9]*" inputmode="numeric" />
+            <input type="text" class="zorcha-otp-box" maxlength="1" pattern="[0-9]*" inputmode="numeric" />
+            <input type="text" class="zorcha-otp-box" maxlength="1" pattern="[0-9]*" inputmode="numeric" />
+            <input type="text" class="zorcha-otp-box" maxlength="1" pattern="[0-9]*" inputmode="numeric" />
+          </div>
 
+          <p class="zorcha-resend">Resend OTP <span>Resend in 11s</span></p>
 
-
+          <button class="zorcha-btn">Verify Code</button>
+        </div>
       </div>
+      <img
+        src="https://img.freepik.com/free-vector/abstract-bright-geometric-line-modern-wallpaper-design_1017-60099.jpg?semt=ais_hybrid&w=740&q=80"
+        alt="">
     </div>
-  </section>
-
+  </div>
   <!-- end contact-area -->
   <!-- ================================
-                                  END CONTACT AREA
+                                          END CONTACT AREA
 
-                                  ================================= -->
+                                          ================================= -->
+
   <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
 
+  <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
 
   <script>
-document.addEventListener("DOMContentLoaded", function () {
-  const emailInput = document.getElementById("loginEmail");
-  const phoneInput = document.getElementById("loginPhone");
-  const countryCode = document.getElementById("countryCode");
-  const emailArrowBtn = document.querySelector("button.arrow-btn[onclick*='email']");
-  const phoneArrowBtn = document.querySelector("button.arrow-btn[onclick*='phone']");
+    /* ===============================
+       ELEMENTS
+    ================================ */
+    const signInPage = document.getElementById('signInPage');
+    const otpPage = document.getElementById('otpPage');
+    const contactDisplay = document.getElementById('contactDisplay');
 
-  emailInput.addEventListener("input", function () {
-    if (emailInput.value.trim() !== "") {
-      phoneInput.disabled = true;
-      countryCode.disabled = true;
-      phoneArrowBtn.disabled = true;
-    } else {
-      phoneInput.disabled = false;
-      countryCode.disabled = false;
-      phoneArrowBtn.disabled = false;
-    }
-  });
+    const phoneInput = document.getElementById('phoneInput');
+    const emailInput = document.getElementById('emailInput');
 
-  phoneInput.addEventListener("input", function () {
-    if (phoneInput.value.trim() !== "") {
-      emailInput.disabled = true;
-      emailArrowBtn.disabled = true;
-    } else {
-      emailInput.disabled = false;
-      emailArrowBtn.disabled = false;
-    }
-  });
-});
+    const otpGrid = document.querySelector('.zorcha-otp-grid');
+    const verifyBtn = document.querySelector('#otpPage .zorcha-btn');
+    const resendBox = document.querySelector('.zorcha-resend');
+    const resendSpan = document.querySelector('.zorcha-resend span');
 
+    let currentMode = ''; // phone | email
+    let resendTimer = null;
+    let resendSeconds = 11;
 
-    function showNextField(type) {
-      let loginId = "";
+    /* ===============================
+       TOGGLE PHONE / EMAIL
+    ================================ */
+    document.getElementById('switchToEmail').onclick = e => {
+      e.preventDefault();
+      document.getElementById('phoneMode').style.display = 'none';
+      document.getElementById('emailMode').style.display = 'block';
+    };
 
-      if (type === 'email') {
-        loginId = document.getElementById("loginEmail").value.trim();
-      } else if (type === 'phone') {
-        let code = document.getElementById("countryCode").value;
-        let phone = document.getElementById("loginPhone").value.trim();
-        loginId = phone;
+    document.getElementById('switchToPhone').onclick = e => {
+      e.preventDefault();
+      document.getElementById('emailMode').style.display = 'none';
+      document.getElementById('phoneMode').style.display = 'block';
+    };
+
+    /* ===============================
+       STEP 1 SUBMIT
+    ================================ */
+    function goToOtp(mode) {
+      currentMode = mode;
+
+      if (mode === 'phone') {
+        const phone = phoneInput.value.trim();
+
+        if (!/^[0-9]{10,15}$/.test(phone)) {
+          Swal.fire('Error', 'Enter valid mobile number', 'error');
+          return;
+        }
+
+        sendOtp(phone);
+        showOtpPage(`+91 ${phone}`, true);
       }
 
-      if (loginId === "") {
-        Swal.fire({ icon: "error", title: "Required", text: "Please enter Mobile / Username / Email Id" });
-        return;
+      if (mode === 'email') {
+        const email = emailInput.value.trim();
+
+        if (email.length < 3) {
+          Swal.fire('Error', 'Enter valid email / username', 'error');
+          return;
+        }
+
+        showOtpPage(email, false);
       }
+    }
 
-      let phoneRegex = /^[0-9]{10,15}$/;
-      let emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+    /* ===============================
+       SHOW OTP / PASSWORD PAGE
+    ================================ */
+    function showOtpPage(text, isOtp) {
+      signInPage.style.display = 'none';
+      otpPage.style.display = 'block';
+      contactDisplay.innerText = text;
 
-      if (phoneRegex.test(loginId)) {
-        // ✅ Mobile → send OTP
-        sendOtp(loginId, 'mobile');
+      if (isOtp) {
+        // PHONE OTP MODE
+        document.querySelector('#otpPage h1').innerText = 'Check your phone';
+        document.querySelector('#otpPage p').innerText =
+          'We sent you a verification code via SMS. Please enter the code below.';
+
+        otpGrid.innerHTML = '';
+        for (let i = 0; i < 6; i++) {
+          otpGrid.innerHTML += `
+          <input type="text" class="zorcha-otp-box" maxlength="1" inputmode="numeric">
+        `;
+        }
+
+        resendBox.style.display = 'block';
+        setupOtpInputs();
+        startResendTimer();
       } else {
-        // ✅ Email OR Username → normal password
-        document.querySelector("#passwordBoxEmail label").innerText = "Password";
-        document.querySelector("#passwordBoxEmail input").setAttribute("type", "password");
-        document.querySelector("#passwordBoxEmail input").setAttribute("placeholder", "Enter Password");
+        // EMAIL PASSWORD MODE
+        document.querySelector('#otpPage h1').innerText = 'Enter your password';
+        document.querySelector('#otpPage p').innerText =
+          'Please enter your account password to continue.';
 
-        document.getElementById("passwordBoxEmail").classList.remove("hidden");
-        document.getElementById("passwordBoxEmail").classList.remove("hidden");
-        document.getElementById("submitBtn").style.display = "block";
+        otpGrid.innerHTML = `
+        <input type="password"
+          id="emailPassword"
+          class="zorcha-input"
+          placeholder="Enter password"
+          style="max-width:340px;margin:auto;display:block;">
+      `;
+
+        resendBox.style.display = 'none';
       }
-
-      // hide arrows
-   
     }
 
-
-
-    function sendOtp(mobile, type) {
+    /* ===============================
+       SEND OTP API
+    ================================ */
+    function sendOtp(mobile) {
       fetch("{{ route('send.otp') }}", {
         method: "POST",
         headers: {
@@ -234,63 +708,128 @@ document.addEventListener("DOMContentLoaded", function () {
         },
         body: JSON.stringify({ value: mobile, type: 'mobile' })
       })
-        .then(response => response.json())
-        .then(data => {
-          if (data.success) {
-            // turn passwordBox into OTP box
-            //   document.querySelectorAll(".arrow-btn").forEach(btn => btn.style.display = "none");
-            document.querySelector("#passwordBoxPhone label").innerText = "Enter OTP";
-            document.querySelector("#passwordBoxPhone input").setAttribute("type", "text");
-            document.querySelector("#passwordBoxPhone input").setAttribute("placeholder", "Enter OTP");
-
-            document.getElementById("passwordBoxPhone").classList.remove("hidden");
-            document.getElementById("submitBtn").style.display = "block";
-          } else {
-            Swal.fire({ icon: "error", title: "Failed", text: data.message || "Failed to send OTP" });
+        .then(r => r.json())
+        .then(r => {
+          if (!r.success) {
+            Swal.fire('Error', r.message || 'Failed to send OTP', 'error');
           }
-        })
-        .catch(err => {
-          console.error(err);
-          Swal.fire({ icon: "error", title: "Error", text: "Error sending OTP" });
         });
     }
 
+    /* ===============================
+       RESEND TIMER
+    ================================ */
+    function startResendTimer() {
+      clearInterval(resendTimer);
+      let timeLeft = resendSeconds;
 
-    // Final submit via AJAX
-    document.getElementById("loginForm").addEventListener("submit", function (e) {
-      e.preventDefault();
+      resendSpan.style.pointerEvents = 'none';
+      resendSpan.style.opacity = '0.5';
+      resendSpan.innerText = `Resend in ${timeLeft}s`;
 
-      let loginId = "";
-      let passwordOrOtp = "";
-      if (document.getElementById("loginEmail").value.trim() !== "") {
-        loginId = document.getElementById("loginEmail").value.trim();
-        passwordOrOtp = document.querySelector("#passwordBoxEmail input").value.trim();
+      resendTimer = setInterval(() => {
+        timeLeft--;
+        resendSpan.innerText = `Resend in ${timeLeft}s`;
 
-      } else {
-        loginId = document.getElementById("loginPhone").value.trim();
-        passwordOrOtp = document.querySelector("#passwordBoxPhone input").value.trim();
+        if (timeLeft <= 0) {
+          clearInterval(resendTimer);
+          resendSpan.innerText = 'Resend OTP';
+          resendSpan.style.pointerEvents = 'auto';
+          resendSpan.style.opacity = '1';
+        }
+      }, 1000);
+    }
+
+    /* ===============================
+       RESEND CLICK
+    ================================ */
+    resendSpan.onclick = () => {
+      if (currentMode !== 'phone') return;
+
+      const phone = phoneInput.value.trim();
+      if (!phone) return;
+
+      sendOtp(phone);
+      startResendTimer();
+    };
+
+    /* ===============================
+       VERIFY BUTTON
+    ================================ */
+    verifyBtn.onclick = () => {
+      if (currentMode === 'phone') {
+        let otp = '';
+        document.querySelectorAll('.zorcha-otp-box').forEach(i => otp += i.value);
+
+        if (otp.length !== 6) {
+          Swal.fire('Error', 'Enter complete OTP', 'error');
+          return;
+        }
+
+        authenticate(phoneInput.value.trim(), otp);
       }
 
+      if (currentMode === 'email') {
+        const pwd = document.getElementById('emailPassword').value.trim();
 
+        if (!pwd) {
+          Swal.fire('Error', 'Password required', 'error');
+          return;
+        }
+
+        authenticate(emailInput.value.trim(), pwd);
+      }
+    };
+
+    /* ===============================
+       AUTH LOGIN
+    ================================ */
+    function authenticate(loginId, password) {
       fetch("{{ route('customer.authenticate') }}", {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
           "X-CSRF-TOKEN": "{{ csrf_token() }}"
         },
-        body: JSON.stringify({ loginId: loginId, password: passwordOrOtp })
+        body: JSON.stringify({ loginId, password })
       })
-        .then(res => res.json())
-        .then(data => {
-          if (data.success) {
-            window.location.href = data.redirect ?? "{{ route('dashboard.index') }}";
+        .then(r => r.json())
+        .then(r => {
+          if (r.success) {
+            window.location.href = r.redirect ?? "{{ route('dashboard.index') }}";
           } else {
-            Swal.fire({ icon: "error", title: "Login Failed", text: data.message || "Invalid credentials/OTP" });
+            Swal.fire('Login Failed', r.message || 'Invalid credentials', 'error');
           }
         });
-    });
+    }
 
+    /* ===============================
+       OTP AUTO MOVE
+    ================================ */
+    function setupOtpInputs() {
+      const inputs = document.querySelectorAll('.zorcha-otp-box');
+      inputs.forEach((input, i) => {
+        input.addEventListener('input', () => {
+          if (input.value && inputs[i + 1]) inputs[i + 1].focus();
+        });
+        input.addEventListener('keydown', e => {
+          if (e.key === 'Backspace' && !input.value && inputs[i - 1]) {
+            inputs[i - 1].focus();
+          }
+        });
+      });
+    }
+
+    /* ===============================
+       BACK TO SIGN IN
+    ================================ */
+    function backToSignIn() {
+      clearInterval(resendTimer);
+      otpPage.style.display = 'none';
+      signInPage.style.display = 'block';
+    }
   </script>
+
 
   @if(session('pending_deletion'))
     <script>

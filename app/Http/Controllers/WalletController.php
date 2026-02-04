@@ -53,41 +53,46 @@ class WalletController extends Controller
     {
         $request->validate([
             'razorpay_payment_id' => 'required|string',
-            'amount' => 'required|numeric|min:1',
+            'amount' => 'required|numeric|min:1', // amount in paise
         ]);
 
         $user = Auth::guard('customer')->user();
 
-        $wallet = $user->wallet;
+        $wallet = $user->wallet ?? $user->wallet()->create([
+            'balance' => 0,
+            'currency' => 'INR',
+            'status' => 'active',
+        ]);
 
-        if (!$wallet) {
-            $wallet = $user->wallet()->create([
-                'balance' => 0,
-                'currency' => 'INR',  // or your default
-                'status' => 'active',
-            ]);
-        }
+        // 🔥 Convert paise → rupees
+        $amountInRupees = $request->amount / 100;
 
-        // Record credit transaction and update balance
         $transaction = $wallet->addTransaction(
             'credit',
-            $request->amount,  // converting paise to rupees
+            $amountInRupees, // ✅ now correct
             'Money Added to Wallet',
             'Added funds via Razorpay',
             $request->razorpay_payment_id
         );
 
         sendNotification('wallet_credit', [
-            'amount' => $request->amount,
+            'amount' => $amountInRupees,
             'balance' => $wallet->balance,
         ], $user->id);
 
         if ($transaction) {
-            return response()->json(['success' => true, 'message' => 'Wallet topped up successfully']);
+            return response()->json([
+                'success' => true,
+                'message' => 'Wallet topped up successfully'
+            ]);
         }
 
-        return response()->json(['success' => false, 'message' => 'Failed to add funds to wallet'], 500);
+        return response()->json([
+            'success' => false,
+            'message' => 'Failed to add funds to wallet'
+        ], 500);
     }
+
 
 
     public function wallet()

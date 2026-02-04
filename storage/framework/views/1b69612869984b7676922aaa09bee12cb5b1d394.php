@@ -50,15 +50,19 @@
 
                     
                     <div class="tab-content mt-2">
-                        <?php $__currentLoopData = ['recent','approved','processing','delivered','cancelled','deleted']; $__env->addLoop($__currentLoopData); foreach($__currentLoopData as $status): $__env->incrementLoopIndices(); $loop = $__env->getLastLoop(); ?>
-                            <div class="tab-pane fade <?php echo e($loop->first ? 'show active' : ''); ?>" id="<?php echo e($status); ?>">
-                                <?php echo $__env->make('admin.product-orders.table', [
-                                    'orders' => $orders->filter(
-                                        fn($order) => $order->currentStatus?->status === $status
-                                    )
-                                ], \Illuminate\Support\Arr::except(get_defined_vars(), ['__data', '__path']))->render(); ?>
-                            </div>
-                        <?php endforeach; $__env->popLoop(); $loop = $__env->getLastLoop(); ?>
+                       <?php $__currentLoopData = ['recent','approved','processing','delivered','cancelled','deleted']; $__env->addLoop($__currentLoopData); foreach($__currentLoopData as $status): $__env->incrementLoopIndices(); $loop = $__env->getLastLoop(); ?>
+    <div class="tab-pane fade <?php echo e($loop->first ? 'show active' : ''); ?>" id="<?php echo e($status); ?>">
+        <?php echo $__env->make('admin.product-orders.table', [
+            'orders' => $ordersByStatus[$status]
+        ], \Illuminate\Support\Arr::except(get_defined_vars(), ['__data', '__path']))->render(); ?>
+
+        <div class="mt-2">
+            <?php echo e($ordersByStatus[$status]->links()); ?>
+
+        </div>
+    </div>
+<?php endforeach; $__env->popLoop(); $loop = $__env->getLastLoop(); ?>
+
                     </div>
 
                 </div>

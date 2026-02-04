@@ -1,13 +1,27 @@
-<div class="form-group country-field" style="{{ $enableCountry ? '' : 'display:none;' }}">
-    <label>Select Country</label>
-    <select name="country" class="form-control">
-        <option value="">Select Country</option>
+@if($enableCountry)
+    {{-- Country dropdown ENABLED --}}
+    <div class="form-group country-field">
+        <label>{{ $countryLabel ?? 'Select Country' }}</label>
 
-        @foreach($countries as $country)
-            <option value="{{ $country->id }}"
-                {{ !$enableCountry && $country->name === 'India' ? 'selected' : '' }}>
-                {{ $country->name }}
+        <select name="country" class="form-control">
+            <option value="">
+                {{ $countryLabel ?? 'Select Country' }}
             </option>
-        @endforeach
-    </select>
-</div>
+
+            @foreach($countries as $country)
+                <option value="{{ $country->id }}">
+                    {{ $country->name }}
+                </option>
+            @endforeach
+        </select>
+    </div>
+@else
+    {{-- Country dropdown DISABLED → force India --}}
+    @php
+        $india = $countries->firstWhere('name', 'India');
+    @endphp
+
+    @if($india)
+        <input type="hidden" name="country" value="{{ $india->id }}">
+    @endif
+@endif

@@ -60,7 +60,7 @@
                                 </td>
 
                                 <!-- Product Cost -->
-                                <td>{{ $order->total ?? '-' }}</td>
+                                <td>₹{{ $order->total ?? '-' }}</td>
 
                                 <!-- Payment Method -->
                                 <td>{{ ucfirst($order->payment->gateway ?? '-') }}</td>

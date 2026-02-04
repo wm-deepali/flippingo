@@ -12,80 +12,126 @@ use App\Models\Setting;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\DB;
+use App\Helpers\CurrencyHelper;
+use App\Helpers\IpHelper;
 
 class CheckoutController extends Controller
 {
     public function index(Request $request)
     {
-        $submission = FormSubmission::with(['customer', 'form.category'])
-            ->find($request->query('submission_id'));
+        $submission = FormSubmission::with([
+            'customer.wallet',
+            'form.category',
+            'files'
+        ])->findOrFail($request->query('submission_id'));
 
-        $submittedValues = $submission ? json_decode($submission->data, true) : [];
-        $productTitle = $submittedValues['product_title']['value'] ?? '';
-        $mrp = $submittedValues['mrp']['value'] ?? 0;
+        /* ==============================
+         | 🌍 VIEWER CURRENCY (UI ONLY)
+         ============================== */
+        $viewerCurrency = IpHelper::countryCode() === 'in' ? 'INR' : 'USD';
+        $currencySymbol = $viewerCurrency === 'INR' ? '₹' : '$';
 
-        $offeredPrice = ($submittedValues['urgent_sale']['value'] ?? '') === 'Yes'
-            ? ($submittedValues['offered_price']['value'] ?? 0)
+        $usdRate = CurrencyHelper::usdRate();
+
+        /* ==============================
+         | 📄 FORM DATA
+         ============================== */
+        $data = json_decode($submission->data, true) ?? [];
+
+        $productTitle = $data['product_title']['value'] ?? '';
+        $mrp = (float) ($data['mrp']['value'] ?? 0);
+
+        $basePrice = ($data['urgent_sale']['value'] ?? '') === 'Yes'
+            ? (float) ($data['offered_price']['value'] ?? 0)
             : $mrp;
 
-        // Calculate discount
-        $discount = max($mrp - $offeredPrice, 0); // difference between MRP and offered price
-
-        $walletBalance = optional($submission->customer->wallet)->balance ?? 0;
-
-        // Category from form relation
+        /* ==============================
+         | 📷 PRODUCT INFO
+         ============================== */
         $category = optional($submission->form->category)->name ?? '';
-
-        // ✅ Product photo
         $productPhoto = optional(
-            $submission->files()
-                ->where('show_on_summary', true)
-                ->first()
+            $submission->files()->where('show_on_summary', true)->first()
         )->file_path;
 
-        // Buyer/Admin states
-        $BuyerState = optional(Auth::guard('customer')->user())->state ?? null;
-        $adminState = Setting::where('key', 'billing_state')->value('value') ?? null;
+        /* ==============================
+         | 🔑 NORMALIZE TO INR (SOURCE)
+         ============================== */
+        $submissionCurrency = $submission->currency ?? 'INR';
 
-        // GST rates
-        $igstRate = Setting::where('key', 'igst')->value('value') ?? 18;
-        $cgstRate = Setting::where('key', 'cgst')->value('value') ?? 9;
-        $sgstRate = Setting::where('key', 'sgst')->value('value') ?? 9;
+        $basePriceINR = CurrencyHelper::convert($basePrice, $submissionCurrency, 'INR', $usdRate);
+        $mrpINR = CurrencyHelper::convert($mrp, $submissionCurrency, 'INR', $usdRate);
 
-        // GST calc
-        $gstType = 'igst';
+        /* ==============================
+         | 🧮 GST (INR SOURCE)
+         ============================== */
         $igst = $cgst = $sgst = 0;
+        $gstType = 'none';
 
-        if ($BuyerState && $adminState && $BuyerState == $adminState) {
+        $buyerState = optional(auth('customer')->user())->state;
+        $adminState = Setting::where('key', 'billing_state')->value('value');
+
+        if ($buyerState && $adminState && $buyerState == $adminState) {
             $gstType = 'cgst_sgst';
-            $cgst = ($offeredPrice * $cgstRate) / 100;
-            $sgst = ($offeredPrice * $sgstRate) / 100;
+            $cgst = round($basePriceINR * setting('cgst', 9) / 100, 2);
+            $sgst = round($basePriceINR * setting('sgst', 9) / 100, 2);
         } else {
-            $igst = ($offeredPrice * $igstRate) / 100;
+            $gstType = 'igst';
+            $igst = round($basePriceINR * setting('igst', 18) / 100, 2);
         }
 
-        $total = $offeredPrice + $igst + $cgst + $sgst;
+
+        $totalINR = round($basePriceINR + $igst + $cgst + $sgst, 2);
+
+        /* ==============================
+         | 💱 UI CONVERSION (DISPLAY)
+         ============================== */
+        $displayPrice = CurrencyHelper::convert($basePriceINR, 'INR', $viewerCurrency, $usdRate);
+        $total = CurrencyHelper::convert($totalINR, 'INR', $viewerCurrency, $usdRate);
+
+        $igstDisplay = CurrencyHelper::convert($igst, 'INR', $viewerCurrency, $usdRate);
+        $cgstDisplay = CurrencyHelper::convert($cgst, 'INR', $viewerCurrency, $usdRate);
+        $sgstDisplay = CurrencyHelper::convert($sgst, 'INR', $viewerCurrency, $usdRate);
+
+        /* ==============================
+         | 💳 WALLET
+         ============================== */
+        $walletRaw = optional($submission->customer->wallet)->balance ?? 0;
+        $walletBalance = CurrencyHelper::convert($walletRaw, 'INR', $viewerCurrency, $usdRate);
+        $requiredAmount = max(0, $total - $walletBalance);
+
+        $requiredAmountINR = max(0, $totalINR - $walletRaw);
 
         return view('front.checkout', compact(
             'submission',
-            'submittedValues',
             'productTitle',
-            'offeredPrice',
-            'mrp',
-            'discount',
-            'walletBalance',
             'category',
             'productPhoto',
+
+            'displayPrice',
+            'total',
+
             'gstType',
-            'igst',
-            'cgst',
-            'sgst',
-            'total'
+            'igstDisplay',
+            'cgstDisplay',
+            'sgstDisplay',
+
+            'viewerCurrency',
+            'currencySymbol',
+
+            'walletBalance',
+            'requiredAmount',
+
+            'totalINR',     // 🔒 Razorpay source
+            'walletRaw',    // 🔒 Wallet source
+            'usdRate',
+            'requiredAmountINR'
         ));
     }
 
+
     public function placeOrder(Request $request)
     {
+        // dd($request->all());
         $request->validate([
             'payment_method' => 'required|in:pay_online,wallet',
             'razorpay_payment_id' => 'nullable|string',
@@ -98,10 +144,26 @@ class CheckoutController extends Controller
         }
 
         $submission = FormSubmission::with('customer.wallet')->findOrFail($request->submission_id);
-        $submittedValues = json_decode($submission->data, true);
-        $offeredPrice = ($submittedValues['urgent_sale']['value'] ?? '') === 'Yes'
-            ? ($submittedValues['offered_price']['value'] ?? 0)
-            : ($submittedValues['mrp']['value'] ?? 0);
+        $submittedValues = json_decode($submission->data, true) ?? [];
+
+        $basePrice = ($submittedValues['urgent_sale']['value'] ?? '') === 'Yes'
+            ? (float) ($submittedValues['offered_price']['value'] ?? 0)
+            : (float) ($submittedValues['mrp']['value'] ?? 0);
+
+        /*
+        |--------------------------------------------------------------------------
+        | 🔑 NORMALIZE TO INR (CRITICAL FIX)
+        |--------------------------------------------------------------------------
+        */
+        $submissionCurrency = $submission->currency ?? 'INR';
+        $usdRate = CurrencyHelper::usdRate();
+
+        $offeredPriceINR = CurrencyHelper::convert(
+            $basePrice,
+            $submissionCurrency,
+            'INR',
+            $usdRate
+        );
 
         // GST handling
         $igstRate = Setting::where('key', 'igst')->value('value') ?? 18;
@@ -113,13 +175,13 @@ class CheckoutController extends Controller
 
         $igst = $cgst = $sgst = 0;
         if ($BuyerState && $adminState && $BuyerState == $adminState) {
-            $cgst = ($offeredPrice * $cgstRate) / 100;
-            $sgst = ($offeredPrice * $sgstRate) / 100;
+            $cgst = ($offeredPriceINR * $cgstRate) / 100;
+            $sgst = ($offeredPriceINR * $sgstRate) / 100;
         } else {
-            $igst = ($offeredPrice * $igstRate) / 100;
+            $igst = ($offeredPriceINR * $igstRate) / 100;
         }
 
-        $totalAmount = $offeredPrice + $igst + $cgst + $sgst;
+        $totalAmount = $offeredPriceINR + $igst + $cgst + $sgst;
 
         DB::beginTransaction();
         try {
@@ -134,8 +196,8 @@ class CheckoutController extends Controller
             $commissionRate = $customer->commission_rate
                 ?? setting('default_commission', 10);
 
-            $commissionAmount = ($offeredPrice * $commissionRate) / 100;
-            $sellerEarning = $offeredPrice - $commissionAmount; // excluding GST
+            $commissionAmount = ($offeredPriceINR * $commissionRate) / 100;
+            $sellerEarning = $offeredPriceINR - $commissionAmount;
 
 
             // ✅ Create Product Order
@@ -144,7 +206,7 @@ class CheckoutController extends Controller
                 'seller_id' => $submission->customer_id,
                 'submission_id' => $submission->id,
                 'order_number' => $orderNumber,
-                'amount' => $offeredPrice,
+                'amount' => $offeredPriceINR,
                 'igst' => $igst,
                 'cgst' => $cgst,
                 'sgst' => $sgst,
@@ -153,6 +215,7 @@ class CheckoutController extends Controller
                 'commission_amount' => $commissionAmount,
                 'seller_earning' => $sellerEarning,
             ]);
+
 
             // ⚡ Create initial "recent" status for the order
             OrderStatus::create([
@@ -168,6 +231,7 @@ class CheckoutController extends Controller
                 if (!$wallet || $wallet->balance < $totalAmount) {
                     return response()->json(['success' => false, 'message' => 'Insufficient wallet balance']);
                 }
+
 
                 // Deduct buyer wallet
                 $wallet->balance -= $totalAmount;

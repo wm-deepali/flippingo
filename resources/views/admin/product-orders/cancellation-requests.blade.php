@@ -78,7 +78,7 @@
                                                         @endif
                                                     </td>
                                                     <!-- Product Cost -->
-                                                    <td>{{ $order->total ?? '-' }}</td>
+                                                    <td>₹{{ $order->total ?? '-' }}</td>
 
                                                     <!-- Cancel Reason -->
                                                     <td>

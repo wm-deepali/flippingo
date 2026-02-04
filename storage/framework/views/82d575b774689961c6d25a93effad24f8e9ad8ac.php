@@ -247,7 +247,7 @@
                                      <h2 style="color:#000000;">
                                         <?php echo e($submission->currency_symbol); ?>
 
-                                        <?php echo e(number_format($submission->display_price, 2)); ?>
+                                       <?php echo e($submission->currency_symbol  == '$'? number_format($submission->display_price, 2) : $submission->display_price); ?>
 
                                     </h2>
                                        <button type="button" class="btn btn-dark"
@@ -307,7 +307,7 @@
                                                                 alt="Product Photo" width="50">
                                                         <?php endif; ?>
                                                     </td>
-                                                    <td><?php echo e($order->total ?? '-'); ?></td>
+                                                    <td>₹<?php echo e($order->total ?? '-'); ?></td>
                                                     <td><?php echo e($order->payment->payment_id ? 'Paid' : 'Unpaid'); ?></td>
                                                     <td>
                         <?php switch($status):
@@ -423,7 +423,7 @@
                                                                 alt="Product Photo" width="50">
                                                         <?php endif; ?>
                                                     </td>
-                                                    <td><?php echo e($order->total ?? '-'); ?></td>
+                                                    <td>₹<?php echo e($order->total ?? '-'); ?></td>
                                                     <td><?php echo e($order->payment->payment_id ? 'Paid' : 'Unpaid'); ?></td>
                                                     <td>
                         <?php switch($status):
@@ -717,7 +717,7 @@
                                      <h2 style="color:#000000;">
                                         <?php echo e($submission->currency_symbol); ?>
 
-                                        <?php echo e(number_format($submission->display_price, 2)); ?>
+                                       <?php echo e($submission->currency_symbol  == '$'? number_format($submission->display_price, 2) : $submission->display_price); ?>
 
                                     </h2>
                                     <button type="button" class="btn btn-dark"
@@ -763,7 +763,7 @@
                                      <h2 style="color:#000000;">
                                         <?php echo e($submission->currency_symbol); ?>
 
-                                        <?php echo e(number_format($submission->display_price, 2)); ?>
+                                       <?php echo e($submission->currency_symbol  == '$'? number_format($submission->display_price, 2) : $submission->display_price); ?>
 
                                     </h2>
                                        <button type="button" class="btn btn-dark"
@@ -824,7 +824,7 @@
                                                                 alt="Product Photo" width="50">
                                                         <?php endif; ?>
                                                     </td>
-                                                    <td><?php echo e($order->total ?? '-'); ?></td>
+                                                    <td>₹<?php echo e($order->total ?? '-'); ?></td>
                                                     <td><?php echo e($order->payment->payment_id ? 'Paid' : 'Unpaid'); ?></td>
                                                     <td>
                         <?php switch($status):
@@ -940,7 +940,7 @@
                                                                 alt="Product Photo" width="50">
                                                         <?php endif; ?>
                                                     </td>
-                                                    <td><?php echo e($order->total ?? '-'); ?></td>
+                                                    <td>₹<?php echo e($order->total ?? '-'); ?></td>
                                                     <td><?php echo e($order->payment->payment_id ? 'Paid' : 'Unpaid'); ?></td>
                                                     <td>
                         <?php switch($status):

@@ -315,11 +315,11 @@
                     <h4 class="card-title mb-3">Price</h4>
                     <div class="d-flex align-items-center">
                         <div class="form-group me-2">
-                            <input name="price_min" class="form-control form--control ps-3" type="text" placeholder="₹3"
+                            <input name="price_min" class="form-control form--control ps-3" type="text" placeholder="3"
                                    value="<?php echo e(request('price_min')); ?>">
                         </div>
                         <div class="form-group me-2">
-                            <input name="price_max" class="form-control form--control ps-3" type="text" placeholder="₹269"
+                            <input name="price_max" class="form-control form--control ps-3" type="text" placeholder="269"
                                    value="<?php echo e(request('price_max')); ?>">
                         </div>
                     </div>

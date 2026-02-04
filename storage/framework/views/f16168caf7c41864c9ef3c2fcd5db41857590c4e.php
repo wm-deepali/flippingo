@@ -165,7 +165,7 @@
                                     <h2 style="color:#000;">
                                         <?php echo e($submission->currency_symbol); ?>
 
-                                        <?php echo e(number_format($submission->display_price, 2)); ?>
+                                       <?php echo e($submission->currency_symbol  == '$'? number_format($submission->display_price, 2) : $submission->display_price); ?>
 
                                     </h2>
 
@@ -214,7 +214,7 @@
                                     <h2 style="color:#000000;">
                                         <?php echo e($submission->currency_symbol); ?>
 
-                                        <?php echo e(number_format($submission->display_price, 2)); ?>
+                                       <?php echo e($submission->currency_symbol  == '$'? number_format($submission->display_price, 2) : $submission->display_price); ?>
 
                                     </h2>
 

@@ -158,7 +158,7 @@
                     {{-- Actions --}}
                     <div class="row justify-content-center mt-4">
                         <div class="col-md-3">
-                            <a href="{{ route('admin.invoice.download', ['type' => $type, 'id' => $order->id]) }}"
+                            <a href="{{ route('admin.orders.invoice.download', ['type' => $type, 'id' => $order->id]) }}"
                                 class="btn btn-outline-primary btn-block" target="_blank">Download Invoice</a>
                         </div>
                         <div class="col-md-3">

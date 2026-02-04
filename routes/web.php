@@ -26,9 +26,9 @@ use App\Http\Controllers\Admin\{
     ProductOrderController,
     TicketController,
     NotificationController,
-    WalletController,
     ChatController
 };
+use App\Http\Controllers\WalletController;
 
 
 /*
@@ -190,8 +190,7 @@ Route::group(['middleware' => 'auth'], function () {
             ->name('subscriptions.rejectCancellation');
 
         Route::get('/orders/invoice/{type}/{id}', [SubscriptionController::class, 'viewInvoice'])->name('orders.invoice');
-        Route::get('invoice/download/{type}/{id}', [SubscriptionController::class, 'download'])
-            ->name('invoice.download');
+
         Route::get('/payments', [SubscriptionController::class, 'payments'])->name('payments.index');
 
 
@@ -203,6 +202,7 @@ Route::group(['middleware' => 'auth'], function () {
             ->name('product-orders.approveCancellation');
         Route::post('product-orders/{subscription}/reject-cancellation', [ProductOrderController::class, 'rejectCancellation'])
             ->name('product-orders.rejectCancellation');
+        Route::get(  '/orders/invoice/{type}/{id}/download', [ProductOrderController::class, 'downloadInvoice'])->name('orders.invoice.download');
 
 
         Route::resource('product-orders', ProductOrderController::class);
@@ -233,11 +233,9 @@ Route::group(['middleware' => 'auth'], function () {
         // Event-Based Notifications
         Route::get('/notifications/events', [NotificationController::class, 'eventNotifications'])
             ->name('notifications.events');
-
         // Admin-Created Notifications
         Route::get('/notifications/custom', [NotificationController::class, 'adminNotifications'])
             ->name('notifications.custom');
-
         Route::get('/notifications/custom/create', [NotificationController::class, 'create'])
             ->name('notifications.create');
         Route::post('/notifications/custom/store', [NotificationController::class, 'store'])
@@ -245,11 +243,8 @@ Route::group(['middleware' => 'auth'], function () {
         Route::post('/notifications/send-from-template', [NotificationController::class, 'sendFromTemplate'])
             ->name('notifications.sendFromTemplate');
 
-
         Route::get('live-chat/{receiver_type?}/{receiver_id?}', [ChatController::class, 'index'])->name('live-chat.index');
         Route::post('live-chat/send', [ChatController::class, 'send'])->name('live-chat.send');
-
-
 
         // Content managemnent
         Route::get('content/dynamic-pages', [PageController::class, 'index'])->name('content.dynamic.pages');
@@ -270,15 +265,8 @@ Route::group(['middleware' => 'auth'], function () {
 
         Route::resource('home-slides', HomeSlideController::class);
         Route::post('home-slides/{homeSlide}/toggle', [HomeSlideController::class, 'toggleStatus']);
+        Route::get('home-page-content', [HomePageContentController::class, 'index'])->name('home-page-content.index');
+        Route::post('home-page-content', [HomePageContentController::class, 'update'])->name('home-page-content.update');
 
-        Route::get(
-            'home-page-content',
-            [HomePageContentController::class, 'index']
-        )->name('home-page-content.index');
-
-        Route::post(
-            'home-page-content',
-            [HomePageContentController::class, 'update']
-        )->name('home-page-content.update');
     });
 });

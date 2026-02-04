@@ -297,7 +297,7 @@
                                                                 alt="Product Photo" width="50">
                                                         @endif
                                                     </td>
-                                                    <td>{{ $order->total ?? '-' }}</td>
+                                                    <td>₹{{ $order->total ?? '-' }}</td>
                                                     <td>{{ $order->payment->payment_id ? 'Paid' : 'Unpaid' }}</td>
                                                     <td>
                         @switch($status)
@@ -413,7 +413,7 @@
                                                                 alt="Product Photo" width="50">
                                                         @endif
                                                     </td>
-                                                    <td>{{ $order->total ?? '-' }}</td>
+                                                    <td>₹{{ $order->total ?? '-' }}</td>
                                                     <td>{{ $order->payment->payment_id ? 'Paid' : 'Unpaid' }}</td>
                                                     <td>
                         @switch($status)
@@ -805,7 +805,7 @@
                                                                 alt="Product Photo" width="50">
                                                         @endif
                                                     </td>
-                                                    <td>{{ $order->total ?? '-' }}</td>
+                                                    <td>₹{{ $order->total ?? '-' }}</td>
                                                     <td>{{ $order->payment->payment_id ? 'Paid' : 'Unpaid' }}</td>
                                                     <td>
                         @switch($status)
@@ -921,7 +921,7 @@
                                                                 alt="Product Photo" width="50">
                                                         @endif
                                                     </td>
-                                                    <td>{{ $order->total ?? '-' }}</td>
+                                                    <td>₹{{ $order->total ?? '-' }}</td>
                                                     <td>{{ $order->payment->payment_id ? 'Paid' : 'Unpaid' }}</td>
                                                     <td>
                         @switch($status)

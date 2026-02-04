@@ -391,20 +391,8 @@
 <?php $__env->startSection('content'); ?>
     <?php
   $isLoggedIn = Auth::guard('customer')->check();
-    ?>
-
-    <?php
   $submittedValues = json_decode($submission->data, true) ?? [];
-
   $productTitle = $submittedValues['product_title']['value'] ?? 'No Title';
-    $offeredPrice = ($submittedValues['urgent_sale']['value'] ?? '') === 'Yes'
-    ? ($submittedValues['offered_price']['value'] ?? '0')
-    : ($submittedValues['mrp']['value'] ?? '0');
-
-  $mrp = $submittedValues['mrp']['value'] ?? 0;
- // Calculate discount
-        $discount = max($mrp - $offeredPrice, 0); 
-
     ?>
 
     <div class="page-wrapper" style="position: relative;">
@@ -584,14 +572,7 @@ foreach ($fields as $field) {
             <div class="col-lg-4">
               <div class="sidebar">
 
-                <?php
-     $offeredPrice = ($submittedValues['urgent_sale']['value'] ?? '') === 'Yes'
-    ?  ($submittedValues['offered_price']['value'] ?? '0')
-    : ($submittedValues['mrp']['value'] ?? '0');
-
-   $requiredAmount = max(0, $offeredPrice - $walletBalance);
-                ?>
-              
+    
                 <!-- end sidebar -->
               </div>
               <div class="purchase-card">
@@ -599,7 +580,11 @@ foreach ($fields as $field) {
 
                 <!-- Price Box -->
                 <div class="purchase-price-box">
-                  <p class="purchase-price">₹<?php echo e(number_format($offeredPrice)); ?></p>
+                 <p class="purchase-price">
+    <?php echo e($currencySymbol); ?><?php echo e(number_format($displayPrice, 2)); ?>
+
+</p>
+
                   <p class="purchase-secure">🔒 Secure Escrow Transaction</p>
                   <span class="purchase-note">Your payment is held securely by Flippingo until you confirm satisfaction. We
                     take care of your purchase.</span>
@@ -621,28 +606,32 @@ foreach ($fields as $field) {
                   <hr class="border-top-gray flex-grow-1" />
                 </div>
                 <!-- Wallet Balance -->
-                <div class="purchase-wallet-box">
-                  <p class="purchase-wallet-title">💳 Your Wallet Balance</p>
-                  <p class="purchase-wallet-amount">₹<?php echo e(number_format($walletBalance, 2)); ?></p>
-                </div>
+               <div class="purchase-wallet-box">
+    <p class="purchase-wallet-title">💳 Your Wallet Balance</p>
+    <p class="purchase-wallet-amount">
+        <?php echo e($currencySymbol); ?><?php echo e(number_format($walletBalanceDisplay, 2)); ?>
+
+    </p>
+</div>
 
 
-<?php if($walletBalance < $offeredPrice): ?>
-    <!-- Insufficient Balance -->
+<?php if($requiredAmountDisplay > 0): ?>
     <div class="purchase-warning-box">
         <p class="purchase-warning-title">⚠️ Insufficient Balance</p>
         <span class="purchase-warning-text">
-            You need an additional <b>₹<?php echo e(number_format($requiredAmount)); ?></b> to complete this purchase.
+            You need an additional
+            <b><?php echo e($currencySymbol); ?><?php echo e(number_format($requiredAmountDisplay, 2)); ?></b>
+            to complete this purchase.
         </span>
     </div>
 
-    <!-- Add Money Button -->
-    <button id="addMoneyButton" class="purchase-btn" data-amount="<?php echo e($requiredAmount * 100); ?>">
-  + Add ₹<?php echo e($requiredAmount); ?> to Wallet
-</button>
-
+    <!-- Razorpay MUST stay INR -->
+    <button id="addMoneyButton"
+            class="purchase-btn"
+            data-amount="<?php echo e($requiredAmountINR * 100); ?>">
+        + Add <?php echo e($currencySymbol); ?><?php echo e(number_format($requiredAmountDisplay, 2)); ?> to Wallet
+    </button>
 <?php endif; ?>
-
 
                 <!-- Wishlist -->
               <button id="wishlistButton" class="purchase-wishlist-btn" data-submission="<?php echo e($submission->id); ?>">
@@ -762,7 +751,7 @@ foreach ($fields as $field) {
             <?php endif; ?>
           </div>
 
-          <p class="card-text">₹<?php echo e($listing->offered_price); ?></p>
+          <p class="card-text"><?php echo e($listing->currencySymbol); ?><?php echo e(number_format($listing->display_price, 2)); ?></p>
         </div>
 
         <div class="card-footer bg-transparent border-top-gray d-flex align-items-center justify-content-between">

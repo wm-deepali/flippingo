@@ -48,6 +48,26 @@
                                         $inputTypes = ['text', 'email', 'number', 'selectlist', 'dropdown', 'file', 'signature', 'textarea', 'date', 'checkbox', 'radio', 'cascadingDropdown']; // Add all form input types you support
                                     ?>
 
+                                    <?php if($submission->form->category?->enable_country_filter): ?>
+                                        <div class="mb-3">
+                                            <label class="form-label">Country</label>
+                                            <select name="country" class="form-control">
+                                                <option value="">Select Country</option>
+                                                <?php $__currentLoopData = $countries; $__env->addLoop($__currentLoopData); foreach($__currentLoopData as $country): $__env->incrementLoopIndices(); $loop = $__env->getLastLoop(); ?>
+                                                    <option value="<?php echo e($country->id); ?>" <?php if($submission->country_id == $country->id): ?>
+                                                    selected <?php endif; ?>>
+                                                        <?php echo e($country->name); ?>
+
+                                                    </option>
+                                                <?php endforeach; $__env->popLoop(); $loop = $__env->getLastLoop(); ?>
+                                            </select>
+                                        </div>
+                                    <?php endif; ?>
+
+                                    
+                                    <input type="hidden" id="price_currency" value="<?php echo e($submission->currency ?? 'INR'); ?>">
+
+
                                     <?php $__currentLoopData = $formData->fields; $__env->addLoop($__currentLoopData); foreach($__currentLoopData as $field): $__env->incrementLoopIndices(); $loop = $__env->getLastLoop(); ?>
                                         <?php if(in_array($field['type'], $inputTypes)): ?>
                                             <?php
@@ -101,31 +121,31 @@
                                                     <button type="button" class="btn btn-secondary btn-sm mt-1"
                                                         id="clear_signature_<?php echo e($fieldKey); ?>">Clear</button>
                                                 <?php elseif(in_array($type, ['selectlist', 'dropdown'])): ?>
-    <?php
-        $options = $field['properties']['options'] ?? [];
-    ?>
-    <select name="<?php echo e($fieldKey); ?>" class="form-control">
-        <?php $__currentLoopData = $options; $__env->addLoop($__currentLoopData); foreach($__currentLoopData as $option): $__env->incrementLoopIndices(); $loop = $__env->getLastLoop(); ?>
-            <?php
-                // Split option by "|selected"
-                $isSelectedDefault = false;
-                $optionLabel = $option;
+                                                    <?php
+                                                        $options = $field['properties']['options'] ?? [];
+                                                    ?>
+                                                    <select name="<?php echo e($fieldKey); ?>" class="form-control">
+                                                        <?php $__currentLoopData = $options; $__env->addLoop($__currentLoopData); foreach($__currentLoopData as $option): $__env->incrementLoopIndices(); $loop = $__env->getLastLoop(); ?>
+                                                            <?php
+                                                                // Split option by "|selected"
+                                                                $isSelectedDefault = false;
+                                                                $optionLabel = $option;
 
-                if (str_contains($option, '|selected')) {
-                    $optionLabel = str_replace('|selected', '', $option);
-                    $isSelectedDefault = true;
-                }
+                                                                if (str_contains($option, '|selected')) {
+                                                                    $optionLabel = str_replace('|selected', '', $option);
+                                                                    $isSelectedDefault = true;
+                                                                }
 
-                // Determine selected: from existing data or default option
-                $selected = ($value == $optionLabel) || (!$value && $isSelectedDefault);
-            ?>
+                                                                // Determine selected: from existing data or default option
+                                                                $selected = ($value == $optionLabel) || (!$value && $isSelectedDefault);
+                                                            ?>
 
-            <option value="<?php echo e($optionLabel); ?>" <?php if($selected): ?> selected <?php endif; ?>>
-                <?php echo e($optionLabel); ?>
+                                                            <option value="<?php echo e($optionLabel); ?>" <?php if($selected): ?> selected <?php endif; ?>>
+                                                                <?php echo e($optionLabel); ?>
 
-            </option>
-        <?php endforeach; $__env->popLoop(); $loop = $__env->getLastLoop(); ?>
-    </select>
+                                                            </option>
+                                                        <?php endforeach; $__env->popLoop(); $loop = $__env->getLastLoop(); ?>
+                                                    </select>
 
                                                 <?php elseif($type === 'cascadingDropdown'): ?>
                                                     <?php
@@ -136,20 +156,21 @@
                                                     ?>
 
                                                     <div class="mb-3">
-                                                       
-<select class="form-control parent-dropdown" name="<?php echo e($fieldKey); ?>">
-    <option value="">Select parent</option>
-    <?php $__currentLoopData = $parentOptions; $__env->addLoop($__currentLoopData); foreach($__currentLoopData as $option): $__env->incrementLoopIndices(); $loop = $__env->getLastLoop(); ?>
-        <option value="<?php echo e($option); ?>" <?php if($option == $parentValue): ?> selected <?php endif; ?>>
-            <?php echo e($option); ?>
+                                                        
+                                                        <select class="form-control parent-dropdown" name="<?php echo e($fieldKey); ?>">
+                                                            <option value="">Select parent</option>
+                                                            <?php $__currentLoopData = $parentOptions; $__env->addLoop($__currentLoopData); foreach($__currentLoopData as $option): $__env->incrementLoopIndices(); $loop = $__env->getLastLoop(); ?>
+                                                                <option value="<?php echo e($option); ?>" <?php if($option == $parentValue): ?> selected <?php endif; ?>>
+                                                                    <?php echo e($option); ?>
 
-        </option>
-    <?php endforeach; $__env->popLoop(); $loop = $__env->getLastLoop(); ?>
+                                                                </option>
+                                                            <?php endforeach; $__env->popLoop(); $loop = $__env->getLastLoop(); ?>
 
-    <?php if(!empty($field['properties']['enableParentOther']) && $field['properties']['enableParentOther'] == true): ?>
-        <option value="Other" <?php if($parentValue == 'Other'): ?> selected <?php endif; ?>>Other</option>
-    <?php endif; ?>
-</select>
+                                                            <?php if(!empty($field['properties']['enableParentOther']) && $field['properties']['enableParentOther'] == true): ?>
+                                                                <option value="Other" <?php if($parentValue == 'Other'): ?> selected <?php endif; ?>>Other
+                                                                </option>
+                                                            <?php endif; ?>
+                                                        </select>
 
 
                                                         
@@ -164,59 +185,53 @@
                                                         </select>
                                                     </div>
 
-                                               
+
                                                 <?php elseif($type === 'textarea'): ?>
                                                     <textarea name="<?php echo e($fieldKey); ?>" class="form-control"
                                                         rows="3"><?php echo e(is_array($value) ? implode(', ', $value) : $value); ?></textarea>
 
-                                               <?php elseif($type === 'checkbox'): ?>
-    <label class="form-label fw-bold"><?php echo e($field['properties']['label'] ?? ''); ?></label>
+                                                <?php elseif($type === 'checkbox'): ?>
+                                                    <label class="form-label fw-bold"><?php echo e($field['properties']['label'] ?? ''); ?></label>
 
-    <?php $__currentLoopData = $field['properties']['checkboxes'] ?? []; $__env->addLoop($__currentLoopData); foreach($__currentLoopData as $checkbox): $__env->incrementLoopIndices(); $loop = $__env->getLastLoop(); ?>
-        <?php
-            // Split by "|" and trim spaces
-            $parts = array_map('trim', explode('|', $checkbox));
+                                                    <?php $__currentLoopData = $field['properties']['checkboxes'] ?? []; $__env->addLoop($__currentLoopData); foreach($__currentLoopData as $checkbox): $__env->incrementLoopIndices(); $loop = $__env->getLastLoop(); ?>
+                                                        <?php
+                                                            // Split by "|" and trim spaces
+                                                            $parts = array_map('trim', explode('|', $checkbox));
 
-            // Label and value
-            $label = $parts[0] ?? '';
-            $value = $parts[1] ?? $label; // fallback if no value part
-            $isSelected = isset($parts[2]) && strtolower($parts[2]) === 'selected';
-        ?>
+                                                            // Label and value
+                                                            $label = $parts[0] ?? '';
+                                                            $value = $parts[1] ?? $label; // fallback if no value part
+                                                            $isSelected = isset($parts[2]) && strtolower($parts[2]) === 'selected';
+                                                        ?>
 
-        <div class="form-check">
-            <input class="form-check-input"
-                type="checkbox"
-                name="<?php echo e($field['properties']['field_id'] ?? ''); ?>[]"
-                value="<?php echo e($value); ?>"
-                <?php if((is_array($value ?? null) && in_array($value, $value ?? [])) || $isSelected): ?> checked <?php endif; ?>
-            >
-            <label class="form-check-label"><?php echo e($label); ?></label>
-        </div>
-    <?php endforeach; $__env->popLoop(); $loop = $__env->getLastLoop(); ?>
-                                               <?php elseif($type === 'radio'): ?>
-    <label class="form-label fw-bold"><?php echo e($field['properties']['label'] ?? ''); ?></label>
+                                                        <div class="form-check">
+                                                            <input class="form-check-input" type="checkbox"
+                                                                name="<?php echo e($field['properties']['field_id'] ?? ''); ?>[]" value="<?php echo e($value); ?>"
+                                                                <?php if((is_array($value ?? null) && in_array($value, $value ?? [])) || $isSelected): ?> checked <?php endif; ?>>
+                                                            <label class="form-check-label"><?php echo e($label); ?></label>
+                                                        </div>
+                                                    <?php endforeach; $__env->popLoop(); $loop = $__env->getLastLoop(); ?>
+                                                <?php elseif($type === 'radio'): ?>
+                                                    <label class="form-label fw-bold"><?php echo e($field['properties']['label'] ?? ''); ?></label>
 
-    <?php $__currentLoopData = $field['properties']['radios'] ?? []; $__env->addLoop($__currentLoopData); foreach($__currentLoopData as $radio): $__env->incrementLoopIndices(); $loop = $__env->getLastLoop(); ?>
-        <?php
-            // Split the radio string (Label | Value | selected)
-            $parts = array_map('trim', explode('|', $radio));
+                                                    <?php $__currentLoopData = $field['properties']['radios'] ?? []; $__env->addLoop($__currentLoopData); foreach($__currentLoopData as $radio): $__env->incrementLoopIndices(); $loop = $__env->getLastLoop(); ?>
+                                                        <?php
+                                                            // Split the radio string (Label | Value | selected)
+                                                            $parts = array_map('trim', explode('|', $radio));
 
-            $label = $parts[0] ?? '';
-            $optionValue = $parts[1] ?? $label; // fallback if value not given
-            $isSelected = isset($parts[2]) && strtolower($parts[2]) === 'selected';
-        ?>
+                                                            $label = $parts[0] ?? '';
+                                                            $optionValue = $parts[1] ?? $label; // fallback if value not given
+                                                            $isSelected = isset($parts[2]) && strtolower($parts[2]) === 'selected';
+                                                        ?>
 
-        <div class="form-check">
-            <input
-                class="form-check-input"
-                type="radio"
-                name="<?php echo e($field['properties']['field_id'] ?? $fieldKey); ?>"
-                value="<?php echo e($optionValue); ?>"
-                <?php if(($value ?? '') == $optionValue || $isSelected): ?> checked <?php endif; ?>
-            >
-            <label class="form-check-label"><?php echo e($label); ?></label>
-        </div>
-    <?php endforeach; $__env->popLoop(); $loop = $__env->getLastLoop(); ?>
+                                                        <div class="form-check">
+                                                            <input class="form-check-input" type="radio"
+                                                                name="<?php echo e($field['properties']['field_id'] ?? $fieldKey); ?>"
+                                                                value="<?php echo e($optionValue); ?>" <?php if(($value ?? '') == $optionValue || $isSelected): ?>
+                                                                checked <?php endif; ?>>
+                                                            <label class="form-check-label"><?php echo e($label); ?></label>
+                                                        </div>
+                                                    <?php endforeach; $__env->popLoop(); $loop = $__env->getLastLoop(); ?>
 
 
                                                 <?php elseif($type === 'date'): ?>
@@ -248,134 +263,190 @@
 <?php $__env->stopSection(); ?>
 
 <?php $__env->startPush('scripts'); ?>
-<script>
-$(document).ready(function () {
-    // Build mapping for all cascading dropdowns
-    const childMapping = {};
-    <?php $__currentLoopData = $formData->fields; $__env->addLoop($__currentLoopData); foreach($__currentLoopData as $field): $__env->incrementLoopIndices(); $loop = $__env->getLastLoop(); ?>
-        <?php if($field['type'] === 'cascadingDropdown'): ?>
-            childMapping['<?php echo e($field['properties']['id'] ?? $field['id']); ?>'] = <?php echo json_encode($field['properties']['parentChildMapping'] ?? [], 15, 512) ?>;
-        <?php endif; ?>
-    <?php endforeach; $__env->popLoop(); $loop = $__env->getLastLoop(); ?>
 
-    $('.parent-dropdown').each(function () {
-        const parent = $(this);
-        const fieldName = parent.attr('name');
-        const child = $(`select[name="${fieldName}_child"]`);
+    <script>
+        function updatePriceCurrencyEdit() {
+            const $countrySelect = $('select[name="country"]');
 
-        // Existing values (for edit mode)
-        const parentValue = parent.val();
-        const customValue = <?php echo json_encode($existingData, 15, 512) ?>[fieldName]?.child_custom_value ?? null;
+            let currency = 'INR';
+            let symbol = '₹';
 
-        // Hide child dropdown if no parent
-        if (!parentValue) child.closest('.mb-3').find('.child-dropdown').hide();
+            if ($countrySelect.length && $countrySelect.val()) {
+                const countryId = parseInt($countrySelect.val(), 10);
 
-        // --- Handle edit mode for "Other" ---
-        if (parentValue === 'Other') {
-            child.closest('.mb-3').find('.child-dropdown').hide();
+                // India → INR, others → USD
+                if (countryId !== <?php echo e(config('app.india_country_id', 229)); ?>) {
+                    currency = 'USD';
+                    symbol = '$';
+                }
+            }
 
-            const existingVal = customValue ? customValue.replace(/^,/, '') : '';
-            const inputHtml = `
-                <div class="form-group mt-2" id="parent-other-group-${fieldName}">
-                    <input type="text" class="form-control"
-                           id="parent-other-input-${fieldName}"
-                           name="${fieldName}_child_custom"
-                           value="${existingVal}"
-                           placeholder="Enter your option">
-                </div>`;
-            if (!$(`#parent-other-group-${fieldName}`).length) {
-                child.closest('.mb-3').append(inputHtml);
+            $('#price_currency').val(currency);
+
+            // =========================
+            // PRICE (MRP)
+            // =========================
+            const $mrpInput = $('input[name="mrp"]');
+            if ($mrpInput.length) {
+                const $mrpWrapper = $mrpInput.closest('.mb-3');
+                const $mrpLabel = $mrpWrapper.find('label');
+
+                $mrpLabel.html(`Price (${currency}) <span class="text-danger">*</span>`);
+                $mrpInput.attr('placeholder', `Enter Price in ${currency}`);
+            }
+
+            // =========================
+            // OFFERED PRICE
+            // =========================
+            const $offerInput = $('input[name="offered_price"]');
+            if ($offerInput.length) {
+                const $offerWrapper = $offerInput.closest('.mb-3');
+                const $offerLabel = $offerWrapper.find('label');
+
+                $offerLabel.text(`Demand Price (${currency})`);
+                $offerInput.attr('placeholder', `Enter Demand Price in ${currency}`);
             }
         }
 
-        // --- Handle change dynamically ---
-        parent.off('change').on('change', function () {
-            const selectedParent = $(this).val();
+        // Initial load
+        $(document).ready(function () {
+            updatePriceCurrencyEdit();
+        });
 
-            // Remove custom input if any
-            $(`#parent-other-group-${fieldName}`).remove();
+        // On country change
+        $(document).on('change', 'select[name="country"]', function () {
+            updatePriceCurrencyEdit();
+        });
+    </script>
 
-            // Handle "Other"
-            if (selectedParent === 'Other') {
-                child.closest('.mb-3').find('.child-dropdown').hide();
-                const inputHtml = `
-                    <div class="form-group mt-2" id="parent-other-group-${fieldName}">
-                        <input type="text" class="form-control"
-                               id="parent-other-input-${fieldName}"
-                               name="${fieldName}_child_custom"
-                               placeholder="Enter your option">
-                    </div>`;
-                child.closest('.mb-3').append(inputHtml);
-            }
-            // Handle normal parent-child mapping
-            else if (selectedParent && childMapping[fieldName] && childMapping[fieldName][selectedParent]) {
-                $(`#parent-other-group-${fieldName}`).remove();
-                child.empty().append('<option value="">Select child</option>');
-                childMapping[fieldName][selectedParent].forEach(opt => {
-                    child.append(`<option value="${opt}">${opt}</option>`);
+    <script>
+        $(document).ready(function () {
+            // Build mapping for all cascading dropdowns
+            const childMapping = {};
+            <?php $__currentLoopData = $formData->fields; $__env->addLoop($__currentLoopData); foreach($__currentLoopData as $field): $__env->incrementLoopIndices(); $loop = $__env->getLastLoop(); ?>
+                <?php if($field['type'] === 'cascadingDropdown'): ?>
+                    childMapping['<?php echo e($field['properties']['id'] ?? $field['id']); ?>'] = <?php echo json_encode($field['properties']['parentChildMapping'] ?? [], 15, 512) ?>;
+                <?php endif; ?>
+            <?php endforeach; $__env->popLoop(); $loop = $__env->getLastLoop(); ?>
+
+            $('.parent-dropdown').each(function () {
+                const parent = $(this);
+                const fieldName = parent.attr('name');
+                const child = $(`select[name="${fieldName}_child"]`);
+
+                // Existing values (for edit mode)
+                const parentValue = parent.val();
+                const customValue = <?php echo json_encode($existingData, 15, 512) ?>[fieldName]?.child_custom_value ?? null;
+
+                // Hide child dropdown if no parent
+                if (!parentValue) child.closest('.mb-3').find('.child-dropdown').hide();
+
+                // --- Handle edit mode for "Other" ---
+                if (parentValue === 'Other') {
+                    child.closest('.mb-3').find('.child-dropdown').hide();
+
+                    const existingVal = customValue ? customValue.replace(/^,/, '') : '';
+                    const inputHtml = `
+                        <div class="form-group mt-2" id="parent-other-group-${fieldName}">
+                            <input type="text" class="form-control"
+                                   id="parent-other-input-${fieldName}"
+                                   name="${fieldName}_child_custom"
+                                   value="${existingVal}"
+                                   placeholder="Enter your option">
+                        </div>`;
+                    if (!$(`#parent-other-group-${fieldName}`).length) {
+                        child.closest('.mb-3').append(inputHtml);
+                    }
+                }
+
+                // --- Handle change dynamically ---
+                parent.off('change').on('change', function () {
+                    const selectedParent = $(this).val();
+
+                    // Remove custom input if any
+                    $(`#parent-other-group-${fieldName}`).remove();
+
+                    // Handle "Other"
+                    if (selectedParent === 'Other') {
+                        child.closest('.mb-3').find('.child-dropdown').hide();
+                        const inputHtml = `
+                            <div class="form-group mt-2" id="parent-other-group-${fieldName}">
+                                <input type="text" class="form-control"
+                                       id="parent-other-input-${fieldName}"
+                                       name="${fieldName}_child_custom"
+                                       placeholder="Enter your option">
+                            </div>`;
+                        child.closest('.mb-3').append(inputHtml);
+                    }
+                    // Handle normal parent-child mapping
+                    else if (selectedParent && childMapping[fieldName] && childMapping[fieldName][selectedParent]) {
+                        $(`#parent-other-group-${fieldName}`).remove();
+                        child.empty().append('<option value="">Select child</option>');
+                        childMapping[fieldName][selectedParent].forEach(opt => {
+                            child.append(`<option value="${opt}">${opt}</option>`);
+                        });
+                        child.closest('.mb-3').find('.child-dropdown').show();
+                    }
+                    // Handle empty parent
+                    else {
+                        child.closest('.mb-3').find('.child-dropdown').hide();
+                    }
                 });
-                child.closest('.mb-3').find('.child-dropdown').show();
-            }
-            // Handle empty parent
-            else {
-                child.closest('.mb-3').find('.child-dropdown').hide();
-            }
+            });
+
+            // --- AJAX Form Submission ---
+            $('#edit-submission-form').on('submit', function (e) {
+                e.preventDefault();
+
+                const form = $(this);
+                const url = form.data('action');
+                const formData = new FormData(this);
+
+                const submitBtn = form.find('button[type="submit"]');
+                submitBtn.prop('disabled', true).text('Updating...');
+
+                $.ajax({
+                    url: url,
+                    method: 'POST', // PUT spoofing handled via hidden _method
+                    data: formData,
+                    processData: false,
+                    contentType: false,
+                    success: function (res) {
+                        if (res.success) {
+                            Swal.fire({
+                                icon: 'success',
+                                title: 'Success',
+                                text: res.message || 'Submission updated successfully.',
+                                timer: 1500,
+                                showConfirmButton: false
+                            });
+                            setTimeout(() => {
+                                window.location.href = "<?php echo e(route('admin.form-submissions.index')); ?>";
+                            }, 1600);
+                        } else {
+                            Swal.fire({
+                                icon: 'error',
+                                title: 'Error',
+                                text: res.message || 'Something went wrong.'
+                            });
+                        }
+                    },
+                    error: function (xhr) {
+                        if (xhr.status === 422) {
+                            const errors = xhr.responseJSON.errors;
+                            const errorMessages = Object.values(errors).map(errArr => errArr[0]).join('<br>');
+                            Swal.fire({ icon: 'error', title: 'Validation Error', html: errorMessages });
+                        } else {
+                            Swal.fire({ icon: 'error', title: 'Server Error', text: 'Please try again later.' });
+                        }
+                    },
+                    complete: function () {
+                        submitBtn.prop('disabled', false).text('Update Submission');
+                    }
+                });
+            });
         });
-    });
+    </script>
 
-    // --- AJAX Form Submission ---
-    $('#edit-submission-form').on('submit', function (e) {
-        e.preventDefault();
-
-        const form = $(this);
-        const url = form.data('action');
-        const formData = new FormData(this);
-
-        const submitBtn = form.find('button[type="submit"]');
-        submitBtn.prop('disabled', true).text('Updating...');
-
-        $.ajax({
-            url: url,
-            method: 'POST', // PUT spoofing handled via hidden _method
-            data: formData,
-            processData: false,
-            contentType: false,
-            success: function (res) {
-                if (res.success) {
-                    Swal.fire({
-                        icon: 'success',
-                        title: 'Success',
-                        text: res.message || 'Submission updated successfully.',
-                        timer: 1500,
-                        showConfirmButton: false
-                    });
-                    setTimeout(() => {
-                        window.location.href = "<?php echo e(route('admin.form-submissions.index')); ?>";
-                    }, 1600);
-                } else {
-                    Swal.fire({
-                        icon: 'error',
-                        title: 'Error',
-                        text: res.message || 'Something went wrong.'
-                    });
-                }
-            },
-            error: function (xhr) {
-                if (xhr.status === 422) {
-                    const errors = xhr.responseJSON.errors;
-                    const errorMessages = Object.values(errors).map(errArr => errArr[0]).join('<br>');
-                    Swal.fire({ icon: 'error', title: 'Validation Error', html: errorMessages });
-                } else {
-                    Swal.fire({ icon: 'error', title: 'Server Error', text: 'Please try again later.' });
-                }
-            },
-            complete: function () {
-                submitBtn.prop('disabled', false).text('Update Submission');
-            }
-        });
-    });
-});
-</script>
 <?php $__env->stopPush(); ?>
-
 <?php echo $__env->make('layouts.master', \Illuminate\Support\Arr::except(get_defined_vars(), ['__data', '__path']))->render(); ?><?php /**PATH D:\web-mingo-project\flippingo_admin\resources\views/admin/form_submissions/edit.blade.php ENDPATH**/ ?>

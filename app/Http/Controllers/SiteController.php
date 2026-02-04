@@ -136,7 +136,6 @@ class SiteController extends Controller
                  | FLAGS & META
                  ===================================== */
                 $submission->category = $submission->form->category;
-                $submission->country_id = $submission->customer->country ?? null;
                 $submission->is_verified = (bool) ($submission->customer->is_verified ?? false);
                 $submission->is_premium = (bool) ($submission->customer->is_premium ?? false);
 
@@ -173,7 +172,19 @@ class SiteController extends Controller
 
         $testimonials = Testimonial::where('status', 'active')->get();
 
-        $countries = DB::table('countries')->orderBy('name')->get();
+        $indiaId = config('app.india_country_id', 229);
+
+        $countries = DB::table('countries')
+            ->leftJoin('form_submissions', 'countries.id', '=', 'form_submissions.country_id')
+            ->where(function ($query) use ($indiaId) {
+                $query->whereNotNull('form_submissions.country_id')
+                    ->orWhere('countries.id', $indiaId);
+            })
+            ->select('countries.*')
+            ->distinct()
+            ->orderBy('countries.name')
+            ->get();
+
 
         $soldSubmissionIds = ProductOrder::pluck('submission_id')->toArray();
 
@@ -316,11 +327,12 @@ class SiteController extends Controller
          | 🌍 IP BASED CURRENCY DETECTION
          ====================================================== */
         $countryCode = IpHelper::countryCode();
-        // Currency logic
         $viewerCurrency = $countryCode === 'in' ? 'INR' : 'USD';
-        // Exchange rate (base price assumed INR)
-        $usdRate = CurrencyHelper::usdRate(); // REAL TIME
+        $usdRate = CurrencyHelper::usdRate(); // realtime rate
 
+        /* ======================================================
+         | 📦 FETCH CATEGORIES
+         ====================================================== */
         $categories = Category::where('status', 'active')
             ->with(['form.filters', 'form.formData'])
             ->get();
@@ -329,18 +341,29 @@ class SiteController extends Controller
         $allSubmissionsFlat = [];
 
         foreach ($categories as $category) {
-            // Fetch all submissions for the category
+
+            /* ======================================================
+             | 📄 FETCH SUBMISSIONS
+             ====================================================== */
             $submissions = FormSubmission::whereHas('form', function ($q) use ($category) {
                 $q->where('category_id', $category->id);
-            })->with(['form.category', 'form.formData', 'customer', 'files'])
+            })
+                ->with(['form.category', 'form.formData', 'customer', 'files', 'country'])
                 ->where('status', 'published')
                 ->get();
 
-            // Apply filters using collection
-            $filtered = $submissions->filter(function ($submission) use ($request) {
-                $data = is_array($submission->data) ? $submission->data : json_decode($submission->data, true);
+            /* ======================================================
+             | 🔍 FILTERING
+             ====================================================== */
+            $filtered = $submissions->filter(function ($submission) use ($request, $viewerCurrency, $usdRate) {
 
-                // 🔍 Search filter
+                $data = is_array($submission->data)
+                    ? $submission->data
+                    : json_decode($submission->data, true);
+
+                $data = is_array($data) ? $data : [];
+
+                /* 🔍 SEARCH */
                 if ($request->filled('search')) {
                     $search = strtolower($request->search);
                     $found = false;
@@ -349,50 +372,58 @@ class SiteController extends Controller
                         if (!isset($field['value']))
                             continue;
 
-                        $fieldValue = $field['value'];
+                        $value = is_array($field['value'])
+                            ? implode(' ', array_map('strval', $field['value']))
+                            : $field['value'];
 
-                        if (is_array($fieldValue)) {
-                            $fieldValue = implode(' ', array_map('strval', $fieldValue));
-                        }
-
-                        if (str_contains(strtolower($fieldValue), $search)) {
+                        if (str_contains(strtolower((string) $value), $search)) {
                             $found = true;
                             break;
                         }
                     }
 
-                    if (!$found) {
+                    if (!$found)
+                        return false;
+                }
+
+                /* 💰 PRICE (VIEWER CURRENCY) */
+                $basePrice = ($data['urgent_sale']['value'] ?? '') === 'Yes'
+                    ? ($data['offered_price']['value'] ?? 0)
+                    : ($data['mrp']['value'] ?? 0);
+
+                $basePrice = (float) $basePrice;
+                $submissionCurrency = $submission->currency ?? 'INR';
+
+                if ($submissionCurrency === 'INR' && $viewerCurrency === 'USD') {
+                    $priceForViewer = round($basePrice * $usdRate, 2);
+                } elseif ($submissionCurrency === 'USD' && $viewerCurrency === 'INR') {
+                    $priceForViewer = round($basePrice / $usdRate, 2);
+                } else {
+                    $priceForViewer = $basePrice;
+                }
+
+                if ($request->filled('price_min') && $priceForViewer < $request->price_min)
+                    return false;
+                if ($request->filled('price_max') && $priceForViewer > $request->price_max)
+                    return false;
+
+                /* 🌍 COUNTRY */
+                if ($request->filled('country')) {
+                    $listingCountry = optional($submission->country)->name;
+                    if (strtolower((string) $listingCountry) !== strtolower($request->country)) {
                         return false;
                     }
                 }
 
-                // 💰 Price filters
-                $mrp = floatval($data['mrp']['value'] ?? 0);
-                if ($request->filled('price_min') && $mrp < $request->price_min)
-                    return false;
-                if ($request->filled('price_max') && $mrp > $request->price_max)
-                    return false;
-
-                // ⭐ Rating filter
-                $rating = floatval($data['rating']['value'] ?? 0);
-                if ($request->filled('rating') && $rating < $request->rating)
-                    return false;
-
-                // 🌍 Country filter
-                if ($request->filled('country')) {
-                    $customerCountry = optional($submission->customer)->country ?? null;
-                    if (strtolower((string) $customerCountry) !== strtolower($request->country))
-                        return false;
-                }
-
-                // 🏷️ For Sale filter
+                /* ⚡ FOR SALE */
                 if ($request->filled('for_sale')) {
                     $urgentSale = $data['urgent_sale']['value'] ?? 'No';
-                    if (strtolower((string) $urgentSale) !== strtolower($request->for_sale))
+                    if (strtolower($urgentSale) !== strtolower($request->for_sale)) {
                         return false;
+                    }
                 }
 
-                // ⚙️ Dynamic filters
+                /* ⚙️ DYNAMIC FILTERS */
                 if ($request->has('filters') && is_array($request->filters)) {
                     foreach ($request->filters as $field => $value) {
                         if (empty($value))
@@ -400,23 +431,18 @@ class SiteController extends Controller
 
                         $fieldValue = $data[$field]['value'] ?? '';
 
-                        // Handle array field values safely
                         if (is_array($fieldValue)) {
                             $fieldValue = implode(' ', array_map('strval', $fieldValue));
                         }
 
-                        $fieldValue = strtolower((string) $fieldValue);
-
                         if (is_array($value)) {
-                            $matches = collect($value)
-                                ->map(fn($v) => strtolower((string) $v))
-                                ->contains($fieldValue);
-
-                            if (!$matches)
+                            if (!in_array(strtolower($fieldValue), array_map('strtolower', $value))) {
                                 return false;
+                            }
                         } else {
-                            if ($fieldValue !== strtolower((string) $value))
+                            if (strtolower($fieldValue) !== strtolower($value)) {
                                 return false;
+                            }
                         }
                     }
                 }
@@ -424,45 +450,30 @@ class SiteController extends Controller
                 return true;
             });
 
+            /* ======================================================
+             | 🧮 MAP DISPLAY PRICE
+             ====================================================== */
+            $mapped = $filtered->map(function ($submission) use ($viewerCurrency, $usdRate) {
 
+                $fields = is_array($submission->data)
+                    ? $submission->data
+                    : json_decode($submission->data, true);
 
-            // Map summary fields
-            $allSubmissionsMapped = $filtered->map(function ($submission) use ($viewerCurrency, $usdRate) {
-
-                // Decode safely
-                $fields = $submission->data;
-                if (!is_array($fields)) {
-                    $fields = json_decode($fields, true);
-                }
-
-                // Ensure array
                 $fields = is_array($fields) ? $fields : [];
 
-                /* =====================================
-| BASE PRICE FROM FORM
-===================================== */
                 $basePrice = ($fields['urgent_sale']['value'] ?? '') === 'Yes'
                     ? ($fields['offered_price']['value'] ?? 0)
                     : ($fields['mrp']['value'] ?? 0);
 
                 $basePrice = (float) $basePrice;
+                $submissionCurrency = $submission->currency ?? 'INR';
 
-                /* =====================================
-                 | SUBMISSION & VIEWER CURRENCY
-                 ===================================== */
-                $submissionCurrency = $submission->currency ?? 'INR'; // stored
-                $displayPrice = $basePrice;
-
-                /* =====================================
-                 | CONVERSION MATRIX
-                 ===================================== */
                 if ($submissionCurrency === 'INR' && $viewerCurrency === 'USD') {
-                    // INR → USD
                     $displayPrice = round($basePrice * $usdRate, 2);
-
                 } elseif ($submissionCurrency === 'USD' && $viewerCurrency === 'INR') {
-                    // USD → INR
                     $displayPrice = round($basePrice / $usdRate, 2);
+                } else {
+                    $displayPrice = $basePrice;
                 }
 
                 // else: same currency → no conversion
@@ -514,10 +525,9 @@ class SiteController extends Controller
                 return $submission;
             });
 
-
-            if ($allSubmissionsMapped->isNotEmpty()) {
-                $submissionsByCategory[$category->id] = $allSubmissionsMapped;
-                $allSubmissionsFlat = array_merge($allSubmissionsFlat, $allSubmissionsMapped->toArray());
+            if ($mapped->isNotEmpty()) {
+                $submissionsByCategory[$category->id] = $mapped;
+                $allSubmissionsFlat = array_merge($allSubmissionsFlat, $mapped->toArray());
             }
 
             // Prepare frontend filters
@@ -543,28 +553,40 @@ class SiteController extends Controller
 
         $allSubmissions = collect($allSubmissionsFlat);
 
-        // Apply global sorting here
         $sort = $request->input('sort', 'default');
 
         $allSubmissions = match ($sort) {
-            'price-low-to-high' => $allSubmissions->sortBy(fn($s) => floatval(data_get(json_decode($s['data'] ?? '[]', true), 'mrp.value', 0))),
-            'price-high-to-low' => $allSubmissions->sortByDesc(fn($s) => floatval(data_get(json_decode($s['data'] ?? '[]', true), 'mrp.value', 0))),
-            'most-rated' => $allSubmissions->sortByDesc(fn($s) => floatval(data_get(json_decode($s['data'] ?? '[]', true), 'rating.value', 0))),
+            'price-low-to-high' => $allSubmissions->sortBy('viewer_price'),
+            'price-high-to-low' => $allSubmissions->sortByDesc('viewer_price'),
+            'most-rated' => $allSubmissions->sortByDesc(fn($s) => floatval(data_get(json_decode($s['data'], true), 'rating.value', 0))),
             'most-popular' => $allSubmissions->sortByDesc(fn($s) => $s['total_views'] ?? 0),
-            'new-first' => $allSubmissions->sortByDesc(fn($s) => $s['created_at']),
-            default => $allSubmissions->sortByDesc(fn($s) => $s['created_at']),
+            'new-first' => $allSubmissions->sortByDesc('created_at'),
+            default => $allSubmissions->sortByDesc('created_at'),
         };
 
-        $countries = DB::table('countries')->orderBy('name')->get();
-        // ✅ Fetch all sold submission IDs
+        /* ======================================================
+         | 🌍 COUNTRIES (ONLY USED + INDIA)
+         ====================================================== */
+        $usedCountryIds = FormSubmission::whereNotNull('country_id')
+            ->pluck('country_id')
+            ->unique()
+            ->toArray();
+
+        $countries = DB::table('countries')
+            ->whereIn('id', array_unique(array_merge($usedCountryIds, [229]))) // 229 = India
+            ->orderBy('name')
+            ->get();
+
         $soldSubmissionIds = \App\Models\ProductOrder::pluck('submission_id')->toArray();
 
         if ($request->ajax()) {
-            // Prepare the partial view only with the filtered results
-            $html = view('front.partials.filtered-listings', compact('submissionsByCategory', 'allSubmissions', 'soldSubmissionIds', 'categories'))->render();
+            $html = view(
+                'front.partials.filtered-listings',
+                compact('submissionsByCategory', 'allSubmissions', 'soldSubmissionIds', 'categories')
+            )->render();
+
             return response()->json(['html' => $html]);
         }
-
 
         return view('front.listing-list', compact(
             'categories',
@@ -574,5 +596,6 @@ class SiteController extends Controller
             'soldSubmissionIds'
         ));
     }
+
 
 }

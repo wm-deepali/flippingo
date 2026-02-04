@@ -31,36 +31,37 @@ class FormController extends Controller
     }
 
 
-   public function showFormHtml($id)
-{
-    $form = Form::findOrFail($id);
-    $formData = FormData::where('form_id', $form->id)->first();
+    public function showFormHtml($id)
+    {
+        $form = Form::findOrFail($id);
+        $formData = FormData::where('form_id', $form->id)->first();
 
-    // Get category via form relationship
-    $category = $form->category; // make sure relationship exists
+        // Category from form
+        $category = $form->category;
 
-    $enableCountry = $category?->enable_country_filter ?? 0;
+        $enableCountry = $category?->enable_country_filter ?? 0;
+        $countryLabel = $category?->country_dropdown_label ?? 'Select Country';
 
-    // Build country dropdown HTML
-    $countries = \DB::table('countries')->orderBy('name')->get();
+        // Countries list
+        $countries = \DB::table('countries')->orderBy('name')->get();
 
-    $countryHtml = view('partials.country-dropdown', [
-        'countries' => $countries,
-        'enableCountry' => $enableCountry
-    ])->render();
+        // Build country dropdown HTML
+        $countryHtml = view('partials.country-dropdown', [
+            'countries' => $countries,
+            'enableCountry' => $enableCountry,
+            'countryLabel' => $countryLabel,
+        ])->render();
 
-    // Original form HTML
-    $formHtml = $formData?->html ?? '';
+        $formHtml = $formData?->html ?? '';
 
-    return response()->json([
-        'success' => true,
-        'html' => $countryHtml . $formHtml, // 👈 prepend country
-        'fields' => $formData?->fields ?? [],
-        'form_id' => $form->id,
-        'form_name' => $form->name,
-    ]);
-}
-
+        return response()->json([
+            'success' => true,
+            'html' => $countryHtml . $formHtml,
+            'fields' => $formData?->fields ?? [],
+            'form_id' => $form->id,
+            'form_name' => $form->name,
+        ]);
+    }
 
 
     /**
@@ -555,7 +556,7 @@ class FormController extends Controller
             'savedCards'
         ));
     }
-    
+
     public function storeSummaryCard(Request $request, Form $form)
     {
         $request->validate([
