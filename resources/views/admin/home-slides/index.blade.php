@@ -53,6 +53,7 @@
                     <tr>
                       <th>#</th>
                       <th>Title</th>
+                      <th>For</th>
                       <th>Highlight</th>
                       <th>Media</th>
                       <th>Features</th>
@@ -70,6 +71,7 @@
 
                         <td>{{ $slide->title }}</td>
 
+                        <td>{{ ucfirst($slide->slider_for) }}</td>
                         <td>
                           {{ $slide->highlight ?? '—' }}
                         </td>

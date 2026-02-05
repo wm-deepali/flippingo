@@ -28,6 +28,15 @@
          class="form-control" required>
 </div>
 
+<div class="form-group">
+  <label>Slide For *</label>
+  <select name="slider_for" class="form-control" required>
+    <option value="">Select</option>
+    <option value="buyer" {{ $homeSlide->slider_for === 'buyer' ? 'selected' : '' }}>Buyer</option>
+    <option value="seller" {{ $homeSlide->slider_for === 'seller' ? 'selected' : '' }}>Seller</option>
+  </select>
+</div>
+
 {{-- HIGHLIGHT --}}
 <div class="form-group">
   <label>Highlight</label>

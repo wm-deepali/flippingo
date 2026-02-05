@@ -112,9 +112,6 @@ Route::get('meet-our-team', function () {
     return view('front.meet-our-team');
 })->name('meet-our-team');
 
-Route::get('our-services', function () {
-    return view('front.our-services');
-})->name('our-services');
 
 Route::get('how-it-works', function () {
     return view('front.how-it-works');
@@ -134,7 +131,14 @@ Route::get('recover', function () {
 })->name('recover');
 
 
-
+Route::view('/insight', 'front.insight')->name('insight');
+Route::view('/buyers-mandate', 'front.buyers-mandate')->name('buyers-mandate');
+Route::view('/why-flippingo', 'front.why-flippingo')->name('why-flippingo');
+Route::view('/sell-digitally', 'front.sell-digitally')->name('sell-digitally');
+Route::view('/services', 'front.our-services')->name('services');
+Route::view('/resources', 'front.resources')->name('resources');
+Route::view('/career', 'front.career-with-us')->name('career');
+Route::view('/testimonial', 'front.testimonial')->name('testimonial');
 Route::post('states-by-country', [CustomerController::class, 'statesByCountry'])->name('states-by-country');
 Route::post('cities-by-state', [CustomerController::class, 'citiesByState'])->name('cities-by-state');
 

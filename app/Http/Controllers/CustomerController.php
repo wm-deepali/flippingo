@@ -281,7 +281,7 @@ class CustomerController extends Controller
     {
         // dd($request->all());
         $validator = Validator::make($request->all(), [
-            'accountType' => 'required|in:individual,entity',
+            'account_type' => 'required|in:individual,entity',
             'legal_name' => 'nullable|string|max:250',
             'first_name' => 'required|string|max:250',
             'last_name' => 'required|string|max:250',
@@ -316,8 +316,8 @@ class CustomerController extends Controller
         }
 
         $customer = new Customer();
-        $customer->account_type = $request->accountType;
-        $customer->legal_name = $request->accountType === 'entity' ? $request->legal_name : null;
+        $customer->account_type = $request->account_type;
+        $customer->legal_name = $request->account_type === 'entity' ? $request->legal_name : null;
         $customer->first_name = ucfirst($request->first_name);
         $customer->last_name = ucfirst($request->last_name);
         $customer->email = $request->email;

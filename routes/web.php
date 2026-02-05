@@ -1,6 +1,9 @@
 <?php
+use App\Http\Controllers\Admin\FooterSettingController;
+use App\Http\Controllers\Admin\HeaderSettingController;
 use App\Http\Controllers\Admin\HomePageContentController;
 use App\Http\Controllers\Admin\HomeSlideController;
+use App\Http\Controllers\Admin\LayoutSettingController;
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\Admin\{
     HomeController,
@@ -202,7 +205,7 @@ Route::group(['middleware' => 'auth'], function () {
             ->name('product-orders.approveCancellation');
         Route::post('product-orders/{subscription}/reject-cancellation', [ProductOrderController::class, 'rejectCancellation'])
             ->name('product-orders.rejectCancellation');
-        Route::get(  '/orders/invoice/{type}/{id}/download', [ProductOrderController::class, 'downloadInvoice'])->name('orders.invoice.download');
+        Route::get('/orders/invoice/{type}/{id}/download', [ProductOrderController::class, 'downloadInvoice'])->name('orders.invoice.download');
 
 
         Route::resource('product-orders', ProductOrderController::class);
@@ -267,6 +270,22 @@ Route::group(['middleware' => 'auth'], function () {
         Route::post('home-slides/{homeSlide}/toggle', [HomeSlideController::class, 'toggleStatus']);
         Route::get('home-page-content', [HomePageContentController::class, 'index'])->name('home-page-content.index');
         Route::post('home-page-content', [HomePageContentController::class, 'update'])->name('home-page-content.update');
+
+        Route::get(
+            'header-settings',
+            [HeaderSettingController::class, 'index']
+        )->name('header-settings.index');
+
+        Route::post(
+            'header-settings',
+            [HeaderSettingController::class, 'store']
+        )->name('header-settings.store');
+
+        Route::get('footer-settings', [FooterSettingController::class, 'index'])
+            ->name('footer-settings.index');
+
+        Route::post('footer-settings', [FooterSettingController::class, 'store'])
+            ->name('footer-settings.store');
 
     });
 });

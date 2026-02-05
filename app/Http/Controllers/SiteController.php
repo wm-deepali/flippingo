@@ -194,8 +194,11 @@ class SiteController extends Controller
             ->get();
 
         $homeSlides = HomeSlide::where('is_active', 1)
-            ->orderBy('sort_order')
-            ->get();
+            ->whereIn('slider_for', ['buyer', 'seller'])
+            ->orderByRaw("FIELD(slider_for, 'buyer', 'seller')")
+            ->get()
+            ->values(); // 👈 convert to array for Alpine
+
 
         $homePageContent = HomePageContent::whereIn('section_key', [
             'hero',
@@ -516,12 +519,13 @@ class SiteController extends Controller
                 $submission->summaryFields = $summaryFields;
 
                 $submission->category = $submission->form->category;
-                $files = collect($submission->files);
-
-                $submission->imageFile = $files->firstWhere('show_on_summary', true)
-                    ?? $files->first()
-                    ?? null;
-
+                $submission->allImages = collect($submission->files)->values()->map(function ($file) {
+                    return [
+                        'id' => $file->id,
+                        'file_path' => $file->file_path,
+                        'show_on_summary' => (bool) $file->show_on_summary,
+                    ];
+                });
                 return $submission;
             });
 

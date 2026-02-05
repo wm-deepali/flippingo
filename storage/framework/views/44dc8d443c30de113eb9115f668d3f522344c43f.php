@@ -294,6 +294,16 @@
           </a>
           <ul class="dropdown-menu">
             <li>
+              <a class="dropdown-item d-flex align-items-center" href="<?php echo e(route('admin.header-settings.index')); ?>">
+                <span>Header Settings</span>
+              </a>
+            </li>
+            <li>
+              <a class="dropdown-item d-flex align-items-center" href="<?php echo e(route('admin.footer-settings.index')); ?>">
+                <span>Footer Menus</span>
+              </a>
+            </li>
+            <li>
               <a class="dropdown-item d-flex align-items-center" href="<?php echo e(route('admin.home-page-content.index')); ?>">
                 <span>Home Page Content</span>
               </a>

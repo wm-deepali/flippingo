@@ -264,12 +264,23 @@
 ================================= -->
 
   <header class="header-area border-bottom border-bottom-gray desktop-view">
+<?php
+  $logo = setting('header_logo');
+?>
 
     <div class="main-header py-3">
       <div class="container" style="max-width: 1260px;">
         <div class="main-header-action-wrap d-flex justify-content-between">
           <div class="logo">
-            <a href="<?php echo e(Route('home')); ?>"><img src="<?php echo e(asset('assets')); ?>/images/logo.png" alt="logo" /></a>
+            <a href="<?php echo e(Route('home')); ?>">
+<img
+  src="<?php echo e($logo
+        ? asset('storage/' . $logo)
+        : asset('assets/images/logo.png')); ?>"
+  alt="logo"
+/>
+</a>
+
           </div>
 
           <div class="d-flex" style="width: 40%; align-items: center;margin-top: 15px;">
@@ -362,13 +373,17 @@
     <?php
       use App\Models\Category;
       $categories = Category::where('status', 'active')->get();
+      $menu = collect(json_decode(setting('header_menu', '[]'), true))
+        ->where('active', true)
+        ->sortBy('order');
+
     ?>
     <div class="top-header">
       <div class="top-header-list">
         <nav class="main-menu " style="width: 100%;">
           <ul class="d-flex justify-content-between">
             <li>
-              <a href="#">Browse <span class="fal fa-angle-down"></span></a>
+              <a href="#">Browse Listing <span class="fal fa-angle-down"></span></a>
               <ul class="dropdown-menu-item">
                 <?php $__currentLoopData = $categories; $__env->addLoop($__currentLoopData); foreach($__currentLoopData as $category): $__env->incrementLoopIndices(); $loop = $__env->getLastLoop(); ?>
                   <li><a href="<?php echo e(route('listing-list', ['category' => $category->slug])); ?>"><?php echo e($category->name); ?></a>
@@ -377,40 +392,14 @@
 
               </ul>
             </li>
-            <li>
-              <a href="<?php echo e(Route('meet-our-team')); ?>">Meet Our Team </a>
+            <?php $__currentLoopData = $menu; $__env->addLoop($__currentLoopData); foreach($__currentLoopData as $item): $__env->incrementLoopIndices(); $loop = $__env->getLastLoop(); ?>
+              <li>
+                <a href="<?php echo e($item['key'] === '#' ? '#' : route($item['key'])); ?>">
+                  <?php echo e($item['label']); ?>
 
-            </li>
-            <li>
-              <a href="#">Insight </a>
-
-            </li>
-            <li>
-              <a href="">Buyers Mandate </a>
-
-            </li>
-
-            <li>
-              <a href="">Why Flippingo </a>
-            </li>
-            <li>
-              <a href="<?php echo e(Route('blogs')); ?>">Blogs </a>
-            </li>
-            <li>
-              <a href="">Sell Digitally </a>
-            </li>
-
-            <li>
-              <a href="">Services </a>
-            </li>
-            <li>
-              <a href="">Resources </a>
-            </li>
-            <li>
-              <a href="<?php echo e(Route('contact-us')); ?>">Contact Us </a>
-            </li>
-
-
+                </a>
+              </li>
+            <?php endforeach; $__env->popLoop(); $loop = $__env->getLastLoop(); ?>
 
           </ul>
         </nav>
@@ -432,7 +421,12 @@
             <i class="fal fa-bars"></i>
           </div>
           <div class="logo">
-            <a href="<?php echo e(Route('home')); ?>"><img src="<?php echo e(asset('assets')); ?>/images/logo.png" alt="logo" /></a>
+            <a href="<?php echo e(Route('home')); ?>"><img
+  src="<?php echo e($logo
+        ? asset('storage/' . $logo)
+        : asset('assets/images/logo.png')); ?>"
+  alt="logo"
+/></a>
           </div>
 
 
@@ -550,41 +544,13 @@
             <?php endforeach; $__env->popLoop(); $loop = $__env->getLastLoop(); ?>
           </ul>
 
-          <button class="menu-btn" onclick="location.href='<?php echo e(Route('meet-our-team')); ?>'">
-            Meet Our Team
-          </button>
+          <?php $__currentLoopData = $menu; $__env->addLoop($__currentLoopData); foreach($__currentLoopData as $item): $__env->incrementLoopIndices(); $loop = $__env->getLastLoop(); ?>
+            <button class="menu-btn" onclick="location.href='<?php echo e(route($item['key'])); ?>'">
+              <?php echo e($item['label']); ?>
 
-          <button class="menu-btn">
-            Insight
-          </button>
+            </button>
+          <?php endforeach; $__env->popLoop(); $loop = $__env->getLastLoop(); ?>
 
-          <button class="menu-btn">
-            Buyers Mandate
-          </button>
-
-          <button class="menu-btn">
-            Why Flippingo
-          </button>
-
-          <button class="menu-btn" onclick="location.href='<?php echo e(Route('blogs')); ?>'">
-            Blogs
-          </button>
-
-          <button class="menu-btn">
-            Sell Digitally
-          </button>
-
-          <button class="menu-btn">
-            Services
-          </button>
-
-          <button class="menu-btn">
-            Resources
-          </button>
-
-          <button class="menu-btn" onclick="location.href='<?php echo e(Route('contact-us')); ?>'">
-            Contact Us
-          </button>
         </div>
       </nav>
     </div>
@@ -614,59 +580,80 @@
     <div class="container">
       <div class="row">
 
-        <!-- Column 1: Quick Links -->
+        <?php
+          $footerQuick = collect(json_decode(setting('footer_menu_quick', '[]'), true))
+            ->where('active', true)
+            ->sortBy('order');
+
+          $footerKnow = collect(json_decode(setting('footer_menu_know', '[]'), true))
+            ->where('active', true)
+            ->sortBy('order');
+
+          $footerHelp = collect(json_decode(setting('footer_menu_help', '[]'), true))
+            ->where('active', true)
+            ->sortBy('order');
+        ?>
+
         <div class="col-lg-3 col-md-6">
           <div class="footer-item">
             <h4 class="footer__title mb-3">Quick Links</h4>
             <div class="stroke-shape mb-4"></div>
-            <ul class="list-items list-items-underline">
-              <li><a href="<?php echo e(Route('listing-list')); ?>">Browse Listing</a></li>
-              <li><a href="<?php echo e(Route('pricing')); ?>">Pricing</a></li>
-              <li><a href="<?php echo e(Route('add-listing')); ?>">Sell Assets</a></li>
-              <li><a href="#">How it Works</a></li>
-              <li><a href="#">Our Services</a></li>
-              <li><a href="#">Resources</a></li>
-            </ul>
-          </div>
-        </div>
 
-        <!-- Column 2: Know More -->
-        <div class="col-lg-3 col-md-6">
-          <div class="footer-item">
-            <h4 class="footer__title mb-3">Know More</h4>
-            <div class="stroke-shape mb-4"></div>
             <ul class="list-items list-items-underline">
-              <li><a href="<?php echo e(Route('about-us')); ?>">About Us</a></li>
-              <li><a href="<?php echo e(Route('meet-our-team')); ?>">Meet Our Team</a></li>
-              <li><a href="#">Career with Us</a></li>
-              <li><a href="#">Insight</a></li>
-              <li><a href="#">Why Us</a></li>
-              <li><a href="<?php echo e(Route('contact-us')); ?>">Contact Us</a></li>
-              <li><a href="#">Feedback & Testimonials</a></li>
-            </ul>
-          </div>
-        </div>
+              <?php $__currentLoopData = $footerQuick; $__env->addLoop($__currentLoopData); foreach($__currentLoopData as $item): $__env->incrementLoopIndices(); $loop = $__env->getLastLoop(); ?>
+                          <li>
+                            <a href="<?php echo e($item['key'] === 'page.show'
+                ? route('page.show', $item['param'])
+                : (Route::has($item['key']) ? route($item['key']) : '#')); ?>">
+                              <?php echo e($item['label']); ?>
 
-        <!-- Column 3: Help & Support -->
-        <div class="col-lg-3 col-md-6">
-          <div class="footer-item">
-            <h4 class="footer__title mb-3">Help & Support</h4>
-            <div class="stroke-shape mb-4"></div>
-            <ul class="list-items list-items-underline">
-
-              <li><a href="<?php echo e(Route('faq')); ?>">FAQ</a></li>
-              <li><a href="">Raise a Ticket</a></li>
-              <li><a href="<?php echo e(Route('blogs')); ?>">Blogs</a></li>
-              <?php
-                use App\Models\Page;
-                $footerPages = Page::where('status', 'published')->get();
-              ?>
-              <?php $__currentLoopData = $footerPages; $__env->addLoop($__currentLoopData); foreach($__currentLoopData as $page): $__env->incrementLoopIndices(); $loop = $__env->getLastLoop(); ?>
-                <li><a href="<?php echo e(route('page.show', $page->slug)); ?>"><?php echo e($page->slug); ?></a></li>
+                            </a>
+                          </li>
               <?php endforeach; $__env->popLoop(); $loop = $__env->getLastLoop(); ?>
             </ul>
           </div>
         </div>
+
+        <div class="col-lg-3 col-md-6">
+          <div class="footer-item">
+            <h4 class="footer__title mb-3">Know More</h4>
+            <div class="stroke-shape mb-4"></div>
+
+            <ul class="list-items list-items-underline">
+              <?php $__currentLoopData = $footerKnow; $__env->addLoop($__currentLoopData); foreach($__currentLoopData as $item): $__env->incrementLoopIndices(); $loop = $__env->getLastLoop(); ?>
+                          <li>
+                            <a href="<?php echo e($item['key'] === 'page.show'
+                ? route('page.show', $item['param'])
+                : (Route::has($item['key']) ? route($item['key']) : '#')); ?>">
+                              <?php echo e($item['label']); ?>
+
+                            </a>
+                          </li>
+              <?php endforeach; $__env->popLoop(); $loop = $__env->getLastLoop(); ?>
+            </ul>
+          </div>
+        </div>
+
+        <div class="col-lg-3 col-md-6">
+          <div class="footer-item">
+            <h4 class="footer__title mb-3">Help & Support</h4>
+            <div class="stroke-shape mb-4"></div>
+
+            <ul class="list-items list-items-underline">
+              <?php $__currentLoopData = $footerHelp; $__env->addLoop($__currentLoopData); foreach($__currentLoopData as $item): $__env->incrementLoopIndices(); $loop = $__env->getLastLoop(); ?>
+                          <li>
+                            <a href="<?php echo e($item['key'] === 'page.show'
+                ? route('page.show', $item['param'])
+                : (Route::has($item['key']) ? route($item['key']) : '#')); ?>">
+                              <?php echo e($item['label']); ?>
+
+                            </a>
+                          </li>
+              <?php endforeach; $__env->popLoop(); $loop = $__env->getLastLoop(); ?>
+            </ul>
+          </div>
+        </div>
+
 
         <!-- Column 4: Logo + Contact -->
         <div class="col-lg-3 col-md-6">

@@ -1,8 +1,9 @@
-@extends('layouts.new-master')
 
-@section('title')
-  {{ $page->meta_title ?? 'Flippingo' }}
-@endsection
+
+<?php $__env->startSection('title'); ?>
+  <?php echo e($page->meta_title ?? 'Flippingo'); ?>
+
+<?php $__env->stopSection(); ?>
 
 <style>
   .country-code {
@@ -186,7 +187,7 @@
   }
 
   /* Wave Keyframes */
-  /*@keyframes glassWave {*/
+  /*@keyframes  glassWave {*/
   /*    0% { transform: translate(0, 0) rotate(0deg); }*/
   /*    50% { transform: translate(10%, 10%) rotate(180deg); }*/
   /*    100% { transform: translate(0, 0) rotate(360deg); }*/
@@ -486,7 +487,7 @@
 </style>
 
 
-@section('content')
+<?php $__env->startSection('content'); ?>
 
   <div class="zorcha-container">
     <div class="login-image" style="display:flex; justify-content:space-between;">
@@ -500,10 +501,10 @@
 
           <p class="zorcha-subtitle">
             Already have an account?
-            <a href="{{ route('authentication-signin') }}" style="color:#6a4aff;font-weight:600;">Sign In</a>
+            <a href="<?php echo e(route('authentication-signin')); ?>" style="color:#6a4aff;font-weight:600;">Sign In</a>
           </p>
 
-          <button class="zorcha-google-btn" onclick="window.location.href='{{ route('google.redirect') }}'">
+          <button class="zorcha-google-btn" onclick="window.location.href='<?php echo e(route('google.redirect')); ?>'">
             <i class="fab fa-google"></i> Sign up with Google
           </button>
 
@@ -584,7 +585,7 @@
 
           <h1 class="zorcha-h1">Almost Done</h1>
 
-          <input type="hidden" id="redirectUrl" value="{{ request()->query('redirect', 'dashboard.index') }}">
+          <input type="hidden" id="redirectUrl" value="<?php echo e(request()->query('redirect', 'dashboard.index')); ?>">
 
           <div class="zorcha-input-group">
             <label class="zorcha-label">Account Type</label>
@@ -710,11 +711,11 @@
       };
 
       function sendOtp() {
-        fetch("{{ route('send.otp') }}", {
+        fetch("<?php echo e(route('send.otp')); ?>", {
           method: "POST",
           headers: {
             "Content-Type": "application/json",
-            "X-CSRF-TOKEN": "{{ csrf_token() }}"
+            "X-CSRF-TOKEN": "<?php echo e(csrf_token()); ?>"
           },
           body: JSON.stringify({
             type: signupMethod,
@@ -743,7 +744,7 @@
         otpGrid.innerHTML = '';
 
         for (let i = 0; i < 6; i++) {
-          otpGrid.innerHTML += `<input type="text" class="zorcha-otp-box" maxlength="1" inputmode="numeric">`;
+          otpGrid.innerHTML += `<input class="zorcha-otp-box" maxlength="1">`;
         }
 
         startResendTimer();
@@ -761,11 +762,11 @@
           return;
         }
 
-        fetch("{{ route('verify.otp') }}", {
+        fetch("<?php echo e(route('verify.otp')); ?>", {
           method: "POST",
           headers: {
             "Content-Type": "application/json",
-            "X-CSRF-TOKEN": "{{ csrf_token() }}"
+            "X-CSRF-TOKEN": "<?php echo e(csrf_token()); ?>"
           },
           body: JSON.stringify({
             type: signupMethod,
@@ -785,24 +786,24 @@
 
               if (signupMethod === 'mobile') {
                 container.innerHTML = `
-              <input type="email" class="zorcha-input" id="secondaryEmail"
-                placeholder="Enter your email">
-            `;
+        <input type="email" class="zorcha-input" id="secondaryEmail"
+          placeholder="Enter your email">
+      `;
               }
 
               if (signupMethod === 'email') {
                 container.innerHTML = `
-              <div class="zorcha-phone-input-wrapper">
-                <select class="zorcha-phone-prefix" id="secondaryCountryCode">
-                  <option value="+91">IN +91</option>
-                  <option value="+1">US +1</option>
-                  <option value="+44">UK +44</option>
-                  <option value="+971">UAE +971</option>
-                </select>
-                <input type="tel" class="zorcha-input" id="secondaryMobile"
-                  placeholder="Enter mobile number">
-              </div>
-            `;
+        <div class="zorcha-phone-input-wrapper">
+          <select class="zorcha-phone-prefix" id="secondaryCountryCode">
+            <option value="+91">IN +91</option>
+            <option value="+1">US +1</option>
+            <option value="+44">UK +44</option>
+            <option value="+971">UAE +971</option>
+          </select>
+          <input type="tel" class="zorcha-input" id="secondaryMobile"
+            placeholder="Enter mobile number">
+        </div>
+      `;
               }
 
             } else {
@@ -824,11 +825,11 @@
         const accountTypeVal = accountType.value;
         const legalNameInput = legalNameField.querySelector('input');
         const legalName = !legalNameField.classList.contains('hidden')
-          ? legalNameInput.value.trim()
+         ? legalNameInput.value.trim()
           : null;
         const redirectUrl = document.getElementById("redirectUrl").value;
 
-
+        
         if (!firstName || !lastName) {
           Swal.fire('Please enter first and last name');
           return;
@@ -894,11 +895,11 @@
 
         console.log('FINAL SIGNUP PAYLOAD:', payload); // 🔥 DEBUG
 
-        fetch("{{ route('customer.register') }}", {
+        fetch("<?php echo e(route('customer.register')); ?>", {
           method: "POST",
           headers: {
             "Content-Type": "application/json",
-            "X-CSRF-TOKEN": "{{ csrf_token() }}"
+            "X-CSRF-TOKEN": "<?php echo e(csrf_token()); ?>"
           },
           body: JSON.stringify(payload)
         })
@@ -928,8 +929,6 @@
          RESEND TIMER
       ====================== */
       function startResendTimer() {
-        clearInterval(resendTimer); // 🔥 add this
-
         let t = resendSeconds;
         resendOtp.innerText = `Resend in ${t}s`;
 
@@ -943,57 +942,9 @@
         }, 1000);
       }
 
-
-      resendOtp.addEventListener('click', function () {
-
-        if (!signupMethod || !signupValue) {
-          Swal.fire('Session expired. Please restart signup.');
-          return;
-        }
-
-        // Prevent clicking while timer running
-        if (resendOtp.innerText.includes('in')) {
-          return;
-        }
-
-        resendOtp.innerText = 'Sending...';
-
-        fetch("{{ route('send.otp') }}", {
-          method: "POST",
-          headers: {
-            "Content-Type": "application/json",
-            "X-CSRF-TOKEN": "{{ csrf_token() }}"
-          },
-          body: JSON.stringify({
-            type: signupMethod,
-            value: signupValue
-          })
-        })
-          .then(res => res.json())
-          .then(data => {
-            if (data.success) {
-              Swal.fire('OTP resent successfully');
-              startResendTimer(); // restart timer
-            } else {
-              Swal.fire(data.message || 'Failed to resend OTP');
-              resendOtp.innerText = 'Resend OTP';
-            }
-          })
-          .catch(() => {
-            Swal.fire('Server error');
-            resendOtp.innerText = 'Resend OTP';
-          });
-      });
-      /* ======================
-         BACK TO SIGNUP 
-      ====================== */
-      window.backToSignup = function () {
-        clearInterval(resendTimer);
-        otpPage.style.display = 'none';
-        signUpPage.style.display = 'block';
-      };
-
     });
-
   </script>
-@endsection
+
+
+<?php $__env->stopSection(); ?>
+<?php echo $__env->make('layouts.new-master', \Illuminate\Support\Arr::except(get_defined_vars(), ['__data', '__path']))->render(); ?><?php /**PATH D:\web-mingo-project\flippingo_admin\resources\views/front/authentication-signup.blade.php ENDPATH**/ ?>

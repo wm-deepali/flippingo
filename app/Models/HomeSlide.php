@@ -16,7 +16,7 @@ class HomeSlide extends Model
         'title',
         'highlight',
         'features',
-
+        'slider_for',
         // Media
         'media_type',   // image | video
         'video_type',   // upload | youtube | vimeo | external
@@ -39,7 +39,7 @@ class HomeSlide extends Model
      * Attribute casting
      */
     protected $casts = [
-        'features'  => 'array',
+        'features' => 'array',
         'is_active' => 'boolean',
     ];
 

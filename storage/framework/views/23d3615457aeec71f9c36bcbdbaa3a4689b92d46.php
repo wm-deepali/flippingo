@@ -491,7 +491,7 @@
 
 
 <?php $__env->startSection('content'); ?>
-  
+
   <div class="zorcha-container">
     <div class="login-image " style="display:flex; justify-content:space-between;">
       <div class="loginleft-side">
@@ -500,7 +500,7 @@
         <!-- Page 1: Sign In -->
         <div id="signInPage">
           <h1 class="zorcha-h1">Sign In</h1>
-          <p class="zorcha-subtitle">Don't have an account? <a href="#"
+          <p class="zorcha-subtitle">Don't have an account? <a href="<?php echo e(Route('authentication-signup')); ?>"
               style="color:#6a4aff; text-decoration:none; font-weight:600;">Sign Up</a></p>
 
           <button class="zorcha-google-btn" onclick="window.location.href='<?php echo e(route('google.redirect')); ?>'">
@@ -517,11 +517,17 @@
               </div>
 
               <div class="zorcha-phone-input-wrapper">
-                <div class="zorcha-phone-prefix">
-                  <span>🇮🇳</span> +91
-                </div>
-                <input type="tel" class="zorcha-input" maxlength="10" placeholder="Enter phone number" id="phoneInput" />
+                <select class="zorcha-phone-prefix" id="countryCode">
+                  <option value="+91">IN +91</option>
+                  <option value="+1">US +1</option>
+                  <option value="+44">UK +44</option>
+                  <option value="+971">UAE +971</option>
+                </select>
+
+                <input type="tel" class="zorcha-input" placeholder="Enter phone number" id="phoneInput"
+                  inputmode="numeric" />
               </div>
+
             </div>
 
             <div class="zorcha-checkbox-group">
@@ -582,9 +588,9 @@
   </div>
   <!-- end contact-area -->
   <!-- ================================
-                                          END CONTACT AREA
+                                                END CONTACT AREA
 
-                                          ================================= -->
+                                                ================================= -->
 
   <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
 
@@ -633,14 +639,18 @@
 
       if (mode === 'phone') {
         const phone = phoneInput.value.trim();
+        const countryCode = document.getElementById('countryCode').value;
 
-        if (!/^[0-9]{10,15}$/.test(phone)) {
+        if (!/^[0-9]{6,15}$/.test(phone)) {
           Swal.fire('Error', 'Enter valid mobile number', 'error');
           return;
         }
 
+        const fullPhone = countryCode + phone;
+
         sendOtp(phone);
-        showOtpPage(`+91 ${phone}`, true);
+        showOtpPage(`${fullPhone}`, true);
+
       }
 
       if (mode === 'email') {
@@ -672,8 +682,8 @@
         otpGrid.innerHTML = '';
         for (let i = 0; i < 6; i++) {
           otpGrid.innerHTML += `
-          <input type="text" class="zorcha-otp-box" maxlength="1" inputmode="numeric">
-        `;
+                <input type="text" class="zorcha-otp-box" maxlength="1" inputmode="numeric">
+              `;
         }
 
         resendBox.style.display = 'block';
@@ -686,12 +696,12 @@
           'Please enter your account password to continue.';
 
         otpGrid.innerHTML = `
-        <input type="password"
-          id="emailPassword"
-          class="zorcha-input"
-          placeholder="Enter password"
-          style="max-width:340px;margin:auto;display:block;">
-      `;
+              <input type="password"
+                id="emailPassword"
+                class="zorcha-input"
+                placeholder="Enter password"
+                style="max-width:340px;margin:auto;display:block;">
+            `;
 
         resendBox.style.display = 'none';
       }

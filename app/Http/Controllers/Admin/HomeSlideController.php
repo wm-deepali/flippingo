@@ -32,29 +32,38 @@ class HomeSlideController extends Controller
     public function store(Request $request)
     {
         $data = $request->validate([
-            'title'        => 'required|string|max:255',
-            'highlight'    => 'nullable|string|max:255',
+            'slider_for' => 'required|in:buyer,seller',
+            'title' => 'required|string|max:255',
+            'highlight' => 'nullable|string|max:255',
 
-            'features'     => 'nullable|array',
-            'features.*'   => 'nullable|string|max:255',
+            'features' => 'nullable|array',
+            'features.*' => 'nullable|string|max:255',
 
-            'media_type'   => 'required|in:image,video',
-            'video_type'   => 'nullable|in:upload,youtube,vimeo,external',
+            'media_type' => 'required|in:image,video',
+            'video_type' => 'nullable|in:upload,youtube,vimeo,external',
 
-            'media_file'   => 'nullable|file|mimes:jpg,jpeg,png,webp,mp4,webm',
-            'media_url'    => 'nullable|url',
+            'media_file' => 'nullable|file|mimes:jpg,jpeg,png,webp,mp4,webm',
+            'media_url' => 'nullable|url',
 
-            'btn1_text'    => 'nullable|string|max:100',
-            'btn1_icon'    => 'nullable|string|max:100',
-            'btn1_link'    => 'nullable|string|max:255',
+            'btn1_text' => 'nullable|string|max:100',
+            'btn1_icon' => 'nullable|string|max:100',
+            'btn1_link' => 'nullable|string|max:255',
 
-            'btn2_text'    => 'nullable|string|max:100',
-            'btn2_icon'    => 'nullable|string|max:100',
-            'btn2_link'    => 'nullable|string|max:255',
+            'btn2_text' => 'nullable|string|max:100',
+            'btn2_icon' => 'nullable|string|max:100',
+            'btn2_link' => 'nullable|string|max:255',
 
-            'sort_order'   => 'nullable|integer',
-            'is_active'    => 'nullable|boolean',
+            'sort_order' => 'nullable|integer',
+            'is_active' => 'nullable|boolean',
         ]);
+
+        $exists = HomeSlide::where('slider_for', $data['slider_for'])->exists();
+
+        if ($exists) {
+            return back()
+                ->withErrors(['slider_for' => 'Slide already exists for this type'])
+                ->withInput();
+        }
 
         /* ------------------------------
          | Handle Media
@@ -69,20 +78,19 @@ class HomeSlideController extends Controller
                     ->store('home-slides', 'public');
             }
             // External video URL
-
             elseif ($request->filled('media_url')) {
 
-    if ($request->video_type === 'youtube') {
-        $embedUrl = $this->getYoutubeEmbedUrl($request->media_url);
+                if ($request->video_type === 'youtube') {
+                    $embedUrl = $this->getYoutubeEmbedUrl($request->media_url);
 
-        if ($embedUrl) {
-            $data['media_path'] = $embedUrl;
-        }
-    } else {
-        // Vimeo / External
-        $data['media_path'] = $request->media_url;
-    }
-}
+                    if ($embedUrl) {
+                        $data['media_path'] = $embedUrl;
+                    }
+                } else {
+                    // Vimeo / External
+                    $data['media_path'] = $request->media_url;
+                }
+            }
 
 
         } else {
@@ -116,29 +124,41 @@ class HomeSlideController extends Controller
     public function update(Request $request, HomeSlide $homeSlide)
     {
         $data = $request->validate([
-            'title'        => 'required|string|max:255',
-            'highlight'    => 'nullable|string|max:255',
+            'slider_for' => 'required|in:buyer,seller',
+            'title' => 'required|string|max:255',
+            'highlight' => 'nullable|string|max:255',
 
-            'features'     => 'nullable|array',
-            'features.*'   => 'nullable|string|max:255',
+            'features' => 'nullable|array',
+            'features.*' => 'nullable|string|max:255',
 
-            'media_type'   => 'required|in:image,video',
-            'video_type'   => 'nullable|in:upload,youtube,vimeo,external',
+            'media_type' => 'required|in:image,video',
+            'video_type' => 'nullable|in:upload,youtube,vimeo,external',
 
-            'media_file'   => 'nullable|file|mimes:jpg,jpeg,png,webp,mp4,webm',
-            'media_url'    => 'nullable|url',
+            'media_file' => 'nullable|file|mimes:jpg,jpeg,png,webp,mp4,webm',
+            'media_url' => 'nullable|url',
 
-            'btn1_text'    => 'nullable|string|max:100',
-            'btn1_icon'    => 'nullable|string|max:100',
-            'btn1_link'    => 'nullable|string|max:255',
+            'btn1_text' => 'nullable|string|max:100',
+            'btn1_icon' => 'nullable|string|max:100',
+            'btn1_link' => 'nullable|string|max:255',
 
-            'btn2_text'    => 'nullable|string|max:100',
-            'btn2_icon'    => 'nullable|string|max:100',
-            'btn2_link'    => 'nullable|string|max:255',
+            'btn2_text' => 'nullable|string|max:100',
+            'btn2_icon' => 'nullable|string|max:100',
+            'btn2_link' => 'nullable|string|max:255',
 
-            'sort_order'   => 'nullable|integer',
-            'is_active'    => 'nullable|boolean',
+            'sort_order' => 'nullable|integer',
+            'is_active' => 'nullable|boolean',
         ]);
+
+        $exists = HomeSlide::where('slider_for', $data['slider_for'])
+            ->where('id', '!=', $homeSlide->id)
+            ->exists();
+
+        if ($exists) {
+            return back()
+                ->withErrors(['slider_for' => 'Slide already exists for this type'])
+                ->withInput();
+        }
+
 
         /* ------------------------------
          | Replace Media (if changed)
@@ -156,19 +176,19 @@ class HomeSlideController extends Controller
                     ->store('home-slides', 'public');
             }
             // External video URL replacement
-          elseif ($request->filled('media_url')) {
+            elseif ($request->filled('media_url')) {
 
-    if ($request->video_type === 'youtube') {
-        $embedUrl = $this->getYoutubeEmbedUrl($request->media_url);
+                if ($request->video_type === 'youtube') {
+                    $embedUrl = $this->getYoutubeEmbedUrl($request->media_url);
 
-        if ($embedUrl) {
-            $data['media_path'] = $embedUrl;
-        }
-    } else {
-        // Vimeo / External
-        $data['media_path'] = $request->media_url;
-    }
-}
+                    if ($embedUrl) {
+                        $data['media_path'] = $embedUrl;
+                    }
+                } else {
+                    // Vimeo / External
+                    $data['media_path'] = $request->media_url;
+                }
+            }
 
 
         } else {
@@ -227,16 +247,16 @@ class HomeSlideController extends Controller
     }
 
     private function getYoutubeEmbedUrl(string $url): ?string
-{
-    preg_match(
-        '%(?:youtube(?:-nocookie)?\.com/(?:[^/]+/.+/|(?:v|e(?:mbed)?)/|.*[?&]v=)|youtu\.be/)([^"&?/ ]{11})%i',
-        $url,
-        $matches
-    );
+    {
+        preg_match(
+            '%(?:youtube(?:-nocookie)?\.com/(?:[^/]+/.+/|(?:v|e(?:mbed)?)/|.*[?&]v=)|youtu\.be/)([^"&?/ ]{11})%i',
+            $url,
+            $matches
+        );
 
-    return !empty($matches[1])
-        ? 'https://www.youtube.com/embed/' . $matches[1]
-        : null;
-}
+        return !empty($matches[1])
+            ? 'https://www.youtube.com/embed/' . $matches[1]
+            : null;
+    }
 
 }
