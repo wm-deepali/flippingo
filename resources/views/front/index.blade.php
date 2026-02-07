@@ -4404,7 +4404,7 @@
                       @endif
                     </p>
 
-                    <p class="m-0" style="color: #007bff;"><i class="fa-solid fa-eye"></i> {{ $submission->total_views ?? 0 }}
+                    <p class="m-0" style="color: #007bff;"><i class="fa-solid fa-eye"></i> {{ $submission['total_views'] ?? 0 }}
                     </p>
                   </div>
                   <div class="wishlist-item-card {{ count($summaryFields) == 2 ? 'two-items' : '' }}">

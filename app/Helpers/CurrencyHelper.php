@@ -39,4 +39,46 @@ class CurrencyHelper
 
         return $fallbackRate;
     }
+
+     /**
+     * Convert amount between INR and USD safely
+     *
+     * @param float  $amount        Amount to convert
+     * @param string $fromCurrency  INR | USD
+     * @param string $toCurrency    INR | USD
+     * @param float  $usdRate       1 INR = X USD
+     *
+     * @return float
+     */
+    public static function convert(
+        float $amount,
+        string $fromCurrency,
+        string $toCurrency,
+        float $usdRate
+    ): float {
+        // Normalize currency codes
+        $fromCurrency = strtoupper($fromCurrency);
+        $toCurrency   = strtoupper($toCurrency);
+
+        // Same currency → no conversion
+        if ($fromCurrency === $toCurrency) {
+            return round($amount, 2);
+        }
+
+        // INR → USD
+        if ($fromCurrency === 'INR' && $toCurrency === 'USD') {
+            return round($amount * $usdRate, 2);
+        }
+
+        // USD → INR
+        if ($fromCurrency === 'USD' && $toCurrency === 'INR') {
+            if ($usdRate <= 0) {
+                return 0; // safety fallback
+            }
+            return round($amount / $usdRate, 2);
+        }
+
+        // Unsupported currency (future-proof)
+        return round($amount, 2);
+    }
 }
