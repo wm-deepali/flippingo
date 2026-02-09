@@ -26,6 +26,10 @@ class Package extends Model
         'sponsored_frequency',
         'sponsored_unit',
         'sponsored_display',
+        'featured',
+        'featured_frequency',
+        'featured_unit',
+        'featured_display',
         'whatsapp',
         'whatsapp_frequency',
         'whatsapp_unit',
@@ -34,9 +38,6 @@ class Package extends Model
         'alerts_display',
         'is_popular',
         'status',
-        // ✅ NEW
-        'is_verified_seller',
-        'is_premium_seller',
     ];
 
 
@@ -46,23 +47,8 @@ class Package extends Model
         'discount' => 'decimal:2',
         'offered_price' => 'decimal:2',
         'is_popular' => 'boolean',
-        'is_verified_seller' => 'boolean',
-        'is_premium_seller' => 'boolean',
     ];
 
-
-
-    // Relationship with subscriptions/orders
-    // public function subscriptions()
-    // {
-    //     return $this->hasMany(Subscription::class, 'package_id');
-    // }
-
-    // Accessor for total sales
-    // public function getTotalSalesAttribute()
-    // {
-    //     return $this->subscriptions()->count();
-    // }
 
     public function subscriptions()
     {

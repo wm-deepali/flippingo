@@ -141,6 +141,28 @@
                       placeholder="Display text e.g. Weekly Sponsor">
                   </div>
 
+                  <!-- Featured Listing -->
+                  <div class="col-md-6 mt-2">
+                    <label>Featured Listing</label>
+                    <div class="input-group mb-2">
+                      <select class="form-control" name="featured">
+                        <option value="yes">Yes</option>
+                        <option value="no">No</option>
+                      </select>
+
+                      <input type="number" class="form-control" name="featured_frequency" placeholder="Frequency">
+
+                      <select class="form-control" name="featured_unit">
+                        <option value="days">Days</option>
+                        <option value="weeks">Weeks</option>
+                        <option value="months">Months</option>
+                      </select>
+                    </div>
+
+                    <input type="text" class="form-control" name="featured_display"
+                      placeholder="Display text e.g. Featured Weekly">
+                  </div>
+
                   <!-- WhatsApp Sharing -->
                   <div class="col-md-6 mt-2">
                     <label>WhatsApp Group Sharing</label>
@@ -171,7 +193,7 @@
                       placeholder="Display text e.g. Email Alerts Enabled">
                   </div>
 
-             
+
                 </div>
               </div>
 

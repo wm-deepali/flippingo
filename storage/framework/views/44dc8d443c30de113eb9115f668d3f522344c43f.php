@@ -224,6 +224,17 @@
                 Listing Enquiry
               </a>
             </li>
+            <li>
+              <a class="dropdown-item d-flex align-items-center" href="<?php echo e(route('admin.seller.profile.enquiries')); ?>">
+                Seller Profile Enquiries
+              </a>
+            </li>
+
+            <li>
+              <a class="dropdown-item d-flex align-items-center" href="<?php echo e(route('admin.seller.profile.feedback')); ?>">
+                Seller Profile Feedback
+              </a>
+            </li>
           </ul>
         </li>
 

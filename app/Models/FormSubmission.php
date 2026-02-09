@@ -149,4 +149,19 @@ class FormSubmission extends Model
     {
         return $this->price_change_meta['decrease_percent'] ?? null;
     }
+
+    public function getIsSponsoredAttribute()
+    {
+        $subscription = $this->customer?->activeSubscription;
+        return $subscription && $subscription->sponsored === 'yes';
+    }
+
+    public function getIsFeaturedAttribute()
+    {
+        $subscription = $this->customer?->activeSubscription;
+        return $subscription
+            && $subscription->sponsored !== 'yes'
+            && $subscription->featured === 'yes';
+    }
+
 }

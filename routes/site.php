@@ -6,11 +6,13 @@ use App\Http\Controllers\Admin\FaqController;
 use App\Http\Controllers\Admin\FormController;
 use App\Http\Controllers\Admin\PageController;
 use App\Http\Controllers\Admin\TestimonialController;
+use App\Http\Controllers\BuyerProfileInteractionController;
 use App\Http\Controllers\ChatController;
 use App\Http\Controllers\CheckoutController;
 use App\Http\Controllers\NotificationController;
 use App\Http\Controllers\PaymentMethodController;
 use App\Http\Controllers\ProfileController;
+use App\Http\Controllers\SellerProfileController;
 use App\Http\Controllers\SubscriptionController;
 
 use App\Http\Controllers\ListingController;
@@ -22,7 +24,7 @@ use App\Http\Controllers\SiteController;
 use App\Http\Controllers\CustomerController;
 use App\Http\Controllers\GoogleController;
 use Rap2hpoutre\LaravelLogViewer\LogViewer;
-
+use App\Http\Controllers\SellerInteractionController;
 use App\Http\Controllers\OrderController;
 /*
 |--------------------------------------------------------------------------
@@ -53,9 +55,20 @@ Route::get('/stl', function () {
 Route::get('/', [SiteController::class, 'index'])->name('home');
 Route::get('/categories', [SiteController::class, 'allCategories'])
     ->name('categories.index');
-    // Public seller profile
+// Public seller profile
 Route::get('/seller/{id}', [SiteController::class, 'SellerProfile'])
     ->name('seller.profile');
+
+
+Route::middleware('auth:customer')->post(
+    '/seller/feedback',
+    [SellerInteractionController::class, 'submitFeedback']
+)->name('seller.feedback.submit');
+
+Route::post(
+    '/seller/enquiry',
+    [SellerInteractionController::class, 'submitEnquiry']
+)->name('seller.enquiry.submit');
 
 
 Route::get('logs', [\Rap2hpoutre\LaravelLogViewer\LogViewerController::class, 'index']);
@@ -92,8 +105,8 @@ Route::get('/test-google', function () {
         'https://maps.googleapis.com/maps/api/place/details/json',
         [
             'place_id' => config('services.google.place_id'),
-            'fields'   => 'rating,user_ratings_total,reviews',
-            'key'      => config('services.google.api_key'),
+            'fields' => 'rating,user_ratings_total,reviews',
+            'key' => config('services.google.api_key'),
         ]
     );
 
@@ -272,6 +285,27 @@ Route::middleware(['web'])->group(function () {
             Route::post('/chat/send', [ChatController::class, 'send'])->name('chat.send');
 
 
+            // Seller profile enquiries
+            Route::get(
+                '/seller/profile-enquiries',
+                [SellerProfileController::class, 'profileEnquiries']
+            )->name('dashboard.seller.profile.enquiries');
+
+            // Seller profile feedback
+            Route::get(
+                '/seller/profile-feedback',
+                [SellerProfileController::class, 'profileFeedback']
+            )->name('dashboard.seller.profile.feedback');
+
+            Route::get(
+                '/buyer/profile-enquiries',
+                [BuyerProfileInteractionController::class, 'enquiries']
+            )->name('dashboard.buyer.profile.enquiries');
+
+            Route::get(
+                '/buyer/profile-feedback',
+                [BuyerProfileInteractionController::class, 'feedback']
+            )->name('dashboard.buyer.profile.feedback');
 
             // Contact Us
             Route::get('/contact-us', function () {

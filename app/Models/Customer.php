@@ -40,6 +40,10 @@ class Customer extends Authenticatable
         'verified_at',
 
         'is_premium',
+        'bio',
+        'happy_clients',
+        'total_experience',
+        'display_image'
     ];
 
 
@@ -89,7 +93,7 @@ class Customer extends Authenticatable
     // Accessor to get count of verified listings only
     public function getListingCountAttribute()
     {
-        return $this->submissions()->where('published', true)->count();
+        return $this->submissions()->where('status', 'published')->count();
     }
 
     public function kyc()

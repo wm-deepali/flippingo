@@ -3420,6 +3420,56 @@
     font-size: 30px;
     line-height: 20px;
 }
+.budge-active {
+    height: 20px;
+    border:1px solid green;
+
+    width: fit-content;
+    padding: 0px 5px;
+    background-color: #fff;
+    color: green;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    border-radius: 16px;
+    font-size: 10px;
+}
+.wishlist-budge {
+    position: relative;
+    top: -149px;
+    left: 2px;
+}
+
+.budge-sponsored {
+    height: 20px;
+    border: 1px solid #d4af37; /* gold */
+    width: fit-content;
+    padding: 0px 6px;
+    background-color: #fffaf0;
+    color: #b8962e;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    border-radius: 16px;
+    font-size: 10px;
+    font-weight: 600;
+}
+
+.budge-featured {
+    height: 20px;
+    border: 1px solid #007bff;
+    width: fit-content;
+    padding: 0px 6px;
+    background-color: #f0f7ff;
+    color: #007bff;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    border-radius: 16px;
+    font-size: 10px;
+    font-weight: 600;
+}
+
 
 </style>
 
@@ -4440,21 +4490,39 @@
                   <img src="https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcThez8EsMExS0cJzMTvAM6OlRj9d9SecStl6g&s">
                 @endif
                 <div class="wishlist-budge">
-                  <div class="d-flex justify-content-between align-items-center">
-                    @if(in_array($submission['id'], $soldSubmissionIds))
-                      {{-- SOLD OUT badge --}}
-                      <div class="budge-soldout">
-                        <p><i class="fa-solid fa-ban"></i> Sold Out</p>
-                      </div>
-                    @else
-                      {{-- ACTIVE badge --}}
-                      <div class="budge-active">
-                        <p><i class="fa-solid fa-circle-check"></i> Active</p>
-                      </div>
-                    @endif
-                    <h4 class="m-0" style="font-size: 24px;padding-right: 15px;"><i class="fa-regular fa-heart"></i></h4>
+                 <div class="d-flex justify-content-between align-items-center">
 
-                  </div>
+    @if($submission['badge'] === 'sponsored')
+        {{-- SPONSORED --}}
+        <div class="budge-sponsored">
+            <p><i class="fa-solid fa-bullhorn"></i> Sponsored</p>
+        </div>
+
+    @elseif($submission['badge'] === 'featured')
+        {{-- FEATURED --}}
+        <div class="budge-featured">
+            <p><i class="fa-solid fa-star"></i> Featured</p>
+        </div>
+
+    @elseif($submission['badge'] === 'sold')
+        {{-- SOLD OUT --}}
+        <div class="budge-soldout">
+            <p><i class="fa-solid fa-ban"></i> Sold Out</p>
+        </div>
+
+    @else
+        {{-- ACTIVE --}}
+        <div class="budge-active">
+            <p><i class="fa-solid fa-circle-check"></i> Active</p>
+        </div>
+    @endif
+
+    <h4 class="m-0" style="font-size: 24px;padding-right: 15px;">
+        <i class="fa-regular fa-heart"></i>
+    </h4>
+
+</div>
+
 
                 </div>
                 <div class="product-details-hover">
@@ -4486,7 +4554,7 @@
                      
                     </p>
 
-                    <p class="m-0" style="color: #007bff;"><i class="fa-solid fa-eye"></i> {{ $submission['total_views'] ?? 0 }}
+                    <p class="m-0" style="color: #007bff; font-size:12px;"><i class="fa-solid fa-eye"></i> {{ $submission['total_views'] ?? 0 }}
                     </p>
                   </div>
                   <div class="wishlist-item-card {{ count($summaryFields) == 2 ? 'two-items' : '' }}">
@@ -4550,7 +4618,6 @@
                   data-premium="{{ $submission->is_premium ? '1' : '0' }}">
                   @if($imageFile)
                     <div class="wishlist-image-wrapper">
-
                       <div class="wishlist-main-slider">
                         @foreach($submission['allImages'] as $img)
                           <img src="{{ asset('storage/' . $img['file_path']) }}" class="slide-img" />
@@ -4566,21 +4633,39 @@
                     <img src="https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcThez8EsMExS0cJzMTvAM6OlRj9d9SecStl6g&s">
                   @endif
                   <div class="wishlist-budge">
-                    <div class="d-flex justify-content-between align-items-center">
-                      @if(in_array($submission['id'], $soldSubmissionIds))
-                        {{-- SOLD OUT badge --}}
-                        <div class="budge-soldout">
-                          <p><i class="fa-solid fa-ban"></i> Sold Out</p>
-                        </div>
-                      @else
-                        {{-- ACTIVE badge --}}
-                        <div class="budge-active">
-                          <p><i class="fa-solid fa-circle-check"></i> Active</p>
-                        </div>
-                      @endif
-                      <h4 class="m-0" style="font-size: 24px;padding-right: 15px;"><i class="fa-regular fa-heart"></i></h4>
+                   <div class="d-flex justify-content-between align-items-center">
 
-                    </div>
+    @if($submission->badge === 'sponsored')
+        {{-- SPONSORED --}}
+        <div class="budge-sponsored">
+            <p><i class="fa-solid fa-bullhorn"></i> Sponsored</p>
+        </div>
+
+    @elseif($submission->badge === 'featured')
+        {{-- FEATURED --}}
+        <div class="budge-featured">
+            <p><i class="fa-solid fa-star"></i> Featured</p>
+        </div>
+
+    @elseif($submission->badge === 'sold')
+        {{-- SOLD OUT --}}
+        <div class="budge-soldout">
+            <p><i class="fa-solid fa-ban"></i> Sold Out</p>
+        </div>
+
+    @else
+        {{-- ACTIVE --}}
+        <div class="budge-active">
+            <p><i class="fa-solid fa-circle-check"></i> Active</p>
+        </div>
+    @endif
+
+    <h4 class="m-0" style="font-size: 24px;padding-right: 15px;">
+        <i class="fa-regular fa-heart"></i>
+    </h4>
+
+</div>
+
 
                   </div>
                   <div class="product-details-hover">
@@ -4607,7 +4692,7 @@
                         </span>
                         @endif
                       </p>
-                      <p class="m-0" style="color: #007bff;"><i class="fa-solid fa-eye"></i> {{ $submission->total_views ?? 0 }}
+                      <p class="m-0" style="color: #007bff; font-size:12px;"><i class="fa-solid fa-eye"></i> {{ $submission->total_views ?? 0 }}
                       </p>
                     </div>
                     <div class="wishlist-item-card">

@@ -48,13 +48,25 @@ class ProfileController extends Controller
             'legal_name' => 'nullable|string|max:255',
             'business_email' => 'nullable|email|max:255',
             'full_address' => 'nullable|string',
+
+            // ✅ NEW FIELDS
+            'bio' => 'nullable|string|max:2000',
+            'happy_clients' => 'nullable|integer|min:0',
+            'total_experience' => 'nullable|numeric|min:0',
+
             'profile_pic' => 'nullable|image|mimes:jpeg,png,jpg|max:2048',
+            'display_image' => 'nullable|image|mimes:jpeg,png,jpg|max:2048',
         ]);
 
-        // Handle file upload
+        // Handle profile picture upload
         if ($request->hasFile('profile_pic')) {
             $path = $request->file('profile_pic')->store('profile_pic', 'public');
             $validated['profile_pic'] = $path;
+        }
+
+        if ($request->hasFile('display_image')) {
+            $path = $request->file('display_image')->store('display_image', 'public');
+            $validated['display_image'] = $path;
         }
 
         $customer->update($validated);

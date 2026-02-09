@@ -476,7 +476,7 @@
   }
 
   .play-button a {
-    color: #020202 !important;
+    color: #020202 ;
     display: flex;
     align-items: center;
     background: #f1f1f1;
@@ -2402,6 +2402,11 @@
     font-weight: 600;
     height: 70px;
     overflow: hidden;
+    cursor:pointer;
+    
+  }
+  .product-details-hover h3:hover{
+      color:blue !important;
   }
 
   .wishlist-product-card {
@@ -2486,7 +2491,7 @@
   }
 
   .wishlist-price button {
-    font-size: 18px;
+    font-size: 14px;
   }
 
   .wishlist-button p {
@@ -2555,6 +2560,7 @@
     display: flex;
     align-items: center;
     gap: 5px;
+    cursor:pointer;
 
   }
 
@@ -3224,6 +3230,44 @@
       display:flex;
       justify-content:end;
   }
+  .play-button{
+      display:flex;
+      gap:15px;
+  }
+  .play-button .batton {
+      border-radius: 7px !important;
+      height:40px;
+          font-size: 18px;
+          color:#000 !important;
+  }
+  .play-button .batton1 {
+      height:40px;
+          font-size: 18px;
+      border-radius: 7px !important;
+      color: #ffffff;
+      background:#020202;
+    padding: 16px 40px;
+    border-radius: 50px;
+    font-weight: 500;
+    display: inline-flex;
+    position: relative;
+    overflow: hidden;
+    z-index: 0;
+    border: 0;
+  }
+  .play-button .batton1:hover{
+      border:1px solid #000;
+      color: #000000;
+      background:#ffffff;
+  }
+  .play-button .batton:hover{
+      border:1px solid #000;
+      color: #000000;
+     
+  }
+  .wishlist-left:hover{
+      background:#eee9e999;
+  }
    @media (max-width: 540px) {
     .top-header {
       display:none;
@@ -3234,7 +3278,6 @@
     .hero-section-form{
       display:flex;
       justify-content:center;
-  }
   }
   .flippingonew-slider-track {
     display: grid;
@@ -3271,6 +3314,13 @@
     margin-bottom: 15px;
 }
 
+  }
+  
+@media (min-width: 769px) {
+.mobile-view-filter{
+    display:none;
+}
+}
 @media (max-width: 768px) {
     .gv-filter-open-btn {
         display: block;
@@ -3280,12 +3330,27 @@
     flex-direction: column;
     gap: 10px;
 }
+.flippingo-hiw-btn-group{
+    width:100%;
+    display:flex;
+    flex-direction:column;
+    gap:10px;
+}
+.flippingo-hiw-btn-primary{
+    width:100%;
+}
+.flippingo-hiw-btn-secondary{
+    width:100%;
+}
 .filter-left {
     width:100%;
     display: flex;
     flex-direction: column;
     align-items: start;
     gap: 15px;
+}
+.desktop-view-filter{
+    display:none !important;
 }
 .filter-select {
     width: 100% !important;
@@ -3356,6 +3421,56 @@
     font-size: 30px;
     line-height: 20px;
 }
+.budge-active {
+    height: 20px;
+    border:1px solid green;
+
+    width: fit-content;
+    padding: 0px 5px;
+    background-color: #fff;
+    color: green;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    border-radius: 16px;
+    font-size: 10px;
+}
+.wishlist-budge {
+    position: relative;
+    top: -149px;
+    left: 2px;
+}
+
+.budge-sponsored {
+    height: 20px;
+    border: 1px solid #d4af37; /* gold */
+    width: fit-content;
+    padding: 0px 6px;
+    background-color: #fffaf0;
+    color: #b8962e;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    border-radius: 16px;
+    font-size: 10px;
+    font-weight: 600;
+}
+
+.budge-featured {
+    height: 20px;
+    border: 1px solid #007bff;
+    width: fit-content;
+    padding: 0px 6px;
+    background-color: #f0f7ff;
+    color: #007bff;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    border-radius: 16px;
+    font-size: 10px;
+    font-weight: 600;
+}
+
 
 </style>
 
@@ -3629,8 +3744,20 @@
 
 
 
-            <div class="play-button" style="margin-top: 30px;  width: 180px; border-radius: 25px;">
+<!--<div class="flippingo-hiw-btn-group">-->
+<!--                  <a href="<?php echo e(Route('listing-list')); ?>" class="flippingo-hiw-btn flippingo-hiw-btn-primary bordered">-->
+<!--                    <span > View Listing</span>-->
+<!--                    <i class="fa-solid fa-arrow-right"></i>-->
+<!--                  </a>-->
+<!--                  <a href="<?php echo e(Route('listing-list')); ?>" class="flippingo-hiw-btn flippingo-hiw-btn-secondary">-->
+                    <!--<i :class="slide.btn2_icon"></i>-->
+<!--                    <span >Sell Now</span>-->
+<!--                    <i class="fa-solid fa-arrow-right"></i>-->
+<!--                  </a>-->
+<!--                </div>-->
+            <div class="play-button" style="margin-top: 30px;   ">
               <a class="batton" href="<?php echo e(Route('listing-list')); ?>">View Listing</a>
+              <a class="batton1" style="" href="<?php echo e(Route('listing-list')); ?>">Sell Now</a>
             </div>
             <!--<img alt="img" class="dots" src="<?php echo e(asset('site_assets')); ?>/img/dots.png">-->
             <img alt="img" class="landing-slider" src="<?php echo e(asset('site_assets')); ?>/img/landing-slider.png">
@@ -4192,7 +4319,7 @@
       <div class="filter-bar">
 
         <!-- Category Section -->
-        <div class="filter-left">
+        <div class="filter-left desktop-view-filter" >
 
           <?php
             $popularCategories = $categories->where('is_popular', 1)->values();
@@ -4204,7 +4331,7 @@
               <option value="<?php echo e($country->id); ?>"><?php echo e($country->name); ?></option>
             <?php endforeach; $__env->popLoop(); $loop = $__env->getLastLoop(); ?>
           </select>
-          <select id="categorySelect" class="filter-select">
+         <select id="categorySelect" class="filter-select">
             <option value="all">All Categories</option>
             <?php $__currentLoopData = $popularCategories; $__env->addLoop($__currentLoopData); foreach($__currentLoopData as $category): $__env->incrementLoopIndices(); $loop = $__env->getLastLoop(); ?>
               <option value="<?php echo e($category->slug); ?>"><?php echo e($category->name); ?></option>
@@ -4222,40 +4349,8 @@
           </div>
 
         </div>
-
-        <!-- RIGHT FILTERS -->
-        <div class="filter-right">
-
-          <!-- Country Dropdown -->
-
-
-          <!-- Verified / Premium -->
-          <!--<button class="filter-btn">Verified</button>-->
-          <!--<button class="filter-btn">Premium</button>-->
-          <!--          <div class="switch-wrapper">-->
-          <!--  <button class="filter-btn">Verified</button>-->
-          <!--</div>-->
-
-          <!--<div class="switch-wrapper">-->
-          <!--  <button class="filter-btn">Premium</button>-->
-          <!--</div>-->
-
-         <div class="switch-container">
-            <div class="custom-switch filter-btn" data-filter="verified"></div>
-            <span class="switch-label">Verified</span>
-          </div>
-
-          <div class="switch-container">
-            <div class="custom-switch filter-btn" data-filter="premium"></div>
-            <span class="switch-label">Premium</span>
-          </div>
-
-
-        </div>
-
-      </div>
-
-<button id="gvFilterOpenBtn" class="gv-filter-open-btn">
+        
+        <button id="gvFilterOpenBtn" class="gv-filter-open-btn mobile-view-filter ">
     <i class="fa-solid fa-filter"></i> Filters
 </button>
 <div id="gvFilterBackdrop" class="gv-filter-backdrop"></div>
@@ -4299,19 +4394,19 @@
 
             </div>
 
-            <div class="filter-right">
+            <!--<div class="filter-right">-->
 
-                <div class="switch-container">
-                    <div class="custom-switch filter-btn"></div>
-                    <span class="switch-label">Verified</span>
-                </div>
+            <!--    <div class="switch-container">-->
+            <!--        <div class="custom-switch filter-btn"></div>-->
+            <!--        <span class="switch-label">Verified</span>-->
+            <!--    </div>-->
 
-                <div class="switch-container">
-                    <div class="custom-switch filter-btn"></div>
-                    <span class="switch-label">Premium</span>
-                </div>
+            <!--    <div class="switch-container">-->
+            <!--        <div class="custom-switch filter-btn"></div>-->
+            <!--        <span class="switch-label">Premium</span>-->
+            <!--    </div>-->
 
-            </div>
+            <!--</div>-->
 
         </div>
         <!-- END YOUR CODE -->
@@ -4319,6 +4414,40 @@
     </div>
 
 </div>
+
+        <!-- RIGHT FILTERS -->
+        <div class="filter-right">
+
+          <!-- Country Dropdown -->
+
+
+          <!-- Verified / Premium -->
+          <!--<button class="filter-btn">Verified</button>-->
+          <!--<button class="filter-btn">Premium</button>-->
+          <!--          <div class="switch-wrapper">-->
+          <!--  <button class="filter-btn">Verified</button>-->
+          <!--</div>-->
+
+          <!--<div class="switch-wrapper">-->
+          <!--  <button class="filter-btn">Premium</button>-->
+          <!--</div>-->
+
+         <div class="switch-container">
+            <div class="custom-switch filter-btn" data-filter="verified"></div>
+            <span class="switch-label">Verified</span>
+          </div>
+
+          <div class="switch-container">
+            <div class="custom-switch filter-btn" data-filter="premium"></div>
+            <span class="switch-label">Premium</span>
+          </div>
+
+
+        </div>
+
+      </div>
+
+
 
 
 
@@ -4370,21 +4499,39 @@
                   <img src="https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcThez8EsMExS0cJzMTvAM6OlRj9d9SecStl6g&s">
                 <?php endif; ?>
                 <div class="wishlist-budge">
-                  <div class="d-flex justify-content-between align-items-center">
-                    <?php if(in_array($submission['id'], $soldSubmissionIds)): ?>
-                      
-                      <div class="budge-soldout">
-                        <p><i class="fa-solid fa-ban"></i> Sold Out</p>
-                      </div>
-                    <?php else: ?>
-                      
-                      <div class="budge-active">
-                        <p><i class="fa-solid fa-circle-check"></i> Active</p>
-                      </div>
-                    <?php endif; ?>
-                    <h4 class="m-0" style="font-size: 24px;padding-right: 15px;"><i class="fa-regular fa-heart"></i></h4>
+                 <div class="d-flex justify-content-between align-items-center">
 
-                  </div>
+    <?php if($submission['badge'] === 'sponsored'): ?>
+        
+        <div class="budge-sponsored">
+            <p><i class="fa-solid fa-bullhorn"></i> Sponsored</p>
+        </div>
+
+    <?php elseif($submission['badge'] === 'featured'): ?>
+        
+        <div class="budge-featured">
+            <p><i class="fa-solid fa-star"></i> Featured</p>
+        </div>
+
+    <?php elseif($submission['badge'] === 'sold'): ?>
+        
+        <div class="budge-soldout">
+            <p><i class="fa-solid fa-ban"></i> Sold Out</p>
+        </div>
+
+    <?php else: ?>
+        
+        <div class="budge-active">
+            <p><i class="fa-solid fa-circle-check"></i> Active</p>
+        </div>
+    <?php endif; ?>
+
+    <h4 class="m-0" style="font-size: 24px;padding-right: 15px;">
+        <i class="fa-regular fa-heart"></i>
+    </h4>
+
+</div>
+
 
                 </div>
                 <div class="product-details-hover">
@@ -4395,26 +4542,28 @@
                     <!--</div>-->
 
                   </div>
-                  <h3 class="mt-2 " style="color: #000;"><?php echo e($productTitle); ?></h3>
+                  <h3 class="mt-2 " onclick="window.location.href='<?php echo e(route('listing-details', ['id' => $submission['id']])); ?>'" style="color: #000;"><?php echo e($productTitle); ?></h3>
                   <div class="d-flex justify-content-between align-items-center">
                     <p class="m-0" style="font-size:12px;">
                       By
-                      <span style="cursor: pointer;" onclick="window.location.href='<?php echo e(route('seller.profile', $submission['customer']['id'])); ?>'"> <?php echo e(($submission['customer']['first_name'] ?? '') . ' ' . ($submission['customer']['last_name'] ?? '')); ?></span>
-                
+                       <span style="cursor: pointer;" onclick="window.location.href='<?php echo e(route('seller.profile', $submission['customer']['id'])); ?>'"> <?php echo e(($submission['customer']['first_name'] ?? '') . ' ' . ($submission['customer']['last_name'] ?? '')); ?></span>
+
                       <?php if(!empty($submission['is_premium']) && $submission['is_premium']): ?>
                         <span class="text-warning ms-1" data-toggle="tooltip" data-placement="top"
                           title="<?php echo e(setting('premium_seller_note', 'Top Seller')); ?>">
                           <i class="fa-solid fa-crown"></i>
                         </span>
-                      <?php elseif(!empty($submission['is_verified']) && $submission['is_verified']): ?>
+                      <?php elseif(!empty($submission['is_verified']) &&
+                       $submission['is_verified']): ?>
                         <span class="text-success ms-1" data-toggle="tooltip"  data-placement="top"
                          title="<?php echo e($submission['verified_note'] ?? 'Verified Seller'); ?>">
                           <i class="fa-solid fa-circle-check"></i>
                         </span>
                       <?php endif; ?>
+                     
                     </p>
 
-                    <p class="m-0" style="color: #007bff;"><i class="fa-solid fa-eye"></i> <?php echo e($submission['total_views'] ?? 0); ?>
+                    <p class="m-0" style="color: #007bff; font-size:12px;"><i class="fa-solid fa-eye"></i> <?php echo e($submission['total_views'] ?? 0); ?>
 
                     </p>
                   </div>
@@ -4499,21 +4648,39 @@
                     <img src="https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcThez8EsMExS0cJzMTvAM6OlRj9d9SecStl6g&s">
                   <?php endif; ?>
                   <div class="wishlist-budge">
-                    <div class="d-flex justify-content-between align-items-center">
-                      <?php if(in_array($submission['id'], $soldSubmissionIds)): ?>
-                        
-                        <div class="budge-soldout">
-                          <p><i class="fa-solid fa-ban"></i> Sold Out</p>
-                        </div>
-                      <?php else: ?>
-                        
-                        <div class="budge-active">
-                          <p><i class="fa-solid fa-circle-check"></i> Active</p>
-                        </div>
-                      <?php endif; ?>
-                      <h4 class="m-0" style="font-size: 24px;padding-right: 15px;"><i class="fa-regular fa-heart"></i></h4>
+                   <div class="d-flex justify-content-between align-items-center">
 
-                    </div>
+    <?php if($submission->badge === 'sponsored'): ?>
+        
+        <div class="budge-sponsored">
+            <p><i class="fa-solid fa-bullhorn"></i> Sponsored</p>
+        </div>
+
+    <?php elseif($submission->badge === 'featured'): ?>
+        
+        <div class="budge-featured">
+            <p><i class="fa-solid fa-star"></i> Featured</p>
+        </div>
+
+    <?php elseif($submission->badge === 'sold'): ?>
+        
+        <div class="budge-soldout">
+            <p><i class="fa-solid fa-ban"></i> Sold Out</p>
+        </div>
+
+    <?php else: ?>
+        
+        <div class="budge-active">
+            <p><i class="fa-solid fa-circle-check"></i> Active</p>
+        </div>
+    <?php endif; ?>
+
+    <h4 class="m-0" style="font-size: 24px;padding-right: 15px;">
+        <i class="fa-regular fa-heart"></i>
+    </h4>
+
+</div>
+
 
                   </div>
                   <div class="product-details-hover">
@@ -4525,7 +4692,7 @@
                     </div>
                     <h3 class="mt-2 " style="color: #000;"><?php echo e($productTitle); ?></h3>
                     <div class="d-flex justify-content-between align-items-center">
-                      <p class="m-0">
+                        <p class="m-0">
                         By <span style="cursor: pointer;" onclick="window.location.href='<?php echo e(route('seller.profile', $submission->customer->id)); ?>'"><?php echo e(($submission->customer->first_name ?? '') . ' ' . ($submission->customer->last_name ?? '')); ?></span>
 
                         <?php if(!empty($submission->is_premium) && $submission->is_premium): ?>
@@ -4540,7 +4707,7 @@
                         </span>
                         <?php endif; ?>
                       </p>
-                      <p class="m-0" style="color: #007bff;"><i class="fa-solid fa-eye"></i> <?php echo e($submission->total_views ?? 0); ?>
+                      <p class="m-0" style="color: #007bff; font-size:12px;"><i class="fa-solid fa-eye"></i> <?php echo e($submission->total_views ?? 0); ?>
 
                       </p>
                     </div>

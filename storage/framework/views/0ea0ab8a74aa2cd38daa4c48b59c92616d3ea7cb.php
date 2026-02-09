@@ -144,6 +144,30 @@
                       value="<?php echo e($package->sponsored_display); ?>">
                   </div>
 
+                  <!-- Featured Listing -->
+                  <div class="col-md-6 mt-2">
+                    <label>Featured Listing</label>
+                    <div class="input-group mb-2">
+                      <select class="form-control" name="featured">
+                        <option value="yes" <?php echo e($package->featured == 'yes' ? 'selected' : ''); ?>>Yes</option>
+                        <option value="no" <?php echo e($package->featured == 'no' ? 'selected' : ''); ?>>No</option>
+                      </select>
+
+                      <input type="number" class="form-control" name="featured_frequency"
+                        value="<?php echo e($package->featured_frequency); ?>" placeholder="Frequency">
+
+                      <select class="form-control" name="featured_unit">
+                        <option value="days" <?php echo e($package->featured_unit == 'days' ? 'selected' : ''); ?>>Days</option>
+                        <option value="weeks" <?php echo e($package->featured_unit == 'weeks' ? 'selected' : ''); ?>>Weeks</option>
+                        <option value="months" <?php echo e($package->featured_unit == 'months' ? 'selected' : ''); ?>>Months</option>
+                      </select>
+                    </div>
+
+                    <input type="text" class="form-control" name="featured_display"
+                      value="<?php echo e($package->featured_display); ?>" placeholder="Display text e.g. Featured Weekly">
+                  </div>
+
+
                   <!-- WhatsApp Sharing -->
                   <div class="col-md-6 mt-2">
                     <label>WhatsApp Group Sharing</label>

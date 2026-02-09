@@ -8,6 +8,8 @@ use App\Models\Payment;
 use App\Models\Subscription;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Str;
 use Carbon\Carbon;
 
 
@@ -22,7 +24,7 @@ class SubscriptionController extends Controller
         $subscription = Subscription::with('package')
             ->where('customer_id', $user->id)
             ->whereIn('status', ['active', 'cancel_requested'])
-            ->latest()
+            ->orderByDesc('start_date')
             ->first();
 
         // Get all active packages
@@ -104,88 +106,120 @@ class SubscriptionController extends Controller
             'razorpay_payment_id' => 'required_if:payment_method,razorpay'
         ]);
 
-        $package = Package::findOrFail($request->package_id);
         $customer = Auth::guard('customer')->user();
+        $activeSubscription = Subscription::where('customer_id', $customer->id)
+            ->where('status', 'active')
+            ->exists();
 
-        //  Wallet balance check if wallet selected
-        if ($request->payment_method === 'wallet') {
-            $wallet = $customer->wallet;
-
-            if (!$wallet || $wallet->balance < $package->offered_price) {
-                return response()->json([
-                    'success' => false,
-                    'message' => 'Insufficient wallet balance.'
-                ]);
-            }
-
-            // Deduct and record transaction
-            $wallet->addTransaction(
-                'debit',
-                $package->offered_price,
-                'Purchase Subscription',
-                "Purchased {$package->name} plan",
-                $package->id
-            );
-
-            sendNotification('wallet_debit', [
-                'amount' => $package->offered_price,
-                'balance' => $wallet->balance,
-            ], $customer->id);
+        if ($activeSubscription) {
+            return response()->json([
+                'success' => false,
+                'message' => 'You already have an active subscription.'
+            ]);
         }
 
-        // Generate unique order number
-        $orderNumber = 'SUB' . mt_rand(100000, 999999);
+        DB::beginTransaction();
 
-        // Subscription validity calculation
-        $endDate = match ($package->validity_unit) {
-            'days' => now()->addDays($package->validity),
-            'weeks' => now()->addWeeks($package->validity),
-            'months' => now()->addMonths($package->validity),
-            'years' => now()->addYears($package->validity),
-            default => now()->addDays(30),
-        };
+        try {
+            $package = Package::findOrFail($request->package_id);
 
-        // Create subscription
-        $subscription = Subscription::create([
-            'customer_id' => $customer->id,
-            'package_id' => $package->id,
-            'used_listings' => 0,
-            'start_date' => now(),
-            'end_date' => $endDate,
-            'status' => 'active',
-            'order_number' => $orderNumber,
-        ]);
 
-        // Store payment (Wallet or Razorpay)
-        Payment::create([
-            'subscription_id' => $subscription->id,
-            'gateway' => $request->payment_method,
-            'payment_id' => $request->payment_method === 'razorpay'
-                ? $request->razorpay_payment_id
-                : 'WALLET-' . strtoupper(uniqid()),
-            'amount' => $package->offered_price,
-            'currency' => 'INR',
-            'status' => 'success'
-        ]);
+            // Wallet payment
+            if ($request->payment_method === 'wallet') {
+                $wallet = $customer->wallet;
 
-        // Generate invoice number (INV + 6 random digits)
-        $invoiceNumber = $this->generateUniqueInvoiceNumber();
+                if (!$wallet || $wallet->balance < $package->offered_price) {
+                    return response()->json([
+                        'success' => false,
+                        'message' => 'Insufficient wallet balance.'
+                    ]);
+                }
 
-        // Create invoice
-        Invoice::create([
-            'subscription_id' => $subscription->id,
-            'invoice_number' => $invoiceNumber,
-            'amount' => $package->offered_price,
-            'currency' => 'INR',
-            'issued_at' => now(),
-        ]);
+                $wallet->addTransaction(
+                    'debit',
+                    $package->offered_price,
+                    'Purchase Subscription',
+                    "Purchased {$package->name} plan",
+                    $package->id
+                );
+            }
 
-        return response()->json([
-            'success' => true,
-            'order_number' => $orderNumber,
-            'invoice_number' => $invoiceNumber
-        ]);
+            // Better order number
+            $orderNumber = 'SUB-' . now()->format('Ymd') . '-' . strtoupper(Str::random(6));
+
+            // Validity calculation
+            $endDate = match ($package->validity_unit) {
+                'days' => now()->addDays($package->validity),
+                'weeks' => now()->addWeeks($package->validity),
+                'months' => now()->addMonths($package->validity),
+                'years' => now()->addYears($package->validity),
+                default => now()->addDays(30),
+            };
+
+            $subscription = Subscription::create([
+                'customer_id' => $customer->id,
+                'package_id' => $package->id,
+                'listings' => $package->listings,
+                'used_listings' => 0,
+                'start_date' => now(),
+                'end_date' => $endDate,
+
+                'sponsored' => $package->sponsored,
+                'sponsored_frequency' => $package->sponsored_frequency,
+                'sponsored_unit' => $package->sponsored_unit,
+
+                'whatsapp' => $package->whatsapp,
+                'whatsapp_frequency' => $package->whatsapp_frequency,
+                'whatsapp_unit' => $package->whatsapp_unit,
+
+                'featured' => $package->featured,
+                'featured_frequency' => $package->featured_frequency,
+                'featured_unit' => $package->featured_unit,
+
+                'alerts' => $package->alerts,
+                'order_number' => $orderNumber,
+                'status' => 'active',
+            ]);
+
+            Payment::create([
+                'subscription_id' => $subscription->id,
+                'gateway' => $request->payment_method,
+                'payment_id' => $request->payment_method === 'razorpay'
+                    ? $request->razorpay_payment_id
+                    : 'WALLET-' . strtoupper(uniqid()),
+                'amount' => $package->offered_price,
+                'currency' => 'INR',
+                'status' => 'success'
+            ]);
+
+            $invoiceNumber = $this->generateUniqueInvoiceNumber();
+
+            Invoice::create([
+                'subscription_id' => $subscription->id,
+                'invoice_number' => $invoiceNumber,
+                'amount' => $package->offered_price,
+                'currency' => 'INR',
+                'issued_at' => now(),
+            ]);
+
+            DB::commit();
+
+            return response()->json([
+                'success' => true,
+                'order_number' => $orderNumber,
+                'invoice_number' => $invoiceNumber
+            ]);
+
+        } catch (\Throwable $e) {
+            DB::rollBack();
+
+            return response()->json([
+                'success' => false,
+                'message' => 'Subscription failed. Please try again.'
+            ], 500);
+        }
     }
+
 
 
     public function renew(Request $request)
@@ -193,14 +227,21 @@ class SubscriptionController extends Controller
         $subscription = Subscription::findOrFail($request->subscription_id);
         $package = $subscription->package;
 
-        // Example: Extend subscription by package validity
         $subscription->start_date = now();
-        $subscription->end_date = now()->addDays($package->validity); // adjust for unit if needed
+        $subscription->end_date = match ($package->validity_unit) {
+            'days' => now()->addDays($package->validity),
+            'weeks' => now()->addWeeks($package->validity),
+            'months' => now()->addMonths($package->validity),
+            'years' => now()->addYears($package->validity),
+            default => now()->addDays(30),
+        };
+
         $subscription->status = 'active';
         $subscription->save();
 
-        return redirect()->back()->with('success', 'Subscription renewed successfully!');
+        return back()->with('success', 'Subscription renewed successfully!');
     }
+
 
     public function cancelRequest(Request $request)
     {

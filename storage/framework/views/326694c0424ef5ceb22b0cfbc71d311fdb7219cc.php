@@ -65,6 +65,29 @@
                                 <input type="file" name="profile_pic" id="profilePicInput" accept="image/*">
                             </div>
 
+<div class="info-group profile-pic-group">
+    <label>Display Image (Seller Cover)</label>
+
+    <div class="profile-pic-wrapper">
+        <?php if($customer->display_image): ?>
+            <img src="<?php echo e(asset('storage/' . $customer->display_image)); ?>"
+                 alt="Display Image"
+                 class="profile-pic-preview"
+                 style="border-radius:8px;width:180px;height:120px;">
+        <?php else: ?>
+            <img src="https://via.placeholder.com/300x160?text=Display+Image"
+                 alt="Display Image"
+                 class="profile-pic-preview"
+                 style="border-radius:8px;width:180px;height:120px;">
+        <?php endif; ?>
+    </div>
+
+    <input type="file"
+           name="display_image"
+           id="displayImageInput"
+           accept="image/*">
+</div>
+
 
                             
                             <div class="info-group">
@@ -121,6 +144,35 @@
                                     value="<?php echo e(old('business_email', $customer->business_email ?? '')); ?>"
                                     placeholder="Enter Business Email">
                             </div>
+
+                            
+<div class="info-group" style="grid-column: span 2;">
+    <label>Bio</label>
+    <textarea name="bio"
+        placeholder="Write a short bio about yourself (experience, expertise, trust-building info)"><?php echo e(old('bio', $customer->bio ?? '')); ?></textarea>
+</div>
+
+
+<div class="info-group">
+    <label>Happy Clients</label>
+    <input type="number"
+           name="happy_clients"
+           min="0"
+           value="<?php echo e(old('happy_clients', $customer->happy_clients ?? '')); ?>"
+           placeholder="e.g. 120">
+</div>
+
+
+<div class="info-group">
+    <label>Total Experience (Years)</label>
+    <input type="number"
+           name="total_experience"
+           min="0"
+           step="0.5"
+           value="<?php echo e(old('total_experience', $customer->total_experience ?? '')); ?>"
+           placeholder="e.g. 5">
+</div>
+
 
                             
                             <div class="info-group" style="grid-column: span 2;">
@@ -295,8 +347,7 @@
             <input type="text"
                    name="legal_name"
                    value="<?php echo e(old('legal_name', $customer->legal_name ?? '')); ?>"
-                   placeholder="Enter Legal / Entity Name"
-                   required>
+                   placeholder="Enter Legal / Entity Name">
         </div>
 
              <div class="info-group">
@@ -332,7 +383,7 @@
                        name="pan_number"
                        value="<?php echo e(old('pan_number', $kyc?->pan_number)); ?>"
                        placeholder="Enter PAN Number"
-                       required>
+                       >
             </div>
 
             <div class="info-group">
@@ -340,32 +391,28 @@
                 <input type="text"
                        name="aadhaar_number"
                        value="<?php echo e(old('aadhaar_number', $kyc?->aadhaar_number)); ?>"
-                       placeholder="Enter Aadhaar Number"
-                       required>
+                       placeholder="Enter Aadhaar Number">
             </div>
 
             <div class="info-group">
                 <label>PAN Card Document</label>
                 <input type="file"
                        name="pan_document"
-                       accept="image/*,application/pdf"
-                       <?php echo e(empty($kyc?->pan_document) ? 'required' : ''); ?>>
+                       accept="image/*,application/pdf">
             </div>
 
             <div class="info-group">
                 <label>Aadhaar Front</label>
                 <input type="file"
                        name="aadhaar_front"
-                       accept="image/*,application/pdf"
-                       <?php echo e(empty($kyc?->aadhaar_front) ? 'required' : ''); ?>>
+                       accept="image/*,application/pdf">
             </div>
 
             <div class="info-group">
                 <label>Aadhaar Back</label>
                 <input type="file"
                        name="aadhaar_back"
-                       accept="image/*,application/pdf"
-                       <?php echo e(empty($kyc?->aadhaar_back) ? 'required' : ''); ?>>
+                       accept="image/*,application/pdf">
             </div>
 
             <div class="info-group">
@@ -380,8 +427,7 @@
                 <label>GST Certificate</label>
                 <input type="file"
                        name="gst_document"
-                       accept="image/*,application/pdf"
-                       <?php echo e(!empty($kyc?->gst_number) && empty($kyc?->gst_document) ? 'required' : ''); ?>>
+                       accept="image/*,application/pdf">
             </div>
 
         
@@ -393,15 +439,14 @@
                        name="personal_id_number"
                        value="<?php echo e(old('personal_id_number', $kyc?->personal_id_number)); ?>"
                        placeholder="Passport / National ID Number"
-                       required>
+                    >
             </div>
 
             <div class="info-group">
                 <label>Government ID Document</label>
                 <input type="file"
                        name="personal_id_document"
-                       accept="image/*,application/pdf"
-                       <?php echo e(empty($kyc?->personal_id_document) ? 'required' : ''); ?>>
+                       accept="image/*,application/pdf">
             </div>
 
         <?php endif; ?>

@@ -47,6 +47,30 @@
                                 class="feather-icon"></i><span class="hide-menu">Business Enqurie
                             </span></a>
                     </li>
+                    <!-- Buyer Profile Interaction -->
+                    <li class="sidebar-item has-arrow">
+                        <a class="sidebar-link" href="javascript:void(0)">
+                            <i data-feather="user" class="feather-icon"></i>
+                            <span class="hide-menu">Seller Profiles</span>
+                        </a>
+
+                        <ul class="collapse first-level base-level-line">
+
+                            <li class="sidebar-item">
+                                <a href="{{ route('dashboard.buyer.profile.enquiries') }}" class="sidebar-link">
+                                    <span class="hide-menu">My Profile Enquiries</span>
+                                </a>
+                            </li>
+
+                            <li class="sidebar-item">
+                                <a href="{{ route('dashboard.buyer.profile.feedback') }}" class="sidebar-link">
+                                    <span class="hide-menu">My Feedback</span>
+                                </a>
+                            </li>
+
+                        </ul>
+                    </li>
+
                     <li class="sidebar-item"> <a class="sidebar-link sidebar-link"
                             href="{{ Route('dashboard.wishlist') }}" aria-expanded="false"><i data-feather="sidebar"
                                 class="feather-icon"></i><span class="hide-menu">Wishlist
@@ -72,6 +96,31 @@
                                 class="feather-icon"></i><span class="hide-menu">Business Enquries
                             </span></a>
                     </li>
+
+                    <!-- Seller Profile Interaction -->
+                    <li class="sidebar-item has-arrow">
+                        <a class="sidebar-link" href="javascript:void(0)">
+                            <i data-feather="user" class="feather-icon"></i>
+                            <span class="hide-menu">Seller Profile</span>
+                        </a>
+
+                        <ul class="collapse first-level base-level-line">
+
+                            <li class="sidebar-item">
+                                <a href="{{ route('dashboard.seller.profile.enquiries') }}" class="sidebar-link">
+                                    <span class="hide-menu">Profile Enquiries</span>
+                                </a>
+                            </li>
+
+                            <li class="sidebar-item">
+                                <a href="{{ route('dashboard.seller.profile.feedback') }}" class="sidebar-link">
+                                    <span class="hide-menu">Profile Feedback</span>
+                                </a>
+                            </li>
+
+                        </ul>
+                    </li>
+
                     <li class="sidebar-item has-arrow">
                         <a class="sidebar-link" href="javascript:void(0)">
                             <i data-feather="file-text" class="feather-icon"></i>
@@ -121,12 +170,12 @@
                 </li>
 
                 <!-- Live Chat Menu -->
-<li class="sidebar-item">
-    <a class="sidebar-link sidebar-link" href="{{ route('dashboard.chat') }}">
-        <i data-feather="message-circle" class="feather-icon"></i>
-        <span class="hide-menu">Live Chat</span>
-    </a>
-</li>
+                <li class="sidebar-item">
+                    <a class="sidebar-link sidebar-link" href="{{ route('dashboard.chat') }}">
+                        <i data-feather="message-circle" class="feather-icon"></i>
+                        <span class="hide-menu">Live Chat</span>
+                    </a>
+                </li>
 
                 <li class="sidebar-item"><a class="sidebar-link sidebar-link" href="{{ Route('account-logout') }}"><i
                             data-feather="log-out" class="feather-icon"></i>Logout</a></li>

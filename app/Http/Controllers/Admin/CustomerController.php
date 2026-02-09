@@ -165,23 +165,23 @@ class CustomerController extends Controller
 
     public function verify(Request $request, Customer $customer)
     {
-        if ($request->action === 'approve') {
-            $customer->update([
-                'is_verified' => true,
-                'verified_at' => now(),
-                'verification_note' => $request->verification_note,
-            ]);
+        $customer->verification_note = $request->verification_note;
+
+        if ($request->has('change_status')) {
+            // Switch ON → Verify
+            $customer->is_verified = true;
+            $customer->verified_at = now();
         } else {
-            $customer->update([
-                'is_verified' => false,
-                'verified_at' => null,
-                'verification_note' => $request->verification_note,
-            ]);
+            // Switch OFF → Unverify
+            $customer->is_verified = false;
+            $customer->verified_at = null;
         }
+
+        $customer->save();
 
         return redirect()
             ->route('admin.customers.index')
-            ->with('success', 'User verification status updated.');
+            ->with('success', 'Verification details updated.');
     }
 
 

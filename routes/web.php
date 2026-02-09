@@ -4,6 +4,7 @@ use App\Http\Controllers\Admin\HeaderSettingController;
 use App\Http\Controllers\Admin\HomePageContentController;
 use App\Http\Controllers\Admin\HomeSlideController;
 use App\Http\Controllers\Admin\LayoutSettingController;
+use App\Http\Controllers\Admin\SellerProfileController;
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\Admin\{
     HomeController,
@@ -147,6 +148,12 @@ Route::group(['middleware' => 'auth'], function () {
         // enquiry about listing 
         Route::get('enquiry', [ListingController::class, 'enquiryIndex'])->name('enquiry.index');
 
+        Route::prefix('seller-profile')->group(function () {
+
+            Route::get('enquiries', [SellerProfileController::class, 'enquiries'])->name('seller.profile.enquiries');
+            Route::get('feedback', [SellerProfileController::class, 'feedback'])->name('seller.profile.feedback');
+
+        });
 
         // Customers route
         Route::resource('customers', CustomerController::class);
@@ -162,7 +169,7 @@ Route::group(['middleware' => 'auth'], function () {
             ->name('admin-commission');
         Route::get('/seller-orders/{sellerId}', [ProductOrderController::class, 'sellerOrders'])
             ->name('seller-orders');
-            
+
         Route::get(
             '/customers/{customer}/kyc-bank',
             [CustomerController::class, 'kycBank']

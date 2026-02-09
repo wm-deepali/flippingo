@@ -6,10 +6,13 @@ use App\Models\Customer;
 use App\Models\FormSubmission;
 use App\Models\Category;
 use App\Models\FormSummaryCard;
+use App\Models\SellerFeedback;
 use App\Models\Testimonial;
 use App\Models\HomeSlide;
 use App\Models\ProductOrder;
+use App\Models\Subscription;
 use Illuminate\Http\Request;
+use Illuminate\Support\Carbon;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\DB;
 use App\Services\GoogleReviewsService;
@@ -27,18 +30,30 @@ class SiteController extends Controller
          | 🌍 IP BASED CURRENCY DETECTION
          ====================================================== */
         $countryCode = IpHelper::countryCode();
-        // Currency logic
         $viewerCurrency = $countryCode === 'in' ? 'INR' : 'USD';
-        // Exchange rate (base price assumed INR)
-        $usdRate = CurrencyHelper::usdRate(); // REAL TIME
+        $usdRate = CurrencyHelper::usdRate();
 
         $categories = Category::where('status', 'active')->get();
+
         $submissionsByCategory = [];
         $allSubmissionsFlat = [];
         $categorySubmissionCounts = [];
-        $now = now();
 
-        // 🔑 Preload all summary cards (performance safe)
+        /* ======================================================
+         | 🔑 LOAD ACTIVE SUBSCRIPTIONS ONCE
+         ====================================================== */
+        $activeSubscriptions = Subscription::where('status', 'active')
+            ->get()
+            ->keyBy('customer_id');
+
+        /* ======================================================
+         | 🔑 SOLD SUBMISSIONS
+         ====================================================== */
+        $soldSubmissionIds = ProductOrder::pluck('submission_id')->toArray(); // 🔴 ADDED
+
+        /* ======================================================
+         | 🔑 SUMMARY CARDS PRELOAD
+         ====================================================== */
         $formSummaryCards = FormSummaryCard::orderBy('position')
             ->get()
             ->groupBy('form_id');
@@ -60,10 +75,10 @@ class SiteController extends Controller
 
             $categorySubmissionCounts[$category->id] = $submissions->count();
 
-            $processedSubmissions = $submissions->map(function ($submission) use ($formSummaryCards, $viewerCurrency, $usdRate) {
+            $processedSubmissions = $submissions->map(function ($submission) use ($formSummaryCards, $viewerCurrency, $usdRate, $activeSubscriptions, $soldSubmissionIds) {
 
                 /* =====================================
-                 | Decode submission data
+                 | PRICE LOGIC
                  ===================================== */
                 $fields = is_array($submission->data)
                     ? $submission->data
@@ -71,38 +86,24 @@ class SiteController extends Controller
 
                 $fields = is_array($fields) ? $fields : [];
 
-                /* =====================================
-  | BASE PRICE FROM FORM
-  ===================================== */
                 $basePrice = ($fields['urgent_sale']['value'] ?? '') === 'Yes'
                     ? ($fields['offered_price']['value'] ?? 0)
                     : ($fields['mrp']['value'] ?? 0);
 
                 $basePrice = (float) $basePrice;
 
-                /* =====================================
-                 | SUBMISSION & VIEWER CURRENCY
-                 ===================================== */
-                $submissionCurrency = $submission->currency ?? 'USD'; // stored
+                $submissionCurrency = $submission->currency ?? 'USD';
                 $displayPrice = $basePrice;
-                /* =====================================
-                 | CONVERSION MATRIX
-                 ===================================== */
-                if ($submissionCurrency === 'INR' && $viewerCurrency === 'USD') {
-                    // INR → USD
-                    $displayPrice = round($basePrice * $usdRate, 2);
 
+                if ($submissionCurrency === 'INR' && $viewerCurrency === 'USD') {
+                    $displayPrice = round($basePrice * $usdRate, 2);
                 } elseif ($submissionCurrency === 'USD' && $viewerCurrency === 'INR') {
-                    // USD → INR
                     $displayPrice = round($basePrice / $usdRate, 2);
                 }
-
-                // else: same currency → no conversion
 
                 $submission->display_price = $displayPrice;
                 $submission->currency = $viewerCurrency;
                 $submission->currency_symbol = $viewerCurrency === 'INR' ? '₹' : '$';
-
 
                 /* =====================================
                  | SUMMARY CARDS
@@ -112,13 +113,10 @@ class SiteController extends Controller
 
                 foreach ($summaryCards as $card) {
                     $key = $card->field_key;
-
-                    if (!isset($fields[$key]['value'])) {
+                    if (!isset($fields[$key]['value']))
                         continue;
-                    }
 
                     $value = $fields[$key]['value'];
-
                     if (is_array($value)) {
                         $value = implode(' ', array_map('strval', $value));
                     }
@@ -135,7 +133,58 @@ class SiteController extends Controller
                 $submission->summaryFields = $summaryFields;
 
                 /* =====================================
-                 | FLAGS & META
+  | BADGE + PRIORITY (TIME AWARE)
+  | Sponsored → Featured → Active → Sold (LAST)
+  ===================================== */
+
+                $subscription = $activeSubscriptions[$submission->customer_id] ?? null;
+                $isSold = in_array($submission->id, $soldSubmissionIds);
+
+                // defaults
+                $submission->badge = 'active';
+                $submission->priority = 3;
+
+                /**
+                 * SOLD → always last
+                 */
+                if ($isSold) {
+                    $submission->badge = 'sold';
+                    $submission->priority = 4;
+                }
+
+                /**
+                 * SPONSORED (time limited)
+                 */ elseif (
+                    $subscription &&
+                    $subscription->sponsored === 'yes' &&
+                    $this->isFeatureActive(
+                        $submission->published_at,
+                        $subscription->sponsored_frequency,
+                        $subscription->sponsored_unit
+                    )
+                ) {
+                    $submission->badge = 'sponsored';
+                    $submission->priority = 1;
+                }
+
+                /**
+                 * FEATURED (time limited)
+                 */ elseif (
+                    $subscription &&
+                    $subscription->featured === 'yes' &&
+                    $this->isFeatureActive(
+                        $submission->published_at,
+                        $subscription->featured_frequency,
+                        $subscription->featured_unit
+                    )
+                ) {
+                    $submission->badge = 'featured';
+                    $submission->priority = 2;
+                }
+
+
+                /* =====================================
+                 | META
                  ===================================== */
                 $submission->category = $submission->form->category;
                 $submission->is_verified = (bool) ($submission->customer->is_verified ?? false);
@@ -146,28 +195,41 @@ class SiteController extends Controller
                 /* =====================================
                  | IMAGES
                  ===================================== */
-                $submission->allImages = collect($submission->files)->values()->map(function ($file) {
+                $submission->allImages = collect($submission->files)->map(function ($file) {
                     return [
                         'id' => $file->id,
                         'file_path' => $file->file_path,
                         'show_on_summary' => (bool) $file->show_on_summary,
                     ];
-                });
+                })->values();
 
                 return $submission;
             });
 
-            if ($processedSubmissions->isNotEmpty()) {
-                $submissionsByCategory[$category->id] = $processedSubmissions;
-                $allSubmissionsFlat = array_merge($allSubmissionsFlat, $processedSubmissions->toArray());
-            }
+            /* =====================================
+             | SORT: SPONSORED → FEATURED → NORMAL
+             ===================================== */
+            $processedSubmissions = $processedSubmissions
+                ->sortBy([
+                    ['priority', 'asc'],
+                    ['created_at', 'desc'],
+                ])
+                ->values();
+
+            $submissionsByCategory[$category->id] = $processedSubmissions;
+            $allSubmissionsFlat = array_merge($allSubmissionsFlat, $processedSubmissions->toArray());
         }
 
+        /* =====================================
+         | ALL TAB (GLOBAL SORT)
+         ===================================== */
         $allSubmissions = collect($allSubmissionsFlat)
-            ->sortByDesc('created_at')
-            ->take(12)   // ✅ MAX 12 FOR ALL TAB
+            ->sortBy([
+                ['priority', 'asc'],
+                ['created_at', 'desc'],
+            ])
+            ->take(12)
             ->values();
-
 
         /* ======================================================
          | OTHER DATA
@@ -193,9 +255,6 @@ class SiteController extends Controller
             ->orderBy('countries.name')
             ->get();
 
-
-        $soldSubmissionIds = ProductOrder::pluck('submission_id')->toArray();
-
         $heroCategories = Category::where('status', 'active')
             ->where('show_in_hero', 1)
             ->select('id', 'name', 'slug')
@@ -205,8 +264,7 @@ class SiteController extends Controller
             ->whereIn('slider_for', ['buyer', 'seller'])
             ->orderByRaw("FIELD(slider_for, 'buyer', 'seller')")
             ->get()
-            ->values(); // 👈 convert to array for Alpine
-
+            ->values();
 
         $homePageContent = HomePageContent::whereIn('section_key', [
             'hero',
@@ -298,8 +356,7 @@ class SiteController extends Controller
         }
 
         // Check subscription usage limit
-        $package = $subscription->package;
-        if ($subscription->used_listings >= $package->listings) {
+        if ($subscription->used_listings >= $subscription->listings) {
             $errorMessage = 'Your subscription Listing limit has been reached. Please upgrade.';
 
             if ($request->has('from') && $request->from === 'dashboard') {
@@ -618,12 +675,206 @@ class SiteController extends Controller
             'paymentMethods',
         ])->findOrFail($id);
 
-        // Optional: only allow verified sellers
+        // Only verified sellers
         if (!$seller->is_verified) {
             abort(404);
         }
 
-        return view('front.seller-profile', compact('seller'));
+        /* ======================================================
+        | 🌍 IP BASED CURRENCY DETECTION
+        ====================================================== */
+        $countryCode = IpHelper::countryCode();
+        $viewerCurrency = $countryCode === 'in' ? 'INR' : 'USD';
+        $usdRate = CurrencyHelper::usdRate();
+
+        /* ===============================
+         | LOAD ACTIVE SUBSCRIPTIONS
+         =============================== */
+        $activeSubscriptions = Subscription::where('status', 'active')
+            ->get()
+            ->keyBy('customer_id');
+
+        /* ===============================
+         | SOLD SUBMISSIONS
+         =============================== */
+        $soldSubmissionIds = ProductOrder::pluck('submission_id')->toArray();
+
+        /* ===============================
+         | SUMMARY CARDS
+         =============================== */
+        $formSummaryCards = FormSummaryCard::orderBy('position')
+            ->get()
+            ->groupBy('form_id');
+
+        /* ===============================
+         | SELLER SUBMISSIONS
+         =============================== */
+        $submissions = FormSubmission::where('customer_id', $seller->id)
+            ->with(['form.category', 'form.formData', 'customer', 'files'])
+            ->where('status', 'published')
+            ->latest()
+            ->get();
+
+        /* ===============================
+         | PROCESS (SAME AS INDEX)
+         =============================== */
+        $processedSubmissions = $submissions->map(function ($submission) use ($formSummaryCards, $activeSubscriptions, $soldSubmissionIds, $viewerCurrency, $usdRate) {
+
+            /* =====================================
+                    | PRICE LOGIC
+                    ===================================== */
+            $fields = is_array($submission->data)
+                ? $submission->data
+                : json_decode($submission->data, true);
+
+            $fields = is_array($fields) ? $fields : [];
+
+            $basePrice = ($fields['urgent_sale']['value'] ?? '') === 'Yes'
+                ? ($fields['offered_price']['value'] ?? 0)
+                : ($fields['mrp']['value'] ?? 0);
+
+            $basePrice = (float) $basePrice;
+
+            $submissionCurrency = $submission->currency ?? 'USD';
+            $displayPrice = $basePrice;
+
+            if ($submissionCurrency === 'INR' && $viewerCurrency === 'USD') {
+                $displayPrice = round($basePrice * $usdRate, 2);
+            } elseif ($submissionCurrency === 'USD' && $viewerCurrency === 'INR') {
+                $displayPrice = round($basePrice / $usdRate, 2);
+            }
+
+            $submission->display_price = $displayPrice;
+            $submission->currency = $viewerCurrency;
+            $submission->currency_symbol = $viewerCurrency === 'INR' ? '₹' : '$';
+
+            /* ---------- SUMMARY ---------- */
+
+            $summaryCards = $formSummaryCards[$submission->form_id] ?? collect();
+            $summaryFields = [];
+
+            foreach ($summaryCards as $card) {
+                $key = $card->field_key;
+                if (!isset($fields[$key]['value']))
+                    continue;
+
+                $value = is_array($fields[$key]['value'])
+                    ? implode(' ', $fields[$key]['value'])
+                    : $fields[$key]['value'];
+
+                $summaryFields[] = [
+                    'label' => $card->label,
+                    'icon' => $card->icon,
+                    'value' => $value,
+                    'color' => $card->color,
+                ];
+            }
+
+            $submission->summaryFields = $summaryFields;
+
+            /* ---------- BADGE + PRIORITY ---------- */
+            $subscription = $activeSubscriptions[$submission->customer_id] ?? null;
+            $isSold = in_array($submission->id, $soldSubmissionIds);
+
+            // defaults
+            $submission->badge = 'active';
+            $submission->priority = 3;
+
+            // SOLD → always last
+            if ($isSold) {
+                $submission->badge = 'sold';
+                $submission->priority = 4;
+            }
+
+            // SPONSORED (time aware)
+            elseif (
+                $subscription &&
+                $subscription->sponsored === 'yes' &&
+                $this->isFeatureActive(
+                    $submission->published_at,
+                    $subscription->sponsored_frequency,
+                    $subscription->sponsored_unit
+                )
+            ) {
+                $submission->badge = 'sponsored';
+                $submission->priority = 1;
+            }
+
+            // FEATURED (time aware)
+            elseif (
+                $subscription &&
+                $subscription->featured === 'yes' &&
+                $this->isFeatureActive(
+                    $submission->published_at,
+                    $subscription->featured_frequency,
+                    $subscription->featured_unit
+                )
+            ) {
+                $submission->badge = 'featured';
+                $submission->priority = 2;
+            }
+
+            /* ---------- META ---------- */
+            $submission->is_verified = (bool) ($submission->customer->is_verified ?? false);
+            $submission->verified_note = $submission->customer->verification_note ?? '';
+            $submission->customer->recalculatePremiumStatus();
+            $submission->is_premium = (bool) ($submission->customer->is_premium ?? false);
+
+            /* ---------- IMAGES ---------- */
+            $submission->allImages = collect($submission->files)->map(fn($file) => [
+                'id' => $file->id,
+                'file_path' => $file->file_path,
+                'show_on_summary' => (bool) $file->show_on_summary,
+            ])->values();
+
+            return $submission;
+        });
+
+        /* ===============================
+         | SORT (SAME AS INDEX)
+         =============================== */
+        $processedSubmissions = $processedSubmissions
+            ->sortBy([
+                ['priority', 'asc'],
+                ['created_at', 'desc'],
+            ])
+            ->values();
+
+        /* ===============================
+         | SPLIT FOR TABS
+         =============================== */
+        $activeListings = $processedSubmissions->where('badge', '!=', 'sold')->values();
+        $soldListings = $processedSubmissions->where('badge', 'sold')->values();
+
+        $feedbacks = SellerFeedback::with('customer')
+            ->where('seller_id', $seller->id)
+            ->latest()
+            ->get();
+
+        return view('front.seller-profile', compact(
+            'seller',
+            'activeListings',
+            'soldListings',
+            'feedbacks'
+        ));
     }
+
+
+    private function isFeatureActive($startDate, $frequency, $unit)
+    {
+        if (!$frequency || !$unit) {
+            return false;
+        }
+
+        $expiry = match ($unit) {
+            'days' => Carbon::parse($startDate)->addDays($frequency),
+            'weeks' => Carbon::parse($startDate)->addWeeks($frequency),
+            'months' => Carbon::parse($startDate)->addMonths($frequency),
+            default => null,
+        };
+
+        return $expiry && now()->lte($expiry);
+    }
+
 
 }
