@@ -22,9 +22,11 @@ class ProfileController extends Controller
         // Eager load related models
         $customer->load(['countryname', 'kyc']);
 
+        $countries = \App\Models\Country::select('id', 'name')->get();
+
         // dd($customer->toArray());
 
-        return view('user.profile', compact('customer'));
+        return view('user.profile', compact('customer', 'countries'));
     }
 
 
@@ -39,7 +41,7 @@ class ProfileController extends Controller
             'email' => 'required|email|unique:customers,email,' . $customer->id,
             'mobile' => 'nullable|string|max:20',
             'whatsapp_number' => 'nullable|string|max:20',
-            'country' => 'nullable|string|max:255',
+            'country' => 'nullable|exists:countries,id',
             'state' => 'nullable|string|max:255',
             'city' => 'nullable|string|max:255',
             'zip_code' => 'nullable|string|max:20',
@@ -248,9 +250,15 @@ class ProfileController extends Controller
             'entity_registration_number' => 'nullable|string|max:50',
             'entity_registration_document' => 'nullable|file|mimes:jpeg,jpg,png,pdf|max:2048',
             'tax_registration_number' => 'nullable|string|max:50',
+            'legal_name' => 'nullable|string|max:255',
         ];
 
         $validated = $request->validate($rules);
+
+        $customer->update([
+            'legal_name' => $validated['legal_name'] ?? $customer->legal_name,
+        ]);
+
 
         // Find existing KYC or create new
         $kyc = CustomerKyc::firstOrNew(['customer_id' => $customer->id]);
@@ -269,7 +277,7 @@ class ProfileController extends Controller
             if ($request->hasFile($field)) {
                 // Delete old file if exists
                 if ($kyc->$field) {
-                    Storage::delete($kyc->$field);
+                    Storage::disk('public')->delete($kyc->$field);
                 }
                 // Store new file
                 $kyc->$field = $request->file($field)->store('kyc_documents');

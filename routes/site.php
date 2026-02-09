@@ -53,6 +53,10 @@ Route::get('/stl', function () {
 Route::get('/', [SiteController::class, 'index'])->name('home');
 Route::get('/categories', [SiteController::class, 'allCategories'])
     ->name('categories.index');
+    // Public seller profile
+Route::get('/seller/{id}', [SiteController::class, 'SellerProfile'])
+    ->name('seller.profile');
+
 
 Route::get('logs', [\Rap2hpoutre\LaravelLogViewer\LogViewerController::class, 'index']);
 

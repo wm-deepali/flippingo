@@ -4206,7 +4206,7 @@
           </select>
           <select id="categorySelect" class="filter-select">
             <option value="all">All Categories</option>
-            <?php $__currentLoopData = $popularCategories->slice(2, 8); $__env->addLoop($__currentLoopData); foreach($__currentLoopData as $category): $__env->incrementLoopIndices(); $loop = $__env->getLastLoop(); ?>
+            <?php $__currentLoopData = $popularCategories; $__env->addLoop($__currentLoopData); foreach($__currentLoopData as $category): $__env->incrementLoopIndices(); $loop = $__env->getLastLoop(); ?>
               <option value="<?php echo e($category->slug); ?>"><?php echo e($category->name); ?></option>
             <?php endforeach; $__env->popLoop(); $loop = $__env->getLastLoop(); ?>
           </select>
@@ -4399,16 +4399,16 @@
                   <div class="d-flex justify-content-between align-items-center">
                     <p class="m-0" style="font-size:12px;">
                       By
-                      <?php echo e(($submission['customer']['first_name'] ?? '') . ' ' . ($submission['customer']['last_name'] ?? '')); ?>
-
-
+                      <span style="cursor: pointer;" onclick="window.location.href='<?php echo e(route('seller.profile', $submission['customer']['id'])); ?>'"> <?php echo e(($submission['customer']['first_name'] ?? '') . ' ' . ($submission['customer']['last_name'] ?? '')); ?></span>
+                
                       <?php if(!empty($submission['is_premium']) && $submission['is_premium']): ?>
                         <span class="text-warning ms-1" data-toggle="tooltip" data-placement="top"
-                          title="<?php echo e(setting('premium_seller_note', 'Premium Seller')); ?>">
+                          title="<?php echo e(setting('premium_seller_note', 'Top Seller')); ?>">
                           <i class="fa-solid fa-crown"></i>
                         </span>
                       <?php elseif(!empty($submission['is_verified']) && $submission['is_verified']): ?>
-                        <span class="text-success ms-1" title="Verified Seller">
+                        <span class="text-success ms-1" data-toggle="tooltip"  data-placement="top"
+                         title="<?php echo e($submission['verified_note'] ?? 'Verified Seller'); ?>">
                           <i class="fa-solid fa-circle-check"></i>
                         </span>
                       <?php endif; ?>
@@ -4526,18 +4526,18 @@
                     <h3 class="mt-2 " style="color: #000;"><?php echo e($productTitle); ?></h3>
                     <div class="d-flex justify-content-between align-items-center">
                       <p class="m-0">
-                        By <?php echo e(($submission->customer->first_name ?? '') . ' ' . ($submission->customer->last_name ?? '')); ?>
-
+                        By <span style="cursor: pointer;" onclick="window.location.href='<?php echo e(route('seller.profile', $submission->customer->id)); ?>'"><?php echo e(($submission->customer->first_name ?? '') . ' ' . ($submission->customer->last_name ?? '')); ?></span>
 
                         <?php if(!empty($submission->is_premium) && $submission->is_premium): ?>
                           <span class="text-warning ms-1" data-toggle="tooltip" data-placement="top"
-                            title="<?php echo e(setting('premium_seller_note', 'Premium Seller')); ?>">
+                            title="<?php echo e(setting('premium_seller_note', 'Top Seller')); ?>">
                             <i class="fa-solid fa-crown"></i>
                           </span>
                         <?php elseif(!empty($submission->is_verified) && $submission->is_verified): ?>
-                          <span class="text-success ms-1" title="Verified Seller">
-                            <i class="fa-solid fa-circle-check"></i>
-                          </span>
+                        <span class="text-success ms-1" data-toggle="tooltip"  data-placement="top"
+                         title="<?php echo e($submission->verified_note ?? 'Verified Seller'); ?>">
+                          <i class="fa-solid fa-circle-check"></i>
+                        </span>
                         <?php endif; ?>
                       </p>
                       <p class="m-0" style="color: #007bff;"><i class="fa-solid fa-eye"></i> <?php echo e($submission->total_views ?? 0); ?>

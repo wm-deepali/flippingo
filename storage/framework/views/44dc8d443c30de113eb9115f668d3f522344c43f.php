@@ -300,7 +300,7 @@
             </li>
             <li>
               <a class="dropdown-item d-flex align-items-center" href="<?php echo e(route('admin.footer-settings.index')); ?>">
-                <span>Footer Menus</span>
+                <span>Footer Settings</span>
               </a>
             </li>
             <li>

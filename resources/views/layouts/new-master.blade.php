@@ -7,13 +7,29 @@
   <meta http-equiv="X-UA-Compatible" content="IE=edge">
   <meta name="viewport" content="width=device-width,initial-scale=1.0,user-scalable=0,minimal-ui">
   <meta name="author" content=" Flippingo" />
-  <meta name="description" content="Flippingo Admin">
-  <meta name="keywords" content="Flippingo Admin">
-  @stack('before-styles')
-  <title>@yield('title')</title>
-  <!-- Favicon -->
-  <link rel="icon" href="{{ asset('assets') }}/images/favicon.png" />
+  <title>
+    @yield('title', setting('meta_title', config('app.name')))
+  </title>
 
+  <meta name="description" content="{{ setting('meta_description', 'Flippingo') }}">
+
+  <meta name="keywords" content="{{ setting('meta_keywords', 'Flippingo') }}">
+
+  {{-- Open Graph --}}
+  <meta property="og:title" content="{{ setting('og_title', setting('meta_title')) }}">
+
+  <meta property="og:description" content="{{ setting('og_description', setting('meta_description')) }}">
+
+  @if(setting('og_image'))
+    <meta property="og:image" content="{{ asset('storage/' . setting('og_image')) }}">
+  @endif
+
+  {{-- Favicon --}}
+  <link rel="icon" href="{{ setting('favicon')
+  ? asset('storage/' . setting('favicon'))
+  : asset('assets/images/favicon.png') }}" />
+
+  @stack('before-styles')
 
   <!-- Google Fonts -->
   <link href="https://fonts.googleapis.com/css?family=Work+Sans:100,200,300,400,500,600,700,800&amp;display=swap"
@@ -246,6 +262,9 @@
     }
   </style>
 
+  {{-- Header Scripts (Admin Controlled) --}}
+  {!! setting('header_scripts') !!}
+
 </head>
 
 
@@ -264,22 +283,19 @@
 ================================= -->
 
   <header class="header-area border-bottom border-bottom-gray desktop-view">
-@php
-  $logo = setting('header_logo');
-@endphp
+    @php
+      $logo = setting('header_logo');
+    @endphp
 
     <div class="main-header py-3">
       <div class="container" style="max-width: 1260px;">
         <div class="main-header-action-wrap d-flex justify-content-between">
           <div class="logo">
             <a href="{{ Route('home') }}">
-<img
-  src="{{ $logo
-        ? asset('storage/' . $logo)
-        : asset('assets/images/logo.png') }}"
-  alt="logo"
-/>
-</a>
+              <img src="{{ $logo
+  ? asset('storage/' . $logo)
+  : asset('assets/images/logo.png') }}" alt="{{ setting('default_alt', 'Flippingo Logo') }}" />
+            </a>
 
           </div>
 
@@ -419,12 +435,9 @@
             <i class="fal fa-bars"></i>
           </div>
           <div class="logo">
-            <a href="{{ Route('home') }}"><img
-  src="{{ $logo
-        ? asset('storage/' . $logo)
-        : asset('assets/images/logo.png') }}"
-  alt="logo"
-/></a>
+            <a href="{{ Route('home') }}"><img src="{{ $logo
+  ? asset('storage/' . $logo)
+  : asset('assets/images/logo.png') }}" alt="logo" /></a>
           </div>
 
 
@@ -563,15 +576,6 @@
        START FOOTER AREA
 ================================= -->
   <section class="footer-area bg-gray padding-top-80px pattern-bg">
-    @php
-      $address = $footerSettings['footer_address'] ?? 'Old Palasia, Indore, MP, 452001, India';
-      $helpline = $footerSettings['footer_helpline'] ?? '+91 880977278';
-      $email = $footerSettings['footer_email'] ?? 'support@flippingo.com';
-      $whatsapp = $footerSettings['footer_whatsapp'] ?? '+91 880977278';
-      $logo = $footerSettings['footer_logo'] ?? 'assets/images/logo.png';
-    @endphp
-
-
     <div class="container">
       <div class="row">
 
@@ -598,10 +602,10 @@
               @foreach($footerQuick as $item)
                           <li>
                             <a href="{{ 
-                                    $item['key'] === 'page.show'
+                                                                        $item['key'] === 'page.show'
                 ? route('page.show', $item['param'])
                 : (Route::has($item['key']) ? route($item['key']) : '#')
-                                  }}">
+                                                                      }}">
                               {{ $item['label'] }}
                             </a>
                           </li>
@@ -619,10 +623,10 @@
               @foreach($footerKnow as $item)
                           <li>
                             <a href="{{ 
-                        $item['key'] === 'page.show'
+                                                            $item['key'] === 'page.show'
                 ? route('page.show', $item['param'])
                 : (Route::has($item['key']) ? route($item['key']) : '#')
-                      }}">
+                                                          }}">
                               {{ $item['label'] }}
                             </a>
                           </li>
@@ -640,10 +644,10 @@
               @foreach($footerHelp as $item)
                           <li>
                             <a href="{{ 
-                        $item['key'] === 'page.show'
+                                                            $item['key'] === 'page.show'
                 ? route('page.show', $item['param'])
                 : (Route::has($item['key']) ? route($item['key']) : '#')
-                      }}">
+                                                          }}">
                               {{ $item['label'] }}
                             </a>
                           </li>
@@ -708,9 +712,12 @@
       <hr class="border-top-gray" />
       <div class="copy-right d-flex flex-wrap align-items-center justify-content-between pb-4">
         <p class="copy__desc py-2">
-          &copy; <span id="copyright-year"></span> Flippingo. Made with
-          <span class="fas fa-heart bounce-anim"></span> by <a href="https://flippingo.com/">Flippingo</a>
+          {!! setting(
+  'footer_copyright',
+  '&copy; ' . date('Y') . ' Flippingo. Made with <span class="fas fa-heart bounce-anim"></span> by <a href="https://flippingo.com/">Flippingo</a>'
+) !!}
         </p>
+
         <select class="select-picker select-picker-sm" data-width="130" data-size="5">
           <option value="1" selected>English</option>
           <option value="2">French</option>

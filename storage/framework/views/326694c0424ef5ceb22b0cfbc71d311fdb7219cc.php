@@ -132,9 +132,18 @@
                             
                             <div class="info-group">
                                 <label>Country</label>
-                                <input type="text" name="country" value="<?php echo e(old('country', $customer->country)); ?>"
-                                    placeholder="Enter Country">
+                                <select name="country">
+                                    <option value="">Select Country</option>
+
+                                    <?php $__currentLoopData = $countries; $__env->addLoop($__currentLoopData); foreach($__currentLoopData as $country): $__env->incrementLoopIndices(); $loop = $__env->getLastLoop(); ?>
+                                        <option value="<?php echo e($country->id); ?>" <?php echo e(old('country', $customer->country) == $country->id ? 'selected' : ''); ?>>
+                                            <?php echo e($country->name); ?>
+
+                                        </option>
+                                    <?php endforeach; $__env->popLoop(); $loop = $__env->getLastLoop(); ?>
+                                </select>
                             </div>
+
 
                             
                             <div class="info-group">
@@ -268,141 +277,143 @@
                 </script>
 
 
-                <div class="profile-card" id="kyc">
-                    <h3>KYC</h3>
-                    <p>Please upload your KYC documents to verify your account.</p>
+               <div class="profile-card" id="kyc">
+    <h3>KYC</h3>
+    <p>Please upload your KYC documents to verify your account.</p>
 
-                    <form id="kycForm" method="POST" action="<?php echo e(route('kyc.update')); ?>" enctype="multipart/form-data">
-                        <?php echo csrf_field(); ?>
+    <form id="kycForm" method="POST" action="<?php echo e(route('kyc.update')); ?>" enctype="multipart/form-data">
+        <?php echo csrf_field(); ?>
 
-                        <?php $isIndian = strtolower($customer->country) === 'india'; ?>
+        <?php
+            $isIndian   = strtolower(optional($customer->countryname)->name ?? '') === 'india';
+            $kyc        = $customer->kyc;
+        ?>
 
-                        <?php if($isIndian): ?>
-                            
-                            <div class="info-group">
-                                <label>PAN Number</label>
-                                <input type="text" name="pan_number"
-                                    value="<?php echo e(old('pan_number', $customer->kyc?->pan_number ?? '')); ?>"
-                                    placeholder="Enter PAN Number" required>
-                            </div>
+        
+        <div class="info-group">
+            <label>Legal / Entity Name</label>
+            <input type="text"
+                   name="legal_name"
+                   value="<?php echo e(old('legal_name', $customer->legal_name ?? '')); ?>"
+                   placeholder="Enter Legal / Entity Name"
+                   required>
+        </div>
 
-                            
-                            <div class="info-group">
-                                <label>Aadhaar Number</label>
-                                <input type="text" name="aadhaar_number"
-                                    value="<?php echo e(old('aadhaar_number', $customer->kyc?->aadhaar_number ?? '')); ?>"
-                                    placeholder="Enter Aadhaar Number" required>
-                            </div>
+             <div class="info-group">
+                <label>Entity Registration Number</label>
+                <input type="text"
+                       name="entity_registration_number"
+                       value="<?php echo e(old('entity_registration_number', $kyc?->entity_registration_number)); ?>"
+                       placeholder="Company / Entity Registration Number">
+            </div>
 
-                            
-                            <div class="info-group">
-                                <label>GST Number</label>
-                                <input type="text" name="gst_number"
-                                    value="<?php echo e(old('gst_number', $customer->kyc?->gst_number ?? '')); ?>">
-                            </div>
+            <div class="info-group">
+                <label>Entity Registration Certificate</label>
+                <input type="file"
+                       name="entity_registration_document"
+                       accept="image/*,application/pdf"
+                       <?php echo e(!empty($kyc?->entity_registration_number) && empty($kyc?->entity_registration_document) ? 'required' : ''); ?>>
+            </div>
 
-                            <div class="info-group">
-                                <label>PAN Card Document</label>
-                                <input type="file" id="panDocInput" name="pan_document" accept="image/*,application/pdf">
-                                <?php if($customer->kyc && $customer->kyc->pan_document): ?>
-                                    <img id="panDocPreview" src="<?php echo e(asset('storage/' . $customer->kyc->pan_document)); ?>"
-                                        style="display:block; width:100px; margin-top:5px;">
-                                <?php else: ?>
-                                    <img id="panDocPreview" style="display:none; width:100px; margin-top:5px;">
-                                <?php endif; ?>
-                            </div>
+            <div class="info-group">
+                <label>Tax Registration Number</label>
+                <input type="text"
+                       name="tax_registration_number"
+                       value="<?php echo e(old('tax_registration_number', $kyc?->tax_registration_number)); ?>"
+                       placeholder="Tax / VAT Registration Number">
+            </div>
+            
+        
+        <?php if($isIndian): ?>
 
-                            <div class="info-group">
-                                <label>Aadhaar Front Document</label>
-                                
-                                <input type="file" id="aadhaarFrontInput" name="aadhaar_front" accept="image/*,application/pdf">
-                                <?php if($customer->kyc && $customer->kyc->aadhaar_front): ?>
-                                    <img id="aadhaarFrontPreview" src="<?php echo e(asset('storage/' . $customer->kyc->aadhaar_front)); ?>"
-                                        style="display:block; width:100px; margin-top:5px;">
-                                <?php else: ?>
-                                    <img id="aadhaarFrontPreview" style="display:none; width:100px; margin-top:5px;">
-                                <?php endif; ?>
-                            </div>
+            <div class="info-group">
+                <label>PAN Number</label>
+                <input type="text"
+                       name="pan_number"
+                       value="<?php echo e(old('pan_number', $kyc?->pan_number)); ?>"
+                       placeholder="Enter PAN Number"
+                       required>
+            </div>
 
-                            <div class="info-group">
-                                <label>Aadhaar Back Document</label>
-                                <input type="file" id="aadhaarBackInput" name="aadhaar_back" accept="image/*,application/pdf">
-                                <?php if($customer->kyc && $customer->kyc->aadhaar_back): ?>
-                                    <img id="aadhaarBackPreview" src="<?php echo e(asset('storage/' . $customer->kyc->aadhaar_back)); ?>"
-                                        style="display:block; width:100px; margin-top:5px;" />
-                                <?php else: ?>
-                                    <img id="aadhaarBackPreview" style="display:none; width:100px; margin-top:5px;" />
-                                <?php endif; ?>
-                            </div>
+            <div class="info-group">
+                <label>Aadhaar Number</label>
+                <input type="text"
+                       name="aadhaar_number"
+                       value="<?php echo e(old('aadhaar_number', $kyc?->aadhaar_number)); ?>"
+                       placeholder="Enter Aadhaar Number"
+                       required>
+            </div>
 
+            <div class="info-group">
+                <label>PAN Card Document</label>
+                <input type="file"
+                       name="pan_document"
+                       accept="image/*,application/pdf"
+                       <?php echo e(empty($kyc?->pan_document) ? 'required' : ''); ?>>
+            </div>
 
-                            <div class="info-group">
-                                <label>GST Certificate</label>
-                                <input type="file" id="gstDocInput" name="gst_document" accept="image/*,application/pdf">
-                                <?php if($customer->kyc && $customer->kyc->gst_document): ?>
-                                    <img id="gstDocPreview" src="<?php echo e(asset('storage/' . $customer->kyc->gst_document)); ?>"
-                                        style="display:block; width:100px; margin-top:5px;" />
-                                <?php else: ?>
-                                    <img id="gstDocPreview" style="display:none; width:100px; margin-top:5px;" />
-                                <?php endif; ?>
-                            </div>
+            <div class="info-group">
+                <label>Aadhaar Front</label>
+                <input type="file"
+                       name="aadhaar_front"
+                       accept="image/*,application/pdf"
+                       <?php echo e(empty($kyc?->aadhaar_front) ? 'required' : ''); ?>>
+            </div>
 
-                        <?php else: ?>
-                            
-                            <div class="info-group">
-                                <label>Personal ID Number</label>
-                                <input type="text" name="personal_id_number"
-                                    value="<?php echo e(old('personal_id_number', $customer->kyc?->personal_id_number ?? '')); ?>">
-                            </div>
-                            
-                            <div class="info-group">
-                                <label>Entity Registration Number</label>
-                                <input type="text" name="entity_registration_number"
-                                    value="<?php echo e(old('entity_registration_number', $customer->kyc?->entity_registration_number ?? '')); ?>">
-                            </div>
+            <div class="info-group">
+                <label>Aadhaar Back</label>
+                <input type="file"
+                       name="aadhaar_back"
+                       accept="image/*,application/pdf"
+                       <?php echo e(empty($kyc?->aadhaar_back) ? 'required' : ''); ?>>
+            </div>
 
-                            
-                            <div class="info-group">
-                                <label>Tax Registration Number</label>
-                                <input type="text" name="tax_registration_number"
-                                    value="<?php echo e(old('tax_registration_number', $customer->kyc?->tax_registration_number ?? '')); ?>">
-                            </div>
+            <div class="info-group">
+                <label>GST Number (Optional)</label>
+                <input type="text"
+                       name="gst_number"
+                       value="<?php echo e(old('gst_number', $kyc?->gst_number)); ?>"
+                       placeholder="Enter GST Number">
+            </div>
 
-                            <div class="info-group">
-                                <label>Govt. ID Document</label>
-                                <input type="file" id="personalIdInput" name="personal_id_document"
-                                    accept="image/*,application/pdf">
-                                <?php if($customer->kyc && $customer->kyc->personal_id_document): ?>
-                                    <img id="personalIdPreview" src="<?php echo e(asset('storage/' . $customer->kyc->personal_id_document)); ?>"
-                                        style="display:block; width:100px; margin-top:5px;" />
-                                <?php else: ?>
-                                    <img id="personalIdPreview" style="display:none; width:100px; margin-top:5px;" />
-                                <?php endif; ?>
-                            </div>
+            <div class="info-group">
+                <label>GST Certificate</label>
+                <input type="file"
+                       name="gst_document"
+                       accept="image/*,application/pdf"
+                       <?php echo e(!empty($kyc?->gst_number) && empty($kyc?->gst_document) ? 'required' : ''); ?>>
+            </div>
 
-                            <div class="info-group">
-                                <label>Entity Registration Certificate</label>
-                                <input type="file" id="entityRegInput" name="entity_registration_document"
-                                    accept="image/*,application/pdf">
-                                <?php if($customer->kyc && $customer->kyc->entity_registration_document): ?>
-                                    <img id="entityRegPreview"
-                                        src="<?php echo e(asset('storage/' . $customer->kyc->entity_registration_document)); ?>"
-                                        style="display:block; width:100px; margin-top:5px;" />
-                                <?php else: ?>
-                                    <img id="entityRegPreview" style="display:none; width:100px; margin-top:5px;" />
-                                <?php endif; ?>
-                            </div>
+        
+        <?php else: ?>
 
+            <div class="info-group">
+                <label>Government ID Number</label>
+                <input type="text"
+                       name="personal_id_number"
+                       value="<?php echo e(old('personal_id_number', $kyc?->personal_id_number)); ?>"
+                       placeholder="Passport / National ID Number"
+                       required>
+            </div>
 
-                        <?php endif; ?>
+            <div class="info-group">
+                <label>Government ID Document</label>
+                <input type="file"
+                       name="personal_id_document"
+                       accept="image/*,application/pdf"
+                       <?php echo e(empty($kyc?->personal_id_document) ? 'required' : ''); ?>>
+            </div>
 
-                        <div class="personal-info-actions">
-                            <button class="btn-cancel" type="reset">Cancel</button>
-                            <button class="btn-save" type="submit">Save KYC</button>
-                        </div>
-                    </form>
+        <?php endif; ?>
 
-                </div>
+        
+        <div class="personal-info-actions" style="grid-column: span 2;">
+            <button type="reset" class="btn-cancel">Cancel</button>
+            <button type="submit" class="btn-save">Save KYC</button>
+        </div>
+    </form>
+</div>
+
             </div>
         </div>
 

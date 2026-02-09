@@ -132,12 +132,11 @@
 
                                                                 <div class="dropdown-divider"></div>
 
-                                                                {{-- VERIFY / UNVERIFY --}}
-                                                                <button class="dropdown-item toggle-verify"
-                                                                    data-id="{{ $customer->id }}"
-                                                                    data-status="{{ $customer->is_verified ? 1 : 0 }}">
-                                                                    {{ $customer->is_verified ? 'Unverify User' : 'Verify User' }}
-                                                                </button>
+                                                                <a class="dropdown-item"
+                                                                    href="{{ route('admin.customers.kyc-bank', $customer->id) }}">
+                                                                    KYC & Bank Details
+                                                                </a>
+
 
                                                                 <div class="dropdown-divider"></div>
 
@@ -233,36 +232,5 @@
             });
         });
     </script>
-
-<script>
-$(function () {
- // Toggle verification
-// Toggle verification (no prompt)
-$(document).on('click', '.toggle-verify', function () {
-  const customerId = $(this).data('id');
-
-  Swal.fire({
-    title: 'Are you sure?',
-    text: 'This will toggle the verification status of the user.',
-    icon: 'question',
-    showCancelButton: true,
-    confirmButtonText: 'Yes, proceed'
-  }).then((result) => {
-    if (result.isConfirmed) {
-      $.ajax({
-        url: `/admin/customers/${customerId}/toggle-verification`,
-        type: 'POST',
-        data: {
-          _token: $('meta[name="csrf-token"]').attr('content')
-        },
-        success: () => location.reload(),
-        error: () => Swal.fire('Error', 'Something went wrong', 'error')
-      });
-    }
-  });
-});
-
-});
-</script>
 
 @endpush

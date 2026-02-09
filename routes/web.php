@@ -162,11 +162,16 @@ Route::group(['middleware' => 'auth'], function () {
             ->name('admin-commission');
         Route::get('/seller-orders/{sellerId}', [ProductOrderController::class, 'sellerOrders'])
             ->name('seller-orders');
+            
+        Route::get(
+            '/customers/{customer}/kyc-bank',
+            [CustomerController::class, 'kycBank']
+        )->name('customers.kyc-bank');
 
         Route::post(
-            '/customers/{customer}/toggle-verification',
-            [CustomerController::class, 'toggleVerification']
-        )->name('customers.toggleVerification');
+            '/customers/{customer}/verify',
+            [CustomerController::class, 'verify']
+        )->name('customers.verify');
 
         // wallets and theri routes
         Route::get('wallets', [WalletController::class, 'index'])->name('wallets.index');

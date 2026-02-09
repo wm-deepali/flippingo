@@ -54,6 +54,7 @@ class FooterSettingController extends Controller
 
     public function store(Request $request)
     {
+        // ================= FOOTER MENUS =================
         Setting::updateOrCreate(
             ['key' => 'footer_menu_quick'],
             ['value' => json_encode($this->normalizeMenu($request->quick))]
@@ -69,8 +70,42 @@ class FooterSettingController extends Controller
             ['value' => json_encode($this->normalizeMenu($request->help))]
         );
 
-        return back()->with('success', 'Footer menus updated successfully');
+        // ================= COPYRIGHT =================
+        Setting::updateOrCreate(
+            ['key' => 'footer_copyright'],
+            ['value' => $request->footer_copyright ?? '']
+        );
+
+        // ================= CONTACT INFO =================
+        $contactKeys = [
+            'footer_address',
+            'footer_helpline',
+            'footer_email',
+            'footer_whatsapp',
+        ];
+
+        foreach ($contactKeys as $key) {
+            if ($request->has($key)) {
+                Setting::updateOrCreate(
+                    ['key' => $key],
+                    ['value' => $request->input($key)]
+                );
+            }
+        }
+
+        // FOOTER LOGO
+        if ($request->hasFile('footer_logo')) {
+            $path = $request->file('footer_logo')->store('footer', 'public');
+            Setting::updateOrCreate(
+                ['key' => 'footer_logo'],
+                ['value' => $path]
+            );
+        }
+
+
+        return back()->with('success', 'Footer settings updated successfully.');
     }
+
 
 
     private function normalizeMenu($input)

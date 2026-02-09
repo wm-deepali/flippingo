@@ -173,52 +173,6 @@
                     <div class="tab-pane fade" id="account-vertical-info" role="tabpanel"
                       aria-labelledby="account-pill-info" aria-expanded="false">
 
-                      <div class="card mb-2">
-                        <div class="card-body">
-                          <h5 class="mb-2 font-weight-bold">Contact Info <small>(Shown on footer)</small></h5>
-                          <form class="validate-form" id="footer-contact">
-                            @csrf
-                            <div class="form-group">
-                              <label for="footer_logo">Upload Footer Logo</label>
-                              <input type="file" class="form-control-file" id="footer_logo" name="footer_logo"
-                                accept="image/*" />
-                              @if(!empty($footer['logo']))
-                                <div class="mt-2">
-                                  <img src="{{ asset('storage/' . $footer['logo']) }}" alt="Footer Logo"
-                                    style="max-height: 100px;">
-                                </div>
-                              @endif
-                            </div>
-                            <div class="form-group d-flex align-items-center">
-                              <i class="fas fa-map-marker-alt mr-2" style="color:#7a7a7a;"></i>
-                              <input type="text" class="form-control" name="footer_address"
-                                value="{{ old('footer_address', $footer['address'] ?? '') }}" placeholder="Full Address">
-                            </div>
-                            <div class="form-group d-flex align-items-center">
-                              <i class="fas fa-phone-alt mr-2" style="color:#7a7a7a;"></i>
-                              <span class="mr-2">Helpline:</span>
-                              <input type="text" class="form-control" name="footer_helpline"
-                                value="{{ old('footer_helpline', $footer['helpline'] ?? '') }}"
-                                placeholder="Helpline Number">
-                            </div>
-                            <div class="form-group d-flex align-items-center">
-                              <i class="fas fa-envelope mr-2" style="color:#7a7a7a;"></i>
-                              <input type="email" class="form-control" name="footer_email"
-                                value="{{ old('footer_email', $footer['email'] ?? '') }}" placeholder="Contact Email">
-                            </div>
-                            <div class="form-group d-flex align-items-center">
-                              <i class="fab fa-whatsapp mr-2" style="color:#7a7a7a;"></i>
-                              <input type="text" class="form-control" name="footer_whatsapp"
-                                value="{{ old('footer_whatsapp', $footer['whatsapp'] ?? '') }}"
-                                placeholder="WhatsApp Number">
-                            </div>
-                            <button type="submit" id="footer_contact_form" class="btn btn-primary">Update Footer Contact
-                              Info</button>
-                          </form>
-                        </div>
-                      </div>
-
-
                       <form class="validate-form" id="userbio-form">
                         <div class="alert alert-success d-none" id="msg_bio_div">
                           <span id="res_bio_message"></span>

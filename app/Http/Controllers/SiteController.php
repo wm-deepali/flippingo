@@ -2,6 +2,7 @@
 namespace App\Http\Controllers;
 
 use App\Models\Blog;
+use App\Models\Customer;
 use App\Models\FormSubmission;
 use App\Models\Category;
 use App\Models\FormSummaryCard;
@@ -50,6 +51,7 @@ class SiteController extends Controller
                 ->with(['form.category', 'form.formData', 'customer', 'files'])
                 ->where('status', 'published')
                 ->latest()
+                ->limit(12)
                 ->get();
 
             if ($submissions->isEmpty()) {
@@ -137,6 +139,8 @@ class SiteController extends Controller
                  ===================================== */
                 $submission->category = $submission->form->category;
                 $submission->is_verified = (bool) ($submission->customer->is_verified ?? false);
+                $submission->verified_note = $submission->customer->verification_note ?? '';
+                $submission->customer->recalculatePremiumStatus();
                 $submission->is_premium = (bool) ($submission->customer->is_premium ?? false);
 
                 /* =====================================
@@ -159,7 +163,11 @@ class SiteController extends Controller
             }
         }
 
-        $allSubmissions = collect($allSubmissionsFlat);
+        $allSubmissions = collect($allSubmissionsFlat)
+            ->sortByDesc('created_at')
+            ->take(12)   // ✅ MAX 12 FOR ALL TAB
+            ->values();
+
 
         /* ======================================================
          | OTHER DATA
@@ -601,5 +609,21 @@ class SiteController extends Controller
         ));
     }
 
+    public function SellerProfile($id)
+    {
+        $seller = Customer::with([
+            'countryname',
+            'kyc',
+            'activeSubscription',
+            'paymentMethods',
+        ])->findOrFail($id);
+
+        // Optional: only allow verified sellers
+        if (!$seller->is_verified) {
+            abort(404);
+        }
+
+        return view('front.seller-profile', compact('seller'));
+    }
 
 }

@@ -7,13 +7,29 @@
   <meta http-equiv="X-UA-Compatible" content="IE=edge">
   <meta name="viewport" content="width=device-width,initial-scale=1.0,user-scalable=0,minimal-ui">
   <meta name="author" content=" Flippingo" />
-  <meta name="description" content="Flippingo Admin">
-  <meta name="keywords" content="Flippingo Admin">
-  <?php echo $__env->yieldPushContent('before-styles'); ?>
-  <title><?php echo $__env->yieldContent('title'); ?></title>
-  <!-- Favicon -->
-  <link rel="icon" href="<?php echo e(asset('assets')); ?>/images/favicon.png" />
+  <title>
+    <?php echo $__env->yieldContent('title', setting('meta_title', config('app.name'))); ?>
+  </title>
 
+  <meta name="description" content="<?php echo e(setting('meta_description', 'Flippingo')); ?>">
+
+  <meta name="keywords" content="<?php echo e(setting('meta_keywords', 'Flippingo')); ?>">
+
+  
+  <meta property="og:title" content="<?php echo e(setting('og_title', setting('meta_title'))); ?>">
+
+  <meta property="og:description" content="<?php echo e(setting('og_description', setting('meta_description'))); ?>">
+
+  <?php if(setting('og_image')): ?>
+    <meta property="og:image" content="<?php echo e(asset('storage/' . setting('og_image'))); ?>">
+  <?php endif; ?>
+
+  
+  <link rel="icon" href="<?php echo e(setting('favicon')
+  ? asset('storage/' . setting('favicon'))
+  : asset('assets/images/favicon.png')); ?>" />
+
+  <?php echo $__env->yieldPushContent('before-styles'); ?>
 
   <!-- Google Fonts -->
   <link href="https://fonts.googleapis.com/css?family=Work+Sans:100,200,300,400,500,600,700,800&amp;display=swap"
@@ -246,6 +262,10 @@
     }
   </style>
 
+  
+  <?php echo setting('header_scripts'); ?>
+
+
 </head>
 
 
@@ -264,22 +284,19 @@
 ================================= -->
 
   <header class="header-area border-bottom border-bottom-gray desktop-view">
-<?php
-  $logo = setting('header_logo');
-?>
+    <?php
+      $logo = setting('header_logo');
+    ?>
 
     <div class="main-header py-3">
       <div class="container" style="max-width: 1260px;">
         <div class="main-header-action-wrap d-flex justify-content-between">
           <div class="logo">
             <a href="<?php echo e(Route('home')); ?>">
-<img
-  src="<?php echo e($logo
-        ? asset('storage/' . $logo)
-        : asset('assets/images/logo.png')); ?>"
-  alt="logo"
-/>
-</a>
+              <img src="<?php echo e($logo
+  ? asset('storage/' . $logo)
+  : asset('assets/images/logo.png')); ?>" alt="<?php echo e(setting('default_alt', 'Flippingo Logo')); ?>" />
+            </a>
 
           </div>
 
@@ -421,12 +438,9 @@
             <i class="fal fa-bars"></i>
           </div>
           <div class="logo">
-            <a href="<?php echo e(Route('home')); ?>"><img
-  src="<?php echo e($logo
-        ? asset('storage/' . $logo)
-        : asset('assets/images/logo.png')); ?>"
-  alt="logo"
-/></a>
+            <a href="<?php echo e(Route('home')); ?>"><img src="<?php echo e($logo
+  ? asset('storage/' . $logo)
+  : asset('assets/images/logo.png')); ?>" alt="logo" /></a>
           </div>
 
 
@@ -568,15 +582,6 @@
        START FOOTER AREA
 ================================= -->
   <section class="footer-area bg-gray padding-top-80px pattern-bg">
-    <?php
-      $address = $footerSettings['footer_address'] ?? 'Old Palasia, Indore, MP, 452001, India';
-      $helpline = $footerSettings['footer_helpline'] ?? '+91 880977278';
-      $email = $footerSettings['footer_email'] ?? 'support@flippingo.com';
-      $whatsapp = $footerSettings['footer_whatsapp'] ?? '+91 880977278';
-      $logo = $footerSettings['footer_logo'] ?? 'assets/images/logo.png';
-    ?>
-
-
     <div class="container">
       <div class="row">
 
@@ -710,9 +715,13 @@
       <hr class="border-top-gray" />
       <div class="copy-right d-flex flex-wrap align-items-center justify-content-between pb-4">
         <p class="copy__desc py-2">
-          &copy; <span id="copyright-year"></span> Flippingo. Made with
-          <span class="fas fa-heart bounce-anim"></span> by <a href="https://flippingo.com/">Flippingo</a>
+          <?php echo setting(
+  'footer_copyright',
+  '&copy; ' . date('Y') . ' Flippingo. Made with <span class="fas fa-heart bounce-anim"></span> by <a href="https://flippingo.com/">Flippingo</a>'
+); ?>
+
         </p>
+
         <select class="select-picker select-picker-sm" data-width="130" data-size="5">
           <option value="1" selected>English</option>
           <option value="2">French</option>

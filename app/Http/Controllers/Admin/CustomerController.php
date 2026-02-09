@@ -151,16 +151,38 @@ class CustomerController extends Controller
     }
 
 
-      public function toggleVerification(Customer $customer)
+    public function kycBank(Customer $customer)
     {
-        $customer->update([
-            'is_verified' => ! $customer->is_verified
+        $customer->load([
+            'kyc',
+            'paymentMethods',
+            'countryname'
         ]);
 
-        return response()->json([
-            'status' => 'success',
-            'verified' => $customer->is_verified
-        ]);
+        return view('admin.customers.kyc-bank', compact('customer'));
     }
+
+
+    public function verify(Request $request, Customer $customer)
+    {
+        if ($request->action === 'approve') {
+            $customer->update([
+                'is_verified' => true,
+                'verified_at' => now(),
+                'verification_note' => $request->verification_note,
+            ]);
+        } else {
+            $customer->update([
+                'is_verified' => false,
+                'verified_at' => null,
+                'verification_note' => $request->verification_note,
+            ]);
+        }
+
+        return redirect()
+            ->route('admin.customers.index')
+            ->with('success', 'User verification status updated.');
+    }
+
 
 }

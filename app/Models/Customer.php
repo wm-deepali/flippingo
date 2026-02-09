@@ -33,9 +33,15 @@ class Customer extends Authenticatable
         'zip_code',
         'commission_rate',
         'last_active',
+
+        // ✅ ADD THESE
         'is_verified',
+        'verification_note',
+        'verified_at',
+
         'is_premium',
     ];
+
 
     protected $hidden = [
         'password'
@@ -45,9 +51,11 @@ class Customer extends Authenticatable
         'email_verified_at' => 'datetime',
         'mobile_verified_at' => 'datetime',
         'last_active' => 'datetime',
+        'verified_at' => 'datetime',
         'is_verified' => 'boolean',
         'is_premium' => 'boolean',
     ];
+
 
     protected $appends = [
         'listing_count',
@@ -187,5 +195,36 @@ class Customer extends Authenticatable
         return $query->whereHas('orders');
     }
 
-   
+    public function recalculatePremiumStatus()
+    {
+        $threshold = (int) setting('premium_sales_threshold', 0);
+
+        // 2️⃣ If threshold disabled
+        if ($threshold <= 0) {
+            $this->update([
+                'is_premium' => false,
+            ]);
+            return;
+        }
+
+        // 3️⃣ Count delivered orders
+        $deliveredCount = ProductOrder::where('seller_id', $this->id)
+            ->whereHas('currentStatus', function ($q) {
+                $q->where('status', 'delivered');
+            })
+            ->count();
+
+        // 4️⃣ Apply logic
+        if ($deliveredCount >= $threshold) {
+            $this->update([
+                'is_premium' => true,
+            ]);
+        } else {
+            $this->update([
+                'is_premium' => false,
+            ]);
+        }
+    }
+
+
 }
